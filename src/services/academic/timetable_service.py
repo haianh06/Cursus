@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 from src.db import models
 from src.repositories.academic_term_repository import AcademicTermRepository
 from src.repositories.semester_repository import SemesterRepository
+from src.services.academic.academic_calendar import SLOT_TIMES, slot_datetimes
 from src.services.academic.academic_calendar import monday_of as _semester_monday_of
 from src.services.academic.lecture_plan_service import LECTURE_PLAN_SOURCE
 
@@ -585,8 +586,6 @@ class TimetableService:
         )
         blocks: list[TimetableBlock] = []
         for exam_session, exam in exam_rows:
-            from src.services.academic.academic_calendar import SLOT_TIMES, slot_datetimes
-
             if exam_session.slot_id not in SLOT_TIMES:
                 continue
             slot_start, slot_end = slot_datetimes(exam_session.exam_date, exam_session.slot_id)
