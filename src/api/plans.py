@@ -91,12 +91,14 @@ class CreateTimetableBlockRequest(BaseModel):
     title: str = Field(..., min_length=1, max_length=255)
     start: datetime
     end: datetime
+    repeatWeeklyUntil: date | None = None  # noqa: N815
 
 
 class UpdateTimetableBlockRequest(BaseModel):
     title: str | None = Field(default=None, min_length=1, max_length=255)
     start: datetime | None = None
     end: datetime | None = None
+    recurrenceScope: str = "this"  # noqa: N815
 
 @router.get("/timetable")
 def get_timetable(
@@ -138,6 +140,7 @@ def create_timetable_block(
             title=payload.title,
             start=payload.start,
             end=payload.end,
+            repeat_weekly_until=payload.repeatWeeklyUntil,
         )
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
@@ -158,6 +161,7 @@ def update_timetable_block(
             title=payload.title,
             start=payload.start,
             end=payload.end,
+            recurrence_scope=payload.recurrenceScope,
         )
     except LookupError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
