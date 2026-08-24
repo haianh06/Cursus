@@ -577,6 +577,13 @@ class TimetableService:
             plan_goals = weekly_plan.goals if isinstance(weekly_plan.goals, dict) else {}
             if plan_goals.get("source") == LECTURE_PLAN_SOURCE:
                 continue
+            # a46db63 invariant: a DRAFT plan's blocks are invisible on the
+            # real timetable except when explicitly requested via
+            # `preview_plan_id` (lets Reflection's next-week draft preview
+            # itself without leaking into the live timetable before accept).
+            is_draft_plan = str(plan_goals.get("status") or "").upper() == "DRAFT"
+            if is_draft_plan and weekly_plan.id != preview_plan_id:
+                continue
             existing = blocks.get(block.id)
             title = block.activity_description or (task.title if task else "Self-study")
             if existing and task:
