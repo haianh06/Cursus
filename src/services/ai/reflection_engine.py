@@ -214,9 +214,11 @@ class ReflectionEngine:
 
     # ── questionnaire ────────────────────────────────────────────────
     def questionnaire(self, facts: dict) -> dict:
+        # a46db63: the same 7-question catalog every week, regardless of
+        # completion band — `band`/`bandLabel` stay purely descriptive (shown
+        # in EvidenceSummary), no longer picking which questions to ask.
         band = band_for(float(facts.get("completionRate") or 0.0))
-        questions = [dict(item) for item in QUESTION_SETS[band]]
-        questions.append(dict(UNIVERSAL_QUESTION))
+        questions = _question_catalog(facts)
         return {
             "band": band,
             "bandLabel": {
