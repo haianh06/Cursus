@@ -172,12 +172,15 @@ def update_timetable_block(
 @router.delete("/timetable/blocks/{block_id}", status_code=204)
 def delete_timetable_block(
     block_id: str,
+    scope: str = Query(default="this"),
     current_user: models.User = Depends(get_current_user_from_token),
     db: Session = Depends(get_db),
 ):
     service = TimetableService(db)
     try:
-        service.delete_self_study_block(student_id=current_user.id, block_id=block_id)
+        service.delete_self_study_block(
+            student_id=current_user.id, block_id=block_id, scope=scope
+        )
     except LookupError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
