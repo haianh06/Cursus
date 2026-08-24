@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import {
   acceptPlan,
+  fastForwardDemoWeek,
   generatePlan,
   generatePlanFromReflection,
   getDeferReasons,
