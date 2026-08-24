@@ -403,11 +403,44 @@ class TimetableService:
         title: str | None,
         start: datetime | None,
         end: datetime | None,
+        recurrence_scope: str = "this",
     ) -> dict:
         block = self._owned_block(student_id=student_id, block_id=block_id)
+        original_start = block.start_time
         next_start = (start or block.start_time).replace(tzinfo=None)
         next_end = (end or block.end_time).replace(tzinfo=None)
         self._validate_range(next_start, next_end)
+
+        if recurrence_scope == "all" and block.recurrence_series_id:
+            delta_start = next_start - original_start
+            new_duration = next_end - next_start
+            series = (
+                self._db.query(models.ScheduleBlock)
+                .filter_by(recurrence_series_id=block.recurrence_series_id)
+                .all()
+            )
+            for occurrence in series:
+                occ_start = occurrence.start_time + delta_start
+                occ_end = occ_start + new_duration
+                # Each occurrence is re-validated individually; a conflicting
+                # one is skipped rather than blocking the whole series edit.
+                try:
+                    self._assert_no_class_overlap(
+                        student_id=student_id, start=occ_start, end=occ_end
+                    )
+                except ValueError:
+                    continue
+                if occ_start.date() != occurrence.start_time.date():
+                    daily_plan = self._ensure_daily_plan(student_id=student_id, day=occ_start.date())
+                    occurrence.daily_plan_id = daily_plan.id
+                occurrence.start_time = occ_start
+                occurrence.end_time = occ_end
+                if title is not None:
+                    occurrence.activity_description = title.strip() or occurrence.activity_description
+            self._db.commit()
+            self._db.refresh(block)
+            return self._block_to_dict(block)
+
         self._assert_no_class_overlap(
             student_id=student_id,
             start=next_start,
@@ -428,15 +461,7 @@ class TimetableService:
 
         self._db.commit()
         self._db.refresh(block)
-        return TimetableBlock(
-            id=block.id,
-            title=block.activity_description,
-            start=block.start_time,
-            end=block.end_time,
-            kind="SELF_STUDY",
-            locked=False,
-            description=None,
-        ).to_dict()
+        return self._block_to_dict(block)
 
     def _assert_no_class_overlap(
         self,
@@ -460,16 +485,26 @@ class TimetableService:
                     f"{class_block.end.strftime('%H:%M')})"
                 )
 
-    def delete_self_study_block(self, *, student_id: str, block_id: str) -> None:
+    def delete_self_study_block(
+        self, *, student_id: str, block_id: str, scope: str = "this"
+    ) -> None:
         block = self._owned_block(student_id=student_id, block_id=block_id)
-        tasks = (
-            self._db.query(models.StudyTask)
-            .filter_by(schedule_block_id=block.id)
-            .all()
-        )
-        for task in tasks:
-            self._db.delete(task)
-        self._db.delete(block)
+        targets = [block]
+        if scope == "all" and block.recurrence_series_id:
+            targets = (
+                self._db.query(models.ScheduleBlock)
+                .filter_by(recurrence_series_id=block.recurrence_series_id)
+                .all()
+            )
+        for target in targets:
+            tasks = (
+                self._db.query(models.StudyTask)
+                .filter_by(schedule_block_id=target.id)
+                .all()
+            )
+            for task in tasks:
+                self._db.delete(task)
+            self._db.delete(target)
         self._db.commit()
 
     def _class_blocks(
