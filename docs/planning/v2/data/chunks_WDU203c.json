@@ -1,0 +1,198 @@
+{
+  "subject_code": "WDU203c",
+  "subject_name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+  "meta": {
+    "Syllabus ID": "13164",
+    "Syllabus Name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+    "Course Name English": "UI/UX Design",
+    "Subject Code": "WDU203c",
+    "Learning-Teaching Method": "Blended,Online,Active learning,Inquiry-based Teaching",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) = 84h online + 3h offline + 1h TE + 62 h self-study",
+    "Pre-Requisite": "",
+    "Description": "Integrate UX Research and UX Design to create great products through understanding user needs, rapidly generating prototypes, and evaluating design concepts. Students will gain hands-on experience with taking a product from initial concept, through user research, ideation and refinement, formal analysis, prototyping, and user testing, applying perspectives and methods to ensure a great user experience at every step. This course concludes with a capstone project, in which learners will incorporate UX Research and Design principles to design a complete product, taking it from an initial concept to an interactive prototype.",
+    "StudentTasks": "1. Complete the online courses and get all specialization certifications to be allowed to take Final Exam\n2. Final Exam included Final Theory Exam (TE): 100%\n3. Students who complete all MOOCs before the course deadline will receive 1 bonus point; otherwise, no bonus point will be awarded.\n4. Completion Criteria: Final TE Score >=4 & (Final TE Score + bonus) >= 5",
+    "Tools": "- Internet",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "932/QĐ-ĐHFPT dated 08/22/2025",
+    "IsApproved": "True",
+    "Note": "",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "8/22/2025"
+  },
+  "clo_count": 8,
+  "session_count": 12,
+  "chunks": [
+    {
+      "chunk_id": "WDU203c-overview",
+      "subject_code": "WDU203c",
+      "subject_name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+      "section": "Overview & Grading Policy",
+      "text": "Description: Integrate UX Research and UX Design to create great products through understanding user needs, rapidly generating prototypes, and evaluating design concepts. Students will gain hands-on experience with taking a product from initial concept, through user research, ideation and refinement, formal analysis, prototyping, and user testing, applying perspectives and methods to ensure a great user experience at every step. This course concludes with a capstone project, in which learners will incorporate UX Research and Design principles to design a complete product, taking it from an initial concept to an interactive prototype.\nNoCredit: 3\nTime Allocation: Study hour (150h) = 84h online + 3h offline + 1h TE + 62 h self-study\nStudentTasks: 1. Complete the online courses and get all specialization certifications to be allowed to take Final Exam\n2. Final Exam included Final Theory Exam (TE): 100%\n3. Students who complete all MOOCs before the course deadline will receive 1 bonus point; otherwise, no bonus point will be awarded.\n4. Completion Criteria: Final TE Score >=4 & (Final TE Score + bonus) >= 5\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus WDU203c — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "WDU203c-CLO1",
+      "subject_code": "WDU203c",
+      "subject_name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Be able to explain what is involved in UX research, including conducting interviews, evaluating systems, and analyzing systems using principles of good design",
+      "source_label": "Syllabus WDU203c — CLO1"
+    },
+    {
+      "chunk_id": "WDU203c-CLO2",
+      "subject_code": "WDU203c",
+      "subject_name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Be able to describe about the work involved in UX Design, including the generation of promising design solutions and the creation of prototypes at multiple levels of fidelity",
+      "source_label": "Syllabus WDU203c — CLO2"
+    },
+    {
+      "chunk_id": "WDU203c-CLO3",
+      "subject_code": "WDU203c",
+      "subject_name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Be able to describe numerous techniques to gather data from and about users",
+      "source_label": "Syllabus WDU203c — CLO3"
+    },
+    {
+      "chunk_id": "WDU203c-CLO4",
+      "subject_code": "WDU203c",
+      "subject_name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Know how to design and conduct tests with users",
+      "source_label": "Syllabus WDU203c — CLO4"
+    },
+    {
+      "chunk_id": "WDU203c-CLO5",
+      "subject_code": "WDU203c",
+      "subject_name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+      "section": "Learning Outcome CLO5",
+      "text": "CLO5: Be able to apply techniques such as sketching, scenario development, storyboarding, and wireframing",
+      "source_label": "Syllabus WDU203c — CLO5"
+    },
+    {
+      "chunk_id": "WDU203c-CLO6",
+      "subject_code": "WDU203c",
+      "subject_name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+      "section": "Learning Outcome CLO6",
+      "text": "CLO6: Know how to turn wireframes and interaction architecture into interactive prototypes that can be tested with prospective users and iteratively refined into a high quality design",
+      "source_label": "Syllabus WDU203c — CLO6"
+    },
+    {
+      "chunk_id": "WDU203c-CLO7",
+      "subject_code": "WDU203c",
+      "subject_name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+      "section": "Learning Outcome CLO7",
+      "text": "CLO7: Be able to describe techniques for gaining UX insights from large numbers of users, including web analytics, A/B testing, and remote unmoderated studies",
+      "source_label": "Syllabus WDU203c — CLO7"
+    },
+    {
+      "chunk_id": "WDU203c-CLO8",
+      "subject_code": "WDU203c",
+      "subject_name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+      "section": "Learning Outcome CLO8",
+      "text": "CLO8: Know how to design and carry out an integrated multi-phase user experience research and design project",
+      "source_label": "Syllabus WDU203c — CLO8"
+    },
+    {
+      "chunk_id": "WDU203c-session-1",
+      "subject_code": "WDU203c",
+      "subject_name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+      "section": "Session 1",
+      "text": "Session 1 — Introduction to User Experience Principles and Processes\n- What is UX? What are UX Research and Design?\n- UX Design Overview\n- How Do People Perceive Information?\nOffline 1: Introduction to the online course WDU203c\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)\nAll students should participate in offline slot (if any question)",
+      "source_label": "Syllabus WDU203c — Session 1"
+    },
+    {
+      "chunk_id": "WDU203c-session-2",
+      "subject_code": "WDU203c",
+      "subject_name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+      "section": "Session 2",
+      "text": "Session 2 — - How Do People Act in the World?\n- Design Heuristics\n- Heuristic Evaluation and Course Wrap-up\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus WDU203c — Session 2"
+    },
+    {
+      "chunk_id": "WDU203c-session-3",
+      "subject_code": "WDU203c",
+      "subject_name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+      "section": "Session 3",
+      "text": "Session 3 — Understanding User Needs\n- Introduction and Qualitative Research Overview\n- Interview Protocols\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus WDU203c — Session 3"
+    },
+    {
+      "chunk_id": "WDU203c-session-4",
+      "subject_code": "WDU203c",
+      "subject_name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+      "section": "Session 4",
+      "text": "Session 4 — - Interviews, Observation, and Data Extraction\n- Affinity Walls and Analysis\n- Conclusion\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus WDU203c — Session 4"
+    },
+    {
+      "chunk_id": "WDU203c-session-5",
+      "subject_code": "WDU203c",
+      "subject_name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+      "section": "Session 5",
+      "text": "Session 5 — Evaluating Designs with Users\n- What is User Testing?\n- User Test Basics\n- Getting More Out of User Testing\n- Analysis and Reporting\n- User Test Report\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus WDU203c — Session 5"
+    },
+    {
+      "chunk_id": "WDU203c-session-6",
+      "subject_code": "WDU203c",
+      "subject_name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+      "section": "Session 6",
+      "text": "Session 6 — UX Design: From Concept to Prototype\n- Introduction to the Design Process\n- Ideation\n- Design Constraints and Making Choices\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus WDU203c — Session 6"
+    },
+    {
+      "chunk_id": "WDU203c-session-7",
+      "subject_code": "WDU203c",
+      "subject_name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+      "section": "Session 7",
+      "text": "Session 7 — - Building Blocks of User Interaction\n- Low to Hi-Fidelity Prototyping\n- Conceptual Issues in Prototyping and Design\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus WDU203c — Session 7"
+    },
+    {
+      "chunk_id": "WDU203c-session-8",
+      "subject_code": "WDU203c",
+      "subject_name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+      "section": "Session 8",
+      "text": "Session 8 — UX Research at Scale: Surveys, Analytics, Online Testing\n- When and How to Use Surveys\n- Asking the Right People (Coverage Error)\n- Getting Answers (Nonresponse error)\n- Writing Questions (Measurement Error)\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus WDU203c — Session 8"
+    },
+    {
+      "chunk_id": "WDU203c-session-9",
+      "subject_code": "WDU203c",
+      "subject_name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+      "section": "Session 9",
+      "text": "Session 9 — - About Research at Scale\n- Behavioral Analytics\n- Remote Testing\n- A/B Testing and Preference Testing\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus WDU203c — Session 9"
+    },
+    {
+      "chunk_id": "WDU203c-session-10",
+      "subject_code": "WDU203c",
+      "subject_name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+      "section": "Session 10",
+      "text": "Session 10 — UX (User Experience) Capstone\n- Introduction & Milestone 1\n- MILESTONE 2\n- MILESTONE 3\n- MILESTONE 4\n- MILESTONE 5\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus WDU203c — Session 10"
+    },
+    {
+      "chunk_id": "WDU203c-session-11",
+      "subject_code": "WDU203c",
+      "subject_name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+      "section": "Session 11",
+      "text": "Session 11 — - FINAL REPORT\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus WDU203c — Session 11"
+    },
+    {
+      "chunk_id": "WDU203c-session-12",
+      "subject_code": "WDU203c",
+      "subject_name": "UI/UX Design_Thiết kế trải nghiệm người dùng",
+      "section": "Session 12",
+      "text": "Session 12 — - FINAL REPORT (cont.)\nOffline 2: Review User Experience Research and Design Specialization (Spec)\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)\nDeadline of Coursera completion: End of Friday of the week.\nAll students should participate in review slot (if any question)",
+      "source_label": "Syllabus WDU203c — Session 12"
+    }
+  ]
+}

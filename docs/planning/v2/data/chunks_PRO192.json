@@ -1,0 +1,590 @@
+{
+  "subject_code": "PRO192",
+  "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+  "meta": {
+    "Syllabus ID": "12038",
+    "Syllabus Name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+    "Course Name English": "Object-Oriented Programming",
+    "Subject Code": "PRO192",
+    "Learning-Teaching Method": "Social Constructivism,In-class lecture,Inquiry-based Teaching",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) = 45h contact hours + 1h final exam + 85' practical exam + 104h self-study",
+    "Pre-Requisite": "Pass PRF192",
+    "Description": "-This subject introduces the student to object-oriented programming. The student learns to build reusable objects, encapsulate data and logic within a class, inherit one class from another and implement polymorphism.\n- Compose technical documentation of a Java program using internal comments\n- Adhere to object-oriented programming principles including encapsulation, polymorphism and inheritance when writing program code\n- Trace the execution of Java program logic to determine what a program does or to validate the correctness of a program",
+    "StudentTasks": "- Students must attend at least 80% of contact slots in order to be accepted to the final examination.\n- Student is responsible to do all exercises given by instructor in class or at home and submit on time.\n- Use laptop in class only for learning purpose\n- Promptly access to the FU FLM at https://flm.fpt.edu.vn/ for up-to-date course information",
+    "Tools": "Text Book\n'NetBean x.x\nInternet",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "1286/QĐ-ĐHFPT dated 11/22/2024",
+    "IsApproved": "True",
+    "Note": "",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "11/22/2024"
+  },
+  "clo_count": 9,
+  "session_count": 60,
+  "chunks": [
+    {
+      "chunk_id": "PRO192-overview",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Overview & Grading Policy",
+      "text": "Description: -This subject introduces the student to object-oriented programming. The student learns to build reusable objects, encapsulate data and logic within a class, inherit one class from another and implement polymorphism.\n- Compose technical documentation of a Java program using internal comments\n- Adhere to object-oriented programming principles including encapsulation, polymorphism and inheritance when writing program code\n- Trace the execution of Java program logic to determine what a program does or to validate the correctness of a program\nNoCredit: 3\nPre-Requisite: Pass PRF192\nTime Allocation: Study hour (150h) = 45h contact hours + 1h final exam + 85' practical exam + 104h self-study\nStudentTasks: - Students must attend at least 80% of contact slots in order to be accepted to the final examination.\n- Student is responsible to do all exercises given by instructor in class or at home and submit on time.\n- Use laptop in class only for learning purpose\n- Promptly access to the FU FLM at https://flm.fpt.edu.vn/ for up-to-date course information\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus PRO192 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "PRO192-CLO1",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Understand the concepts of object oriented (OO) programs to solve problems and fundamentals of object-oriented programming in Java",
+      "source_label": "Syllabus PRO192 — CLO1"
+    },
+    {
+      "chunk_id": "PRO192-CLO2",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Practice basic Java language syntax and semantics to write Java programs and use concepts such as variables, conditional and iterative execution methods",
+      "source_label": "Syllabus PRO192 — CLO2"
+    },
+    {
+      "chunk_id": "PRO192-CLO3",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Uses streams to read and write data from/to different types of sources/targets",
+      "source_label": "Syllabus PRO192 — CLO3"
+    },
+    {
+      "chunk_id": "PRO192-CLO4",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Discuss the benefits and the use of JAVA’s Exceptional handling mechanism",
+      "source_label": "Syllabus PRO192 — CLO4"
+    },
+    {
+      "chunk_id": "PRO192-CLO5",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Learning Outcome CLO5",
+      "text": "CLO5: Identify classes, objects, members of a class and relationships among them needed for a specific problem",
+      "source_label": "Syllabus PRO192 — CLO5"
+    },
+    {
+      "chunk_id": "PRO192-CLO6",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Learning Outcome CLO6",
+      "text": "CLO6: Explain the concept and demonstrates the use of Polymorphism, Encapsulation, Abstraction and Inheritance in java",
+      "source_label": "Syllabus PRO192 — CLO6"
+    },
+    {
+      "chunk_id": "PRO192-CLO7",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Learning Outcome CLO7",
+      "text": "CLO7: Discuss the principles and the use of abstract classes and interfaces in java",
+      "source_label": "Syllabus PRO192 — CLO7"
+    },
+    {
+      "chunk_id": "PRO192-CLO8",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Learning Outcome CLO8",
+      "text": "CLO8: Understand and implement a complete program using object array",
+      "source_label": "Syllabus PRO192 — CLO8"
+    },
+    {
+      "chunk_id": "PRO192-CLO9",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Learning Outcome CLO9",
+      "text": "CLO9: Explain the principles and the use of some (java collections) abstract data types (list, set, map)",
+      "source_label": "Syllabus PRO192 — CLO9"
+    },
+    {
+      "chunk_id": "PRO192-session-1",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 1",
+      "text": "Session 1 — Chapter 1: Introduction\n1.1 Welcome to Object-Oriented\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 1"
+    },
+    {
+      "chunk_id": "PRO192-session-2",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 2",
+      "text": "Session 2 — 1.2 Object Terminology and Installation JDK - IDE\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 2"
+    },
+    {
+      "chunk_id": "PRO192-session-3",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 3",
+      "text": "Session 3 — Chapter 2: Basic Java language\n2.1 Basic Java language: Variable, data type\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 3"
+    },
+    {
+      "chunk_id": "PRO192-session-4",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 4",
+      "text": "Session 4 — 2.1 Basic Java language: Control statements\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 4"
+    },
+    {
+      "chunk_id": "PRO192-session-5",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 5",
+      "text": "Session 5 — 2.1 Basic Java language: Method - function- Parameter passing\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 5"
+    },
+    {
+      "chunk_id": "PRO192-session-6",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 6",
+      "text": "Session 6 — 2.1 Basic Java language: Array, ArrayList\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 6"
+    },
+    {
+      "chunk_id": "PRO192-session-7",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 7",
+      "text": "Session 7 — 2.1 Basic Java language: String, StringBuffer\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 7"
+    },
+    {
+      "chunk_id": "PRO192-session-8",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 8",
+      "text": "Session 8 — 2.2 Input and Output (Standard I/O)\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 8"
+    },
+    {
+      "chunk_id": "PRO192-session-9",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 9",
+      "text": "Session 9 — 2.2 Input and Output (Standard I/O) - cont'd\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 9"
+    },
+    {
+      "chunk_id": "PRO192-session-10",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 10",
+      "text": "Session 10 — Lab 1 assistance\nTài liệu: lab's questions\nNhiệm vụ sinh viên: lab's questions",
+      "source_label": "Syllabus PRO192 — Session 10"
+    },
+    {
+      "chunk_id": "PRO192-session-11",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 11",
+      "text": "Session 11 — Lab 1 assistance\nTài liệu: lab's questions\nNhiệm vụ sinh viên: lab's questions",
+      "source_label": "Syllabus PRO192 — Session 11"
+    },
+    {
+      "chunk_id": "PRO192-session-12",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 12",
+      "text": "Session 12 — 2.4 Dynamic Memory\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 12"
+    },
+    {
+      "chunk_id": "PRO192-session-13",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 13",
+      "text": "Session 13 — Chapter 3: OOP\n3.1 OOP concept\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 13"
+    },
+    {
+      "chunk_id": "PRO192-session-14",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 14",
+      "text": "Session 14 — 3.2 Data abstraction - concept and technic\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 14"
+    },
+    {
+      "chunk_id": "PRO192-session-15",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 15",
+      "text": "Session 15 — 3.3 Class definition: data and function members\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 15"
+    },
+    {
+      "chunk_id": "PRO192-session-16",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 16",
+      "text": "Session 16 — 3.4 Encapsulation\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 16"
+    },
+    {
+      "chunk_id": "PRO192-session-17",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 17",
+      "text": "Session 17 — Lab 2 assistance\nTài liệu: Lab's questions\nNhiệm vụ sinh viên: Lab's questions",
+      "source_label": "Syllabus PRO192 — Session 17"
+    },
+    {
+      "chunk_id": "PRO192-session-18",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 18",
+      "text": "Session 18 — Lab 2 assistance\nTài liệu: Lab's questions\nNhiệm vụ sinh viên: Lab's questions",
+      "source_label": "Syllabus PRO192 — Session 18"
+    },
+    {
+      "chunk_id": "PRO192-session-19",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 19",
+      "text": "Session 19 — 3.5 Inheritance: Inheritance introduction\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 19"
+    },
+    {
+      "chunk_id": "PRO192-session-20",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 20",
+      "text": "Session 20 — 3.6 Inheritance: Derived Classes\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 20"
+    },
+    {
+      "chunk_id": "PRO192-session-21",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 21",
+      "text": "Session 21 — Lab 3 assistance\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 21"
+    },
+    {
+      "chunk_id": "PRO192-session-22",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 22",
+      "text": "Session 22 — Lab 3 assistance\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 22"
+    },
+    {
+      "chunk_id": "PRO192-session-23",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 23",
+      "text": "Session 23 — 3.7 Polymorphism: Polymorphism concepts\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 23"
+    },
+    {
+      "chunk_id": "PRO192-session-24",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 24",
+      "text": "Session 24 — 3.8 Override and overriden methods\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 24"
+    },
+    {
+      "chunk_id": "PRO192-session-25",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 25",
+      "text": "Session 25 — Lab 4 assistance\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 25"
+    },
+    {
+      "chunk_id": "PRO192-session-26",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 26",
+      "text": "Session 26 — Lab 4 assistance\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 26"
+    },
+    {
+      "chunk_id": "PRO192-session-27",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 27",
+      "text": "Session 27 — Chapter 4: Abstract class - Interface\n4.1 Abstract class\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 27"
+    },
+    {
+      "chunk_id": "PRO192-session-28",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 28",
+      "text": "Session 28 — 4.1 Abstract class - con't\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 28"
+    },
+    {
+      "chunk_id": "PRO192-session-29",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 29",
+      "text": "Session 29 — 4.2 Interface\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 29"
+    },
+    {
+      "chunk_id": "PRO192-session-30",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 30",
+      "text": "Session 30 — 4.2 Interface - cont'd\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 30"
+    },
+    {
+      "chunk_id": "PRO192-session-31",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 31",
+      "text": "Session 31 — Chapter 5:\n5.1 Error & Exception Concepts\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 31"
+    },
+    {
+      "chunk_id": "PRO192-session-32",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 32",
+      "text": "Session 32 — 5.2 Handling Exception\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 32"
+    },
+    {
+      "chunk_id": "PRO192-session-33",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 33",
+      "text": "Session 33 — Progress test 1+ workshop evaluation\nTài liệu: Textbook, slides,assignment's questions\nNhiệm vụ sinh viên: Textbook, slides,assignment's questions",
+      "source_label": "Syllabus PRO192 — Session 33"
+    },
+    {
+      "chunk_id": "PRO192-session-34",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 34",
+      "text": "Session 34 — Progress test 1+ workshop evaluation\nTài liệu: Textbook, slides,assignment's questions\nNhiệm vụ sinh viên: Textbook, slides,assignment's questions",
+      "source_label": "Syllabus PRO192 — Session 34"
+    },
+    {
+      "chunk_id": "PRO192-session-35",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 35",
+      "text": "Session 35 — Chapter 6: Array of Objects\n6. Basic Operators: add, update, remove, sort, find\nTài liệu: Textbook, slides, lab's questions\nNhiệm vụ sinh viên: Textbook, slides, lab's questions",
+      "source_label": "Syllabus PRO192 — Session 35"
+    },
+    {
+      "chunk_id": "PRO192-session-36",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 36",
+      "text": "Session 36 — Array of Objects:\n6. Basic Operators: add, update, remove, sort, find - cont'd\nTài liệu: Textbook, slides, lab's questions\nNhiệm vụ sinh viên: Textbook, slides, lab's questions",
+      "source_label": "Syllabus PRO192 — Session 36"
+    },
+    {
+      "chunk_id": "PRO192-session-37",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 37",
+      "text": "Session 37 — Array of Objects:\n6. Basic Operators: add, update, remove, sort, find - cont'd\nTài liệu: Textbook, slides, lab's questions\nNhiệm vụ sinh viên: Textbook, slides, lab's questions",
+      "source_label": "Syllabus PRO192 — Session 37"
+    },
+    {
+      "chunk_id": "PRO192-session-38",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 38",
+      "text": "Session 38 — Array of Objects:\n6. Basic Operators: add, update, remove, sort, find - cont'd\nTài liệu: Textbook, slides, lab's questions\nNhiệm vụ sinh viên: Textbook, slides, lab's questions",
+      "source_label": "Syllabus PRO192 — Session 38"
+    },
+    {
+      "chunk_id": "PRO192-session-39",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 39",
+      "text": "Session 39 — Chapter 7: Collections in Java:\n7.1 Overview\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 39"
+    },
+    {
+      "chunk_id": "PRO192-session-40",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 40",
+      "text": "Session 40 — 7.2 List\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 40"
+    },
+    {
+      "chunk_id": "PRO192-session-41",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 41",
+      "text": "Session 41 — 7.3 Set\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 41"
+    },
+    {
+      "chunk_id": "PRO192-session-42",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 42",
+      "text": "Session 42 — 7.3 Set\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 42"
+    },
+    {
+      "chunk_id": "PRO192-session-43",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 43",
+      "text": "Session 43 — 7.4 Map\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 43"
+    },
+    {
+      "chunk_id": "PRO192-session-44",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 44",
+      "text": "Session 44 — 7.4 Map\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 44"
+    },
+    {
+      "chunk_id": "PRO192-session-45",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 45",
+      "text": "Session 45 — Lab 5 assistance\nTài liệu: Lab's questions\nNhiệm vụ sinh viên: Lab's questions",
+      "source_label": "Syllabus PRO192 — Session 45"
+    },
+    {
+      "chunk_id": "PRO192-session-46",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 46",
+      "text": "Session 46 — Lab 5 assistance\nTài liệu: Lab's questions\nNhiệm vụ sinh viên: Lab's questions",
+      "source_label": "Syllabus PRO192 — Session 46"
+    },
+    {
+      "chunk_id": "PRO192-session-47",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 47",
+      "text": "Session 47 — Chapter 8: Input and Output (File I/O)\nTài liệu: Textbook, slides, assignment's questions\nNhiệm vụ sinh viên: Textbook, slides, assignment's questions",
+      "source_label": "Syllabus PRO192 — Session 47"
+    },
+    {
+      "chunk_id": "PRO192-session-48",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 48",
+      "text": "Session 48 — 8. Input and Output (File I/O) - cont't\nTài liệu: Textbook, slides, assignment's questions\nNhiệm vụ sinh viên: Textbook, slides, assignment's questions",
+      "source_label": "Syllabus PRO192 — Session 48"
+    },
+    {
+      "chunk_id": "PRO192-session-49",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 49",
+      "text": "Session 49 — 8. Input and Output (File I/O) - cont't\nTài liệu: Textbook, slides, assignment's questions\nNhiệm vụ sinh viên: Textbook, slides, assignment's questions",
+      "source_label": "Syllabus PRO192 — Session 49"
+    },
+    {
+      "chunk_id": "PRO192-session-50",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 50",
+      "text": "Session 50 — 8. Input and Output (File I/O) - cont't\nTài liệu: Textbook, slides, assignment's questions\nNhiệm vụ sinh viên: Textbook, slides, assignment's questions",
+      "source_label": "Syllabus PRO192 — Session 50"
+    },
+    {
+      "chunk_id": "PRO192-session-51",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 51",
+      "text": "Session 51 — Lab 6 assistance\nTài liệu: lab's questions\nNhiệm vụ sinh viên: lab's questions",
+      "source_label": "Syllabus PRO192 — Session 51"
+    },
+    {
+      "chunk_id": "PRO192-session-52",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 52",
+      "text": "Session 52 — Lab 6 assistance\nTài liệu: lab's questions\nNhiệm vụ sinh viên: lab's questions",
+      "source_label": "Syllabus PRO192 — Session 52"
+    },
+    {
+      "chunk_id": "PRO192-session-53",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 53",
+      "text": "Session 53 — Progress test 2+ workshop evaluation\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 53"
+    },
+    {
+      "chunk_id": "PRO192-session-54",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 54",
+      "text": "Session 54 — Progress test 2+ workshop evaluation\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 54"
+    },
+    {
+      "chunk_id": "PRO192-session-55",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 55",
+      "text": "Session 55 — Assignment Evaluation\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 55"
+    },
+    {
+      "chunk_id": "PRO192-session-56",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 56",
+      "text": "Session 56 — Assignment Evaluation\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Textbook, slides",
+      "source_label": "Syllabus PRO192 — Session 56"
+    },
+    {
+      "chunk_id": "PRO192-session-57",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 57",
+      "text": "Session 57 — Review",
+      "source_label": "Syllabus PRO192 — Session 57"
+    },
+    {
+      "chunk_id": "PRO192-session-58",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 58",
+      "text": "Session 58 — Review",
+      "source_label": "Syllabus PRO192 — Session 58"
+    },
+    {
+      "chunk_id": "PRO192-session-59",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 59",
+      "text": "Session 59 — Review",
+      "source_label": "Syllabus PRO192 — Session 59"
+    },
+    {
+      "chunk_id": "PRO192-session-60",
+      "subject_code": "PRO192",
+      "subject_name": "Object-Oriented Programming_Lập trình hướng đối tượng",
+      "section": "Session 60",
+      "text": "Session 60 — Review",
+      "source_label": "Syllabus PRO192 — Session 60"
+    }
+  ]
+}

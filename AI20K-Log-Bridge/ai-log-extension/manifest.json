@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "AI20K Log Bridge",
+  "version": "2.0.0",
+  "description": "Bat prompt AI tren moi trang chat, cho ban duyet truoc khi gui len grading server AI20K.",
+  "minimum_chrome_version": "111",
+
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlZbZENBA3hrNTJLS3c44y3Lkzn00AjqC+cInda5o0PZ7nKigRCj4nYCnAJ6u69tfK0gvfziWPCDJD7h78s44yPZQradQb+Q1G6LHWreJZETx7ZRUP5gnZK0EG4PDKUb19sNfBgKXMdcDx48vv4l7nflDtgb9pGr3YJc87WJU9czBN4/ixdb0h7Ro7aG7eeS7uJdDUxxaW6DAJwEqumb6UH6/jR5Px5ICL5EOZisRR1LQte3Yd0Q6cLOU4F06y9WG0k2nCxwqeQ7Cv2Y7/ohrml2HdliFUMXhGPqF0a+d5III95fF+/LvoR24vfS1zsv2SCxaA/KhsQwFq/m3Jbcx2wIDAQAB",
+
+  "permissions": ["storage", "scripting", "alarms", "tabs", "nativeMessaging"],
+
+  "host_permissions": ["*://*/*"],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "AI20K Log Bridge",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["detector.js"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ]
+}

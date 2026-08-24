@@ -1,0 +1,21 @@
+{
+  "name": "Cursus – Học tập theo chu trình Plan–Do–Reflect",
+  "short_name": "Cursus",
+  "description": "Cursus giúp sinh viên lập kế hoạch từ syllabus, hỏi đáp có trích nguồn và phản tư hằng tuần.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F5F2",
+  "theme_color": "#F5F5F2",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    },
+    {
+      "src": "/logo.png",
+      "type": "image/png",
+      "sizes": "1024x1024"
+    }
+  ]
+}

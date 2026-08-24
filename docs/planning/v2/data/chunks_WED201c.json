@@ -1,0 +1,174 @@
+{
+  "subject_code": "WED201c",
+  "subject_name": "Web Design_Thiết kế web",
+  "meta": {
+    "Syllabus ID": "13172",
+    "Syllabus Name": "Web Design_Thiết kế web",
+    "Course Name English": "Web Design",
+    "Subject Code": "WED201c",
+    "Learning-Teaching Method": "Online,Blended Learning",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) = 50h online + 3h offline + 1h TE + 2h PE + 94 h self-study",
+    "Pre-Requisite": "None",
+    "Description": "Upon finishing the course, students can:\n1) Knowledge: Understand (ABET e)\n- The concepts of HTML, CSS3, JavaScript, Interactivity with JavaScript, Advanced Styling with Responsive Design\n- Web page structure.\n- Web site structure.\n- Demonstrate the ability to design and implement a responsive site for three platforms.\n- The way a web page is presented in browsers.\n\n2) Able to (ABET k)\n- Add interacitivity to web pages with Javascript\n- Apply responsive design to enable page to be viewed by various devices\n- Describe the basics of Cascading Style Sheets (CSS3)\n- Use the Document Object Model (DOM) to modify pages\n3) Others: (ABET i)\n- Improve study skills (academic reading, information searching, ...)",
+    "StudentTasks": "1. Join the online course (spec.) when being invited by the admin.\n2. Enroll in each MOOC of spec., regularly study MOOCs at least 5hrs/week by watching videos, reading materials, taking quizzes, doing assgnments... as required\n3. Respect the Coursera Code of Conduct, at https://learner.coursera.help/hc/en-us/articles/208280036-Coursera-Code-of-Conduct\n3. Keep online learning progress promptly (bonus will be awarded)\n4. Communicate and discuss in forum\n5. Attend off-line sessions in the Campus\n6. Must complete all MOOCs of spec. with certification in order to take the Final Exam at Campus",
+    "Tools": "- Internet",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "932/QĐ-ĐHFPT dated 08/22/2025",
+    "IsApproved": "True",
+    "Note": "Assessment scheme:\n1) Ongoing assessment: Students who complete all MOOCs before the course deadline will receive 1 bonus point; otherwise, no bonus point will be awarded.\n2) Final Exam (FE) = [Theoretical Exam (TE) + Practical Exam (PE)]/2\n3) Final Result (FR) =min (10, [(TE+PE)/2 ] + Bonus)\n4) Completion Criteria: TE>=4 and PE>=4 and FR>=5",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "8/22/2025"
+  },
+  "clo_count": 5,
+  "session_count": 12,
+  "chunks": [
+    {
+      "chunk_id": "WED201c-overview",
+      "subject_code": "WED201c",
+      "subject_name": "Web Design_Thiết kế web",
+      "section": "Overview & Grading Policy",
+      "text": "Description: Upon finishing the course, students can:\n1) Knowledge: Understand (ABET e)\n- The concepts of HTML, CSS3, JavaScript, Interactivity with JavaScript, Advanced Styling with Responsive Design\n- Web page structure.\n- Web site structure.\n- Demonstrate the ability to design and implement a responsive site for three platforms.\n- The way a web page is presented in browsers.\n\n2) Able to (ABET k)\n- Add interacitivity to web pages with Javascript\n- Apply responsive design to enable page to be viewed by various devices\n- Describe the basics of Cascading Style Sheets (CSS3)\n- Use the Document Object Model (DOM) to modify pages\n3) Others: (ABET i)\n- Improve study skills (academic reading, information searching, ...)\nNoCredit: 3\nPre-Requisite: None\nTime Allocation: Study hour (150h) = 50h online + 3h offline + 1h TE + 2h PE + 94 h self-study\nStudentTasks: 1. Join the online course (spec.) when being invited by the admin.\n2. Enroll in each MOOC of spec., regularly study MOOCs at least 5hrs/week by watching videos, reading materials, taking quizzes, doing assgnments... as required\n3. Respect the Coursera Code of Conduct, at https://learner.coursera.help/hc/en-us/articles/208280036-Coursera-Code-of-Conduct\n3. Keep online learning progress promptly (bonus will be awarded)\n4. Communicate and discuss in forum\n5. Attend off-line sessions in the Campus\n6. Must complete all MOOCs of spec. with certification in order to take the Final Exam at Campus\nNote: Assessment scheme:\n1) Ongoing assessment: Students who complete all MOOCs before the course deadline will receive 1 bonus point; otherwise, no bonus point will be awarded.\n2) Final Exam (FE) = [Theoretical Exam (TE) + Practical Exam (PE)]/2\n3) Final Result (FR) =min (10, [(TE+PE)/2 ] + Bonus)\n4) Completion Criteria: TE>=4 and PE>=4 and FR>=5\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus WED201c — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "WED201c-CLO1",
+      "subject_code": "WED201c",
+      "subject_name": "Web Design_Thiết kế web",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Understand and demostrate how to get a site from the original version to HTML5",
+      "source_label": "Syllabus WED201c — CLO1"
+    },
+    {
+      "chunk_id": "WED201c-CLO2",
+      "subject_code": "WED201c",
+      "subject_name": "Web Design_Thiết kế web",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Use CSS3 to style a site dynamically",
+      "source_label": "Syllabus WED201c — CLO2"
+    },
+    {
+      "chunk_id": "WED201c-CLO3",
+      "subject_code": "WED201c",
+      "subject_name": "Web Design_Thiết kế web",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Add interacitivity to web pages with Javascript",
+      "source_label": "Syllabus WED201c — CLO3"
+    },
+    {
+      "chunk_id": "WED201c-CLO4",
+      "subject_code": "WED201c",
+      "subject_name": "Web Design_Thiết kế web",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Apply responsive design to enable page to be viewed by various devices",
+      "source_label": "Syllabus WED201c — CLO4"
+    },
+    {
+      "chunk_id": "WED201c-CLO5",
+      "subject_code": "WED201c",
+      "subject_name": "Web Design_Thiết kế web",
+      "section": "Learning Outcome CLO5",
+      "text": "CLO5: Apply all knowledge of skills learned in the courses to build a site",
+      "source_label": "Syllabus WED201c — CLO5"
+    },
+    {
+      "chunk_id": "WED201c-session-1",
+      "subject_code": "WED201c",
+      "subject_name": "Web Design_Thiết kế web",
+      "section": "Session 1",
+      "text": "Session 1 — Module 1 (MOOC 1):\n- Welcome\n- Introduction to HTML5\n- History and Evolution\n- How it Works\n- Tool and Tips\nOffline 1: Introduction to the online course WED201c\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)\nAll students should participate in offline slot (if any question)",
+      "source_label": "Syllabus WED201c — Session 1"
+    },
+    {
+      "chunk_id": "WED201c-session-2",
+      "subject_code": "WED201c",
+      "subject_name": "Web Design_Thiết kế web",
+      "section": "Session 2",
+      "text": "Session 2 — Module 2 (MOOC 1):\n- The Document Object Model (DOM)\n- HTML5 Elements\n- Tags, Syntax, Semantics,  and Templates\n- Images, Hyperlinks, Multimedia, Tables\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus WED201c — Session 2"
+    },
+    {
+      "chunk_id": "WED201c-session-3",
+      "subject_code": "WED201c",
+      "subject_name": "Web Design_Thiết kế web",
+      "section": "Session 3",
+      "text": "Session 3 — Module 3 (MOOC 1):\n- Accessibility\n- Human Factors to  Consider in Web Design\n- Validate your code\n- Putting your Code on the Web\n- Final Project (MOOC 1)\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus WED201c — Session 3"
+    },
+    {
+      "chunk_id": "WED201c-session-4",
+      "subject_code": "WED201c",
+      "subject_name": "Web Design_Thiết kế web",
+      "section": "Session 4",
+      "text": "Session 4 — Module 1 & 2 (MOOC 2):\n- Getting started with simple styling\n- Advanced styling\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus WED201c — Session 4"
+    },
+    {
+      "chunk_id": "WED201c-session-5",
+      "subject_code": "WED201c",
+      "subject_name": "Web Design_Thiết kế web",
+      "section": "Session 5",
+      "text": "Session 5 — Module 3, Module 4 (MOOC 2):\n- Psuedo-classes, Pseudo-elements, Transitions, and Positioning\n- Putting It All Together\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus WED201c — Session 5"
+    },
+    {
+      "chunk_id": "WED201c-session-6",
+      "subject_code": "WED201c",
+      "subject_name": "Web Design_Thiết kế web",
+      "section": "Session 6",
+      "text": "Session 6 — Module 1, Module 2 (MOOC 3):\n- Introduction to JavaScript\n- Reacting to Your Audience\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus WED201c — Session 6"
+    },
+    {
+      "chunk_id": "WED201c-session-7",
+      "subject_code": "WED201c",
+      "subject_name": "Web Design_Thiết kế web",
+      "section": "Session 7",
+      "text": "Session 7 — Module 3, Module 4 (MOOC 3):\n- Arrays and Looping\n- Validating Form Data\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus WED201c — Session 7"
+    },
+    {
+      "chunk_id": "WED201c-session-8",
+      "subject_code": "WED201c",
+      "subject_name": "Web Design_Thiết kế web",
+      "section": "Session 8",
+      "text": "Session 8 — Module 1, Module 2 (MOOC 4):\n- Style with Responsive Design\n- Basic Concepts\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus WED201c — Session 8"
+    },
+    {
+      "chunk_id": "WED201c-session-9",
+      "subject_code": "WED201c",
+      "subject_name": "Web Design_Thiết kế web",
+      "section": "Session 9",
+      "text": "Session 9 — Module 3, Module 4 (MOOC 4):\n- Use Existing Frameworks\n- Experiment!\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus WED201c — Session 9"
+    },
+    {
+      "chunk_id": "WED201c-session-10",
+      "subject_code": "WED201c",
+      "subject_name": "Web Design_Thiết kế web",
+      "section": "Session 10",
+      "text": "Session 10 — Module 1, Module 2 (MOOC 5):\n- Introduction\n- Design phase\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus WED201c — Session 10"
+    },
+    {
+      "chunk_id": "WED201c-session-11",
+      "subject_code": "WED201c",
+      "subject_name": "Web Design_Thiết kế web",
+      "section": "Session 11",
+      "text": "Session 11 — Module 3, Module 4, Module 5 (MOOC 5):\n- Lesson Choice\n- Coding Phase\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus WED201c — Session 11"
+    },
+    {
+      "chunk_id": "WED201c-session-12",
+      "subject_code": "WED201c",
+      "subject_name": "Web Design_Thiết kế web",
+      "section": "Session 12",
+      "text": "Session 12 — Module 6, Module 7, Module 8 (MOOC 5):\n- Validation and Review Phase\n- Revise and Submit Phase: Lesson Choices\nOffline 2: Review Web Design for Everybody: Basics of Web Development & Coding Specialization\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed\nDeadline of Coursera completion: End of Friday of the week.\nAll students should participate in review slot (if any question)",
+      "source_label": "Syllabus WED201c — Session 12"
+    }
+  ]
+}

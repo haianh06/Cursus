@@ -1,0 +1,590 @@
+{
+  "subject_code": "SWR302",
+  "subject_name": "Software Requirement_Yêu cầu phần mềm",
+  "meta": {
+    "Syllabus ID": "14176",
+    "Syllabus Name": "Software Requirement_Yêu cầu phần mềm",
+    "Course Name English": "Software Requirement",
+    "Subject Code": "SWR302",
+    "Learning-Teaching Method": "Social Constructivism,In-class lecture,Inquiry-based Teaching",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) = 45h contact hours + 145-minute final exam + 102,6h self-study",
+    "Pre-Requisite": "SWE102 or SWE201c or SWE202c",
+    "Description": "This course is a model-based introduction to RE, providing the conceptual background and terminology on RE, addressing a variety of techniques for requirements development including Analysis and Requirements Elicitation; Requirements Evaluation; Requirements Specification and Documentation; Requirements Quality Assurance. To implement these frameworks, student will be learnt how to find appropriate customer representatives, elicit requirements from them, and document user requirements, business rules, functional requirements, data requirements, and nonfunctional requirements.\nThe numerous visual models that will be represented to illustrate the requirements from various perspectives to supplement natural-language text. Other contents recommend the most effective requirements approaches for various specific classes of projects: agile projects developing products of any type, enhancement and replacement projects, projects that incorporate packaged solutions, outsourced projects, business process automation projects, business analytics projects, and embedded and other real-time systems.",
+    "StudentTasks": "- Students must attend at least 80% of contact slots in order to be accepted to the final examination.\n- Student is responsible to do all exercises given by instructor in class or at home and submit on time\n- Promptly access to the https://flm.fpt.edu.vn/ for up-to-date course information",
+    "Tools": "- Microsoft office for documents and presentation.\n- https://www.visual-paradigm.com/download/community.jsp students must install visual-paradigm for drawing UML (offline) before taking Final Practical Exam\n- BOUML (http://bouml.free.fr/) : UML Drawing software",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "377/QĐ-ĐHFPT dated 04/09/2026",
+    "IsApproved": "True",
+    "Note": "In the case: (5 > Final TE Score >=4) & (5 > Final PE Score >=4) & FR < 5, the student can choose to take the resit of both TE & PE OR just either TE or PE.",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "4/9/2026"
+  },
+  "clo_count": 9,
+  "session_count": 60,
+  "chunks": [
+    {
+      "chunk_id": "SWR302-overview",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Overview & Grading Policy",
+      "text": "Description: This course is a model-based introduction to RE, providing the conceptual background and terminology on RE, addressing a variety of techniques for requirements development including Analysis and Requirements Elicitation; Requirements Evaluation; Requirements Specification and Documentation; Requirements Quality Assurance. To implement these frameworks, student will be learnt how to find appropriate customer representatives, elicit requirements from them, and document user requirements, business rules, functional requirements, data requirements, and nonfunctional requirements.\nThe numerous visual models that will be represented to illustrate the requirements from various perspectives to supplement natural-language text. Other contents recommend the most effective requirements approaches for various specific classes of projects: agile projects developing products of any type, enhancement and replacement projects, projects that incorporate packaged solutions, outsourced projects, business process automation projects, business analytics projects, and embedded and other real-time systems.\nNoCredit: 3\nPre-Requisite: SWE102 or SWE201c or SWE202c\nTime Allocation: Study hour (150h) = 45h contact hours + 145-minute final exam + 102,6h self-study\nStudentTasks: - Students must attend at least 80% of contact slots in order to be accepted to the final examination.\n- Student is responsible to do all exercises given by instructor in class or at home and submit on time\n- Promptly access to the https://flm.fpt.edu.vn/ for up-to-date course information\nNote: In the case: (5 > Final TE Score >=4) & (5 > Final PE Score >=4) & FR < 5, the student can choose to take the resit of both TE & PE OR just either TE or PE.\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus SWR302 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "SWR302-CLO1",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Develop a good understanding of principles and techniques for requirement enginneering (RE) regarding requirement inception, requirement development(elicitation, analysis, specification, validation) and requirement management; understand main characteristics of specific projects",
+      "source_label": "Syllabus SWR302 — CLO1"
+    },
+    {
+      "chunk_id": "SWR302-CLO2",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Identify the appropriate requirements elicitiation techniques to identify requirements",
+      "source_label": "Syllabus SWR302 — CLO2"
+    },
+    {
+      "chunk_id": "SWR302-CLO3",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Utilize various requirements validation techniques to critically evaluate their requirements to identify defects",
+      "source_label": "Syllabus SWR302 — CLO3"
+    },
+    {
+      "chunk_id": "SWR302-CLO4",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Analysis of system requirements and the production of system specifications",
+      "source_label": "Syllabus SWR302 — CLO4"
+    },
+    {
+      "chunk_id": "SWR302-CLO5",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Learning Outcome CLO5",
+      "text": "CLO5: Create models of requirements using a variety of notations and techniques, including domain and usage models",
+      "source_label": "Syllabus SWR302 — CLO5"
+    },
+    {
+      "chunk_id": "SWR302-CLO6",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Learning Outcome CLO6",
+      "text": "CLO6: Design and plan software solutions to problems using an object-oriented strategy",
+      "source_label": "Syllabus SWR302 — CLO6"
+    },
+    {
+      "chunk_id": "SWR302-CLO7",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Learning Outcome CLO7",
+      "text": "CLO7: Prepare and deliver coherent and structured verbal and written technical reports",
+      "source_label": "Syllabus SWR302 — CLO7"
+    },
+    {
+      "chunk_id": "SWR302-CLO8",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Learning Outcome CLO8",
+      "text": "CLO8: Understand how to reduce risks by prototyping.",
+      "source_label": "Syllabus SWR302 — CLO8"
+    },
+    {
+      "chunk_id": "SWR302-CLO9",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Learning Outcome CLO9",
+      "text": "CLO9: Utilize the tactic of requirements management regarding changing, tracing and improving requirements",
+      "source_label": "Syllabus SWR302 — CLO9"
+    },
+    {
+      "chunk_id": "SWR302-session-1",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 1",
+      "text": "Session 1 — Course Introduction\nThe essential of software requirement\n- Software requirements defined\nTài liệu: Chapter 1 + Slides",
+      "source_label": "Syllabus SWR302 — Session 1"
+    },
+    {
+      "chunk_id": "SWR302-session-2",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 2",
+      "text": "Session 2 — The essential of software requirement (cnt)\n- Requirements development and management\n- When bad requirements happen to good people\n- Benefits from a high-quality requirements process\nTài liệu: Chapter 1 + Slides",
+      "source_label": "Syllabus SWR302 — Session 2"
+    },
+    {
+      "chunk_id": "SWR302-session-3",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 3",
+      "text": "Session 3 — Requirements from the customer’s perspective\n- Who is the customer?\n- The customer-development partnership\n- Creating a culture that respects requirement\nTài liệu: Chapter 2\n+ Slides",
+      "source_label": "Syllabus SWR302 — Session 3"
+    },
+    {
+      "chunk_id": "SWR302-session-4",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 4",
+      "text": "Session 4 — Requirements from the customer’s perspective (cnt)\n- Identifying decision makers\n- Reaching agreement on requirements\nAssignment introduction\nTài liệu: Chapter 2\n+ Slides\nNhiệm vụ sinh viên: do homework",
+      "source_label": "Syllabus SWR302 — Session 4"
+    },
+    {
+      "chunk_id": "SWR302-session-5",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 5",
+      "text": "Session 5 — Good practices for requirements engineering (introduce)\n- A requirements development process framework\n- Requirements elicitation\n- Requirements analysis\n- Requirements specification\n- Requirements validation\n- Requirements management\nTài liệu: Chapter 3\n+Slides",
+      "source_label": "Syllabus SWR302 — Session 5"
+    },
+    {
+      "chunk_id": "SWR302-session-6",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 6",
+      "text": "Session 6 — Good practices for requirements engineering (practice/apply)\nTài liệu: Chapter 3\n+Slides\nNhiệm vụ sinh viên: do homework",
+      "source_label": "Syllabus SWR302 — Session 6"
+    },
+    {
+      "chunk_id": "SWR302-session-7",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 7",
+      "text": "Session 7 — Group discussion\nSummary and Exercises (groups)\nTài liệu: Chapter 4+ Business Analyst Job Description.docx + Slides\nNhiệm vụ sinh viên: Discuss what students have to do in their Assignment",
+      "source_label": "Syllabus SWR302 — Session 7"
+    },
+    {
+      "chunk_id": "SWR302-session-8",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 8",
+      "text": "Session 8 — Group discussion\nSummary and Exercises (groups)\nTài liệu: Chapter 4+ Business Analyst Job Description.docx + Slides\nNhiệm vụ sinh viên: Discuss what students have to do in their Assignment",
+      "source_label": "Syllabus SWR302 — Session 8"
+    },
+    {
+      "chunk_id": "SWR302-session-9",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 9",
+      "text": "Session 9 — The business analyst\n- The business analyst role\n- The business analyst’s tasks\n- Essential analyst skills\n- Essential analyst knowledge\n- The making of a business analyst\n- The analyst role on agile projects\nTài liệu: Chapter 4+ Business Analyst Job Description.docx + Slides\nNhiệm vụ sinh viên: Write Vision and Scope for Assignment",
+      "source_label": "Syllabus SWR302 — Session 9"
+    },
+    {
+      "chunk_id": "SWR302-session-10",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 10",
+      "text": "Session 10 — Establishing the business requirements\n- Defining business requirements\n- Vision and scope document\n- Scope representation techniques\nTài liệu: Chapter 5 + Vision and Scope Template.docx + Slides\nNhiệm vụ sinh viên: Write Vision and Scope for Assignment",
+      "source_label": "Syllabus SWR302 — Session 10"
+    },
+    {
+      "chunk_id": "SWR302-session-11",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 11",
+      "text": "Session 11 — Establishing the business requirements (con't)\n- Keeping the scope in focus\n- Vision and scope on agile projects\n- Introduce LAB requirements: draw 1 context diagram, 1 swimlane diagram and 1 state diagram.\nTài liệu: Chapter 5 + Vision and Scope Template.docx + Slides\nNhiệm vụ sinh viên: Practice on first half of Assignment",
+      "source_label": "Syllabus SWR302 — Session 11"
+    },
+    {
+      "chunk_id": "SWR302-session-12",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 12",
+      "text": "Session 12 — Finding the voice of users\n- User classes\n- User personal\n- Connecting with user representatives\n- The product champion\n- User representation on agile project\n- Resolving conflicting requirements\nTài liệu: Chapter 6 + Product Champion Responsibilities.docx + Slides\nNhiệm vụ sinh viên: Practice on first half of Assignment",
+      "source_label": "Syllabus SWR302 — Session 12"
+    },
+    {
+      "chunk_id": "SWR302-session-13",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 13",
+      "text": "Session 13 — Requirements elicitation\n- Requirements elicitation techniques: Interviews, workshops, Focus groups, Observations, Questionaires, System interface analysis, User Interface Analysis, Document Analysis\n- Planning and Preparing for elicitation on your project\n- Performing elicitation activities\n- Follow up after elicitation\nTài liệu: 1. Use Case Template.docx\n2. Chapter 7 + 8\n+Slides\nNhiệm vụ sinh viên: Finish Use Case document",
+      "source_label": "Syllabus SWR302 — Session 13"
+    },
+    {
+      "chunk_id": "SWR302-session-14",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 14",
+      "text": "Session 14 — Requirements elicitation (cnt)\n- Classifying customer input\n- Some cautions about elicitation\n- Assumed and implied requirements\n- Finding missing requirements\nTài liệu: 1. Use Case Template.docx\n2. Chapter 7 + 8\n+Slides\nNhiệm vụ sinh viên: Finish Use Case document",
+      "source_label": "Syllabus SWR302 — Session 14"
+    },
+    {
+      "chunk_id": "SWR302-session-15",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 15",
+      "text": "Session 15 — Understanding user requirements\n- Use cases and user stories\nTài liệu: 1. Use Case Template.docx\n2. Chapter 7 + 8\n+Slides\nNhiệm vụ sinh viên: Finish Use Case document",
+      "source_label": "Syllabus SWR302 — Session 15"
+    },
+    {
+      "chunk_id": "SWR302-session-16",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 16",
+      "text": "Session 16 — Understanding user requirements (cnt)\n- The use case approach\n- Benefits of usage-centric requirements\nTài liệu: 1. Use Case Template.docx\n2. Chapter 7 + 8\n+Slides\nNhiệm vụ sinh viên: Finish Use Case document",
+      "source_label": "Syllabus SWR302 — Session 16"
+    },
+    {
+      "chunk_id": "SWR302-session-17",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 17",
+      "text": "Session 17 — Playing by the rules\n- A business rules taxonomy\n- Documenting business rules\n- Discovering business rules\n- Business rules and requirements\n- Tying everything together\nTài liệu: 1.Software Requirements Specification Template.docx\n2. Chapter 9 + 10\n+Slides\nNhiệm vụ sinh viên: Preparing the structure of SRS document (based on student's assignment)",
+      "source_label": "Syllabus SWR302 — Session 17"
+    },
+    {
+      "chunk_id": "SWR302-session-18",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 18",
+      "text": "Session 18 — Progress test 1 and Review\nTài liệu: LSM questions\nNhiệm vụ sinh viên: Quiz test",
+      "source_label": "Syllabus SWR302 — Session 18"
+    },
+    {
+      "chunk_id": "SWR302-session-19",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 19",
+      "text": "Session 19 — Documenting the requirements\n- The software requirements specification\nTài liệu: 1.Software Requirements Specification Template.docx\nNhiệm vụ sinh viên: Preparing the structure of SRS document (based on student's assignment)",
+      "source_label": "Syllabus SWR302 — Session 19"
+    },
+    {
+      "chunk_id": "SWR302-session-20",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 20",
+      "text": "Session 20 — Documenting the requirements (cnt)\n- A software requirements specification template\n- Requirements specification on agile projects\nTài liệu: 2. Chapter 9 + 10\n+Slides\nNhiệm vụ sinh viên: Preparing the structure of SRS document (based on student's assignment)",
+      "source_label": "Syllabus SWR302 — Session 20"
+    },
+    {
+      "chunk_id": "SWR302-session-21",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 21",
+      "text": "Session 21 — Writing excellent requirements\n- Characteristics of excellent requirements\n- Guidelines for writing requirements\n- Sample requirements, before and after\nTài liệu: Chapter 11\n+ Slides\nNhiệm vụ sinh viên: Write SRS document based on guidelines",
+      "source_label": "Syllabus SWR302 — Session 21"
+    },
+    {
+      "chunk_id": "SWR302-session-22",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 22",
+      "text": "Session 22 — A picture is worth 1024 words\n- Data flow diagram; Swimlane diagram; State-transition diagram and state table ; Dialog map ;\nTài liệu: Chapter 12\n+ Slides\nNhiệm vụ sinh viên: Write SRS document based on guidelines",
+      "source_label": "Syllabus SWR302 — Session 22"
+    },
+    {
+      "chunk_id": "SWR302-session-23",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 23",
+      "text": "Session 23 — A picture is worth 1024 words (con't)\n- Decision tables and decision trees;\nTài liệu: Chapter 12\n+ Slides\nNhiệm vụ sinh viên: Write SRS document based on guidelines",
+      "source_label": "Syllabus SWR302 — Session 23"
+    },
+    {
+      "chunk_id": "SWR302-session-24",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 24",
+      "text": "Session 24 — A picture is worth 1024 words (con't)\n- Event-response tables ; Modeling on agile projects\nTài liệu: Chapter 12\n+ Slides\nNhiệm vụ sinh viên: Write SRS document based on guidelines",
+      "source_label": "Syllabus SWR302 — Session 24"
+    },
+    {
+      "chunk_id": "SWR302-session-25",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 25",
+      "text": "Session 25 — Specifying data requirements\n- Modeling data relationships\n- The data dictionary\nTài liệu: 1.Guidance for Data Dictionaries.docx\n2.Chapter 13\n+Slides\nNhiệm vụ sinh viên: Finish Data Dictionaries of Assignment",
+      "source_label": "Syllabus SWR302 — Session 25"
+    },
+    {
+      "chunk_id": "SWR302-session-26",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 26",
+      "text": "Session 26 — Specifying data requirements (cnt)\n- Data analysis\n- Specifying reports\nTài liệu: 1.Guidance for Data Dictionaries.docx\n2.Chapter 13\n+Slides\nNhiệm vụ sinh viên: Finish Data Dictionaries of Assignment",
+      "source_label": "Syllabus SWR302 — Session 26"
+    },
+    {
+      "chunk_id": "SWR302-session-27",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 27",
+      "text": "Session 27 — Beyond functionality\n- Software quality attributes\n- Exploring quality attributes\n- Defining quality requirements\n- Specifying quality requirements with Planguage\nTài liệu: Chapter 14 + Slides\nNhiệm vụ sinh viên: Finish Data Dictionaries of Assignment",
+      "source_label": "Syllabus SWR302 — Session 27"
+    },
+    {
+      "chunk_id": "SWR302-session-28",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 28",
+      "text": "Session 28 — Beyond functionality (cnt)\n- Quality attribute trade-offs\n- Implementing quality attribute requirements\n- Constraint\n- Handling quality attributes on agile projects\nTài liệu: Chapter 14 + Slides\nNhiệm vụ sinh viên: Finish Data Dictionaries of Assignment",
+      "source_label": "Syllabus SWR302 — Session 28"
+    },
+    {
+      "chunk_id": "SWR302-session-29",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 29",
+      "text": "Session 29 — Risk reduction through prototyping\n- Prototyping: What and why\n- Mock-ups and proofs of concept\n- Throwaway and evolutionary prototypes\n- Paper and electronic prototypes\nTài liệu: Chapter 15 + Slides\nNhiệm vụ sinh viên: Finish Requirements Prioritization worksheet",
+      "source_label": "Syllabus SWR302 — Session 29"
+    },
+    {
+      "chunk_id": "SWR302-session-30",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 30",
+      "text": "Session 30 — Risk reduction through prototyping (cnt)\n- Working with prototypes\n- Prototype evaluation\n- Risks of prototyping\n- Prototyping success factors\nTài liệu: Chapter 15 + Slides\nNhiệm vụ sinh viên: Finish Requirements Prioritization worksheet",
+      "source_label": "Syllabus SWR302 — Session 30"
+    },
+    {
+      "chunk_id": "SWR302-session-31",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 31",
+      "text": "Session 31 — First things first: Setting requirement priorities\n- Why prioritize requirements?\n- Some prioritization pragmatics\n- Games people play with priorities\nTài liệu: 1. Requirements Prioritization Spreadsheet.docx\n2. Chapter 16\n+ Slides\nNhiệm vụ sinh viên: Finish Requirements Prioritization worksheet",
+      "source_label": "Syllabus SWR302 — Session 31"
+    },
+    {
+      "chunk_id": "SWR302-session-32",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 32",
+      "text": "Session 32 — First things first: Setting requirement priorities (cnt)\n- Some prioritization techniques\n- Prioritization based on value, cost, and risk\nTài liệu: 1. Requirements Prioritization Spreadsheet.docx\n2. Chapter 16\n+ Slides\nNhiệm vụ sinh viên: Finish Requirements Prioritization worksheet",
+      "source_label": "Syllabus SWR302 — Session 32"
+    },
+    {
+      "chunk_id": "SWR302-session-33",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 33",
+      "text": "Session 33 — Validating the requirements\n- Validation and verification\n- Reviewing requirements\n- Prototyping requirements\nTài liệu: 1. Requirements Review Checklist.docx\n2. Chapter 17\n+Slides\nNhiệm vụ sinh viên: Check progress of Assignment's requirements",
+      "source_label": "Syllabus SWR302 — Session 33"
+    },
+    {
+      "chunk_id": "SWR302-session-34",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 34",
+      "text": "Session 34 — Validating the requirements\n- Testing the requirements\n- Validating requirements with acceptance criteria\nTài liệu: 1. Requirements Review Checklist.docx\n2. Chapter 17\n+Slides\nNhiệm vụ sinh viên: Check progress of Assignment's requirements",
+      "source_label": "Syllabus SWR302 — Session 34"
+    },
+    {
+      "chunk_id": "SWR302-session-35",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 35",
+      "text": "Session 35 — Exercises (can be interspersed with the lecture)\nTài liệu: 1. Chapter 18 + 19\n2. Requirements Estimation Tool.xlsx\n+Slides\nNhiệm vụ sinh viên: Do requirements estimation",
+      "source_label": "Syllabus SWR302 — Session 35"
+    },
+    {
+      "chunk_id": "SWR302-session-36",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 36",
+      "text": "Session 36 — Discuss and/or present on Chapter 6\nTài liệu: 1. Chapter 18 + 19\n2. Requirements Estimation Tool.xlsx\n+Slides\nNhiệm vụ sinh viên: Do requirements estimation",
+      "source_label": "Syllabus SWR302 — Session 36"
+    },
+    {
+      "chunk_id": "SWR302-session-37",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 37",
+      "text": "Session 37 — Requirements reuse\n- Why reuse requirements?\n- Dimensions of requirements reuse\n- Types of requirements information to reuse\n- Common reuse scenarios\n- Requirement patterns\n- Tools to facilitate reuse\n- Making requirements reusable\n- Requirements reuse barriers and success factors\nTài liệu: 1. Chapter 18\n2. Requirements Estimation Tool.xlsx\n+Slides",
+      "source_label": "Syllabus SWR302 — Session 37"
+    },
+    {
+      "chunk_id": "SWR302-session-38",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 38",
+      "text": "Session 38 — Beyond requirements development\n- Estimating requirements effort\n- From requirements to project plans,designs and code, tests, success\nReview the first half of assignment and evaluation\nTài liệu: 1. Chapter 189\nAssignment documents\nNhiệm vụ sinh viên: Oral test",
+      "source_label": "Syllabus SWR302 — Session 38"
+    },
+    {
+      "chunk_id": "SWR302-session-39",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 39",
+      "text": "Session 39 — Review the first half of assignment and evaluation\nTài liệu: Assignment documents\nAssignment document templates\nNhiệm vụ sinh viên: Oral test",
+      "source_label": "Syllabus SWR302 — Session 39"
+    },
+    {
+      "chunk_id": "SWR302-session-40",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 40",
+      "text": "Session 40 — Progress test 2 and Review\n- Review LAB\nTài liệu: LSM questions\nNhiệm vụ sinh viên: Quiz test",
+      "source_label": "Syllabus SWR302 — Session 40"
+    },
+    {
+      "chunk_id": "SWR302-session-41",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 41",
+      "text": "Session 41 — Agile projects\n- Limitations of the waterfall\n- The agile development approach\n- Essential aspects of an agile approach to requirements\n- Adapting requirements practices to agile projects\n- Transitioning to agile: Now what?\nTài liệu: Chapter 20+Slides",
+      "source_label": "Syllabus SWR302 — Session 41"
+    },
+    {
+      "chunk_id": "SWR302-session-42",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 42",
+      "text": "Session 42 — Enhancement and replacement projects\n- Expected challenges\n- Requirements techniques when there is an existing system\n- Prioritizing by using business objectives\n- When old requirements don’t exist\n- Encouraging new system adoption\nTài liệu: Chapter 21 +Slides",
+      "source_label": "Syllabus SWR302 — Session 42"
+    },
+    {
+      "chunk_id": "SWR302-session-43",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 43",
+      "text": "Session 43 — Packaged solution projects\n- Requirements for selecting packaged solutions\n- Requirements for implementing packaged solutions\n- Common challenges with packaged solution\nTài liệu: 1. Chapter 22\n2. Request for Proposal Template.docx\n3. Slides\nNhiệm vụ sinh viên: Read and understand the proposal template ( what are contents and the purpose of these ones)",
+      "source_label": "Syllabus SWR302 — Session 43"
+    },
+    {
+      "chunk_id": "SWR302-session-44",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 44",
+      "text": "Session 44 — Outsourced projects\n- Appropriate levels of requirements detail\n- Acquirer-supplier interactions\n- Change management\n- Acceptance criteria\nTài liệu: 1. Chapter 23\n2. Request for Proposal Template.docx\n3. Slides\nNhiệm vụ sinh viên: Read and understand the proposal template ( what are contents and the purpose of these ones)",
+      "source_label": "Syllabus SWR302 — Session 44"
+    },
+    {
+      "chunk_id": "SWR302-session-45",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 45",
+      "text": "Session 45 — Group discussion\nSummary and Exercises\nTài liệu: 1. Chapter 24 + 25 + Slides\nNhiệm vụ sinh viên: Read and understand the proposal template ( what are contents and the purpose of these ones)",
+      "source_label": "Syllabus SWR302 — Session 45"
+    },
+    {
+      "chunk_id": "SWR302-session-46",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 46",
+      "text": "Session 46 — Group discussion (cnt)\nSummary and Exercises (cnt)\nTài liệu: 1. Chapter 24 + 25 + Slides\nNhiệm vụ sinh viên: Read and understand the proposal template ( what are contents and the purpose of these ones)",
+      "source_label": "Syllabus SWR302 — Session 46"
+    },
+    {
+      "chunk_id": "SWR302-session-47",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 47",
+      "text": "Session 47 — Assignment supporting\nTài liệu: 1. Chapter 26 + Slides\nNhiệm vụ sinh viên: Checking SRS document",
+      "source_label": "Syllabus SWR302 — Session 47"
+    },
+    {
+      "chunk_id": "SWR302-session-48",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 48",
+      "text": "Session 48 — Assignment supporting (cnt)\nTài liệu: 1. Chapter 26 + Slides\nNhiệm vụ sinh viên: Checking SRS document",
+      "source_label": "Syllabus SWR302 — Session 48"
+    },
+    {
+      "chunk_id": "SWR302-session-49",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 49",
+      "text": "Session 49 — Requirements management practices\n- Requirements management process\n- The requirements baseline\n- Requirements version control\n- Requirement attributes\nTài liệu: 1. Chapter 25 + 26 + 27\n2. a. CCB Charter Template.docx\nb. Change Control Process.docx\nc. Impact Analysis Checklist.docx\n\n3. Slides\nNhiệm vụ sinh viên: Do assignment - based on guidelines",
+      "source_label": "Syllabus SWR302 — Session 49"
+    },
+    {
+      "chunk_id": "SWR302-session-50",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 50",
+      "text": "Session 50 — Requirements management practices (cnt)\n- Tracking requirements status\n- Resolving requirements issues\n- Measuring requirements effort\n- Managing requirements on agile projects\nTài liệu: 1. Chapter 25 + 26 + 27\n2. a. CCB Charter Template.docx\nb. Change Control Process.docx\nc. Impact Analysis Checklist.docx\n\n3. Slides\nNhiệm vụ sinh viên: Do assignment - based on guidelines",
+      "source_label": "Syllabus SWR302 — Session 50"
+    },
+    {
+      "chunk_id": "SWR302-session-51",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 51",
+      "text": "Session 51 — Change happens\n- Change control policy\n- Basic concepts of the change control process\n- A change control process description\n- The change control board\nTài liệu: 1. Chapter 25 + 26 + 27\n2. a. CCB Charter Template.docx\nb. Change Control Process.docx\nc. Impact Analysis Checklist.docx\n\n3. Slides\nNhiệm vụ sinh viên: Do assignment - based on guidelines",
+      "source_label": "Syllabus SWR302 — Session 51"
+    },
+    {
+      "chunk_id": "SWR302-session-52",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 52",
+      "text": "Session 52 — Change happens (cnt)\n- Change control tools\n- Measuring change activity\n- Change impact analysis\n- Change management on agile projects\nTài liệu: 1. Chapter 25 + 26 + 27\n2. a. CCB Charter Template.docx\nb. Change Control Process.docx\nc. Impact Analysis Checklist.docx\n\n3. Slides\nNhiệm vụ sinh viên: Do assignment - based on guidelines",
+      "source_label": "Syllabus SWR302 — Session 52"
+    },
+    {
+      "chunk_id": "SWR302-session-53",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 53",
+      "text": "Session 53 — Links in the requirements chain\n- Tracing requirements\n- Motivations for tracing requirements\n- The requirements traceability matrix\nTài liệu: 1. Chapter 25 + 26 + 27\n2. a. CCB Charter Template.docx\nb. Change Control Process.docx\nc. Impact Analysis Checklist.docx\n\n3. Slides\nNhiệm vụ sinh viên: Do assignment - based on guidelines",
+      "source_label": "Syllabus SWR302 — Session 53"
+    },
+    {
+      "chunk_id": "SWR302-session-54",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 54",
+      "text": "Session 54 — Links in the requirements chain (cnt)\n- Tools for requirements tracing\n- A requirements tracing procedure\nTài liệu: 1. Chapter 25 + 26 + 27\n2. a. CCB Charter Template.docx\nb. Change Control Process.docx\nc. Impact Analysis Checklist.docx\n\n3. Slides\nNhiệm vụ sinh viên: Do assignment - based on guidelines",
+      "source_label": "Syllabus SWR302 — Session 54"
+    },
+    {
+      "chunk_id": "SWR302-session-55",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 55",
+      "text": "Session 55 — Tools for requirements engineering (self-study)\nImproving your requirements processes\n- How requirements relate to other project processes\n- Requirements and various stakeholder groups\n- Gaining commitment to change\n- Fundamentals of software process improvement\n- Root cause analysis\n- The process improvement cycle\n- Requirements engineering process assets\n- Creating a requirements process improvement road map\nTài liệu: 1. Chapter 31\n2. Action Plan Template.docx\n3. Risk Management Plan Template.docx\n4. Slides\nNhiệm vụ sinh viên: Finish assignment's documents",
+      "source_label": "Syllabus SWR302 — Session 55"
+    },
+    {
+      "chunk_id": "SWR302-session-56",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 56",
+      "text": "Session 56 — Software requirements and risk management\n- Fundamentals of software risk management\n- Requirements-related risks\n- Risk management is your friend\nTài liệu: 1. Chapter 32\n2. Action Plan Template.docx\n3. Risk Management Plan Template.docx\n4. Slides\nNhiệm vụ sinh viên: Finish assignment 's documents",
+      "source_label": "Syllabus SWR302 — Session 56"
+    },
+    {
+      "chunk_id": "SWR302-session-57",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 57",
+      "text": "Session 57 — Progress test 3\nTài liệu: LSM questions\nNhiệm vụ sinh viên: Quiz test",
+      "source_label": "Syllabus SWR302 — Session 57"
+    },
+    {
+      "chunk_id": "SWR302-session-58",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 58",
+      "text": "Session 58 — Assignment evaluation\nTài liệu: Assignment documents\nNhiệm vụ sinh viên: Oral test",
+      "source_label": "Syllabus SWR302 — Session 58"
+    },
+    {
+      "chunk_id": "SWR302-session-59",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 59",
+      "text": "Session 59 — Assignment evaluation\nTài liệu: Assignment documents\nNhiệm vụ sinh viên: Oral test",
+      "source_label": "Syllabus SWR302 — Session 59"
+    },
+    {
+      "chunk_id": "SWR302-session-60",
+      "subject_code": "SWR302",
+      "subject_name": "Software Requirement_Yêu cầu phần mềm",
+      "section": "Session 60",
+      "text": "Session 60 — Assignment evaluation\nTài liệu: Assignment documents\nNhiệm vụ sinh viên: Oral test",
+      "source_label": "Syllabus SWR302 — Session 60"
+    }
+  ]
+}

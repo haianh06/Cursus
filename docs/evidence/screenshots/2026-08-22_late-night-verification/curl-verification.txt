@@ -1,0 +1,31 @@
+=== Mock LMS Basic Auth ===
+$ curl -s -o /dev/null -w "HTTP %{http_code}\n" http://localhost:9000/courses
+HTTP 401
+$ curl -s -o /dev/null -w "HTTP %{http_code}\n" -u admin:wrongpass http://localhost:9000/courses
+HTTP 401
+$ curl -s -o /dev/null -w "HTTP %{http_code}\n" -u admin:mocklms-admin http://localhost:9000/courses
+HTTP 200
+
+=== Mock LMS OAuth API (unaffected by Basic Auth change on web routes) ===
+$ curl -X POST http://localhost:9000/oauth/token -d "grant_type=client_credentials&client_id=verify-client-22aug&client_secret=***"
+-> access_token issued
+$ curl -o /dev/null -w "HTTP %{http_code}\n" http://localhost:9000/api/v1/courses -H "Authorization: Bearer <token>"
+HTTP 200
+$ curl -o /dev/null -w "HTTP %{http_code}\n" http://localhost:9000/api/v1/courses
+HTTP 401
+
+=== Deadline edit round-trip (verified by assignment name, table re-sorts by due_at) ===
+"Progress Test": 2026-11-02 -> edited to 2026-12-25 -> confirmed persisted as 2026-12-25
+
+=== Login, all 3 roles, post-SQL-fix ===
+[student]    http://localhost:5173/student    500 errors: []   succeeded: true
+[instructor] http://localhost:5173/instructor 500 errors: []   succeeded: true
+[admin]      http://localhost:5173/admin      500 errors: []   succeeded: true
+
+=== Audit log tab, live data ===
+Row count: 100
+First row: 13:36:11 22/8/2026  LOGIN_SUCCESS  admin_demo  session · sess_37fca1c75c744d8cbcb338e024490162  ALLOW
+(Matches the exact 3 logins just performed, in order: admin, admin, instructor, student, student, ...)
+
+=== pytest, full suite, post-SQL-fix ===
+445 passed, 7 skipped, 27 warnings in 81.88s

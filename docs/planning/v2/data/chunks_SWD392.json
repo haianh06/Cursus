@@ -1,0 +1,574 @@
+{
+  "subject_code": "SWD392",
+  "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+  "meta": {
+    "Syllabus ID": "14179",
+    "Syllabus Name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+    "Course Name English": "Software Architecture and Design",
+    "Subject Code": "SWD392",
+    "Learning-Teaching Method": "Social Constructivism,In-class lecture,Inquiry-based Teaching",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) = 45h contact hours + 145-minute final exam + 102,6h self-study",
+    "Pre-Requisite": "SWE201c or SWE202c, PRO192",
+    "Description": "This is a course in concepts and methods for the architectural design of software systems of\nsufficient size and complexity to require the effort of several people for many months.\nFundamental design concepts and design notations are introduced. Several design methods are\npresented and compared, with examples of their use. Students will undertake a term project\nworking in small groups addressing the design of a relatively complex software system.",
+    "StudentTasks": "Students must attend at least 80% of contact slots in order to be accepted to the final examination.\n- Student is responsible to do all exercises given by instructor in class or at home and submit on time\n- Constantly follow announcements on LMS at https://flm.fpt.edu.vn/ for up-to-date course information regarding assignment submission and feedback on assignments and project work.",
+    "Tools": "-Internet\n-The Rational Software Architect CASE tool\n-Visual Paradigm, MagicDraw, and Visio",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "377/QĐ-ĐHFPT dated 04/09/2026",
+    "IsApproved": "True",
+    "Note": "",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "4/9/2026"
+  },
+  "clo_count": 7,
+  "session_count": 60,
+  "chunks": [
+    {
+      "chunk_id": "SWD392-overview",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Overview & Grading Policy",
+      "text": "Description: This is a course in concepts and methods for the architectural design of software systems of\nsufficient size and complexity to require the effort of several people for many months.\nFundamental design concepts and design notations are introduced. Several design methods are\npresented and compared, with examples of their use. Students will undertake a term project\nworking in small groups addressing the design of a relatively complex software system.\nNoCredit: 3\nPre-Requisite: SWE201c or SWE202c, PRO192\nTime Allocation: Study hour (150h) = 45h contact hours + 145-minute final exam + 102,6h self-study\nStudentTasks: Students must attend at least 80% of contact slots in order to be accepted to the final examination.\n- Student is responsible to do all exercises given by instructor in class or at home and submit on time\n- Constantly follow announcements on LMS at https://flm.fpt.edu.vn/ for up-to-date course information regarding assignment submission and feedback on assignments and project work.\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus SWD392 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "SWD392-CLO1",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Know the Fundamentals of Software Design that includes Software Design Process, Concepts, Notations and Methods",
+      "source_label": "Syllabus SWD392 — CLO1"
+    },
+    {
+      "chunk_id": "SWD392-CLO2",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Able to explain the steps in Using COMET/UML, design concepts and multiplicity of associations Collaborative Object Modeling and architectural design method (COMET)",
+      "source_label": "Syllabus SWD392 — CLO2"
+    },
+    {
+      "chunk_id": "SWD392-CLO3",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Able to use artifacts in developing Software Analysis Model : classes and objects,statecharts for state dependent objects, object interaction diagrams for each use case Using AI tools generating UML diagrams",
+      "source_label": "Syllabus SWD392 — CLO3"
+    },
+    {
+      "chunk_id": "SWD392-CLO4",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Able to design overall Software Architecture in developing Software Design Model Analyzing design solutions with AI-driven improvement recommendations.",
+      "source_label": "Syllabus SWD392 — CLO4"
+    },
+    {
+      "chunk_id": "SWD392-CLO5",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Learning Outcome CLO5",
+      "text": "CLO5: Able to design relational database in developing Software Design Model",
+      "source_label": "Syllabus SWD392 — CLO5"
+    },
+    {
+      "chunk_id": "SWD392-CLO6",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Learning Outcome CLO6",
+      "text": "CLO6: Able to explain the structure and document a Design Pattern",
+      "source_label": "Syllabus SWD392 — CLO6"
+    },
+    {
+      "chunk_id": "SWD392-CLO7",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Learning Outcome CLO7",
+      "text": "CLO7: Effectively utilize AI tools (ChatGPT, PlantUML, Copilot) to support software architecture analysis and design, including: suggesting appropriate architectural models based on system requirements, generating UML diagrams (Use Case, Class, Sequence, Statechart...)",
+      "source_label": "Syllabus SWD392 — CLO7"
+    },
+    {
+      "chunk_id": "SWD392-session-1",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 1",
+      "text": "Session 1 — Course Introduction\nIntro to Software Design (Chapter 1-2)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 1"
+    },
+    {
+      "chunk_id": "SWD392-session-2",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 2",
+      "text": "Session 2 — Course Introduction\nIntro to Software Design (Chapter 1-2)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 2"
+    },
+    {
+      "chunk_id": "SWD392-session-3",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 3",
+      "text": "Session 3 — Course Introduction\nIntro to Software Design (Chapter 1-2)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 3"
+    },
+    {
+      "chunk_id": "SWD392-session-4",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 4",
+      "text": "Session 4 — Intro to Software Design (Chapter 3-4)\nCourse Project introduction\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 4"
+    },
+    {
+      "chunk_id": "SWD392-session-5",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 5",
+      "text": "Session 5 — Intro to Software Design (Chapter 3-4)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 5"
+    },
+    {
+      "chunk_id": "SWD392-session-6",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 6",
+      "text": "Session 6 — Intro to Software Design (Chapter 3-4)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 6"
+    },
+    {
+      "chunk_id": "SWD392-session-7",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 7",
+      "text": "Session 7 — Requirements and Use Case Modeling (Chapter 5-6)\nSoftware Quality Attributes (Chapter 20)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 7"
+    },
+    {
+      "chunk_id": "SWD392-session-8",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 8",
+      "text": "Session 8 — Requirements and Use Case Modeling (Chapter 5-6)\nSoftware Quality Attributes (Chapter 20)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 8"
+    },
+    {
+      "chunk_id": "SWD392-session-9",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 9",
+      "text": "Session 9 — Requirements and Use Case Modeling (Chapter 5-6)\nSoftware Quality Attributes (Chapter 20)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 9"
+    },
+    {
+      "chunk_id": "SWD392-session-10",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 10",
+      "text": "Session 10 — Requirements and Use Case Modeling (Chapter 5-6)\nSoftware Quality Attributes (Chapter 20)\n.\nUse ChatGPT to generate use case descriptions based on user requirements.\n\nUse GitHub Copilot to generate boilerplate code for logic implementation based on the use case\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 10"
+    },
+    {
+      "chunk_id": "SWD392-session-11",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 11",
+      "text": "Session 11 — Analysis Modeling – Static modeling (Chapter 7)\nAnalysis Modeling – Object and Class Structuring (Chapter 8)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 11"
+    },
+    {
+      "chunk_id": "SWD392-session-12",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 12",
+      "text": "Session 12 — Analysis Modeling – Static modeling (Chapter 7)\nAnalysis Modeling – Object and Class Structuring (Chapter 8)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 12"
+    },
+    {
+      "chunk_id": "SWD392-session-13",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 13",
+      "text": "Session 13 — Analysis Modeling – Static modeling (Chapter 7)\nAnalysis Modeling – Object and Class Structuring (Chapter 8)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 13"
+    },
+    {
+      "chunk_id": "SWD392-session-14",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 14",
+      "text": "Session 14 — Analysis Modeling – Static modeling (Chapter 7)\nAnalysis Modeling – Object and Class Structuring (Chapter 8)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 14"
+    },
+    {
+      "chunk_id": "SWD392-session-15",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 15",
+      "text": "Session 15 — Analysis Modeling – Dynamic Interaction Modeling (Chapter 9, 11)\nFinite State Machines and Statecharts (Chapter 10)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 15"
+    },
+    {
+      "chunk_id": "SWD392-session-16",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 16",
+      "text": "Session 16 — Analysis Modeling – Dynamic Interaction Modeling (Chapter 9, 11)\nFinite State Machines and Statecharts (Chapter 10)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 16"
+    },
+    {
+      "chunk_id": "SWD392-session-17",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 17",
+      "text": "Session 17 — Analysis Modeling – Dynamic Interaction Modeling (Chapter 9-10-11)\nFinite State Machines and Statecharts (Chapter 10)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 17"
+    },
+    {
+      "chunk_id": "SWD392-session-18",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 18",
+      "text": "Session 18 — Analysis Modeling – Dynamic Interaction Modeling (Chapter 9-10-11)\nFinite State Machines and Statecharts (Chapter 10)\nGenerate UML architecture diagrams using PlantUML code.\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 18"
+    },
+    {
+      "chunk_id": "SWD392-session-19",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 19",
+      "text": "Session 19 — Introduction to Design Patterns (Material 3)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 19"
+    },
+    {
+      "chunk_id": "SWD392-session-20",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 20",
+      "text": "Session 20 — Creational & Structural Patterns\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 20"
+    },
+    {
+      "chunk_id": "SWD392-session-21",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 21",
+      "text": "Session 21 — Behavioral Patterns\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 21"
+    },
+    {
+      "chunk_id": "SWD392-session-22",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 22",
+      "text": "Session 22 — Use ChatGPT to suggest appropriate design patterns.\nProgress test 1\nCourse Project- On-going Assessment 1\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Do presentation",
+      "source_label": "Syllabus SWD392 — Session 22"
+    },
+    {
+      "chunk_id": "SWD392-session-23",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 23",
+      "text": "Session 23 — Course Project- On-going Assessment 1\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Do presentation",
+      "source_label": "Syllabus SWD392 — Session 23"
+    },
+    {
+      "chunk_id": "SWD392-session-24",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 24",
+      "text": "Session 24 — Course Project- On-going Assessment 1\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Do presentation",
+      "source_label": "Syllabus SWD392 — Session 24"
+    },
+    {
+      "chunk_id": "SWD392-session-25",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 25",
+      "text": "Session 25 — Course Project- On-going Assessment 1\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Do presentation",
+      "source_label": "Syllabus SWD392 — Session 25"
+    },
+    {
+      "chunk_id": "SWD392-session-26",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 26",
+      "text": "Session 26 — Overview of Software Architecture (Chapter 12)\nSoftware Subsystem Architectural Design (Chapter 13)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 26"
+    },
+    {
+      "chunk_id": "SWD392-session-27",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 27",
+      "text": "Session 27 — Overview of Software Architecture (Chapter 12)\nSoftware Subsystem Architectural Design (Chapter 13)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 27"
+    },
+    {
+      "chunk_id": "SWD392-session-28",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 28",
+      "text": "Session 28 — Overview of Software Architecture (Chapter 12)\n- Software Subsystem Architectural Design (Chapter 13)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 28"
+    },
+    {
+      "chunk_id": "SWD392-session-29",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 29",
+      "text": "Session 29 — Overview of Software Architecture (Chapter 12)\n- Software Subsystem Architectural Design (Chapter 13)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 29"
+    },
+    {
+      "chunk_id": "SWD392-session-30",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 30",
+      "text": "Session 30 — Designing Object-Oriented Software Architectures (Chapter 14)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 30"
+    },
+    {
+      "chunk_id": "SWD392-session-31",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 31",
+      "text": "Session 31 — Designing Object-Oriented Software Architectures (Chapter 14)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 31"
+    },
+    {
+      "chunk_id": "SWD392-session-32",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 32",
+      "text": "Session 32 — Designing Object-Oriented Software Architectures (Chapter 14)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 32"
+    },
+    {
+      "chunk_id": "SWD392-session-33",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 33",
+      "text": "Session 33 — Designing Object-Oriented Software Architectures (Chapter 14)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 33"
+    },
+    {
+      "chunk_id": "SWD392-session-34",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 34",
+      "text": "Session 34 — Designing Client/Server Software Architectures (Chapter 15)\nClient/Server Software Architectures Case Study (Chapter 21)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 34"
+    },
+    {
+      "chunk_id": "SWD392-session-35",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 35",
+      "text": "Session 35 — Designing Client/Server Software Architectures (Chapter 15)\nClient/Server Software Architectures Case Study (Chapter 21)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 35"
+    },
+    {
+      "chunk_id": "SWD392-session-36",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 36",
+      "text": "Session 36 — Designing Client/Server Software Architectures (Chapter 15)\nClient/Server Software Architectures Case Study (Chapter 21)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 36"
+    },
+    {
+      "chunk_id": "SWD392-session-37",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 37",
+      "text": "Session 37 — Designing Client/Server Software Architectures (Chapter 15)\nClient/Server Software Architectures Case Study (Chapter 21)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 37"
+    },
+    {
+      "chunk_id": "SWD392-session-38",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 38",
+      "text": "Session 38 — Progress test 2\nUsing ChatGPT and PlantUML suggest applying relevant patterns in the design\nCourse Project- On-going Assessment 2\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Do presentation",
+      "source_label": "Syllabus SWD392 — Session 38"
+    },
+    {
+      "chunk_id": "SWD392-session-39",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 39",
+      "text": "Session 39 — Course Project- On-going Assessment 2\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Do presentation",
+      "source_label": "Syllabus SWD392 — Session 39"
+    },
+    {
+      "chunk_id": "SWD392-session-40",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 40",
+      "text": "Session 40 — Course Project- On-going Assessment 2\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Do presentation",
+      "source_label": "Syllabus SWD392 — Session 40"
+    },
+    {
+      "chunk_id": "SWD392-session-41",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 41",
+      "text": "Session 41 — Course Project- On-going Assessment 2\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Do presentation",
+      "source_label": "Syllabus SWD392 — Session 41"
+    },
+    {
+      "chunk_id": "SWD392-session-42",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 42",
+      "text": "Session 42 — Designing Service-Oriented Architectures (Chapter 16)\nService-Oriented Architectures Case Study(Chapter 22)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 42"
+    },
+    {
+      "chunk_id": "SWD392-session-43",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 43",
+      "text": "Session 43 — Designing Service-Oriented Architectures (Chapter 16)\nService-Oriented Architectures Case Study(Chapter 22)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 43"
+    },
+    {
+      "chunk_id": "SWD392-session-44",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 44",
+      "text": "Session 44 — Designing Service-Oriented Architectures (Chapter 16)\nService-Oriented Architectures Case Study(Chapter 22)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 44"
+    },
+    {
+      "chunk_id": "SWD392-session-45",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 45",
+      "text": "Session 45 — Designing Service-Oriented Architectures (Chapter 16)\nService-Oriented Architectures Case Study(Chapter 22)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 45"
+    },
+    {
+      "chunk_id": "SWD392-session-46",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 46",
+      "text": "Session 46 — Designing Component-Based Software Architectures (Chapter 17)\nComponent-Based Software Architectures Case Study (Chapter 23)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 46"
+    },
+    {
+      "chunk_id": "SWD392-session-47",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 47",
+      "text": "Session 47 — Designing Component-Based Software Architectures (Chapter 17)\nComponent-Based Software Architectures Case Study (Chapter 23)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 47"
+    },
+    {
+      "chunk_id": "SWD392-session-48",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 48",
+      "text": "Session 48 — Designing Component-Based Software Architectures (Chapter 17)\nComponent-Based Software Architectures Case Study (Chapter 23)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 48"
+    },
+    {
+      "chunk_id": "SWD392-session-49",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 49",
+      "text": "Session 49 — Designing Component-Based Software Architectures (Chapter 17)\nComponent-Based Software Architectures Case Study (Chapter 23)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 49"
+    },
+    {
+      "chunk_id": "SWD392-session-50",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 50",
+      "text": "Session 50 — Designing Concurrent and Real-time Software Architectures (Chapter 18)\nReal-time Software Architectures Case Study (Chapter 24)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 50"
+    },
+    {
+      "chunk_id": "SWD392-session-51",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 51",
+      "text": "Session 51 — Designing Concurrent and Real-time Software Architectures (Chapter 18)\nReal-time Software Architectures Case Study (Chapter 24)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 51"
+    },
+    {
+      "chunk_id": "SWD392-session-52",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 52",
+      "text": "Session 52 — Designing Concurrent and Real-time Software Architectures (Chapter 18)\nReal-time Software Architectures Case Study (Chapter 24)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 52"
+    },
+    {
+      "chunk_id": "SWD392-session-53",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 53",
+      "text": "Session 53 — Designing Concurrent and Real-time Software Architectures (Chapter 18)\nReal-time Software Architectures Case Study (Chapter 24)\nTài liệu: Slide, Video\nNhiệm vụ sinh viên: Read Slide\nWatch Video\nDo quizzes and assignments (if any)",
+      "source_label": "Syllabus SWD392 — Session 53"
+    },
+    {
+      "chunk_id": "SWD392-session-54",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 54",
+      "text": "Session 54 — Progrest test 3\nCourse Project:\nSupport writing architectural documentation.\nGenerate UML diagrams with example code using PlantUML or Mermaid.\nSuggest design pattern, architectural Patterns application rules\nNhiệm vụ sinh viên: Do presentation",
+      "source_label": "Syllabus SWD392 — Session 54"
+    },
+    {
+      "chunk_id": "SWD392-session-55",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 55",
+      "text": "Session 55 — Course Project - Final Evaluation (Team 1-2-3-4)\nNhiệm vụ sinh viên: Do presentation",
+      "source_label": "Syllabus SWD392 — Session 55"
+    },
+    {
+      "chunk_id": "SWD392-session-56",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 56",
+      "text": "Session 56 — Course Project - Final Evaluation (Team 1-2-3-4)\nNhiệm vụ sinh viên: Do presentation",
+      "source_label": "Syllabus SWD392 — Session 56"
+    },
+    {
+      "chunk_id": "SWD392-session-57",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 57",
+      "text": "Session 57 — Course Project - Final Evaluation (Team 1-2-3-4)\nNhiệm vụ sinh viên: Do presentation",
+      "source_label": "Syllabus SWD392 — Session 57"
+    },
+    {
+      "chunk_id": "SWD392-session-58",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 58",
+      "text": "Session 58 — Course Project - Final Evaluation (Team 5-6)\nNhiệm vụ sinh viên: Do presentation",
+      "source_label": "Syllabus SWD392 — Session 58"
+    },
+    {
+      "chunk_id": "SWD392-session-59",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 59",
+      "text": "Session 59 — Course Project - Final Evaluation (Team 5-6)\nNhiệm vụ sinh viên: Do presentation",
+      "source_label": "Syllabus SWD392 — Session 59"
+    },
+    {
+      "chunk_id": "SWD392-session-60",
+      "subject_code": "SWD392",
+      "subject_name": "Software Architecture and Design_Kiến trúc và thiết kế phần mềm",
+      "section": "Session 60",
+      "text": "Session 60 — Course Review\nNhiệm vụ sinh viên: Do presentation",
+      "source_label": "Syllabus SWD392 — Session 60"
+    }
+  ]
+}

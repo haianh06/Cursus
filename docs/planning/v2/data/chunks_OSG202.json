@@ -1,0 +1,606 @@
+{
+  "subject_code": "OSG202",
+  "subject_name": "Operating System_Hệ điều hành",
+  "meta": {
+    "Syllabus ID": "13166",
+    "Syllabus Name": "Operating System_Hệ điều hành",
+    "Course Name English": "Operating System",
+    "Subject Code": "OSG202",
+    "Learning-Teaching Method": "Social Constructivism,In-class lecture,Inquiry-based Teaching",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) = 45h contact hours + 1h final exam + 104h self-study'",
+    "Pre-Requisite": "",
+    "Description": "At the end of this course, students will be able to perceive:\n1) Background knowledge: (ABET e)\n-The role of operating system,\n- important OS concepts,\n- the mechanism of operating system, and\n- main problems of Operating system.\n2) Practice skills: (ABET k)\n- Using basic shell command in Linux system fluently.\n- Fundamental of shell, C language on Linux.\n- Main problems of Operating system through some simulative exercises.\n3) Information searching, reading and selection skills (ABET i)\n4) Working in group, documenting and presenation skills (ABET g)",
+    "StudentTasks": "- Students must attend at least 80% of contact slots in order to be accepted to the final examination.\n- Student is responsible to do all exercises given by instructor in class or at home and submit on time\n- Use laptop in class only for learning purpose\n- Promptly access to the FU LMS https://flm.fpt.edu.vn/ for up-to-date course information",
+    "Tools": "- Internet\n- Linux operating system server and/ or desktop\n- MARIE simulator\n- AI tools (ChatGPT/Copilot/Gamma…) and other simulation software if deemed appropriate.",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "932/QĐ-ĐHFPT dated 08/22/2025",
+    "IsApproved": "True",
+    "Note": "",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "8/22/2025"
+  },
+  "clo_count": 11,
+  "session_count": 60,
+  "chunks": [
+    {
+      "chunk_id": "OSG202-overview",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Overview & Grading Policy",
+      "text": "Description: At the end of this course, students will be able to perceive:\n1) Background knowledge: (ABET e)\n-The role of operating system,\n- important OS concepts,\n- the mechanism of operating system, and\n- main problems of Operating system.\n2) Practice skills: (ABET k)\n- Using basic shell command in Linux system fluently.\n- Fundamental of shell, C language on Linux.\n- Main problems of Operating system through some simulative exercises.\n3) Information searching, reading and selection skills (ABET i)\n4) Working in group, documenting and presenation skills (ABET g)\nNoCredit: 3\nTime Allocation: Study hour (150h) = 45h contact hours + 1h final exam + 104h self-study'\nStudentTasks: - Students must attend at least 80% of contact slots in order to be accepted to the final examination.\n- Student is responsible to do all exercises given by instructor in class or at home and submit on time\n- Use laptop in class only for learning purpose\n- Promptly access to the FU LMS https://flm.fpt.edu.vn/ for up-to-date course information\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus OSG202 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "OSG202-CLO1",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Understand the main concepts of operating system",
+      "source_label": "Syllabus OSG202 — CLO1"
+    },
+    {
+      "chunk_id": "OSG202-CLO2",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Understand the main concepts of process management",
+      "source_label": "Syllabus OSG202 — CLO2"
+    },
+    {
+      "chunk_id": "OSG202-CLO3",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Understand the main concepts of memory management",
+      "source_label": "Syllabus OSG202 — CLO3"
+    },
+    {
+      "chunk_id": "OSG202-CLO4",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Understand the main concepts of file systems",
+      "source_label": "Syllabus OSG202 — CLO4"
+    },
+    {
+      "chunk_id": "OSG202-CLO5",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Learning Outcome CLO5",
+      "text": "CLO5: Understand the main concepts of I/O systems",
+      "source_label": "Syllabus OSG202 — CLO5"
+    },
+    {
+      "chunk_id": "OSG202-CLO6",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Learning Outcome CLO6",
+      "text": "CLO6: Understand the main concepts of deadlock",
+      "source_label": "Syllabus OSG202 — CLO6"
+    },
+    {
+      "chunk_id": "OSG202-CLO7",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Learning Outcome CLO7",
+      "text": "CLO7: Using Linux operating system",
+      "source_label": "Syllabus OSG202 — CLO7"
+    },
+    {
+      "chunk_id": "OSG202-CLO8",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Learning Outcome CLO8",
+      "text": "CLO8: Using basic shell command in Linux system fluently",
+      "source_label": "Syllabus OSG202 — CLO8"
+    },
+    {
+      "chunk_id": "OSG202-CLO9",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Learning Outcome CLO9",
+      "text": "CLO9: Understand basic Shell language on Linux",
+      "source_label": "Syllabus OSG202 — CLO9"
+    },
+    {
+      "chunk_id": "OSG202-CLO10",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Learning Outcome CLO10",
+      "text": "CLO10: Understand basic C/C++ language on Linux",
+      "source_label": "Syllabus OSG202 — CLO10"
+    },
+    {
+      "chunk_id": "OSG202-CLO11",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Learning Outcome CLO11",
+      "text": "CLO11: Using AI tools to futher explore the main concepts of OS's components",
+      "source_label": "Syllabus OSG202 — CLO11"
+    },
+    {
+      "chunk_id": "OSG202-session-1",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 1",
+      "text": "Session 1 — Chapter 1: Introduction\n1.1. What is an operating system\nTài liệu: Textbook/References\nSlides\nChatGPT()\nNhiệm vụ sinh viên: Lecture chapter 1 in the textbook focus on 1.1\nUse ChatGPT to explore content more extensively than in the textbook based on keywords provided by the teacher, such as: single user, multi-user, single tasking, multi-tasking",
+      "source_label": "Syllabus OSG202 — Session 1"
+    },
+    {
+      "chunk_id": "OSG202-session-2",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 2",
+      "text": "Session 2 — 1.2 History of operating system\nTài liệu: Textbook/References\nSlides\nChatGPT\nNhiệm vụ sinh viên: Lecture chapter 1 in the textbook focus on 1.2\nUse ChatGPT to learn more about the history of operating systems based on the keywords provided in class",
+      "source_label": "Syllabus OSG202 — Session 2"
+    },
+    {
+      "chunk_id": "OSG202-session-3",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 3",
+      "text": "Session 3 — 1.3. Computer hardware review\nTài liệu: Textbook/References\nSlides\nNhiệm vụ sinh viên: Lecture chapter 1 in the textbook",
+      "source_label": "Syllabus OSG202 — Session 3"
+    },
+    {
+      "chunk_id": "OSG202-session-4",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 4",
+      "text": "Session 4 — Chapter 1 Problems\nTài liệu: Textbook/References\nSlides\nNhiệm vụ sinh viên: Lecture chapter 1 in the textbook",
+      "source_label": "Syllabus OSG202 — Session 4"
+    },
+    {
+      "chunk_id": "OSG202-session-5",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 5",
+      "text": "Session 5 — Overview of Linux Operating system\nOverview of Linux Command\nTài liệu: Tutorial Labs\nChatGPT\nNhiệm vụ sinh viên: Research Internet/Textbook/References at home in advance\nUsing ChatGPT to learn basic Linux operating system commands from the textbook\nDo practice",
+      "source_label": "Syllabus OSG202 — Session 5"
+    },
+    {
+      "chunk_id": "OSG202-session-6",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 6",
+      "text": "Session 6 — Short practice of using Linux OS\nTài liệu: Tutorial Labs\nChatGPT\nNhiệm vụ sinh viên: Research Internet/Textbook/References at home in advance\nUsing ChatGPT to learn basic Linux operating system commands from the textbook\nDo practice",
+      "source_label": "Syllabus OSG202 — Session 6"
+    },
+    {
+      "chunk_id": "OSG202-session-7",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 7",
+      "text": "Session 7 — 1.4 The Operating System Zoo\n1.5 Operating System Concepts\nTài liệu: Textbook/References Slides\nAI Notes (https://www.https://notegpt.io/)\nNhiệm vụ sinh viên: Lecture chapter 1 in the textbook focus on 1.4, 1.5\nUse 'AI Notes' to see additional explanations about different operating systems.",
+      "source_label": "Syllabus OSG202 — Session 7"
+    },
+    {
+      "chunk_id": "OSG202-session-8",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 8",
+      "text": "Session 8 — 1.6 System Calls\n1.7 Operating System Structure\nTài liệu: Textbook/References Slides\nAI Notes (https://www.https://notegpt.io/)\nChatGPT\nNhiệm vụ sinh viên: Lecture chapter 1 in the textbook focus on 1.6, 1.7\nUse ChatGPT/AI Notes to learn about System Calls and the structures of the Operating System",
+      "source_label": "Syllabus OSG202 — Session 8"
+    },
+    {
+      "chunk_id": "OSG202-session-9",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 9",
+      "text": "Session 9 — Chapter 1 Problems\nTài liệu: Tutorial Labs\nNhiệm vụ sinh viên: Do Lab",
+      "source_label": "Syllabus OSG202 — Session 9"
+    },
+    {
+      "chunk_id": "OSG202-session-10",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 10",
+      "text": "Session 10 — Guiding Lab 1\nTài liệu: Tutorial Labs\nNhiệm vụ sinh viên: Do Lab",
+      "source_label": "Syllabus OSG202 — Session 10"
+    },
+    {
+      "chunk_id": "OSG202-session-11",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 11",
+      "text": "Session 11 — Chapter 2: Processes and Threads\n2.1 Processes\n2.2 Threads\nTài liệu: Textbook/References Slides\nChatGPT\nNhiệm vụ sinh viên: Lecture chapter 2 in the textbook focus on 2.1, 2.2\nUse ChatGPT to learn about Threads and Processes",
+      "source_label": "Syllabus OSG202 — Session 11"
+    },
+    {
+      "chunk_id": "OSG202-session-12",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 12",
+      "text": "Session 12 — 2.3 Interprocess Communication\nTài liệu: Textbook/References Slides\nChatGPT\nNhiệm vụ sinh viên: Lecture chapter 2 in the textbook focus on 2.3\nUse ChatGPT to learn about IPC and the solutions based on the keywords in the lesson",
+      "source_label": "Syllabus OSG202 — Session 12"
+    },
+    {
+      "chunk_id": "OSG202-session-13",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 13",
+      "text": "Session 13 — Chapter 2 Problems\nReview Lab 1\nTài liệu: Tutorial Labs\nNhiệm vụ sinh viên: Do Lab",
+      "source_label": "Syllabus OSG202 — Session 13"
+    },
+    {
+      "chunk_id": "OSG202-session-14",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 14",
+      "text": "Session 14 — Guiding Lab 2\nTài liệu: Tutorial Labs\nNhiệm vụ sinh viên: Do Lab",
+      "source_label": "Syllabus OSG202 — Session 14"
+    },
+    {
+      "chunk_id": "OSG202-session-15",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 15",
+      "text": "Session 15 — Chapter 2 Problems\nTài liệu: Textbook/References\nSlides\nNhiệm vụ sinh viên: Lecture chapter 2 in the textbook",
+      "source_label": "Syllabus OSG202 — Session 15"
+    },
+    {
+      "chunk_id": "OSG202-session-16",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 16",
+      "text": "Session 16 — 2.4 Scheduling\nTài liệu: Textbook/References Slides\nMARIE Simulator\nChatGPT/Copilot\nNhiệm vụ sinh viên: Lecture chapter 2 in the textbook focus on 2.4\nUse ChatGPT to learn about topics related to FCFS, Shortest Job First, Round Robin, and Priority.",
+      "source_label": "Syllabus OSG202 — Session 16"
+    },
+    {
+      "chunk_id": "OSG202-session-17",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 17",
+      "text": "Session 17 — 2.5 Classical IPC Problems\nTài liệu: Textbook/References Slides\nChatGPT\nNhiệm vụ sinh viên: Lecture chapter 2 in the textbook focus on 2.5\nUse ChatGPT to learn about topics related to the keywords and solutions in IPC",
+      "source_label": "Syllabus OSG202 — Session 17"
+    },
+    {
+      "chunk_id": "OSG202-session-18",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 18",
+      "text": "Session 18 — Chapter 2 Problems\nTài liệu: Textbook/References\nSlides\nNhiệm vụ sinh viên: Learn Problems",
+      "source_label": "Syllabus OSG202 — Session 18"
+    },
+    {
+      "chunk_id": "OSG202-session-19",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 19",
+      "text": "Session 19 — Shell programming\nTài liệu: Tutorial Labs\nChatGPT\nNhiệm vụ sinh viên: Do lab\nUse ChatGPT to learn about commands related to Shell programming",
+      "source_label": "Syllabus OSG202 — Session 19"
+    },
+    {
+      "chunk_id": "OSG202-session-20",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 20",
+      "text": "Session 20 — Practice shell programming\nTài liệu: Tutorial Labs\nNhiệm vụ sinh viên: Do lab",
+      "source_label": "Syllabus OSG202 — Session 20"
+    },
+    {
+      "chunk_id": "OSG202-session-21",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 21",
+      "text": "Session 21 — Practice shell programming (continue)\nTài liệu: Tutorial Labs\nNhiệm vụ sinh viên: Do lab",
+      "source_label": "Syllabus OSG202 — Session 21"
+    },
+    {
+      "chunk_id": "OSG202-session-22",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 22",
+      "text": "Session 22 — Review Lab 2\nChapter 2 Problems\nTài liệu: Textbook/References\nSlides\nNhiệm vụ sinh viên: Learn Problems",
+      "source_label": "Syllabus OSG202 — Session 22"
+    },
+    {
+      "chunk_id": "OSG202-session-23",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 23",
+      "text": "Session 23 — Chapter 3: Memory management\n3.1 No Memory Abstraction\nTài liệu: Textbook/References Slides\nAI Notes (https://www.https://notegpt.io/)\nChatGPT/Copilot\nNhiệm vụ sinh viên: Lecture chapter 3 in the textbook focus on 3.1\nUse AI Notes Q&A to answer questions related to memory management in the operating system",
+      "source_label": "Syllabus OSG202 — Session 23"
+    },
+    {
+      "chunk_id": "OSG202-session-24",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 24",
+      "text": "Session 24 — 3.2 A Memory Abstraction: Address Spaces\nTài liệu: Textbook/References slides\nAI Notes (https://www.https://notegpt.io/)\nCached simulator\nNhiệm vụ sinh viên: Lecture chapter 3 in the textbook focus on 3.2\nUse AI Notes Q&A to answer questions related to memory management in the operating system.",
+      "source_label": "Syllabus OSG202 — Session 24"
+    },
+    {
+      "chunk_id": "OSG202-session-25",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 25",
+      "text": "Session 25 — 3.3 Virtual Memory\nTài liệu: Textbook/References slides\nAI Notes (https://www.https://notegpt.io/)\nCached simulator\nNhiệm vụ sinh viên: Lecture chapter 3 in the textbook focus on 3.3\nUse AI Notes Q&A to answer questions related to memory management in the operating system",
+      "source_label": "Syllabus OSG202 — Session 25"
+    },
+    {
+      "chunk_id": "OSG202-session-26",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 26",
+      "text": "Session 26 — 3.4 Page Replacement Algorithms\nTài liệu: Textbook/References Slides\nChatGPT/Copilot/Gamma\nMARIE Simulator\nNhiệm vụ sinh viên: Lecture chapter 3 in the textbook focus on 3.4\nUse AI Notes Q&A to answer questions related to memory management in the operating system",
+      "source_label": "Syllabus OSG202 — Session 26"
+    },
+    {
+      "chunk_id": "OSG202-session-27",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 27",
+      "text": "Session 27 — Guiding Presentation - topic's selection\n- Chapter 7: Virtuallization and The Cloud\n- Chapter 10: CASE STUDY 1: UNIX, LINUX, and ANDROID\n- Chapter 11: CASE STUDY 2: WINDOWS 8\nTài liệu: Textbook/References Tutorial Labs\nGamma/ AI Notes (https://www.https://notegpt.io/)\nNhiệm vụ sinh viên: Apply the tools that have been learned to develop presentation content",
+      "source_label": "Syllabus OSG202 — Session 27"
+    },
+    {
+      "chunk_id": "OSG202-session-28",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 28",
+      "text": "Session 28 — 3.5 Design Issues for Paging Systems\n3.6 Implementation Issues\nTài liệu: Textbook/References Tutorial Labs\nAI Notes (https://www.https://notegpt.io/)\nChatGPT/Copilot\nNhiệm vụ sinh viên: Lecture chapter 3 in the textbook focus on 3.5, 3.6\nUse AI Notes Q&A to answer questions related to memory management in the operating system",
+      "source_label": "Syllabus OSG202 — Session 28"
+    },
+    {
+      "chunk_id": "OSG202-session-29",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 29",
+      "text": "Session 29 — 3.7 Segmentation\nTài liệu: Textbook/References Tutorial Labs\nAI Notes (https://www.https://notegpt.io/)\nChatGPT\nNhiệm vụ sinh viên: Lecture chapter 3 in the textbook focus on 3.7\nUse AI Notes Q&A to answer questions related to memory management in the operating system\nUse ChatGPT to learn more about the mechanism and keywords related to Segmentation and other solutions",
+      "source_label": "Syllabus OSG202 — Session 29"
+    },
+    {
+      "chunk_id": "OSG202-session-30",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 30",
+      "text": "Session 30 — Chapter 3 Problems\nTài liệu: Textbook/References\nNhiệm vụ sinh viên: Lecture chapter 3 in the textbook",
+      "source_label": "Syllabus OSG202 — Session 30"
+    },
+    {
+      "chunk_id": "OSG202-session-31",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 31",
+      "text": "Session 31 — Guilding lab 3\nTài liệu: Textbook/References\nNhiệm vụ sinh viên: Lecture chapter 3 in the textbook",
+      "source_label": "Syllabus OSG202 — Session 31"
+    },
+    {
+      "chunk_id": "OSG202-session-32",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 32",
+      "text": "Session 32 — Progress Test 1 and Review\nTài liệu: Textbook/References\nNhiệm vụ sinh viên: Lecture chapter 3 in the textbook",
+      "source_label": "Syllabus OSG202 — Session 32"
+    },
+    {
+      "chunk_id": "OSG202-session-33",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 33",
+      "text": "Session 33 — Review Problems\nTài liệu: Tutorial Labs\nNhiệm vụ sinh viên: Do Lab",
+      "source_label": "Syllabus OSG202 — Session 33"
+    },
+    {
+      "chunk_id": "OSG202-session-34",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 34",
+      "text": "Session 34 — Chapter 4: Files\n4.1 Files\n4.2 Directories\nTài liệu: Textbook/References Slides\nChatGPT\nNhiệm vụ sinh viên: Lecture chapter 4 in the textbook focus on 4.1, 4.2\nUse ChatGPT to learn about the concepts of Files, Directories, and their organization in operating systems.",
+      "source_label": "Syllabus OSG202 — Session 34"
+    },
+    {
+      "chunk_id": "OSG202-session-35",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 35",
+      "text": "Session 35 — 4.3 File System Implementation\n4.4 File System Management and Optimization\n4.5 Example File Systems\nTài liệu: Textbook/References Tutorial Labs\nAI Notes (https://www.https://notegpt.io/)\nChatGPT/Copilot\nNhiệm vụ sinh viên: Lecture chapter 4 in the textbook focus on 4.3, 4.4.\nUse ChatGPT to further explore the contents of the lesson\nUse ChatGPT or NoteGPT to generate simple file system simulations, then test them in Python or Java\nuse NoteGPT to explore how these file systems worked",
+      "source_label": "Syllabus OSG202 — Session 35"
+    },
+    {
+      "chunk_id": "OSG202-session-36",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 36",
+      "text": "Session 36 — Review Lab3\nTài liệu: Tutorial Labs\nNhiệm vụ sinh viên: Do Lab",
+      "source_label": "Syllabus OSG202 — Session 36"
+    },
+    {
+      "chunk_id": "OSG202-session-37",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 37",
+      "text": "Session 37 — Guiding Lab 4\nTài liệu: Tutorial Labs\nNhiệm vụ sinh viên: Do Lab",
+      "source_label": "Syllabus OSG202 — Session 37"
+    },
+    {
+      "chunk_id": "OSG202-session-38",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 38",
+      "text": "Session 38 — Chapter 4 Problems\nTài liệu: Textbook/References\nSlides\nNhiệm vụ sinh viên: Lecture chapter 4 in the textbook",
+      "source_label": "Syllabus OSG202 — Session 38"
+    },
+    {
+      "chunk_id": "OSG202-session-39",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 39",
+      "text": "Session 39 — C programming in Linux\nTài liệu: Tutorial Labs\nNhiệm vụ sinh viên: Do Lab",
+      "source_label": "Syllabus OSG202 — Session 39"
+    },
+    {
+      "chunk_id": "OSG202-session-40",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 40",
+      "text": "Session 40 — Guiding Lab\nTài liệu: Tutorial Labs\nNhiệm vụ sinh viên: Do Lab",
+      "source_label": "Syllabus OSG202 — Session 40"
+    },
+    {
+      "chunk_id": "OSG202-session-41",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 41",
+      "text": "Session 41 — Chapter 5: Input/ Output\n5.1 Principles of I/O Hardware\n5.2 Principles of I/O Software\nTài liệu: Textbook/References Tutorial Labs\nAI Notes (https://www.https://notegpt.io/)\nChatGPT/Copilot\nNhiệm vụ sinh viên: Do Lab\nLecture chapter 5 in the textbook focus on 5.1, 5.2\nUse ChatGPT to further explore the contents of the lesson",
+      "source_label": "Syllabus OSG202 — Session 41"
+    },
+    {
+      "chunk_id": "OSG202-session-42",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 42",
+      "text": "Session 42 — 5.3 I/O Software Layers\nTài liệu: Textbook/References Tutorial Labs\nAI Notes (https://www.https://notegpt.io/)\nChatGPT/Copilot\nNhiệm vụ sinh viên: Lecture chapter 5 in the textbook focus on 5.3\nUse ChatGPT to further explore the contents of the lesson",
+      "source_label": "Syllabus OSG202 — Session 42"
+    },
+    {
+      "chunk_id": "OSG202-session-43",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 43",
+      "text": "Session 43 — 5.4 Disks\nTài liệu: Textbook/References Tutorial Labs\nAI Notes (https://www.https://notegpt.io/)\nChatGPT/Copilot\nNhiệm vụ sinh viên: Lecture chapter 5 in the textbook focus on 5.4\nUse ChatGPT to further explore the contents of the lesson",
+      "source_label": "Syllabus OSG202 — Session 43"
+    },
+    {
+      "chunk_id": "OSG202-session-44",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 44",
+      "text": "Session 44 — 5.5 Clocks\n5.6 User Intrefaces: Keyboard, Mouse, Monitor\nTài liệu: Textbook/References Tutorial Labs\nAI Notes (https://www.https://notegpt.io/)\nChatGPT/Copilot\nNhiệm vụ sinh viên: Lecture chapter 5 in the textbook focus on 5.6\nUse ChatGPT to further explore the contents of the lesson",
+      "source_label": "Syllabus OSG202 — Session 44"
+    },
+    {
+      "chunk_id": "OSG202-session-45",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 45",
+      "text": "Session 45 — 5.5 Clocks\n5.6 User Intrefaces: Keyboard, Mouse, Monitor\nTài liệu: Textbook/References Tutorial Labs\nAI Notes (https://www.https://notegpt.io/)\nChatGPT/Copilot\nNhiệm vụ sinh viên: Lecture chapter 5 in the textbook focus on 5.6\nUse ChatGPT to further explore the contents of the lesson",
+      "source_label": "Syllabus OSG202 — Session 45"
+    },
+    {
+      "chunk_id": "OSG202-session-46",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 46",
+      "text": "Session 46 — 5.7 Thin Clients\n5.8 Power Management\nTài liệu: Textbook/References Tutorial Labs\nAI Notes (https://www.https://notegpt.io/)\nChatGPT/Copilot\nNhiệm vụ sinh viên: Lecture chapter 5 in the textbook fFocus on 5.7, 5.8\nUse ChatGPT to further explore the contents of the lesson",
+      "source_label": "Syllabus OSG202 — Session 46"
+    },
+    {
+      "chunk_id": "OSG202-session-47",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 47",
+      "text": "Session 47 — Review lab 4\nTài liệu: Tutorial Labs\nNhiệm vụ sinh viên: Do Lab",
+      "source_label": "Syllabus OSG202 — Session 47"
+    },
+    {
+      "chunk_id": "OSG202-session-48",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 48",
+      "text": "Session 48 — Chapter 5 Problems\nTài liệu: Textbook/References\nSlides\nNhiệm vụ sinh viên: Lecture chapter 5 in the textbook",
+      "source_label": "Syllabus OSG202 — Session 48"
+    },
+    {
+      "chunk_id": "OSG202-session-49",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 49",
+      "text": "Session 49 — Chapter 6: Deadlock\n6.1 Resources\n6.2 Introduction to Deadlocks\n6.3 The Ostrich Algorithm\nTài liệu: Textbook/References Tutorial Labs\nAI Notes (https://www.https://notegpt.io/)\nChatGPT/Copilot\nNhiệm vụ sinh viên: Lecture chapter 6 in the textbook focus on 6.1, 6.2, 6.3\nUse ChatGPT to further explore the contents of the lesson\nUse ChatGPT/Copilot to generate scripts that describe deadlock, and then use NoteGPT/ChatGPT/Copilot to explane these scipts.",
+      "source_label": "Syllabus OSG202 — Session 49"
+    },
+    {
+      "chunk_id": "OSG202-session-50",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 50",
+      "text": "Session 50 — 6.4 Deadlock Detection and Recovery\n6.5 Deadlock Avoidance\nTài liệu: Textbook/References Tutorial Labs\nAI Notes (https://www.https://notegpt.io/)\nChatGPT/Copilot\nNhiệm vụ sinh viên: Lecture chapter 6 in the textbook focus on 6.4, 6.5\nUse ChatGPT to further explore the contents of the lesson",
+      "source_label": "Syllabus OSG202 — Session 50"
+    },
+    {
+      "chunk_id": "OSG202-session-51",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 51",
+      "text": "Session 51 — 6.6 Deadlock Prevention\n6.7 Other Issues\nTài liệu: Textbook/References Tutorial Labs\nAI Notes (https://www.https://notegpt.io/)\nChatGPT/Copilot\nNhiệm vụ sinh viên: Lecture chapter 6 in the textbook focus on 6.6, 6.7\nUse ChatGPT to further explore the contents of the lesson",
+      "source_label": "Syllabus OSG202 — Session 51"
+    },
+    {
+      "chunk_id": "OSG202-session-52",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 52",
+      "text": "Session 52 — Chapter 6 Problems\nGuiding Problems\nTài liệu: Textbook/References Tutorial Labs\nAI Notes (https://www.https://notegpt.io/)\nChatGPT/Copilot\nNhiệm vụ sinh viên: Lecture chapter 6 in the textbook\nUse ChatGPT to further explore the contents of the lesson",
+      "source_label": "Syllabus OSG202 — Session 52"
+    },
+    {
+      "chunk_id": "OSG202-session-53",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 53",
+      "text": "Session 53 — Progress Test 2 and Review",
+      "source_label": "Syllabus OSG202 — Session 53"
+    },
+    {
+      "chunk_id": "OSG202-session-54",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 54",
+      "text": "Session 54 — Review Problems",
+      "source_label": "Syllabus OSG202 — Session 54"
+    },
+    {
+      "chunk_id": "OSG202-session-55",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 55",
+      "text": "Session 55 — Chapter 7, 10, 11 Presentation",
+      "source_label": "Syllabus OSG202 — Session 55"
+    },
+    {
+      "chunk_id": "OSG202-session-56",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 56",
+      "text": "Session 56 — Chapter 7, 10, 11 Presentation",
+      "source_label": "Syllabus OSG202 — Session 56"
+    },
+    {
+      "chunk_id": "OSG202-session-57",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 57",
+      "text": "Session 57 — Chapter 7, 10, 11 Presentation",
+      "source_label": "Syllabus OSG202 — Session 57"
+    },
+    {
+      "chunk_id": "OSG202-session-58",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 58",
+      "text": "Session 58 — Chapter 7, 10, 11 Presentation",
+      "source_label": "Syllabus OSG202 — Session 58"
+    },
+    {
+      "chunk_id": "OSG202-session-59",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 59",
+      "text": "Session 59 — Chapter 7, 10, 11 Presentation",
+      "source_label": "Syllabus OSG202 — Session 59"
+    },
+    {
+      "chunk_id": "OSG202-session-60",
+      "subject_code": "OSG202",
+      "subject_name": "Operating System_Hệ điều hành",
+      "section": "Session 60",
+      "text": "Session 60 — Discussion of current research areas. Review Course",
+      "source_label": "Syllabus OSG202 — Session 60"
+    }
+  ]
+}

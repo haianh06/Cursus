@@ -1,0 +1,160 @@
+{
+  "subject_code": "COV111",
+  "subject_name": "Cờ Vua 1_Chess 1",
+  "meta": {
+    "Subject Code": "COV111",
+    "VOV114": "Vovinam 1",
+    "COV111": "Cờ Vua 1_Chess 1",
+    "Syllabus ID": "11847",
+    "Syllabus Name": "Cờ Vua 1_Chess 1",
+    "Course Name English": "",
+    "Learning-Teaching Method": "Practice",
+    "NoCredit": "2",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "12 slots",
+    "Pre-Requisite": "None",
+    "Description": "* Tập trung vào các nội dung: Tri thức cơ bản trong Cờ Vua.\nFocus on: basic knowledge of Chess\n* Tập trung vào các nội dung: các kỹ thuật cơ bản; đấu tập..\nFocus on: basic techniques; competition-style practice.",
+    "StudentTasks": "* Dự lớp: Đảm bảo dự ≥ 80% tổng thời lượng của kỳ học.\nAttend at least 80% of class hours.\n* Bài tập: Thực hiện tốt yêu cầu, nhiệm vụ các bài tập được giao.\nAssignments: Well perform assigned tasks and assignments.\n* Khác: Thường xuyên hoạt động tập luyện ngoại khóa.\nOther: Practice regularly.\n* Thực hành: Thực hiện các tập; bài kiểm tra; thi lấy điểm.\nPractice: Perform exercises, tests, and exams.",
+    "Tools": "",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "862/QĐ-ĐHFPT dated 08/16/2024",
+    "IsApproved": "True",
+    "Note": "",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "8/16/2024"
+  },
+  "clo_count": 3,
+  "session_count": 12,
+  "chunks": [
+    {
+      "chunk_id": "COV111-overview",
+      "subject_code": "COV111",
+      "subject_name": "Cờ Vua 1_Chess 1",
+      "section": "Overview & Grading Policy",
+      "text": "Description: * Tập trung vào các nội dung: Tri thức cơ bản trong Cờ Vua.\nFocus on: basic knowledge of Chess\n* Tập trung vào các nội dung: các kỹ thuật cơ bản; đấu tập..\nFocus on: basic techniques; competition-style practice.\nNoCredit: 2\nPre-Requisite: None\nTime Allocation: 12 slots\nStudentTasks: * Dự lớp: Đảm bảo dự ≥ 80% tổng thời lượng của kỳ học.\nAttend at least 80% of class hours.\n* Bài tập: Thực hiện tốt yêu cầu, nhiệm vụ các bài tập được giao.\nAssignments: Well perform assigned tasks and assignments.\n* Khác: Thường xuyên hoạt động tập luyện ngoại khóa.\nOther: Practice regularly.\n* Thực hành: Thực hiện các tập; bài kiểm tra; thi lấy điểm.\nPractice: Perform exercises, tests, and exams.\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus COV111 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "COV111-CLO1",
+      "subject_code": "COV111",
+      "subject_name": "Cờ Vua 1_Chess 1",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Giới thiệu cho sinh viên sơ lược về môn học Cờ Vua. Briefly introduce the subject of Chess.",
+      "source_label": "Syllabus COV111 — CLO1"
+    },
+    {
+      "chunk_id": "COV111-CLO2",
+      "subject_code": "COV111",
+      "subject_name": "Cờ Vua 1_Chess 1",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Giới thiệu các quy định trong học tập nội dung Cờ Vua tại trường Đại học FPT. Introduce regulations of studying Chess at FPT University.",
+      "source_label": "Syllabus COV111 — CLO2"
+    },
+    {
+      "chunk_id": "COV111-CLO3",
+      "subject_code": "COV111",
+      "subject_name": "Cờ Vua 1_Chess 1",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Bước đầu xây dựng cho sinh viên những kỹ năng thi đấu cơ bản. Initially build basic competition skills for students.",
+      "source_label": "Syllabus COV111 — CLO3"
+    },
+    {
+      "chunk_id": "COV111-session-1",
+      "subject_code": "COV111",
+      "subject_name": "Cờ Vua 1_Chess 1",
+      "section": "Session 1",
+      "text": "Session 1 — * Giới thiệu môn học Cờ Vua.\nIntroduction to the subject of Chess.\n* Tri thức cơ bản trong Cờ Vua.\nBasic knowledge of Chess.\n* Đấu tập.\nCompetition-style practice.\nNhiệm vụ sinh viên: Ôn tập mỗi ngày 15-30 Phút\nReview and practice in 15-30 minutes per day",
+      "source_label": "Syllabus COV111 — Session 1"
+    },
+    {
+      "chunk_id": "COV111-session-2",
+      "subject_code": "COV111",
+      "subject_name": "Cờ Vua 1_Chess 1",
+      "section": "Session 2",
+      "text": "Session 2 — * Tri thức cơ bản trong Cờ Vua.\nBasic knowledge of Chess.\n* Bài tập đòn phối hợp chiếu hết trong 1 nước.\nExercise on combination to achieve checkmate in 1 move.\n* Đấu tập\nCompetition-style practice.\nNhiệm vụ sinh viên: Ôn tập mỗi ngày 15-30 Phút\nReview and practice in 15-30 minutes per day",
+      "source_label": "Syllabus COV111 — Session 2"
+    },
+    {
+      "chunk_id": "COV111-session-3",
+      "subject_code": "COV111",
+      "subject_name": "Cờ Vua 1_Chess 1",
+      "section": "Session 3",
+      "text": "Session 3 — * Tri thức cơ bản trong Cờ Vua.\nBasic knowledge of Chess.\n* Bài tập đòn phối hợp chiếu hết trong 1 nước.\nExercise on combination to achieve checkmate in 1 move.\n* Đấu tập\nCompetition-style practice.\nNhiệm vụ sinh viên: Ôn tập mỗi ngày 15-30 Phút\nReview and practice in 15-30 minutes per day",
+      "source_label": "Syllabus COV111 — Session 3"
+    },
+    {
+      "chunk_id": "COV111-session-4",
+      "subject_code": "COV111",
+      "subject_name": "Cờ Vua 1_Chess 1",
+      "section": "Session 4",
+      "text": "Session 4 — * Tri thức cơ bản trong Cờ Vua.\nBasic knowledge of Chess.\n* Bài tập đòn phối hợp chiếu hết trong 1 nước.\nExercise on combination to achieve checkmate in 1 move.\n* Đấu tập\nCompetition-style practice.\nNhiệm vụ sinh viên: Ôn tập mỗi ngày 15-30 Phút\nReview and practice in 15-30 minutes per day",
+      "source_label": "Syllabus COV111 — Session 4"
+    },
+    {
+      "chunk_id": "COV111-session-5",
+      "subject_code": "COV111",
+      "subject_name": "Cờ Vua 1_Chess 1",
+      "section": "Session 5",
+      "text": "Session 5 — * Tri thức cơ bản trong Cờ Vua.\nBasic knowledge of Chess.\n* Bài tập đòn phối hợp chiếu hết trong 2 nước.\nExercise on combination to achieve checkmate in 2 moves.\n* Đấu tập\nCompetition-style practice.\nNhiệm vụ sinh viên: Ôn tập mỗi ngày 15-30 Phút\nReview and practice in 15-30 minutes per day",
+      "source_label": "Syllabus COV111 — Session 5"
+    },
+    {
+      "chunk_id": "COV111-session-6",
+      "subject_code": "COV111",
+      "subject_name": "Cờ Vua 1_Chess 1",
+      "section": "Session 6",
+      "text": "Session 6 — Mid-term test",
+      "source_label": "Syllabus COV111 — Session 6"
+    },
+    {
+      "chunk_id": "COV111-session-7",
+      "subject_code": "COV111",
+      "subject_name": "Cờ Vua 1_Chess 1",
+      "section": "Session 7",
+      "text": "Session 7 — * Giai đoạn tàn cuộc\nEndgame.\n* Bài tập cờ tàn kỹ thuật.\nExercise on endgame strategy.\n* Đấu tập.\nCompetition-style practice.\nNhiệm vụ sinh viên: Ôn tập mỗi ngày 15-30 Phút\nReview and practice in 15-30 minutes per day",
+      "source_label": "Syllabus COV111 — Session 7"
+    },
+    {
+      "chunk_id": "COV111-session-8",
+      "subject_code": "COV111",
+      "subject_name": "Cờ Vua 1_Chess 1",
+      "section": "Session 8",
+      "text": "Session 8 — * Giai đoạn tàn cuộc\nEndgame.\n* Bài tập cờ tàn kỹ thuật.\nExercise on endgame strategy.\n* Đấu tập.\nCompetition-style practice.\nNhiệm vụ sinh viên: Ôn tập mỗi ngày 15-30 Phút\nReview and practice in 15-30 minutes per day",
+      "source_label": "Syllabus COV111 — Session 8"
+    },
+    {
+      "chunk_id": "COV111-session-9",
+      "subject_code": "COV111",
+      "subject_name": "Cờ Vua 1_Chess 1",
+      "section": "Session 9",
+      "text": "Session 9 — * Giai đoạn tàn cuộc\nEndgame.\n* Bài tập cờ tàn kỹ thuật.\nExercise on endgame strategy.\n* Đấu tập.\nCompetition-style practice.\nNhiệm vụ sinh viên: Ôn tập mỗi ngày 15-30 Phút\nReview and practice in 15-30 minutes per day",
+      "source_label": "Syllabus COV111 — Session 9"
+    },
+    {
+      "chunk_id": "COV111-session-10",
+      "subject_code": "COV111",
+      "subject_name": "Cờ Vua 1_Chess 1",
+      "section": "Session 10",
+      "text": "Session 10 — * Giai đoạn tàn cuộc.\nEndgame\n* Bài tập chiếu hết trong 2 nước.\nExercise on checkmate in 2 moves.\n* Đấu tập.\nCompetition-style practice.\nNhiệm vụ sinh viên: Ôn tập mỗi ngày 15-30 Phút\nReview and practice in 15-30 minutes per day",
+      "source_label": "Syllabus COV111 — Session 10"
+    },
+    {
+      "chunk_id": "COV111-session-11",
+      "subject_code": "COV111",
+      "subject_name": "Cờ Vua 1_Chess 1",
+      "section": "Session 11",
+      "text": "Session 11 — * Giai đoạn tàn cuộc.\nEndgame\n* Bài tập chiếu hết trong 2 nước.\nExercise on checkmate in 2 moves.\n* Đấu tập.\nCompetition-style practice.\nNhiệm vụ sinh viên: Ôn tập mỗi ngày 15-30 Phút\nReview and practice in 15-30 minutes per day",
+      "source_label": "Syllabus COV111 — Session 11"
+    },
+    {
+      "chunk_id": "COV111-session-12",
+      "subject_code": "COV111",
+      "subject_name": "Cờ Vua 1_Chess 1",
+      "section": "Session 12",
+      "text": "Session 12 — * Giai đoạn tàn cuộc.\nEndgame\n* Bài tập chiếu hết trong 2 nước.\nExercise on checkmate in 2 moves.\n* Đấu tập.\nCompetition-style practice.\nNhiệm vụ sinh viên: Ôn tập mỗi ngày 15-30 Phút\nReview and practice in 15-30 minutes per day",
+      "source_label": "Syllabus COV111 — Session 12"
+    }
+  ]
+}

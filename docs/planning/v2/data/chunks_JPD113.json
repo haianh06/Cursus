@@ -1,0 +1,558 @@
+{
+  "subject_code": "JPD113",
+  "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+  "meta": {
+    "Syllabus ID": "14232",
+    "Syllabus Name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+    "Course Name English": "Elementary Japanese 1- A1.1",
+    "Subject Code": "JPD113",
+    "Learning-Teaching Method": "",
+    "NoCredit": "3",
+    "Degree Level": "Cử nhân (bachelor)",
+    "Time Allocation": "Thời gian học tập: 150 giờ\nTrong đó: 45 giờ trên lớp (20 sessions, mỗi session=135p) + 1 giờ thi+ 104 giờ tự học",
+    "Pre-Requisite": "Không",
+    "Description": "I. Yêu cầu định hướng triển khai của môn học: Môn học cung cấp kiến thức, kỹ năng cơ bản của tiếng Nhật ở trình độ sơ cấp 1 (tương đương với trình độ A1) cho đối tượng sinh viên học tiếng Nhật là ngoại ngữ 2 tại trường Đại học.\nII. Mục tiêu của môn học:\nSau khi hoàn thành môn học, sinh viên có thể đạt được các mục tiêu như sau:\n1) Có thể viết, đọc thành thạo bảng chữ cái tiếng Nhật (chữ mềm, chữ cứng)\n2) Có thể nắm được khoảng 200 từ vựng cơ bản, cách viết và đọc của khoảng hơn 30 chữ Hán, khoảng hơn 20 cấu trúc ngữ pháp cơ bản dùng trong hội thoại sơ cấp.\n3) Có thể hiểu, sử dụng các cách nói quen thuộc được sử dụng trong đời sống thường nhật để đáp ứng nhu cầu giao tiếp cụ thể như có thể tự giới thiệu bản thân (giới thiệu tên, quốc tịch, nghề nghiệp, sở thích v.v..); có thể hỏi địa điểm, có thể giao tiếp với nhân viên để hỏi giá tiền, gọi đồ v.v…; có thể kể về những hoạt động hằng ngày của bản thân, hỏi giờ làm việc của các cơ quan tổ chức.\n4) Rèn luyện được kỹ năng làm việc nhóm, phát triển bản thân thông qua các hoạt động nhóm trong lớp (role play..) và các hoạt động ngoại khóa.",
+    "StudentTasks": "- Tham dự tối thiểu 80% số giờ học trên lớp mới đủ điều kiện tham gia thi kì thi cuối môn.\n- Học từ vựng và tìm hiểu trước bài học, làm các bài tập và nhiệm vụ do GV giao.\n- Ôn tập bài giảng, đối chiếu với giáo trình để nắm vững các kiến thức.\n- Trên lớp tích cực tham gia trao đổi, xây dựng bài.",
+    "Tools": "- Sử dụng giáo trình chính và giáo trình bổ trợ bằng tiếng Nhật.\n- Sử dụng slide môn học.\n- Tra cứu, tham khảo các nội dung có liên quan đến môn học trên mạng hoặc giáo trình tham khảo được giới thiệu trong môn học.\n- Sử dụng https://heyjapan.net/ để học bảng chữ cái và ôn thi cuối kỳ.\n- Sử dụng AI (ChatGPT, Copilot, v.v.) để tra cứu cách dùng từ vựng, ứng dụng của ngữ pháp, và các từ ghép Hán tự ngoài các từ đã được học.",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "444/QĐ-ĐHFPT dated 04/23/2026",
+    "IsApproved": "True",
+    "Note": "",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "4/23/2026"
+  },
+  "clo_count": 5,
+  "session_count": 60,
+  "chunks": [
+    {
+      "chunk_id": "JPD113-overview",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Overview & Grading Policy",
+      "text": "Description: I. Yêu cầu định hướng triển khai của môn học: Môn học cung cấp kiến thức, kỹ năng cơ bản của tiếng Nhật ở trình độ sơ cấp 1 (tương đương với trình độ A1) cho đối tượng sinh viên học tiếng Nhật là ngoại ngữ 2 tại trường Đại học.\nII. Mục tiêu của môn học:\nSau khi hoàn thành môn học, sinh viên có thể đạt được các mục tiêu như sau:\n1) Có thể viết, đọc thành thạo bảng chữ cái tiếng Nhật (chữ mềm, chữ cứng)\n2) Có thể nắm được khoảng 200 từ vựng cơ bản, cách viết và đọc của khoảng hơn 30 chữ Hán, khoảng hơn 20 cấu trúc ngữ pháp cơ bản dùng trong hội thoại sơ cấp.\n3) Có thể hiểu, sử dụng các cách nói quen thuộc được sử dụng trong đời sống thường nhật để đáp ứng nhu cầu giao tiếp cụ thể như có thể tự giới thiệu bản thân (giới thiệu tên, quốc tịch, nghề nghiệp, sở thích v.v..); có thể hỏi địa điểm, có thể giao tiếp với nhân viên để hỏi giá tiền, gọi đồ v.v…; có thể kể về những hoạt động hằng ngày của bản thân, hỏi giờ làm việc của các cơ quan tổ chức.\n4) Rèn luyện được kỹ năng làm việc nhóm, phát triển bản thân thông qua các hoạt động nhóm trong lớp (role play..) và các hoạt động ngoại khóa.\nNoCredit: 3\nPre-Requisite: Không\nTime Allocation: Thời gian học tập: 150 giờ\nTrong đó: 45 giờ trên lớp (20 sessions, mỗi session=135p) + 1 giờ thi+ 104 giờ tự học\nStudentTasks: - Tham dự tối thiểu 80% số giờ học trên lớp mới đủ điều kiện tham gia thi kì thi cuối môn.\n- Học từ vựng và tìm hiểu trước bài học, làm các bài tập và nhiệm vụ do GV giao.\n- Ôn tập bài giảng, đối chiếu với giáo trình để nắm vững các kiến thức.\n- Trên lớp tích cực tham gia trao đổi, xây dựng bài.\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus JPD113 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "JPD113-CLO1",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Nhận biết được các ký tự trong hệ thống chữ cái tiếng Nhật (chữ mềm, chữ cứng).",
+      "source_label": "Syllabus JPD113 — CLO1"
+    },
+    {
+      "chunk_id": "JPD113-CLO2",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Ghi nhớ 200 từ vựng, 23 cấu trúc ngữ pháp, 35 chữ Hán liên quan đến các chủ đề được học.",
+      "source_label": "Syllabus JPD113 — CLO2"
+    },
+    {
+      "chunk_id": "JPD113-CLO3",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Vận dụng từ vựng, mẫu câu, chữ Hán đã được học để có thể tự giới thiệu bản thân (giới thiệu tên, tuổi, quốc tịch, nghề nghiệp, ngày sinh nhật, sở thích); hội thoại đơn giản về chủ đề mua sắm, gọi đồ; có thể kể về những hoạt động hằng ngày của bản thân, hỏi giờ làm việc của các cơ quan tổ chức.",
+      "source_label": "Syllabus JPD113 — CLO3"
+    },
+    {
+      "chunk_id": "JPD113-CLO4",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Đọc được đoạn văn ngắn trình độ sơ cấp bằng tiếng Nhật.",
+      "source_label": "Syllabus JPD113 — CLO4"
+    },
+    {
+      "chunk_id": "JPD113-CLO5",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Learning Outcome CLO5",
+      "text": "CLO5: Rèn luyện kỹ năng làm việc nhóm, phát triển bản thân thông qua các hoạt động nhóm trong lớp (role play..).",
+      "source_label": "Syllabus JPD113 — CLO5"
+    },
+    {
+      "chunk_id": "JPD113-session-1",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 1",
+      "text": "Session 1 — Tiết 1:\n(*) Giới thiệu khái quát về chương trình\n(*) Giới thiệu về tiếng Nhật\nTài liệu: Slide của slot 1 (tiết 1)\nNhiệm vụ sinh viên: 1) Nắm được khái quát về chương trình môn JPD113; nắm được những nét cơ bản về tiếng Nhật.\n2) Ôn tập các nội dung được nêu.\n3) Dùng https://heyjapan.net/ để luyện tập bảng chữ đã học.",
+      "source_label": "Syllabus JPD113 — Session 1"
+    },
+    {
+      "chunk_id": "JPD113-session-2",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 2",
+      "text": "Session 2 — Tiết 2:\n(*) Học Hiragana: 20 chữ đầu tiên\n(*) Chào hỏi cơ bản 1\nTài liệu: Slide của slot 1 (tiết 2)\nNhiệm vụ sinh viên: 1) Tiến hành luyện viết, đọc 20 chữ hiragana đầu.\n2) Nắm được các mẫu câu chào hỏi cơ bản 1.",
+      "source_label": "Syllabus JPD113 — Session 2"
+    },
+    {
+      "chunk_id": "JPD113-session-3",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 3",
+      "text": "Session 3 — Tiết 3:\n(*) Luyện tập: Hiragana và Chào hỏi cơ bản 1\n(*) Học Hiragana: 26 chữ tiếp theo\nTài liệu: Slide của slot 2 (tiết 1)\nNhiệm vụ sinh viên: 1) Luyện tập các chữ đã học ở buổi trước.\n2) Tiến hành luyện đọc, luyện viết 26 chữ Hiragana tiếp.\n3) Xác nhận các thông tin chưa rõ.\n4) Dùng https://heyjapan.net/ để luyện tập bảng chữ đã học.",
+      "source_label": "Syllabus JPD113 — Session 3"
+    },
+    {
+      "chunk_id": "JPD113-session-4",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 4",
+      "text": "Session 4 — Tiết 1:\n(*) Học Hiragana: âm đục\n(*) Chào hỏi cơ bản 2\nTài liệu: Slide của slot 2 (tiết 2)\nNhiệm vụ sinh viên: 1) Ôn tập các chữ cái đã học buổi trước\n2) Luyện đọc và nhận biết các âm đục\n3) Học chào hỏi cơ bản 2 (tiếp)\n4) Dùng https://heyjapan.net/ để luyện tập bảng chữ đã học",
+      "source_label": "Syllabus JPD113 — Session 4"
+    },
+    {
+      "chunk_id": "JPD113-session-5",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 5",
+      "text": "Session 5 — Tiết 2\n(*) Luyện tập: Hiragana và Chào hỏi cơ bản 2\n(*) Học Hiragana: Âm ghép, âm mũi\nTài liệu: Slide của slot 3 (tiết 1)\nNhiệm vụ sinh viên: 1) Luyện tập các chữ cái đã học ở buổi trước\n2) Luyện đọc và nhận diện âm ghép, âm mũi\n3) Xác nhận các thông tin chưa rõ\n4) Dùng https://heyjapan.net/ để luyện tập bảng chữ đã học",
+      "source_label": "Syllabus JPD113 — Session 5"
+    },
+    {
+      "chunk_id": "JPD113-session-6",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 6",
+      "text": "Session 6 — Tiết 3\n(*) Chào hỏi cơ bản 3\n(*) Câu dùng trong lớp học…\nTài liệu: Slide của slot 3 (tiết 2)\nNhiệm vụ sinh viên: 1) Học chào hỏi cơ bản 3\n2) Luyện tập các câu dùng trong lớp học\n3) Dùng https://heyjapan.net/ để luyện tập bảng chữ đã học",
+      "source_label": "Syllabus JPD113 — Session 6"
+    },
+    {
+      "chunk_id": "JPD113-session-7",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 7",
+      "text": "Session 7 — Tiết 1:\n(*) Luyện tập: Hiragana và Chào hỏi cơ bản 3\n(*) Học Hiragana: Âm dài\nTài liệu: Slide của slot 4 (tiết 1)\nNhiệm vụ sinh viên: 1) Luyện tập bảng hiragana và chào hỏi cơ bản 3\n2) Luyện đọc và nhận diện âm dài\n3) Dùng https://heyjapan.net/ để luyện tập bảng chữ đã học",
+      "source_label": "Syllabus JPD113 — Session 7"
+    },
+    {
+      "chunk_id": "JPD113-session-8",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 8",
+      "text": "Session 8 — Tiết 2:\n(*) Học Hiragana: Âm ngắt.\n(*) Số đếm\n(*) Chào hỏi cơ bản 4\nTài liệu: Slide của slot 4 (tiết 2)\nNhiệm vụ sinh viên: 1) Nhận diện và luyện tập âm ngắt\n2) Nắm được cách nói số, cách ghép số trong tiếng Nhật\n3) Dùng https://heyjapan.net/ để luyện tập bảng chữ đã học",
+      "source_label": "Syllabus JPD113 — Session 8"
+    },
+    {
+      "chunk_id": "JPD113-session-9",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 9",
+      "text": "Session 9 — Tiết 3:\n(*) Luyện tập: Hiragana và Chào hỏi cơ bản 4\nTài liệu: Slide của slot 5 (tiết 1)\nNhiệm vụ sinh viên: 1) Tham gia luyện tập toàn bộ bảng hiragana\n2) Luyện tập phần chào hỏi cơ bản 4\n3) Xác nhận các thông tin chưa rõ\n4) Dùng https://heyjapan.net/ để luyện tập bảng chữ đã học",
+      "source_label": "Syllabus JPD113 — Session 9"
+    },
+    {
+      "chunk_id": "JPD113-session-10",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 10",
+      "text": "Session 10 — Tiết 1:\n(*) Chào hỏi cơ bản 5\n(*) Tổng ôn bảng chữ Hiragana\nTài liệu: Slide của slot 5 (tiết 2)\nNhiệm vụ sinh viên: 1) Luyện tập chào hỏi cơ bản (tiếp)\n2) Thử cài bộ gõ và tập gõ chữ Nhật trên máy tính",
+      "source_label": "Syllabus JPD113 — Session 10"
+    },
+    {
+      "chunk_id": "JPD113-session-11",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 11",
+      "text": "Session 11 — Tiết 2:\n(*) Giới thiệu về bảng chữ cứng (katakana).\n(*) Học Katakana: 20 chữ đầu\nTài liệu: Slide của slot 6 (tiết 1)\nNhiệm vụ sinh viên: 1) Nắm được đặc điểm, cách dùng của bảng chữ cứng (katakana)\n2) Luyện viết, luyện đọc 20 chữ katakana đầu tiên\n3) Xác nhận các thông tin chưa rõ\n4) Dùng https://heyjapan.net/ để luyện tập bảng chữ đã học",
+      "source_label": "Syllabus JPD113 — Session 11"
+    },
+    {
+      "chunk_id": "JPD113-session-12",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 12",
+      "text": "Session 12 — Tiết 3:\n(*) Học Katakana: 20 chữ đầu (tiếp); luyện tập\nTài liệu: Slide của slot 6 (tiết 2)\nNhiệm vụ sinh viên: 1)Tiếp tục luyện viết, luyện đọc 20 chữ katakana đầu tiên\n2) Xác nhận các thông tin chưa rõ\n3) Dùng https://heyjapan.net/ để luyện tập bảng chữ đã học",
+      "source_label": "Syllabus JPD113 — Session 12"
+    },
+    {
+      "chunk_id": "JPD113-session-13",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 13",
+      "text": "Session 13 — Tiết 1:\n(*) Luyện tập:\n(*) Học Katakana: 26 chữ\nTài liệu: Slide của slot 7 (tiết 1)\nNhiệm vụ sinh viên: 1) Luyện tập các chữ cứng đã học buổi trước\n2) Luyện viết, luyện đọc 26 chữ katakana tiếp theo\n3) Xác nhận các thông tin chưa rõ\n4) Dùng https://heyjapan.net/ để luyện tập bảng chữ đã học",
+      "source_label": "Syllabus JPD113 — Session 13"
+    },
+    {
+      "chunk_id": "JPD113-session-14",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 14",
+      "text": "Session 14 — Tiết 2:\n(*) Học Katakana: 26 chữ (tiếp)\nTài liệu: Slide của slot 7 (tiết 2)\nNhiệm vụ sinh viên: 1) Luyện viết, luyện đọc 26 chữ katakana (tiếp)\n2) Xác nhận các thông tin chưa rõ\n3) Dùng https://heyjapan.net/ để luyện tập bảng chữ đã học",
+      "source_label": "Syllabus JPD113 — Session 14"
+    },
+    {
+      "chunk_id": "JPD113-session-15",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 15",
+      "text": "Session 15 — Tiết 3:\n(*) Luyện tập:\n(*) Học Katakana: Âm dài\nTài liệu: Slide của slot 8 (tiết 1)\nNhiệm vụ sinh viên: 1) Nắm được các nội dung của bài học\n2) Tham gia luyện tập, thảo luận về các vấn đề đặt ra\n3) Xác nhận các thông tin chưa rõ\n4) Dùng https://heyjapan.net/ để luyện tập bảng chữ đã học",
+      "source_label": "Syllabus JPD113 — Session 15"
+    },
+    {
+      "chunk_id": "JPD113-session-16",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 16",
+      "text": "Session 16 — Tiết 1:\n(*) Luyện tập:\n(*) Học Katakana: Âm ngắt + Âm ghép\nTài liệu: Slide của slot 8 (tiết 2)\nNhiệm vụ sinh viên: 1) Luyện tập\n2) Nhận diện, luyện đọc, luyện viết âm ngắt và âm ghép\n3) Dùng https://heyjapan.net/ để luyện tập bảng chữ đã học",
+      "source_label": "Syllabus JPD113 — Session 16"
+    },
+    {
+      "chunk_id": "JPD113-session-17",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 17",
+      "text": "Session 17 — Tiết 2:\n(*) Ôn tập tổng hợp chữ mềm, cứng\nTài liệu: Slide các bài học trước (slot 1 đến slot 8)\nNhiệm vụ sinh viên: 1) Ôn tập nội dung đã được học\n2) Xác nhận các thông tin chưa rõ\n3) Làm bài thi trung thực, nghiêm túc\n4) Dùng https://heyjapan.net/ để luyện tập bảng chữ đã học",
+      "source_label": "Syllabus JPD113 — Session 17"
+    },
+    {
+      "chunk_id": "JPD113-session-18",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 18",
+      "text": "Session 18 — Tiết 3:\n(*) Ôn tập tổng hợp chữ mềm, cứng (tiếp)\n(*) Giới thiệu về giáo trìnhできる日本初級, sách tham khảo như 文法ノート初級、言葉ノート初級\nTài liệu: Giáo trình chính\nNhiệm vụ sinh viên: 1) Nắm được thông tin về giáo trình.\n2) Chuẩn bị cho giờ học tiếp theo: Sử dụng AI (ChatGPT, Copilot, v.v.) để tra cứu cách dùng từ vựng phần 1 bài 1, tìm hiểu về đặc điểm ngữ pháp tiếng Nhật và các trợ từ trong tiếng Nhật.",
+      "source_label": "Syllabus JPD113 — Session 18"
+    },
+    {
+      "chunk_id": "JPD113-session-19",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 19",
+      "text": "Session 19 — Tiết 1:\n第1課 - ST1:\n\n+ 話してみよう（P15）\n+ 聞いてみよう（P15 - CD A01）\n+ チャレンジ1,2（P16- CD A02,03）\n+ 語彙確認\n+ 言ってみよう1,2（P18 ）\n- 文法説明\n私は［名前］です\nTài liệu: Giáo trình chính\nSlide của slot 10 (tiết 1)\nNhiệm vụ sinh viên: 1) Tham gia luyện tập, thảo luận về các vấn đề đặt ra.\n2) Học từ vựng.\n3) Luyện tập đặt câu với mẫu câu về giới thiệu bản thân.\n4) Nghe hiểu thông tin liên quan tới bài học.",
+      "source_label": "Syllabus JPD113 — Session 19"
+    },
+    {
+      "chunk_id": "JPD113-session-20",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 20",
+      "text": "Session 20 — Tiết 2:\n第1課 - ST1 （続き）\n+ チャレンジ 3（P17- CD A04）\n+ 言ってみよう3（P18 ）\n- 文法説明\nお国はどちらですか\n- 応用会話練習\nTài liệu: Giáo trình chính\nSlide của slot 10 (tiết 2)\nNhiệm vụ sinh viên: 1) Luyện tập đặt câu với mẫu câu về giới thiệu đất nước\n2) Nghe hiểu thông tin liên quan tới bài học\n3) Luyện tập hội thoại",
+      "source_label": "Syllabus JPD113 — Session 20"
+    },
+    {
+      "chunk_id": "JPD113-session-21",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 21",
+      "text": "Session 21 — Tiết 3:\n第1課 - ST1（続き）\n+ チャレンジ4,5（P17 - CD A05-06）\n+ 言ってみよう4,5（P18 ）\n- 文法説明\nお仕事は\n［仕事］ですか\nはい、［仕事］です　いいえ、［仕事］じゃありません\n- 応用会話練習\nTài liệu: Giáo trình chính\nSlide của slot 11 (tiết 1)\nNhiệm vụ sinh viên: 1) Sử dụng AI (ChatGPT, Copilot, v.v.) luyện tập đặt câu với mẫu câu giới thiệu nghề nghiệp, mẫu câu phủ định, câu nghi vấn của danh từ\n2) Nghe hiểu thông tin liên quan tới bài học\n3) Luyện tập hội thoại",
+      "source_label": "Syllabus JPD113 — Session 21"
+    },
+    {
+      "chunk_id": "JPD113-session-22",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 22",
+      "text": "Session 22 — Tiết 1:\n第1課 - ST1（続き）\n+ チャレンジ6（P17 - CD A07）\n+ 言ってみよう6（P19 ）\n- 文法説明\nNのN\n- 応用会話練習\n+ やってみよう（P19 - CD A08)\nTài liệu: Giáo trình chính\nSlide của slot 11 (tiết 2)\nNhiệm vụ sinh viên: 1) Luyện tập đặt câu với mẫu câu giới thiệu tên cơ quan công ty nơi mình học tập công tác (NのN)\n2) Làm bài tập nghe p19\n3) Luyện tập hội thoại",
+      "source_label": "Syllabus JPD113 — Session 22"
+    },
+    {
+      "chunk_id": "JPD113-session-23",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 23",
+      "text": "Session 23 — Tiết 2:\n第1課- ST2:\n+ チャレンジ1,2,（P20,21 - CD A09-10）\n+ 語彙確認\n+ 言ってみよう1,2（P22 ）\n- 文法説明\n～歳です\nTài liệu: Giáo trình chính\nSlide của slot 12 (tiết 1)\nNhiệm vụ sinh viên: 1) Sử dụng AI (ChatGPT, Copilot, v.v.) để tra cứu cách dùng từ vựng phần 2 bài 1.\n2) Luyện tập đặt câu với mẫu ngữ pháp nói tuổi.\n3) Nghe hiểu thông tin liên quan tới bài học.",
+      "source_label": "Syllabus JPD113 — Session 23"
+    },
+    {
+      "chunk_id": "JPD113-session-24",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 24",
+      "text": "Session 24 — Tiết 3:\n第1課- ST2 （続き）\n- 文法説明\nいつ　～月～日\n- 応用会話練習\nTài liệu: Giáo trình chính\nSlide của slot 12 (tiết 1)\nNhiệm vụ sinh viên: 1) Luyện tập cách nói ngày tháng, mẫu câu hỏi và trả lời về ngày tháng năm sinh\n2) Luyện tập hội thoại",
+      "source_label": "Syllabus JPD113 — Session 24"
+    },
+    {
+      "chunk_id": "JPD113-session-25",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 25",
+      "text": "Session 25 — Tiết 1:\n第1課- ST2（続き）\nやってみよう（P23 CD A11-12)\n練習問題\nTài liệu: Giáo trình chính\nSlide của slot 13 (tiết 1)\nNhiệm vụ sinh viên: 1) Luyện bài nghe p23\n2) Làm sẵn các bài tập trong sách bài tập từ vựng và ngữ pháp\n3) Đặt câu hỏi cho những nội dung không hiểu",
+      "source_label": "Syllabus JPD113 — Session 25"
+    },
+    {
+      "chunk_id": "JPD113-session-26",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 26",
+      "text": "Session 26 — Tiết 2:\n第1課- ST2（続き）\n練習問題（続き）\nTài liệu: Giáo trình chính\nSlide của slot 13 (tiết 2)\nNhiệm vụ sinh viên: 1) Làm các bài tập theo yêu cầu của giảng viên.\n2) Đặt câu hỏi với những nội dung khó.\n3) Luyện tập thêm ở nhà.",
+      "source_label": "Syllabus JPD113 — Session 26"
+    },
+    {
+      "chunk_id": "JPD113-session-27",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 27",
+      "text": "Session 27 — Tiết 3:\n第1課 - ST3:\n+ チャレンジ1,2（P24 CD A13, 14 ）\n+ 語彙確認\n+ 言ってみよう1,2（P26 ）\n- 文法説明\n何ですか\nNとN\nTài liệu: Giáo trình chính\nSlide của slot 14 (tiết 1)\nNhiệm vụ sinh viên: 1) Sử dụng AI (ChatGPT, Copilot, v.v.) để tra cứu cách dùng từ vựng phần 3 bài 1.\n2) Luyện tập ngữ pháp 何ですか,NとN.\n3) Nghe hiểu thông tin liên quan tới bài học.",
+      "source_label": "Syllabus JPD113 — Session 27"
+    },
+    {
+      "chunk_id": "JPD113-session-28",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 28",
+      "text": "Session 28 — Tiết 1:\n第1課 - ST3:\n+ チャレンジ3（P25 CD A15 ）\n+ 言ってみよう3（P26 ）\n- 文法説明\nNも\n- 応用会話練習\n+ やってみよう（P27 CD A16 ）\nTài liệu: Giáo trình chính\nSlide của slot 14 (tiết 2)\nNhiệm vụ sinh viên: 1) Luyện tập mẫu ngữ pháp Nも\n2) Nghe hiểu thông tin liên quan đến bài học\n3) Luyện hội thoại\n4) Làm bài tập nghe p27",
+      "source_label": "Syllabus JPD113 — Session 28"
+    },
+    {
+      "chunk_id": "JPD113-session-29",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 29",
+      "text": "Session 29 — Tiết 2:\n第一課 漢字\nTài liệu: Slide slot 15: chữ Hán Bài 1\nNhiệm vụ sinh viên: 1) Nghe giải thích phần chữ Hán, đặt câu hỏi cho nội dung chưa rõ\n2) Dùng AI tra cứu thêm các từ ghép của các chữ Hán đã học\n3) Luyện tập chữ Hán ở nhà",
+      "source_label": "Syllabus JPD113 — Session 29"
+    },
+    {
+      "chunk_id": "JPD113-session-30",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 30",
+      "text": "Session 30 — Tiết 3:\n＋第一課復習\n　‐もう一度聞こう\n　‐宿題確認\nTài liệu: Giáo trình chính\nNhiệm vụ sinh viên: 1) Làm các bài tập trong sách BT từ vựng và ngữ pháp.\n2) Luyện nghe trên lớp và ở nhà.\n3) Đặt câu hỏi với những nội dung chưa rõ.",
+      "source_label": "Syllabus JPD113 — Session 30"
+    },
+    {
+      "chunk_id": "JPD113-session-31",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 31",
+      "text": "Session 31 — Tiết 1:\n＋Bài kiểm tra 1 (bảng chữ+bài 1)\nTài liệu: Bài kiểm tra 1 do GV tự biên soạn\nNhiệm vụ sinh viên: 1) Làm bài kiểm tra trung thực, nghiêm túc\n2) Chuẩn bị cho giờ học tiếp theo: Dùng AI tra cứu từ vựng bài 2",
+      "source_label": "Syllabus JPD113 — Session 31"
+    },
+    {
+      "chunk_id": "JPD113-session-32",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 32",
+      "text": "Session 32 — Tiết 2:\n第2課 - ST1:\n+話してみよう（P31）\n+聞いてみよう（P31 CD A17）\n+ 語彙確認\nTài liệu: Giáo trình chính\nSlide của slot 17 (tiết 1)\nNhiệm vụ sinh viên: Nghe hiểu thông tin liên quan tới bài học trang 31",
+      "source_label": "Syllabus JPD113 — Session 32"
+    },
+    {
+      "chunk_id": "JPD113-session-33",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 33",
+      "text": "Session 33 — Tiết 3:\n第2課 - ST1:\n+チャレンジ1（P32,33 CDA18）\n-- 文法説明\n何階ですか　階数の言い方\n言ってみよう1（P34 ）\n- 応用会話練習\nTài liệu: Giáo trình chính\nSlide của slot 17 (tiết 2)\nNhiệm vụ sinh viên: 1) Sử dụng AI (ChatGPT, Copilot, v.v.) để luyện tập đặt câu với mẫu ngữ pháp hỏi tầng 何階ですか　階数の言い方.\n2) Luyện nghe hiểu thông tin liên quan đến bài học\n3) Đặt câu hỏi cho những nội dung chưa rõ",
+      "source_label": "Syllabus JPD113 — Session 33"
+    },
+    {
+      "chunk_id": "JPD113-session-34",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 34",
+      "text": "Session 34 — Tiết 1:\n第2課 - ST1　（続き）\n+チャレンジ2.1（P33 CD A19）\n+言ってみよう2.1（P34 ）\n-- 文法説明\n～はどこですか\nここ・そこ・あそこ　\n- 会話練習\nTài liệu: Giáo trình chính\nSlide của slot 18 (Tiết 1)\nNhiệm vụ sinh viên: 1) Luyện tập ngữ pháp～はどこですか\nここ・そこ・あそこ　\n2) Nghe hiểu thông tin liên quan tới bài học.\n3) Đặt câu hỏi cho nội dung chưa rõ",
+      "source_label": "Syllabus JPD113 — Session 34"
+    },
+    {
+      "chunk_id": "JPD113-session-35",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 35",
+      "text": "Session 35 — Tiết 2:\n第2課 - ST1　（続き）\n+チャレンジ2.2（P33 CD A20）\n+言ってみよう2.2（P35 ）\n-- 文法説明\n～はどこですか\nこちら・そちら・あちら\n会話練習\n+ やってみよう（P35 CD A21 ）\nTài liệu: Giáo trình chính\nSlide của slot 18 (Tiết 2)\nNhiệm vụ sinh viên: 1) Nghe hiểu thông tin liên quan đến bài học\n2) Luyện tập ngữ pháp～はどこですか こちら・そちら・あちら\n3) Luyện tập hội thoại\n4) Làm bài tập nghe p35",
+      "source_label": "Syllabus JPD113 — Session 35"
+    },
+    {
+      "chunk_id": "JPD113-session-36",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 36",
+      "text": "Session 36 — Tiết 3:\n第2課 - ST2:\n+チャレンジ1（P36 CD A22）\n+ 語彙確認\n+言ってみよう1（P38）\n-- 文法説明\n～はいくらですか　これ・それ・あれ\nTài liệu: Giáo trình chính\nSlide của slot 19 (Tiết 1)\nNhiệm vụ sinh viên: 1) Sử dụng AI (ChatGPT, Copilot, v.v.) để tra cứu cách dùng từ vựng phần 2 bài 2\n2) Luyện tập cấu trúc ～はいくらですか　これ・それ・あれ\n3) Nghe hiểu thông tin liên quan tới bài học",
+      "source_label": "Syllabus JPD113 — Session 36"
+    },
+    {
+      "chunk_id": "JPD113-session-37",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 37",
+      "text": "Session 37 — Tiết 1:\n第2課 - ST2 （続き）\n+チャレンジ 2（P36 CD A23）\n+言ってみよう2（P38）\n- 文法説明\nこのN・そのN・あのN\n- 応用会話練習\nTài liệu: Giáo trình chính\nSlide của slot 19 (Tiết 2)\nNhiệm vụ sinh viên: 1) Luyện tập đặt câu với mẫu ngữ pháp このN・そのN・あのN\n2) Nghe hiểu thông tin liên quan tới bài học\n3) Luyện hội thoại\n4) Đặt câu hỏi cho những nội dung chưa rõ",
+      "source_label": "Syllabus JPD113 — Session 37"
+    },
+    {
+      "chunk_id": "JPD113-session-38",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 38",
+      "text": "Session 38 — Tiết 2:\n第2課 - ST2: （続き）\n+チャレンジ3（P37 CD A24）\n+言ってみよう3（P38,39 ）\n- 文法説明\nNをください\n- 応用会話練習\nTài liệu: Giáo trình chính\nSlide của slot 20 (Tiết 1)\nNhiệm vụ sinh viên: 1) Nghe hiểu thông tin liên quan tới bài họcチャレンジ3\n2) Luyện tập ngữ pháp Nをください\n3) Luyện tập nói trên lớp 言ってみよう3 và luyện hội thoại\n4) Đặt câu hỏi cho nội dung chưa rõ",
+      "source_label": "Syllabus JPD113 — Session 38"
+    },
+    {
+      "chunk_id": "JPD113-session-39",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 39",
+      "text": "Session 39 — Tiết 3:\n第2課 - ST2: （続き）\n+ やってみよう（P39 CD A25 ）\n+ 読解：値段の読み方\nTài liệu: Giáo trình chính\nSlide của slot 20 (Tiết 2)\nNhiệm vụ sinh viên: 1) Luyện nghe bài tập nghe P39\n2) Làm bài đọc 値段の読み方 trong slide",
+      "source_label": "Syllabus JPD113 — Session 39"
+    },
+    {
+      "chunk_id": "JPD113-session-40",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 40",
+      "text": "Session 40 — Tiết 1:\n第2課 - ST3:\n+チャレンジ1（P40 CD A26）\n+ 語彙確認\n+言ってみよう1（P42 ）\n-- 文法説明\n何のN\nTài liệu: Giáo trình chính\nSlide của slot 21 (Tiết 1)\nNhiệm vụ sinh viên: 1) Sử dụng AI (ChatGPT, Copilot, v.v.) để tra cứu cách dùng từ vựng phần 3 bài 2\n2) Nghe hiểu thông tin liên quan tới bài học チャレンジ1\n3) Luyện tập ngữ pháp 何のN",
+      "source_label": "Syllabus JPD113 — Session 40"
+    },
+    {
+      "chunk_id": "JPD113-session-41",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 41",
+      "text": "Session 41 — Tiết 2:\n第2課 - ST3:\n+チャレンジ2,3,4（P40 CD A27-29）\n+言ってみよう2,3,4（P43 ）\n- 文法説明\n［言語］で\nどこのN\nNを（～つ）ください\n- 応用会話練習\nTài liệu: Giáo trình chính\nSlide của slot 21 (Tiết 2)\nNhiệm vụ sinh viên: 1) Nghe hiểu thông tin liên quan tới bài học チャレンジ2,3,4\n2) Sử dụng AI (ChatGPT, Copilot, v.v.) để tra cứu cách dùng và đặt câu với mẫu ngữ pháp mới\n［言語］で\nどこのN\nNを（～つ）ください\n3) Luyện tập nói theo phần 言ってみよう2,3,4\n4) Luyện tập hội thoại",
+      "source_label": "Syllabus JPD113 — Session 41"
+    },
+    {
+      "chunk_id": "JPD113-session-42",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 42",
+      "text": "Session 42 — Tiết 3:\n第2課 - ST3: （続き）\n+ チャレンジ5（P41 CD A30）\n+言ってみよう5（P43 ）\n-- 文法説明\nだれのN\nTài liệu: Giáo trình chính\nSlide của slot 22 (tiết 1)\nNhiệm vụ sinh viên: 1) Tham gia thảo luận về các vấn đề đặt ra\n2) Học từ vựng\n3) Nắm được các nội dung của bài học",
+      "source_label": "Syllabus JPD113 — Session 42"
+    },
+    {
+      "chunk_id": "JPD113-session-43",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 43",
+      "text": "Session 43 — Tiết 1:\n第2課 - ST3: （続き）\n+ やってみよう（P43 CD A31 ）\n+漢字：第2課\nTài liệu: Giáo trình chính\nSlide chữ Hánslot 22\nNhiệm vụ sinh viên: 1) Làm bài tập nghe P43\n2) Nghe giải thích phần chữ Hán, đặt câu hỏi cho nội dung chưa rõ\n3) Dùng AI tra cứu thêm các từ ghép của các chữ Hán đã học\n4) Luyện tập chữ Hán ở nhà",
+      "source_label": "Syllabus JPD113 — Session 43"
+    },
+    {
+      "chunk_id": "JPD113-session-44",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 44",
+      "text": "Session 44 — Tiết 2:\n＋第2課復習\n　‐もう一度聞こう\n　‐宿題確認\nTài liệu: Giáo trình chính\nNhiệm vụ sinh viên: 1) Ôn tập nội dung đã được học.\n2) Xác nhận các thông tin chưa rõ.",
+      "source_label": "Syllabus JPD113 — Session 44"
+    },
+    {
+      "chunk_id": "JPD113-session-45",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 45",
+      "text": "Session 45 — Tiết 3:\n第3課 - ST1:\n+話してみよう（P47）\n+聞いてみよう（P47 CD A32）\n+チャレンジ1（P48 CDA33）\n+ 語彙確認\n言ってみよう1（P50 ）\n-- 文法説明\n今、何時ですか　　時間の言い方\nTài liệu: Giáo trình chính\nSlide của slot 24 (tiết 1)\nNhiệm vụ sinh viên: 1) Tham gia luyện tập, thảo luận về các vấn đề đặt ra ở 話してみよう（P47）\n2) Sử dụng AI (ChatGPT, Copilot, v.v.) để tra cứu cách dùng từ vựng phần 1 bài 3\n3) Nghe hiểu thông tin liên quan tới bài học チャレンジ1, 聞いてみよう.\n4) Luyện tập ngữ pháp 今、何時ですか　　時間の言い方",
+      "source_label": "Syllabus JPD113 — Session 45"
+    },
+    {
+      "chunk_id": "JPD113-session-46",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 46",
+      "text": "Session 46 — Tiết 1:\n第3課 - ST1 (続き）\n+チャレンジ2,3（49 CDA34, 35）\n言ってみよう2,3（P50 ）\n-- 文法説明\n［時間］から［時間］までです\n何曜日ですか　曜日の言い方\n- 応用会話練習\nTài liệu: Giáo trình chính\nSlide của slot 24 (tiết 2)\nNhiệm vụ sinh viên: 1) Nghe hiểu thông tin liên quan tới bài học チャレンジ2,3.\n2) Sử dụng AI (ChatGPT, Copilot, v.v.) để tra cứu cách dùng và đặt câu với mẫu ngữ pháp mới\n［時間］から［時間］までです\n何曜日ですか　曜日の言い方.\n3) Luyện tập đặt câu, luyện hội thoại.",
+      "source_label": "Syllabus JPD113 — Session 46"
+    },
+    {
+      "chunk_id": "JPD113-session-47",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 47",
+      "text": "Session 47 — Tiết 2:\n第3課 - ST1　（続き）\n+ やってみよう（P51 CD A36 ）\nTài liệu: Giáo trình chính\nNhiệm vụ sinh viên: 1) Luyện nghe trên lớp p51 và ở nhà.\n2) Ôn tập nội dung đã được học.\n3) Xác nhận các thông tin chưa rõ.",
+      "source_label": "Syllabus JPD113 — Session 47"
+    },
+    {
+      "chunk_id": "JPD113-session-48",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 48",
+      "text": "Session 48 — Tiết 3:\n第3課 - ST1　（続き）\n　‐漢字：第3課\nTài liệu: Slide slot 25: chữ Hán bài 3\nNhiệm vụ sinh viên: 1) Theo dõi bài giảng về chữ Hán.\n2) Dùng AI tra cứu thêm các từ ghép của các chữ Hán đã học.",
+      "source_label": "Syllabus JPD113 — Session 48"
+    },
+    {
+      "chunk_id": "JPD113-session-49",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 49",
+      "text": "Session 49 — Tiết 1:\n第3課 - ST2:\n+チャレンジ1（P52 CD A37）\n+ 語彙確認\n+言ってみよう1（P54 ）\n-- 文法説明\nVます（予定）　～をVます\nTài liệu: Giáo trình chính\nSlide của slot 26 (tiết 1)\nNhiệm vụ sinh viên: 1) Học trước từ vựng phần 2 bài 3.\n2) Nghe hiểu thông tin liên quan tới bài học チャレンジ1.\n3) Luyện tập đặt câu với mẫu ngữ pháp Vます（予定）　～をVます.\n4) Luyện tập hội thoại.",
+      "source_label": "Syllabus JPD113 — Session 49"
+    },
+    {
+      "chunk_id": "JPD113-session-50",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 50",
+      "text": "Session 50 — Tiết 2:\n第3課 - ST2:\n+チャレンジ2（P52 CD A38）\n+言ってみよう2（P54 ）\n-- 文法説明\n［場所］へ\n- 応用会話練習\nTài liệu: Giáo trình chính\nSlide của slot 26 (tiết 2)\nNhiệm vụ sinh viên: 1) Nghe hiểu thông tin liên quan tới bài học チャレンジ2\n2) Luyện tập ngữ pháp ［場所］へ\n3) Luyện tập hội thoại\n4) Đặt câu hỏi với nội dung chưa rõ",
+      "source_label": "Syllabus JPD113 — Session 50"
+    },
+    {
+      "chunk_id": "JPD113-session-51",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 51",
+      "text": "Session 51 — Tiết 3:\n第3課 - ST2: （続き）\n+チャレンジ3（P53 CD A39）\n+ 語彙確認\n+言ってみよう3（P55 ）\n-- 文法説明\nVません\n- 応用会話練習\nTài liệu: Giáo trình chính\nSlide của slot 27( tiết 1)\nNhiệm vụ sinh viên: 1) Sử dụng AI (ChatGPT, Copilot, v.v.) để tra cứu cách dùng từ vựng phần 2 bài 3\n2) Nghe hiểu thông tin liên quan tới bài học チャレンジ3\n3) Luyện tập mẫu ngữ pháp Vません.\n4) Luyện tập đặt câu, luyện tập hội thoại 言ってみよう3",
+      "source_label": "Syllabus JPD113 — Session 51"
+    },
+    {
+      "chunk_id": "JPD113-session-52",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 52",
+      "text": "Session 52 — Tiết 1:\n第3課 - ST2: （続き）\n+チャレンジ4（P53 CD A40）\n+言ってみよう4（P55 ）\n- 文法説明\n［場所］で\n- 応用会話練習\n+ やってみよう（P56 CD A41 ）\nTài liệu: Giáo trình chính\nSlide của slot 27( tiết 1)\nNhiệm vụ sinh viên: 1) Nghe hiểu thông tin liên quan tới bài học チャレンジ4\n2) Luyện tập mẫu ngữ pháp ［場所］で\n3) Luyện tập đặt câu, luyện tập hội thoại 言ってみよう4\n4) Luyện bài tập nghe P56",
+      "source_label": "Syllabus JPD113 — Session 52"
+    },
+    {
+      "chunk_id": "JPD113-session-53",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 53",
+      "text": "Session 53 — Tiết 2:\n第3課 - ST3:\n+チャレンジ1（P58 CD A42）\n+ 語彙確認\n+言ってみよう1（P60 ）\n-- 文法説明\nVます（習慣）\nTài liệu: Giáo trình chính\nSlide của slot 28 (tiết 1)\nNhiệm vụ sinh viên: 1) Nghe hiểu thông tin liên quan tới bài học チャレンジ\n2) Sử dụng AI (ChatGPT, Copilot, v.v.) để tra cứu cách dùng từ vựng phần 3 bài 3\n3) Luyện tập ngữ pháp Vます（習慣）\n4) Luyện tập đặt câu, luyện nói 言ってみよう1",
+      "source_label": "Syllabus JPD113 — Session 53"
+    },
+    {
+      "chunk_id": "JPD113-session-54",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 54",
+      "text": "Session 54 — Tiết 3:\n第3課 - ST3:\n+チャレンジ2,3,4（P58 CD A43-45）\n+言ってみよう2,3,4（P61 ）\n-- 文法説明\nNやNなど\n何もVません\n［時間］に\n- 応用会話練習\nTài liệu: Giáo trình chính\nSlide của slot 28 (tiết 2)\nNhiệm vụ sinh viên: 1) Nghe hiểu thông tin liên quan tới bài học チャレンジ2,3,4\n2) Luyện tập đặt câu với mẫu ngữ pháp NやNなど\n何もVません\n［時間］に\n3) Luyện tập nói, luyện đặt câu",
+      "source_label": "Syllabus JPD113 — Session 54"
+    },
+    {
+      "chunk_id": "JPD113-session-55",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 55",
+      "text": "Session 55 — Tiết 1:\n第3課 - ST3: （続き）\n+ チャレンジ5,6（P59 CD A46,47）\n+言ってみよう5,6（P62 ）\n-- 文法説明\n［時間］から［時間］までVます\nどこへも行きません\nTài liệu: Giáo trình chính\nSlide của slot 29 (tiết 1)\nNhiệm vụ sinh viên: 1) Nghe hiểu thông tin liên quan tới bài học チャレンジ5,6\n2) Sử dụng AI (ChatGPT, Copilot, v.v.) để tra cứu cách dùng và đặt câu với mẫu ngữ pháp mới\n［時間］から［時間］までVます\nどこへも行きません\n3) Luyện tập nói, luyện đặt câu",
+      "source_label": "Syllabus JPD113 — Session 55"
+    },
+    {
+      "chunk_id": "JPD113-session-56",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 56",
+      "text": "Session 56 — Tiết 2:\n第3課 - ST3: （続き）\n- 応用会話練習\n+ やってみよう（P63 CD A48 ）\n　‐もう一度聞こう\nTài liệu: Giáo trình chính\nSlide của slot 29 (tiết 2)\nNhiệm vụ sinh viên: 1) Luyện tập hội thoại\n2) Luyện nghe trên lớp P63; luyện nghe bài cuối sách\n3) Đặt câu hỏi cho nội dung chưa rõ",
+      "source_label": "Syllabus JPD113 — Session 56"
+    },
+    {
+      "chunk_id": "JPD113-session-57",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 57",
+      "text": "Session 57 — Tiết 3:\n＋第3課\n　‐宿題確認\nTài liệu: Giáo trình chính\nSlide của slot 30 (tiết 1)\nNhiệm vụ sinh viên: 1) Ôn tập lại từ vựng bài 3\n2) Ôn tập kiến thức bài 3",
+      "source_label": "Syllabus JPD113 — Session 57"
+    },
+    {
+      "chunk_id": "JPD113-session-58",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 58",
+      "text": "Session 58 — Tiết 1:\n＋Bài kiểm tra 2 (bài 2, bài 3)\nTài liệu: Bài kiểm tra 2 do GV tự biên soạn\nNhiệm vụ sinh viên: Nghiêm túc làm bài",
+      "source_label": "Syllabus JPD113 — Session 58"
+    },
+    {
+      "chunk_id": "JPD113-session-59",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 59",
+      "text": "Session 59 — Tiết 2:\n＋期末試験の復習\nTài liệu: Giáo trình chính\nSlide của slot 30 (tiết 2)\nNhiệm vụ sinh viên: 1) Làm các bài tập trong sách Bài tập từ vựng, BT ngữ pháp\n2) Ôn tập từ bài 1 đến 3\n3) Đặt câu hỏi cho nội dung chưa rõ\n4) Dùng https://heyjapan.net/ để ôn tập về danh từ địa điểm, món ăn, số đếm, thời gian…",
+      "source_label": "Syllabus JPD113 — Session 59"
+    },
+    {
+      "chunk_id": "JPD113-session-60",
+      "subject_code": "JPD113",
+      "subject_name": "Elementary Japanese 1- A1.1_Tiếng Nhật sơ cấp 1-A1.1",
+      "section": "Session 60",
+      "text": "Session 60 — Tiết 3:\n＋期末試験の復習\nTài liệu: Giáo trình chính\nSlide của slot 30 (tiết 2)\nNhiệm vụ sinh viên: 1) Làm các bài tập trong sách Bài tập từ vựng, BT ngữ pháp\n2) Ôn tập từ bài 1 đến 3\n3) Đặt câu hỏi cho nội dung chưa rõ\n4) Dùng https://heyjapan.net/ để ôn tập về danh từ địa điểm, món ăn, số đếm, thời gian…",
+      "source_label": "Syllabus JPD113 — Session 60"
+    }
+  ]
+}

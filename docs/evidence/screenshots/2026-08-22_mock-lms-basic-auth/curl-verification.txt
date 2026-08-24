@@ -1,0 +1,11 @@
+$ curl -s -o /dev/null -w "HTTP %{http_code}\n" http://localhost:9000/courses
+HTTP 401
+
+$ curl -s -o /dev/null -w "HTTP %{http_code}\n" -X POST http://localhost:9000/courses/CEA201/assignments/fake-id/due-date -d "due_at=2026-01-01"
+HTTP 401
+
+$ curl -s -o /dev/null -w "HTTP %{http_code}\n" -u admin:mocklms-admin http://localhost:9000/courses
+HTTP 200
+
+$ curl -s -o /dev/null -w "HTTP %{http_code}\n" -u admin:wrongpass http://localhost:9000/courses
+HTTP 401

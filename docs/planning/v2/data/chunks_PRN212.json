@@ -1,0 +1,622 @@
+{
+  "subject_code": "PRN212",
+  "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+  "meta": {
+    "Subject Code": "PRN212",
+    "JPD133": "Tiếng Nhật sơ cấp 1-A1/A2",
+    "PRP201c": "Python programming_Lập trình Python",
+    "FER202": "Front-End web development with React_Phát triển web Front-End với React",
+    "ECI101": "Introduction to Electronic Components and Circuits_Nhập môn các linh kiện và mạch điện tử",
+    "HSF302": "Working with Spring Framework_Làm việc với Spring Framework",
+    "FGU301": "Fundamental Game Development_Phát triển game cơ bản",
+    "PDS301m": "Python for Applied Data Science _Lập trình Python cho khoa học dữ liệu ứng dụng",
+    "PRN212": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+    "Syllabus ID": "13891",
+    "Syllabus Name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+    "Course Name English": "Basis Cross-Platform Application Programming With .NET",
+    "Learning-Teaching Method": "Social Constructivism,In-class lecture,Inquiry-based Teaching",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) = 49.5h contact hours + 145 minute final exam + 98.1h self-study",
+    "Pre-Requisite": "PRO192, DBI202",
+    "Description": "Upon completion of this course students should:\n1. Understand the followings:\n• C# language for developing .NET applications;\n• Fundamental concepts of .NET Platform\n• Basic knowledge of Windows Presentation Foundation in .NET\n2. Be able to:\n• Develop Cross-platform Desktop applications and support for user experience ( UI & UX )\n3. Be able to work in a team and present group's results",
+    "StudentTasks": "- Students must attend at least 80% of contact sessions in order to be accepted to the final examination.\n- Student is responsible to do all assigned exercises given by instructor in class or at home and submit on time\n- Use laptop in class only for learning purpose\n- Promptly access to the https://flm.fpt.edu.vn/ for up-to-date course information",
+    "Tools": "- Internet\n- Visual Studio.NET 2022 or later\n- MS SQL Server 2019 or later\n- Platform : .NET 8.0 or later\n- GitHub Copilot: Automated suggestions when writing code in C#, XAML, SQL, ...\n- AI-enhanced Debuggers (JetBrains Rider AI or Visual Studio IntelliCode)\n- GitHub Workflow",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "1402/QĐ-ĐHFPT dated 12/12/2025",
+    "IsApproved": "True",
+    "Note": "",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "12/12/2025"
+  },
+  "clo_count": 6,
+  "session_count": 66,
+  "chunks": [
+    {
+      "chunk_id": "PRN212-overview",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Overview & Grading Policy",
+      "text": "Description: Upon completion of this course students should:\n1. Understand the followings:\n• C# language for developing .NET applications;\n• Fundamental concepts of .NET Platform\n• Basic knowledge of Windows Presentation Foundation in .NET\n2. Be able to:\n• Develop Cross-platform Desktop applications and support for user experience ( UI & UX )\n3. Be able to work in a team and present group's results\nNoCredit: 3\nPre-Requisite: PRO192, DBI202\nTime Allocation: Study hour (150h) = 49.5h contact hours + 145 minute final exam + 98.1h self-study\nStudentTasks: - Students must attend at least 80% of contact sessions in order to be accepted to the final examination.\n- Student is responsible to do all assigned exercises given by instructor in class or at home and submit on time\n- Use laptop in class only for learning purpose\n- Promptly access to the https://flm.fpt.edu.vn/ for up-to-date course information\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus PRN212 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "PRN212-CLO1",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Describe about .NET Core Platform, and more new features of C# language .",
+      "source_label": "Syllabus PRN212 — CLO1"
+    },
+    {
+      "chunk_id": "PRN212-CLO2",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Demonstrate about OOP , Generic, Delegate & Event , LINQ and Design Pattern in C#",
+      "source_label": "Syllabus PRN212 — CLO2"
+    },
+    {
+      "chunk_id": "PRN212-CLO3",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Demonstrate about Windows Presentation Foundation",
+      "source_label": "Syllabus PRN212 — CLO3"
+    },
+    {
+      "chunk_id": "PRN212-CLO4",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Demonstrate about accessing to the database by Entity Framework ( ORM )",
+      "source_label": "Syllabus PRN212 — CLO4"
+    },
+    {
+      "chunk_id": "PRN212-CLO5",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Learning Outcome CLO5",
+      "text": "CLO5: Explain about Concurrency programming, Stream I/O",
+      "source_label": "Syllabus PRN212 — CLO5"
+    },
+    {
+      "chunk_id": "PRN212-CLO6",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Learning Outcome CLO6",
+      "text": "CLO6: Apply Generative AI tools to support software development tasks in .NET",
+      "source_label": "Syllabus PRN212 — CLO6"
+    },
+    {
+      "chunk_id": "PRN212-session-1",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 1",
+      "text": "Session 1 — Course Introduction\nWorking Environment\nProject Introduction\nTài liệu: Course Introduction Slide\nProject List\nNhiệm vụ sinh viên: - Choose Group (3-5 Students)\n- Choose Topic\n- Collect requirements about Topic",
+      "source_label": "Syllabus PRN212 — Session 1"
+    },
+    {
+      "chunk_id": "PRN212-session-2",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 2",
+      "text": "Session 2 — Chapter 01: Introduction to .NET Platform & Visual Studio.NET\nTài liệu: https://learn.microsoft.com/en-us/dotnet/core/introduction\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 2"
+    },
+    {
+      "chunk_id": "PRN212-session-3",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 3",
+      "text": "Session 3 — Chapter 01: Introduction to .NET Platform & Visual Studio.NET (cont.)\nTài liệu: https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-8/overview\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 3"
+    },
+    {
+      "chunk_id": "PRN212-session-4",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 4",
+      "text": "Session 4 — Chapter 01: Introduction to .NET Platform & Visual Studio.NET (cont.)\nTài liệu: https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-8/overview\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 4"
+    },
+    {
+      "chunk_id": "PRN212-session-5",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 5",
+      "text": "Session 5 — Chapter 01: Introduction to .NET Platform & Visual Studio.NET (cont.)\nTài liệu: https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-8/overview\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 5"
+    },
+    {
+      "chunk_id": "PRN212-session-6",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 6",
+      "text": "Session 6 — Chapter 01: Introduction to .NET Platform & Visual Studio.NET (cont.)\nTài liệu: https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-8/overview\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 6"
+    },
+    {
+      "chunk_id": "PRN212-session-7",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 7",
+      "text": "Session 7 — Chapter 02: C# Programming\nTài liệu: Chapter 3. Controlling Flow, Converting Types, and Handling Exceptions\nChapter 4. Writing, Debugging, and Testing Functions (C# 12 and .NET 8 – Modern Cross-Platform Development Fundamentals)\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 7"
+    },
+    {
+      "chunk_id": "PRN212-session-8",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 8",
+      "text": "Session 8 — Chapter 02: C# Programming (cont.)\nTài liệu: Chapter 3. Controlling Flow, Converting Types, and Handling Exceptions\nChapter 4. Writing, Debugging, and Testing Functions (C# 12 and .NET 8 – Modern Cross-Platform Development Fundamentals)\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 8"
+    },
+    {
+      "chunk_id": "PRN212-session-9",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 9",
+      "text": "Session 9 — Chapter 02: C# Programming (cont.)\nTài liệu: Chapter 3. Controlling Flow, Converting Types, and Handling Exceptions\nChapter 4. Writing, Debugging, and Testing Functions (C# 12 and .NET 8 – Modern Cross-Platform Development Fundamentals)\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 9"
+    },
+    {
+      "chunk_id": "PRN212-session-10",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 10",
+      "text": "Session 10 — Chapter 03: Object-Oriented Programming with C#\nTài liệu: Chapter 5. Building Your Own Types with Object-Oriented Programming (C# 12 and .NET 8 – Modern Cross-Platform Development Fundamentals)\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 10"
+    },
+    {
+      "chunk_id": "PRN212-session-11",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 11",
+      "text": "Session 11 — Chapter 03: Object-Oriented Programming with C# (cont.)\nTài liệu: Chapter 5. Building Your Own Types with Object-Oriented Programming (C# 12 and .NET 8 – Modern Cross-Platform Development Fundamentals)\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 11"
+    },
+    {
+      "chunk_id": "PRN212-session-12",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 12",
+      "text": "Session 12 — Chapter 03: Object-Oriented Programming with C# (cont.)\nTài liệu: Chapter 5. Building Your Own Types with Object-Oriented Programming (C# 12 and .NET 8 – Modern Cross-Platform Development Fundamentals)\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 12"
+    },
+    {
+      "chunk_id": "PRN212-session-13",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 13",
+      "text": "Session 13 — Chapter 04: Collections & Generic\nTài liệu: https://learn.microsoft.com/vi-vn/dotnet/standard/generics/collections\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 13"
+    },
+    {
+      "chunk_id": "PRN212-session-14",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 14",
+      "text": "Session 14 — Chapter 04: Collections & Generic (cont.)\nTài liệu: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/collections\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 14"
+    },
+    {
+      "chunk_id": "PRN212-session-15",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 15",
+      "text": "Session 15 — Chapter 04: Collections & Generic (cont.)\nTài liệu: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/collections\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 15"
+    },
+    {
+      "chunk_id": "PRN212-session-16",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 16",
+      "text": "Session 16 — Chapter 05: Design Pattern in .NET\nTài liệu: https://refactoring.guru/design-patterns/csharp\nhttps://sourcemaking.com/design_patterns/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 16"
+    },
+    {
+      "chunk_id": "PRN212-session-17",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 17",
+      "text": "Session 17 — Chapter 05: Design Pattern in .NET (cont.)\nTài liệu: https://refactoring.guru/design-patterns/csharp\nhttps://sourcemaking.com/design_patterns/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 17"
+    },
+    {
+      "chunk_id": "PRN212-session-18",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 18",
+      "text": "Session 18 — Chapter 05: Design Pattern in .NET (cont.)\nTài liệu: https://refactoring.guru/design-patterns/csharp\nhttps://sourcemaking.com/design_patterns/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 18"
+    },
+    {
+      "chunk_id": "PRN212-session-19",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 19",
+      "text": "Session 19 — Chapter 06: Delegate , Event & LINQ\nTài liệu: https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/delegates/\nhttps://learn.microsoft.com/vi-vn/dotnet/csharp/programming-guide/events/\nhttps://learn.microsoft.com/en-us/dotnet/csharp/linq/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 19"
+    },
+    {
+      "chunk_id": "PRN212-session-20",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 20",
+      "text": "Session 20 — Chapter 06: Delegate , Event & LINQ (cont.)\nTài liệu: https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/delegates/\nhttps://learn.microsoft.com/vi-vn/dotnet/csharp/programming-guide/events/\nhttps://learn.microsoft.com/en-us/dotnet/csharp/linq/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 20"
+    },
+    {
+      "chunk_id": "PRN212-session-21",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 21",
+      "text": "Session 21 — Chapter 06: Delegate , Event & LINQ (cont.)\nTài liệu: https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/delegates/\nhttps://learn.microsoft.com/vi-vn/dotnet/csharp/programming-guide/events/\nhttps://learn.microsoft.com/en-us/dotnet/csharp/linq/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 21"
+    },
+    {
+      "chunk_id": "PRN212-session-22",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 22",
+      "text": "Session 22 — Chapter 06: Delegate , Event & LINQ (cont.)\nTài liệu: https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/delegates/\nhttps://learn.microsoft.com/vi-vn/dotnet/csharp/programming-guide/events/\nhttps://learn.microsoft.com/en-us/dotnet/csharp/linq/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 22"
+    },
+    {
+      "chunk_id": "PRN212-session-23",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 23",
+      "text": "Session 23 — Chapter 06: Delegate , Event & LINQ (cont.)\nTài liệu: https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/delegates/\nhttps://learn.microsoft.com/vi-vn/dotnet/csharp/programming-guide/events/\nhttps://learn.microsoft.com/en-us/dotnet/csharp/linq/\nChapter 11. Querying and Manipulating Data Using LINQ (C# 12 and .NET 8 – Modern Cross-Platform Development Fundamentals)\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 23"
+    },
+    {
+      "chunk_id": "PRN212-session-24",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 24",
+      "text": "Session 24 — GENAI: Applying Generative AI & Workflow CI/CD in .NET\nTài liệu: Slide\nNhiệm vụ sinh viên: - Read the slide",
+      "source_label": "Syllabus PRN212 — Session 24"
+    },
+    {
+      "chunk_id": "PRN212-session-25",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 25",
+      "text": "Session 25 — GENAI: Applying Generative AI & Workflow CI/CD in .NET (cont.)\nTài liệu: Slide\nNhiệm vụ sinh viên: - Read the slide",
+      "source_label": "Syllabus PRN212 — Session 25"
+    },
+    {
+      "chunk_id": "PRN212-session-26",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 26",
+      "text": "Session 26 — GENAI: Applying Generative AI & Workflow CI/CD in .NET (cont.)\nTài liệu: Slide\nNhiệm vụ sinh viên: - Read the slide",
+      "source_label": "Syllabus PRN212 — Session 26"
+    },
+    {
+      "chunk_id": "PRN212-session-27",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 27",
+      "text": "Session 27 — Progress Test 1\nTài liệu: Exam\nNhiệm vụ sinh viên: - Do Quiz",
+      "source_label": "Syllabus PRN212 — Session 27"
+    },
+    {
+      "chunk_id": "PRN212-session-28",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 28",
+      "text": "Session 28 — Project Review 01\nTài liệu: Project List\nNhiệm vụ sinh viên: - Gather Requirements\n- Use GenAI to help write UseCases and preliminary UI\n- Create diagrams using PlantUML\n- Upload diagrams + documentation to GitHub",
+      "source_label": "Syllabus PRN212 — Session 28"
+    },
+    {
+      "chunk_id": "PRN212-session-29",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 29",
+      "text": "Session 29 — Chapter 07: Building WPF Application\nTài liệu: https://learn.microsoft.com/en-us/dotnet/desktop/wpf/?view=netdesktop-8.0\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 29"
+    },
+    {
+      "chunk_id": "PRN212-session-30",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 30",
+      "text": "Session 30 — Chapter 07: Building WPF Application (cont.)\nTài liệu: https://learn.microsoft.com/en-us/dotnet/desktop/wpf/windows/?view=netdesktop-8.0\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 30"
+    },
+    {
+      "chunk_id": "PRN212-session-31",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 31",
+      "text": "Session 31 — Chapter 07: Building WPF Application (cont.)\nTài liệu: https://learn.microsoft.com/en-us/dotnet/desktop/wpf/windows/?view=netdesktop-8.1\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 31"
+    },
+    {
+      "chunk_id": "PRN212-session-32",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 32",
+      "text": "Session 32 — Chapter 07: Building WPF Application (cont.)\nTài liệu: https://learn.microsoft.com/en-us/dotnet/desktop/wpf/controls/styles-templates-overview?view=netdesktop-8.0\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 32"
+    },
+    {
+      "chunk_id": "PRN212-session-33",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 33",
+      "text": "Session 33 — Chapter 07: Building WPF Application (cont.)\nTài liệu: https://learn.microsoft.com/en-us/dotnet/desktop/wpf/controls/styles-templates-overview?view=netdesktop-8.1\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 33"
+    },
+    {
+      "chunk_id": "PRN212-session-34",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 34",
+      "text": "Session 34 — Chapter 07: Building WPF Application (cont.)\nTài liệu: https://learn.microsoft.com/en-us/dotnet/desktop/wpf/controls/styles-templates-overview?view=netdesktop-8.2\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 34"
+    },
+    {
+      "chunk_id": "PRN212-session-35",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 35",
+      "text": "Session 35 — Chapter 07: Building WPF Application (cont.)\nTài liệu: https://learn.microsoft.com/en-us/dotnet/desktop/wpf/data/?view=netdesktop-8.0\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 35"
+    },
+    {
+      "chunk_id": "PRN212-session-36",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 36",
+      "text": "Session 36 — Chapter 07: Building WPF Application (cont.)\nTài liệu: https://learn.microsoft.com/en-us/dotnet/desktop/wpf/data/?view=netdesktop-8.1\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 36"
+    },
+    {
+      "chunk_id": "PRN212-session-37",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 37",
+      "text": "Session 37 — Chapter 07: Building WPF Application (cont.)\nTài liệu: https://learn.microsoft.com/en-us/dotnet/desktop/wpf/data/?view=netdesktop-8.2\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 37"
+    },
+    {
+      "chunk_id": "PRN212-session-38",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 38",
+      "text": "Session 38 — Lab 1\nTài liệu: Lab 01\nNhiệm vụ sinh viên: - Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 38"
+    },
+    {
+      "chunk_id": "PRN212-session-39",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 39",
+      "text": "Session 39 — Assignment 1\nTài liệu: Assignment 01\nNhiệm vụ sinh viên: - Discuss assignment problems",
+      "source_label": "Syllabus PRN212 — Session 39"
+    },
+    {
+      "chunk_id": "PRN212-session-40",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 40",
+      "text": "Session 40 — Project Review 02\nTài liệu: Project List\nNhiệm vụ sinh viên: - WPF Project Setup\n- Layout and Logic Setup\n- Testing (Unit Test / UI Test)\n- Reporting and Reflecting on GenAI Usage",
+      "source_label": "Syllabus PRN212 — Session 40"
+    },
+    {
+      "chunk_id": "PRN212-session-41",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 41",
+      "text": "Session 41 — Chapter 08: Working with Databases Using Entity Framework Core\nTài liệu: Chapter 10. Working with Data Using Entity Framework Core (C# 12 and .NET 8 – Modern Cross-Platform Development Fundamentals)\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 41"
+    },
+    {
+      "chunk_id": "PRN212-session-42",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 42",
+      "text": "Session 42 — Chapter 08: Working with Databases Using Entity Framework Core (cont.)\nTài liệu: Chapter 10. Working with Data Using Entity Framework Core (C# 12 and .NET 8 – Modern Cross-Platform Development Fundamentals)\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 42"
+    },
+    {
+      "chunk_id": "PRN212-session-43",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 43",
+      "text": "Session 43 — Chapter 08: Working with Databases Using Entity Framework Core (cont.)\nTài liệu: Chapter 10. Working with Data Using Entity Framework Core (C# 12 and .NET 8 – Modern Cross-Platform Development Fundamentals)\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 43"
+    },
+    {
+      "chunk_id": "PRN212-session-44",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 44",
+      "text": "Session 44 — Chapter 08: Working with Databases Using Entity Framework Core (cont.)\nTài liệu: Chapter 10. Working with Data Using Entity Framework Core (C# 12 and .NET 8 – Modern Cross-Platform Development Fundamentals)\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 44"
+    },
+    {
+      "chunk_id": "PRN212-session-45",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 45",
+      "text": "Session 45 — Chapter 08: Working with Databases Using Entity Framework Core (cont.)\nTài liệu: https://learn.microsoft.com/en-us/ef/core/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 45"
+    },
+    {
+      "chunk_id": "PRN212-session-46",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 46",
+      "text": "Session 46 — Chapter 08: Working with Databases Using Entity Framework Core (cont.)\nTài liệu: https://learn.microsoft.com/en-us/ef/core/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 46"
+    },
+    {
+      "chunk_id": "PRN212-session-47",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 47",
+      "text": "Session 47 — Chapter 08: Working with Databases Using Entity Framework Core (cont.)\nTài liệu: https://learn.microsoft.com/en-us/ef/core/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 47"
+    },
+    {
+      "chunk_id": "PRN212-session-48",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 48",
+      "text": "Session 48 — Chapter 08: Working with Databases Using Entity Framework Core (cont.)\nTài liệu: https://learn.microsoft.com/en-us/ef/core/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 48"
+    },
+    {
+      "chunk_id": "PRN212-session-49",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 49",
+      "text": "Session 49 — Chapter 08: Working with Databases Using Entity Framework Core (cont.)\nTài liệu: https://learn.microsoft.com/en-us/ef/core/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 49"
+    },
+    {
+      "chunk_id": "PRN212-session-50",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 50",
+      "text": "Session 50 — Chapter 09: Working with Files and System.IO\nTài liệu: Chapter 9. Working with Files, Streams, and Serialization (C# 12 and .NET 8 – Modern Cross-Platform Development Fundamentals)\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 50"
+    },
+    {
+      "chunk_id": "PRN212-session-51",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 51",
+      "text": "Session 51 — Chapter 09: Working with Files and System.IO (cont.)\nTài liệu: Chapter 9. Working with Files, Streams, and Serialization (C# 12 and .NET 8 – Modern Cross-Platform Development Fundamentals)\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 51"
+    },
+    {
+      "chunk_id": "PRN212-session-52",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 52",
+      "text": "Session 52 — Chapter 09: Working with Files and System.IO (cont.)\nTài liệu: Chapter 9. Working with Files, Streams, and Serialization (C# 12 and .NET 8 – Modern Cross-Platform Development Fundamentals)\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 52"
+    },
+    {
+      "chunk_id": "PRN212-session-53",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 53",
+      "text": "Session 53 — Project Review 03\nTài liệu: Project List\nNhiệm vụ sinh viên: - Application Demo\n- Performance Reporting\n- Reflection on GenAI Usage and Teamwork",
+      "source_label": "Syllabus PRN212 — Session 53"
+    },
+    {
+      "chunk_id": "PRN212-session-54",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 54",
+      "text": "Session 54 — Chapter 10: Working with XML and JSON Serializing\nTài liệu: https://www.json.org/json-en.html\nhttps://learn.microsoft.com/vi-vn/dotnet/standard/serialization/system-text-json/overview\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 54"
+    },
+    {
+      "chunk_id": "PRN212-session-55",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 55",
+      "text": "Session 55 — Lab 2\nTài liệu: Lab 02\nNhiệm vụ sinh viên: - Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 55"
+    },
+    {
+      "chunk_id": "PRN212-session-56",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 56",
+      "text": "Session 56 — Assignment 2\nTài liệu: Assignment 02\nNhiệm vụ sinh viên: - Discuss assignment problems",
+      "source_label": "Syllabus PRN212 — Session 56"
+    },
+    {
+      "chunk_id": "PRN212-session-57",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 57",
+      "text": "Session 57 — Progress Test 2\nTài liệu: Exam\nNhiệm vụ sinh viên: - Do Quiz",
+      "source_label": "Syllabus PRN212 — Session 57"
+    },
+    {
+      "chunk_id": "PRN212-session-58",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 58",
+      "text": "Session 58 — Chapter 11: Introduction to Concurrency Programming\nTài liệu: https://learn.microsoft.com/en-us/dotnet/standard/threading/threads-and-threading\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 58"
+    },
+    {
+      "chunk_id": "PRN212-session-59",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 59",
+      "text": "Session 59 — Chapter 11: Introduction to Concurrency Programming (cont.)\nTài liệu: https://learn.microsoft.com/en-us/dotnet/standard/threading/threads-and-threading\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 59"
+    },
+    {
+      "chunk_id": "PRN212-session-60",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 60",
+      "text": "Session 60 — Chapter 11: Introduction to Concurrency Programming (cont.)\nTài liệu: https://learn.microsoft.com/en-us/dotnet/standard/threading/the-managed-thread-pool\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus PRN212 — Session 60"
+    },
+    {
+      "chunk_id": "PRN212-session-61",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 61",
+      "text": "Session 61 — Project Evaluation\nNhiệm vụ sinh viên: Group Presentation",
+      "source_label": "Syllabus PRN212 — Session 61"
+    },
+    {
+      "chunk_id": "PRN212-session-62",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 62",
+      "text": "Session 62 — Project Evaluation\nNhiệm vụ sinh viên: Group Presentation",
+      "source_label": "Syllabus PRN212 — Session 62"
+    },
+    {
+      "chunk_id": "PRN212-session-63",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 63",
+      "text": "Session 63 — Project Evaluation\nNhiệm vụ sinh viên: Group Presentation",
+      "source_label": "Syllabus PRN212 — Session 63"
+    },
+    {
+      "chunk_id": "PRN212-session-64",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 64",
+      "text": "Session 64 — Project Evaluation\nNhiệm vụ sinh viên: Group Presentation",
+      "source_label": "Syllabus PRN212 — Session 64"
+    },
+    {
+      "chunk_id": "PRN212-session-65",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 65",
+      "text": "Session 65 — Project Evaluation\nNhiệm vụ sinh viên: Group Presentation",
+      "source_label": "Syllabus PRN212 — Session 65"
+    },
+    {
+      "chunk_id": "PRN212-session-66",
+      "subject_code": "PRN212",
+      "subject_name": "Basis Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng cơ bản với .NET",
+      "section": "Session 66",
+      "text": "Session 66 — Project Evaluation\nNhiệm vụ sinh viên: Group Presentation",
+      "source_label": "Syllabus PRN212 — Session 66"
+    }
+  ]
+}

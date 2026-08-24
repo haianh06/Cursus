@@ -1,0 +1,160 @@
+# Cursus — Architecture Decision Records (ADR)
+
+> Định dạng theo đúng quy trình đã đặt ra ở `docs/archive/planning-v2/04-Cursus-Terminology.md` PHẦN A.3: mỗi quyết định ghi 3 dòng — **Quyết định / Vì sao / Đánh đổi** — ngay khi chốt, không chờ viết lại cuối kỳ. File này gom các quyết định đã có sẵn lý do rải rác trong `06`/`02`/`00` vào đúng 1 chỗ tra cứu nhanh khi bị hỏi "ai quyết, lúc nào, đánh đổi gì". Thêm ADR mới bằng cách copy khối template ở cuối file.
+
+---
+
+### ADR-001 — Dùng Supabase cho DB + Auth + Storage (thay Railway Postgres tự viết Auth)
+- **Ngày:** trước 07/08/2026 · **Trạng thái:** Đã chốt
+- **Quyết định:** Gộp Database (Postgres + pgvector), Auth, Storage vào Supabase thay vì tự quản Postgres trên Railway + tự viết Auth bằng NextAuth.js.
+- **Vì sao:** pgvector bật sẵn 1 click; Auth có sẵn 20+ social provider; Row Level Security chặn sai quyền ở tầng DB (an toàn hơn tự check ở code); free tier không giới hạn thời gian. Xem so sánh đầy đủ ở `06` mục 1.
+- **Đánh đổi:** Supabase không chạy được Python/LangGraph — vẫn phải giữ Railway riêng cho phần backend compute; free tier tự tạm dừng project sau 7 ngày không ai truy cập (đã xử lý bằng cách khuyến nghị nâng Supabase Pro trước lúc nộp bài, `06` mục 2.2).
+
+### ADR-002 — Dùng Google Gemini làm nhà cung cấp LLM + Embedding chính (không phải OpenAI/Anthropic)
+- **Ngày:** trước 07/08/2026, cập nhật tên model 10/08/2026 · **Trạng thái:** Đã chốt, cần re-verify định kỳ
+- **Quyết định:** Toàn bộ LLM (Plan/Q&A/Guardrail/Reflect/Judge) + embedding dùng Google Gemini API — hiện tại `gemini-2.5-flash-lite` (việc rẻ), `gemini-2.5-flash` (việc nặng), `gemini-embedding-001` (embedding, cắt 768 chiều bằng MRL).
+- **Vì sao:** rẻ nhất trong 3 nhà cung cấp đã so sánh + free tier hào phóng nhất + 1 API key dùng chung cho cả LLM và embedding (giảm số hệ thống phải quản). So sánh chi phí đầy đủ ở `06` mục 1.5.
+- **Đánh đổi:** rate limit free tier chặt hơn OpenAI (ảnh hưởng NFR-1 khi load test); tên/giá model đổi rất nhanh (dòng `gemini-1.5-*` và `text-embedding-004` dùng ở bản docs đầu tiên đã ngừng hoạt động thật chỉ vài tháng sau — **bài học: không hardcode tên model version cụ thể quá lâu mà không có kế hoạch re-verify**, xem ADR-006). Fallback OpenAI `gpt-4o-mini` qua LiteLLM/OpenRouter nếu Gemini downtime (`02-SRS.md` mục 4.1).
+
+### ADR-003 — KHÔNG tạo repo riêng thứ 2 — deploy thủ công qua CLI trên chính repo BTC cấp
+- **Ngày quyết định gốc:** trước 09/08/2026 · **Ngày đảo quyết định:** 11/08/2026 · **Trạng thái:** Đã chốt (bản mới, thay thế bản "2 remote Git" bên dưới)
+- **Quyết định:** Repo local chỉ giữ 1 remote duy nhất (`origin` = repo BTC cấp, `AI20K-Build-Phase-Cohort-3/P-093`). **Không tạo repo riêng thứ 2, không kết nối GitHub App của Vercel/Railway/Supabase vào bất kỳ repo nào.** Toàn bộ migration (`alembic upgrade head`) và deploy (`vercel --prod`, `railway up`) chạy bằng CLI thủ công, trỏ thẳng vào connection string/project của Supabase/Railway — không phụ thuộc GitHub auto-deploy.
+- **Vì sao:** Bản quyết định "2 remote" (xem lịch sử bên dưới) từng đúng về mặt kỹ thuật (tạo repo riêng có admin thật sẽ cho auto-deploy chạy lại bình thường), nhưng khi cân nhắc lại ngày 11/08 thấy **chi phí vận hành cao hơn lợi ích** với quy mô team 4 người, thời gian gấp (nộp 23/08): (1) auto-deploy khi push chỉ tiết kiệm vài giây gõ lệnh CLI, không phải tính năng bắt buộc để deploy được; (2) rủi ro thao tác 2 remote (quên push 1 trong 2 nơi, lỡ `--force`/squash sang repo BTC làm mất lịch sử) là rủi ro có thật, từng xảy ra kiểu lỗi tương tự trong team; (3) Supabase Data API/Auth/DB connection hoạt động đầy đủ mà không cần biết gì về GitHub cả — tính năng "Connect to GitHub" của Supabase chỉ phục vụ migration-sync/preview branch, không dùng tới ở quy mô đồ án này.
+- **Đánh đổi:** mất tính năng auto-deploy khi push (Vercel preview URL tự động mỗi PR, Railway/Supabase tự chạy migration khi merge) — chấp nhận được vì team không có nhu cầu preview PR thật sự. Nếu về sau thấy CLI thủ công phiền (quên deploy, quên chạy migration), có thể quay lại bản "2 remote" bên dưới bất cứ lúc nào — không phải quyết định một chiều.
+
+<details>
+<summary>Lịch sử — bản quyết định cũ "2 remote Git" (trước 11/08/2026, không còn áp dụng, giữ lại để biết vì sao từng nghĩ vậy)</summary>
+
+- **Quyết định cũ:** Clone từ repo BTC làm gốc, đổi tên remote gốc thành `btc`, thêm remote `origin` là repo riêng của team có toàn quyền admin, mỗi lần push đẩy cả 2 nơi. Vercel/Railway/Supabase connect GitHub App vào `origin` (repo riêng) để auto-deploy.
+- **Vì sao từng chọn:** repo BTC private, team không có quyền admin để cấp OAuth cho Vercel/Railway/Supabase kết nối CI/CD trực tiếp vào nó — 2 remote là cách kỹ thuật đúng để vừa giữ lịch sử trên repo BTC vừa có auto-deploy thật.
+- **Vì sao đảo lại:** chưa từng thực thi thật (repo local tới 11/08/2026 vẫn chỉ có 1 remote) — tức là docs ghi "Đã chốt" nhưng thực tế không ai làm, và khi rà lại thấy lý do ban đầu (muốn auto-deploy) không đáng chi phí vận hành 2 remote ở quy mô team này.
+
+</details>
+
+### ADR-004 — Reranker bắt buộc từ Gate 2 (không vá sau ở Mốc 3)
+- **Ngày:** trước 09/08/2026 · **Trạng thái:** Đã chốt
+- **Quyết định:** Pipeline retrieval (Plan + Q&A) dùng pgvector top-k=5 rồi rerank bằng `bge-reranker-v2-m3` (qua HuggingFace Inference API) xuống top-3, làm ngay từ Gate 2.
+- **Vì sao:** naive RAG (chỉ cosine similarity) không đủ khi SV diễn đạt mục tiêu khác cách viết trong syllabus — đây là điều kiện bắt buộc để đạt PLO3 ("vượt naive RAG"), không phải điểm cộng tuỳ chọn.
+- **Đánh đổi:** thêm ~200-500ms latency mỗi request (chấp nhận được, vẫn trong ngưỡng NFR-1 ≤5s); phụ thuộc thêm 1 dịch vụ ngoài (HF Inference API) có thể rate-limit/cold-start — có phương án dự phòng mua Inference Endpoint riêng nếu cần chắc chắn lúc demo (`06` mục 2.2).
+
+### ADR-005 — Mock LMS API thay vì tích hợp Canvas/LTI 1.3 thật
+- **Ngày:** trước 07/08/2026 · **Trạng thái:** Đã chốt là giới hạn có chủ đích (Won't), Mock LMS API là Should ở Mốc 3
+- **Quyết định:** Không tích hợp LTI 1.3/Canvas API thật. Dữ liệu curriculum lấy từ FLM (LMS nội bộ FPT, không có API mở) qua quy trình export Word → `flm_parser.py` → JSON. Ở Mốc 3 (Should), bọc thêm 1 router API nội bộ (`/mock-lms/v1/...`) để mô phỏng đúng kiểu client-server mà tích hợp thật sẽ dùng.
+- **Vì sao:** LTI 1.3 thật (SSO, deep linking, OAuth) cần tư cách pháp nhân + tích hợp trường thật — ngoài tầm 1 đồ án trong 14 ngày. FLM không có API mở nên "đọc từ Canvas hoặc dữ liệu mô phỏng" (đề bài EDU-01 cho phép) áp dụng ở nhánh mô phỏng.
+- **Đánh đổi:** không đạt được phần "tích hợp Canvas LMS thật qua LTI 1.3" ở mức nâng cao nhất của đề bài — ghi rõ đây là quyết định có chủ đích trong hồ sơ bàn giao/risk register, không phải thiếu sót, kèm câu trả lời chuẩn bị sẵn khi bị hỏi (`04-Terminology.md` mục "Canvas LMS vs FLM").
+
+### ADR-006 — Không hardcode tên model AI trong docs mà không có mốc re-verify
+- **Ngày:** 10/08/2026 · **Trạng thái:** Đã chốt (bài học rút ra sau khi phát hiện gap)
+- **Quyết định:** Mọi chỗ trong docs ghi tên model cụ thể (Gemini, reranker, embedding...) phải kèm 1 dòng nhắc "kiểm tra lại tại nguồn chính thức trước khi code" thay vì coi tên model là cố định vĩnh viễn.
+- **Vì sao:** phát hiện ngày 10/08/2026 rằng `gemini-1.5-flash`/`gemini-1.5-pro`/`text-embedding-004` dùng trong bản docs trước đó đã ngừng hoạt động thật (dòng 1.5 shutdown, `text-embedding-004` shutdown từ 14/01/2026) — nghĩa là tên model trong docs không được tra cứu thật tại thời điểm viết, chỉ là tên quen thuộc. Rủi ro: code theo đúng docs sẽ lỗi 404 ngay từ lần gọi API đầu tiên.
+- **Đánh đổi:** tốn thêm 1 bước xác minh thủ công trước mỗi lần code liên quan tới model — chấp nhận được vì chi phí xác minh (~5 phút) thấp hơn nhiều so với rủi ro code sai model rồi phát hiện lúc gấp deadline.
+
+### ADR-007 — B2B2C pivot: xoá public self-registration, thêm invite-only provisioning + sandbox tenant riêng
+- **Ngày:** 12/08/2026 · **Trạng thái:** Đã chốt, đã triển khai
+- **Quyết định:** Cursus không còn cho phép ai tự tạo tài khoản (kể cả Student). Tài khoản thật chỉ được tạo qua lời mời của Admin (`org_invites`, kích hoạt ở `/accept-invite`) hoặc qua script provisioning (`provision_organization.py`, tạo tổ chức mới + Admin đầu tiên). Người muốn dùng thử không cần tài khoản: `/demo/select-role` đăng nhập tạm thời vào 1 trong 3 tài khoản mẫu trong tổ chức cô lập riêng "Cursus Demo University" (bảng `organizations`, `kind=sandbox`) — không phải cờ mô phỏng gắn lên dữ liệu thật. Google OAuth chỉ xác thực tài khoản đã tồn tại, không tự tạo tài khoản mới nữa (đóng lỗ hổng tự đăng ký ẩn).
+- **Vì sao:** đúng mô hình B2B2C đã ghi trong PRD (bán cho Phòng Đào tạo, không thu phí SV trực tiếp) — nhưng luồng auth cũ (self-registration mở cho Student) mâu thuẫn với điều đó. Nghiên cứu Canvas/Moodle/Google Classroom/Schoology/Coursera for Campus/Microsoft Education (chi tiết ở `10-Cursus-Auth-Onboarding-Sandbox-Spec.md`) cho thấy không nền tảng nào cho tự đăng ký Teacher/Admin, và cô lập demo luôn ở mức tenant riêng, không phải flag UI.
+- **Đánh đổi:** thêm 4 bảng mới + `organization_id` trên 4 bảng gốc (`users`/`courses`/`programs`/`curriculum_versions`), migration chạy thật trên DB Supabase (additive, có backfill, có rollback — xem `11-Cursus-ERD-Multitenancy.md`). RLS được bật nhưng **không có tác dụng thật** vì role kết nối DB hiện tại có `BYPASSRLS` — enforcement thật nằm ở tầng ứng dụng, ghi rõ là gap đã biết, không che giấu. Chưa xây CSV/SIS roster import, org switcher, billing — cố ý để dành cho roadmap, tránh làm chậm các yêu cầu nâng cao khác của BTC (eval pipeline, guardrail, HITL, monitoring, load test).
+
+### ADR-008 — Kết hợp 2 kiến trúc guardrail độc lập (intent-classification + rule engine DB-backed) thay vì chọn 1
+
+- **Ngày:** 13/08/2026 · **Trạng thái:** Đã chốt, đã triển khai
+- **Quyết định:** Giữ cả 2 lớp guardrail xây độc lập trên 2 nhánh: (1) bộ phân loại ý định (intent-classification taxonomy) chặn theo mẫu câu "làm hộ bài" ở tầng service, và (2) rule engine backed bởi DB, Admin bật/tắt được qua Admin Console. Không bỏ cái nào để chỉ giữ 1 kiến trúc "chuẩn hơn".
+- **Vì sao:** 2 kiến trúc phục vụ 2 yêu cầu bắt buộc khác nhau (nay ở `docs/PROJECT_CONTEXT.md` mục 14): §3.3 (Admin cần kiểm soát/bật-tắt rule được, không hardcode) đòi hỏi rule engine DB-backed; §4.2 (guardrail matrix — chặn đúng loại yêu cầu "làm hộ bài" đa dạng cách diễn đạt) đòi hỏi phân loại ý định linh hoạt hơn rule tĩnh. Không kiến trúc nào một mình thoả cả 2 — intent-classification không có chỗ cho Admin chỉnh sửa runtime, rule engine tĩnh không đủ linh hoạt bắt hết biến thể ý định.
+- **Đánh đổi:** 2 lớp guardrail chạy nối tiếp thêm độ trễ nhỏ mỗi request, và có bề mặt code lớn hơn 1 hệ thống duy nhất (2 nơi cần bảo trì khi thêm rule mới). Chấp nhận được vì mỗi lớp là bắt buộc theo đúng 1 phần yêu cầu riêng, không phải trùng lặp thừa.
+
+### ADR-009 — Giữ endpoint `/google-login` trong `src/api/auth.py` (không xoá như nhánh `develop` đã làm)
+
+- **Ngày:** 13/08/2026 · **Trạng thái:** Đã chốt, đã triển khai
+- **Quyết định:** Trong lúc hợp nhất `develop` vào `haidang2425`, giữ lại endpoint `POST /google-login` (`src/api/auth.py`) thay vì xoá theo đúng bản trên `develop`.
+- **Vì sao:** Cursus hiện chạy song song 2 luồng vào ứng dụng — tài khoản thật (invite-only, B2B2C, xem ADR-007) và sandbox demo (`/demo/select-role`, 3 tài khoản mẫu). `/google-login` phục vụ đúng luồng xác thực nhanh cho demo/sandbox Gate 2 khi chưa cần luồng invite đầy đủ — hữu ích cho giám khảo/mentor test nhanh mà không cần được Admin mời trước.
+- **Đánh đổi:** endpoint không hoàn toàn khớp mô hình B2B2C thuần (Google OAuth chỉ xác thực tài khoản đã tồn tại, không tự tạo mới — đã đóng lỗ hổng tự đăng ký ẩn theo ADR-007) — cần rà lại trước Mốc 3 xem có nên giới hạn thêm phạm vi dùng endpoint này (chỉ tổ chức sandbox) hay không.
+
+### ADR-010 — Hợp nhất 90 commit của `origin/develop` vào `haidang2425` bằng cách reconcile thủ công từng file, không dùng `git merge`/rebase
+
+- **Ngày:** 13/08/2026 · **Trạng thái:** Đã chốt, đã triển khai
+- **Quyết định:** Tích hợp toàn bộ 90 commit backend/frontend từ `origin/develop` vào `haidang2425` bằng cách đọc và reconcile thủ công từng file bị đổi ở cả 2 bên, thay vì chạy `git merge origin/develop` hoặc `git rebase`.
+- **Vì sao:** nhiều file lõi bị viết lại toàn bộ độc lập trên cả 2 nhánh (routing shell `App.jsx`, `AdminConsole.jsx`, `InstructorHome.jsx`, `StudentHome.jsx`, `StudentReflection.jsx`) — merge tự động sẽ tạo conflict marker dày đặc hoặc (tệ hơn) merge "sạch" nhưng lẫn lộn 2 phiên bản logic không tương thích, không ai review nổi để biết bản merge có đúng không. Đọc thủ công từng file cho phép quyết định có chủ đích: giữ UI/UX của `haidang2425`, nối vào backend thật + các phần chưa có của `develop`.
+- **Đánh đổi:** tốn nhiều thời gian hơn hẳn so với `git merge` một lệnh; lịch sử commit sau khi hợp nhất không giữ được đồ thị merge tự nhiên (không có merge commit nối 2 nhánh theo đúng nghĩa Git) — bù lại bằng cách ghi rõ trong `WORKLOG.md`/`JOURNAL.md`/ADR này quá trình đã làm gì, để không mất dấu vết quyết định.
+
+### ADR-011 — Correction to ADR-010's scope: `develop` is a different product (Semester/Practice-Set), not merged; only UI shells + retrieval design were reused
+
+- **Ngày:** 13/08/2026 · **Trạng thái:** Đã chốt, đã triển khai
+- **Quyết định:** Sau khi đọc trực tiếp `git diff --stat haidang2425 origin/develop` (313 files, ~32.7k dòng) thay vì tin theo mô tả sẵn có, xác nhận `develop` **không phải** một phiên bản backend tương đương có thể hợp nhất — nó implement một sản phẩm khác (Semester + Practice-Set + Companion-chat, `semester_service.py`/`practice_generator.py`/`web_search_service.py`...), không có Plan-Do-Reflect, không có bảng `Organization`/`organization_id` ở đâu cả, và có Alembic migration chain rẽ nhánh (trùng revision id `20260813_guardrail_rules` với `down_revision` khác nhau — không mergeable bằng `git merge`). Quyết định: **không** đụng tới file backend của `develop`. Chỉ (a) đọc thiết kế `retrieval_service.py`/`embedding_service.py` của `develop` rồi viết lại (không copy) trên schema DB-backed của `haidang2425` (bối cảnh gốc từng ở `docs/discovery/05_DEVELOP_FEATURE_SPEC.md`, đã gộp/xoá 15/08/2026 — tra `git log --all --full-name -- "docs/discovery/05_DEVELOP_FEATURE_SPEC.md"` nếu cần nguyên văn), và (b) UI shell `AdminConsole.jsx`/`InstructorHome.jsx` port từ trước (`be5a389`) chỉ đưa qua phần trình bày/UX — phần data-plumbing thật (nối API) được code mới hoàn toàn trong `haidang2425` (xem checkpoint wiring 13/08/2026), không lấy từ `develop` (`develop` cũng chưa từng wire 2 màn này).
+- **Vì sao:** ADR-010 mô tả việc "hợp nhất 90 commit" theo cách khiến người đọc hiểu là toàn bộ backend `develop` đã được đối chiếu/đưa vào — không chính xác cho phần Semester/Practice-Set (không áp dụng cho Gate2, sai schema) và cho phần Admin/Instructor wiring (chưa từng tồn tại ở bên nào). Commit `be5a389` cũng tự mô tả là "live-wired versions (real CRUD/KPI/guardrail-rules data)" trong khi thực tế `CursusContext.jsx` vẫn 100% mock tại thời điểm đó — cả 2 mô tả đều cần đính chính để tài liệu quyết định không tự mâu thuẫn với code thật.
+- **Đánh đổi:** Không có tính năng Semester/Practice-Set/Companion-chat trong `haidang2425` — nếu về sau BTC/PLO yêu cầu các tính năng đó, phải build mới trên schema hiện tại (có `organization_id`), không thể copy trực tiếp từ `develop`.
+
+### ADR-012 — LangGraph `/api/v1/chat` route giữ nguyên là dead-end, không xoá và không wire vào QA flow
+
+- **Ngày:** 13/08/2026 · **Trạng thái:** Đã chốt (giữ nguyên hiện trạng — no-op quyết định)
+- **Quyết định:** `src/agents/graph.py` (2-node skeleton) tiếp tục được đăng ký ở `POST /api/v1/chat` qua `src/api/routes.py`, nhưng **không** có nơi nào trong frontend gọi route này (xác minh bằng grep, đúng cho cả `haidang2425` và `develop`). Quyết định là giữ nguyên hiện trạng — không xoá route (rẻ, không hại), không wire nó vào QA flow thật (`QaAnswerService` đã có pattern LLM-with-fallback riêng, hoạt động tốt, wire LangGraph vào đó là việc lớn không cần thiết cho Gate 2).
+- **Vì sao:** Route hiện tại không hỏng gì (chỉ là dư thừa/không dùng), sửa nó không nằm trong scope "Balanced" đã duyệt (wire Instructor/Admin + RAG + LLM Plan/Reflection). Nếu reviewer hỏi về kiến trúc "Multi-Agent"/PLO-1, câu trả lời chuẩn: `src/agents/` là kiến trúc tham chiếu chưa dùng trong luồng sản phẩm chính — QA/Plan/Reflect dùng LLM-with-fallback theo pattern trong `qa_answer_service.py`/`plan_builder.py`/`reflection_engine.py`, không phải agent-loop.
+- **Đánh đổi:** `requirements.txt` vẫn có `langgraph` mà không có luồng sản phẩm nào thật sự chạy qua nó — chấp nhận được, giữ đúng tinh thần "không mặc định recommendation là mệnh lệnh": việc build 1 agent-loop thật cho QA là quyết định sản phẩm cần approval riêng, không tự làm.
+
+### ADR-013 — Correction: Supabase RLS policies exist in the migration nhưng bị bypass bởi DB role hiện tại — enforcement thật vẫn ở tầng ứng dụng
+
+- **Ngày:** 13/08/2026 · **Trạng thái:** Ghi nhận gap đã biết (kế thừa từ ADR-007, không phải quyết định mới)
+- **Quyết định:** Không có hành động code nào ở đây — ghi lại rõ ràng để tránh lặp lại nhầm lẫn: `migrations/20260812_organizations_and_tenancy.py` có `ENABLE ROW LEVEL SECURITY` + `CREATE POLICY org_isolation_*` thật trên các bảng liên quan, NHƯNG (theo ADR-007, đánh đổi đã ghi từ trước) role Postgres mà app dùng để kết nối có `BYPASSRLS`, nên các policy này **không có tác dụng thực thi thật** — cách ly tenant vẫn phụ thuộc vào filter `organization_id` ở tầng ứng dụng (đã vá lỗ hổng insert thiếu `organization_id` ở commit `0dc036e`).
+- **Vì sao ghi lại:** trong quá trình đọc lại discovery docs, dễ hiểu nhầm là "RLS đã bật = an toàn multi-tenant ở tầng DB" chỉ vì thấy `CREATE POLICY` trong migration — cần đọc thêm ADR-007 mục Đánh đổi để biết role hiện tại bypass nó. Ghi lại ở đây để lần đọc sau không lặp lại nhầm lẫn này.
+- **Đánh đổi:** Không đổi gì so với ADR-007 đã chấp nhận — nếu muốn RLS có tác dụng thật, cần tạo DB role riêng cho app không có `BYPASSRLS`, việc này ngoài phạm vi checkpoint hôm nay.
+
+### ADR-014 — Xác nhận chính thức phương án deploy: Vercel + Railway + Supabase, không dùng VPS Docker Compose
+
+- **Ngày:** 13/08/2026 · **Trạng thái:** Đã chốt, đã triển khai (thay thế `docs/decisions/deploy-platform-comparison.md`, đã gộp/xoá sau khi ADR hoá)
+- **Quyết định:** Xác nhận lại (không phải quyết định mới) phương án đã ngầm định trong ADR-001/ADR-003: **Vercel (frontend) + Railway (backend) + Supabase (DB/Auth/Storage)**, deploy thủ công qua CLI (`vercel --prod`, `railway up`), không auto-deploy qua GitHub App. `DEPLOY.md` (mô tả VPS Docker Compose tự quản) là tài liệu lạc hậu — `docker-compose.prod.yml`/`.env.production.example` mà nó trỏ tới đã bị xoá khỏi repo, cần viết lại `DEPLOY.md` cho khớp.
+- **Vì sao:** đọc trực tiếp bằng chứng trong repo (ADR-001/003, `docker-compose.yml` sửa 13/08 chỉ còn service `backend` không có `frontend`, comment "Production DB/Auth is Supabase-managed Postgres") xác nhận 1 hướng duy nhất đã được thực thi một phần. So với VPS (cần tự quản OS/TLS, rủi ro cao khi gấp deadline) và Render (free tier cold-start 30-60s, DB hết hạn 30 ngày), phương án Vercel+Railway+Supabase có thời gian hoàn tất thấp nhất tính từ 13/08/2026 vì hạ tầng dev đã dùng sẵn Supabase.
+- **Đánh đổi:** cần xử lý cookie cross-site (`SameSite=None; Secure`, vì FE/BE khác domain — mặc định code là `Lax`/`Strict`), `frontend/vercel.json` cần có mặt trên đúng nhánh deploy (từng chỉ tồn tại ở nhánh khác), `VITE_API_URL` nhúng cứng lúc build nên đổi backend URL phải rebuild frontend, và Supabase free tier tự pause sau 7 ngày không truy cập — cần nâng Pro trước khi nộp Mốc 3. Chi tiết checklist ở `docs/PROJECT_CONTEXT.md` mục 20.
+
+### ADR-015 — Load test 1.000 kết nối đồng thời mặc định nhắm vào Docker Postgres local, không phải Supabase/Railway
+
+- **Ngày:** 15/08/2026 · **Trạng thái:** Đã chốt
+- **Quyết định:** Bộ load test (`loadtest/locustfile.py`, Locust — chọn vì cùng ngôn ngữ Python với toàn bộ backend/test suite hiện có, không cần cài thêm binary ngoài như k6) mặc định chạy nhắm vào backend + Postgres **local qua Docker** (`docker compose --profile local-db up -d db`, connection string `postgresql://cursus:cursus@localhost:5432/cursus` — profile này đã có sẵn trong `docker-compose.yml`, không tạo file compose mới). Muốn nhắm vào bản deploy thật (Railway/Vercel) phải được xác nhận rõ ràng bằng lời trước mỗi lần, không tự đổi `--host`.
+- **Vì sao:** Supabase đang dùng ở tier free (ADR-001 mục "Đánh đổi" đã cảnh báo tự pause sau 7 ngày không dùng) và Railway cũng ở quy mô nhỏ cho demo — nhắm 1.000 kết nối đồng thời trực tiếp vào 2 dịch vụ này có rủi ro thật: vượt connection limit/rate limit, tốn phí ngoài dự kiến, hoặc làm hỏng state dữ liệu demo đang cần nguyên vẹn cho Demo Day. Test trên Postgres local cho số liệu về code/kiến trúc backend (connection pool, N+1 query, độ trễ tầng ứng dụng) — đúng thứ cần đo để tìm bottleneck — mà không đặt cược vào hạ tầng dùng chung cho việc nộp bài.
+- **Đánh đổi:** số liệu đo được (p50/p95/p99, throughput) sẽ khác con số thật trên Railway/Supabase (network latency, connection pooler riêng của Supabase, cấu hình phần cứng khác máy dev) — không dùng số liệu local để tuyên bố "hệ thống chịu được 1.000 user thật trên production", chỉ dùng để tìm bottleneck ở tầng code/kiến trúc và làm baseline so sánh trước/sau khi tối ưu. Nếu cần con số production thật, phải chạy thêm 1 lượt nhắm vào bản deploy thật với quy mô nhỏ dần (xem `loadtest/README.md` mục 6), có xác nhận trước.
+
+### ADR-016 — Mock LMS là 1 app/DB/OAuth hoàn toàn riêng biệt, không phải route nội bộ giả lập
+
+- **Ngày:** 22/08/2026 · **Trạng thái:** Đã chốt, đã triển khai
+- **Quyết định:** Xây Mock LMS (đóng vai Canvas) như 1 hệ thống ngoài thật — app riêng, SQLite riêng, OAuth thật, UI quản trị riêng (sửa deadline/assignment, HTTP Basic Auth) — thay vì chỉ thêm 1 router nội bộ dùng chung DB/session với Cursus như `src/api/canvas_routes.py` (route cũ, đã tắt) từng làm.
+- **Vì sao:** `canvas_routes.py` khi audit lại (20/08) xác nhận không đáp ứng đúng yêu cầu mục 6.6 — cùng DB, auth session nội bộ, không phải OAuth, không UI riêng, không ai gọi. Mục tiêu là chứng minh Cursus tích hợp được với **1 hệ thống ngoài thật**, không phải mô phỏng bằng cách đọc thẳng dữ liệu tĩnh hoặc gọi nội bộ giả danh "API ngoài".
+- **Đánh đổi:** tốn công dựng thêm 1 app/DB/deploy riêng (thay vì tái dùng hạ tầng có sẵn); phạm vi REST API + OAuth là baseline, LTI 1.3 launch đầy đủ vẫn là stretch goal riêng chưa làm (ADR-005 vẫn đúng cho phần LTI). Đánh đổi được chấp nhận vì đây đúng là điểm khác biệt để tránh bị đánh giá "chỉ đọc file JSON giả lập Canvas".
+
+### ADR-017 — Trace `llm_success`/`fallback_used`/`retrieval_empty`: JSON column theo từng service (Option B), không tái dùng `RAGTrace`/`LLMUsageEvent`
+
+- **Ngày:** 22/08/2026 · **Trạng thái:** Đã chốt, đã triển khai
+- **Quyết định:** Không tái dùng 2 bảng có sẵn `RAGTrace`/`LLMUsageEvent` (dead schema từ 1 kiến trúc "unified orchestrator" đã xoá). Thay vào đó: `plan_builder.py` ghi 4 field trace vào `WeeklyPlan.goals` (JSON có sẵn), `reflection_engine.py` ghi vào `WeeklyReflection.metrics` (JSON có sẵn) — cả 2 zero-migration. `qa_answer_service.py` (không có session/row riêng của chính nó) ghi 1 dòng structured log thay vì DB, dùng chung cho cả 2 caller (Companion chat + route `/api/v1/qa` độc lập).
+- **Vì sao:** `RAGTrace.message_id`/`LLMUsageEvent.message_id` là FK NOT NULL trỏ `messages.id`, nhưng `plan_builder.py`/`reflection_engine.py` không hề có quan hệ gì với `Message`/`Conversation` trong toàn bộ call chain (object graph của chúng là `Assignment→WeeklyPlan→...→WeeklyReflection`, hoàn toàn tách biệt) — tái dùng đúng như định hướng ban đầu không khả thi cho 2/3 service mà không nới lỏng FK (đổi ý nghĩa gốc của bảng) hoặc xây bảng mới. Chi tiết điều tra đầy đủ: `docs/PENDING_DECISIONS.md` #1.
+- **Đánh đổi:** trace nằm rải rác ở 3 nơi khác nhau (2 JSON column + 1 log line) thay vì 1 bảng tập trung — nếu sau này cần dashboard/eval đọc trace *xuyên cả 3 service trong 1 truy vấn*, cần thêm 1 lớp tổng hợp riêng (đọc từ 2 JSON column + parse log), không có sẵn 1 bảng SQL để `JOIN`/`GROUP BY` trực tiếp. `RAGTrace`/`LLMUsageEvent` chính thức là dead schema vĩnh viễn cho mục đích này — không tự ý "dọn dẹp xoá" nếu chưa xác nhận không còn dùng nơi khác.
+
+### ADR-018 — LLM08 document content validation: FLAG không REJECT khi ingest
+
+- **Ngày:** 22/08/2026 · **Trạng thái:** Đã chốt, đã triển khai
+- **Quyết định:** `document_content_validator.py` (rule-based, tái dùng pattern nhóm `PROMPT_INJECTION` của `guardrail_rules.py`) chạy ở cả 2 đường ingest tài liệu (student upload + admin ingest), sau khi trích xuất text, trước khi chia chunk. Khi phát hiện pattern đáng ngờ (dòng `SYSTEM:` giả, "act as"/"pretend to be"/"developer mode"...): **ghi cờ** vào `Document.metadata_info` (`content_flagged`, `content_flags`) + log cảnh báo, **không** tự động từ chối/chặn việc ingest.
+- **Vì sao:** reject tự động có rủi ro false-positive cao với nội dung học thuật hợp lệ — xác nhận thật bằng 1 case cụ thể: pattern gốc "api key" từng khớp nhầm 1 session syllabus SBA301 trỏ tới tutorial Spring Boot có URL chứa "api-key-secret" (đã loại pattern đó khỏi phạm vi quét tài liệu, chỉ giữ cho guardrail chat trực tiếp). Một tài liệu môn học hợp lệ bị admin/giảng viên từ chối oan gây gián đoạn quy trình nạp curriculum thật — chi phí đó cao hơn rủi ro để lọt 1 tài liệu chứa injection nhẹ (vẫn có lớp phòng thủ thứ 2 ở tầng prompt khi trả lời, `qa_v1.md` rule 8).
+- **Đánh đổi:** chưa có UI riêng "duyệt tài liệu bị gắn cờ" cho Admin (dữ liệu cờ đã có sẵn trong `metadata_info`/API response, đủ để xây UI sau mà không cần đổi schema) — hiện tại xem cờ phải đọc log server hoặc query trực tiếp `metadata_info->>'content_flagged'`. Nội dung độc hại thật sự vẫn được ingest và có thể bị embed — chấp nhận được vì mục tiêu là *phát hiện được và ghi log*, không phải chặn tuyệt đối ở bước này.
+
+### ADR-019 — Không merge/cherry-pick nguyên khối 88 commit từ `origin/main` — audit rồi viết mới độc lập
+
+- **Ngày:** 21/08/2026 · **Trạng thái:** Đã chốt (không hỏi lại trừ khi có bằng chứng mới)
+- **Quyết định:** Sau khi audit toàn bộ 88 commit của `origin/main` (nhánh đồng đội `chung`+`haianh`+`thanhbinh`, tách khỏi lịch sử rất sớm, không phải rewrite) theo từng nhóm tính năng: không merge nguyên khối, không tiếp tục cherry-pick lẻ tẻ. Với từng nhóm: phần lớn **bỏ qua** (nhánh hiện tại đã tự xây tương đương/tốt hơn — cấu trúc thư mục domain-based gọn hơn); risk-policy versioning + admin_settings **viết mới, không cherry-pick trực tiếp**; RiskCaseDrawer (thuần frontend) **port trực tiếp**; hệ invite/user admin và cụm Semester/Timetable/Practice Sets để lại **"cần quyết định kiến trúc"**/**"chưa kết luận"**, không tự chọn.
+- **Vì sao:** đa số cherry-pick không khả thi sạch — migration chain của `origin/main` phụ thuộc `20260824_admin_invites` (kiến trúc invite khác hẳn `OrgInviteService` đã có ở HEAD theo ADR-007), cherry-pick risk-policy sẽ kéo theo xung đột migration không giải quyết được trong thời gian còn lại. Với phần lớn còn lại, HEAD đã có bản tương đương chất lượng ngang hoặc hơn (ví dụ guardrail-review queue: cùng migration/bảng nhưng HEAD idempotent hơn). Chi tiết đầy đủ theo từng nhóm: `docs/PROJECT_CONTEXT.md` mục 23.
+- **Đánh đổi:** một số giá trị thật trong 88 commit đó (đặc biệt cụm Semester/Timetable/Practice Sets, ~5100 dòng, chưa xác nhận có gap thật không) bị bỏ qua không điều tra hết do hết thời gian — nếu sau này phát hiện gap cụ thể đúng khu vực đó, cần quay lại xem xét port thay vì viết mới từ đầu. Quyết định có merge `origin/main` như 1 sự kiện lớn hay không, và khi nào, để riêng cho leader cân nhắc sau 23/08 — không tự quyết ở đây.
+
+### ADR-020 — Mock LMS web viewer: SSO qua danh tính Cursus (mã 1 lần), thay Basic Auth riêng
+
+- **Ngày:** 23/08/2026 · **Trạng thái:** Đã chốt, đã triển khai
+- **Quyết định:** Xoá tài khoản admin/mật khẩu HTTP Basic Auth dùng chung (thêm 22/08, ADR/PROJECT_CONTEXT mục 6.6) khỏi UI web của Mock LMS (`/courses`, `/courses/<code>`). Thay bằng 1 luồng đổi danh tính thu gọn kiểu OIDC authorization-code: Cursus phát 1 mã dùng 1 lần, hạn 60 giây (`src/api/mock_lms_sso.py::authorize`) cho user *đã đăng nhập Cursus*; Mock LMS đổi mã đó lấy `{user_id, role, name, email}` qua 1 lệnh gọi server-to-server (`POST /token`, xác thực bằng `MOCK_LMS_SSO_SHARED_SECRET`, không phải mật khẩu người dùng); Mock LMS tự cấp session riêng của nó (JWT ký bằng khoá riêng `MOCK_LMS_JWT_SECRET`, không dùng chung khoá ký với Cursus). Vai trò lấy được quyết định xem (STUDENT/INSTRUCTOR) hay xem+sửa (ADMIN).
+- **Vì sao:** research đối chiếu hệ thống LMS thật (ảnh FPT Learning Materials do founder cung cấp) xác nhận đúng mẫu hình chuẩn — xem công khai rộng, sửa mới cần định danh cụ thể theo vai trò — chứ không phải 1 tài khoản admin chung cho mọi việc. Dùng lại danh tính Cursus thay vì dựng thêm hệ tài khoản Mock LMS song song tránh trùng lặp toàn bộ RBAC đã có, đúng nguyên tắc "1 nguồn định danh, nhiều hệ thống tin tưởng" (SSO thật). Không tái dùng cookie/JWT signing secret trực tiếp giữa 2 origin vì 2 hệ thống vẫn cố tình tách biệt thật (ADR-016) — cookie của Cursus (HttpOnly, scope theo origin Cursus) không tự chuyển sang được origin khác của trình duyệt, và ở production 2 app nằm ở 2 domain hoàn toàn khác nhau (Vercel vs Railway riêng, xem DEPLOY.md) nên không thể dựa vào mẹo cookie cùng host của localhost.
+- **Đánh đổi:** thêm 1 endpoint mới ngay trên chính `src/api/` của Cursus (bề mặt API tăng thêm, dù nhỏ và có kiểm soát: mã 1 lần, hạn dùng ngắn, chỉ dùng được 1 lần, secret riêng cho lệnh gọi server-to-server); Mock LMS giờ **phụ thuộc Cursus đang chạy** để xác thực người xem — chấp nhận được vì kịch bản demo luôn chạy cả 2 app cùng lúc, và trước đây (Basic Auth) Mock LMS vốn đã phụ thuộc Cursus để có dữ liệu đồng bộ ý nghĩa. Không phải LTI 1.3 launch đầy đủ (không JWKS/Deployment ID/NRPS/AGS) — mục 15 vẫn giữ nguyên: đó là stretch goal riêng, chưa làm. Mã 1 lần lưu in-memory (không bảng DB mới) — mất khi Cursus backend restart giữa lúc đang đổi mã, chấp nhận được vì người dùng chỉ cần bấm lại link, không mất dữ liệu gì.
+- **Verify:** Playwright thật qua 2 backend cách ly (Cursus port 8099 + Mock LMS port 9099, DB SQLite riêng, `alembic upgrade head` + `seed_demo_accounts.py`) — 4 kịch bản: chưa đăng nhập Cursus → chặn với thông báo rõ ràng, không fallback xem tự do; đăng nhập ADMIN → xem `/courses` thành công; đăng nhập INSTRUCTOR/STUDENT → xem thành công nhưng `POST` sửa deadline trả `403`; OAuth API server-to-server (`/oauth/token`) không đổi hành vi. Ảnh: `docs/evidence/screenshots/23aug-mocklms-sso-phan1/`.
+
+---
+
+## Template cho ADR mới (copy khối dưới, đánh số tiếp theo)
+
+```
+### ADR-0XX — <tên quyết định ngắn>
+- **Ngày:** <dd/mm/yyyy> · **Trạng thái:** <Đã chốt / Đang cân nhắc / Đã huỷ>
+- **Quyết định:** <chọn gì, cụ thể>
+- **Vì sao:** <lý do chính, 1-2 câu>
+- **Đánh đổi:** <cái gì phải hy sinh/rủi ro chấp nhận>
+```

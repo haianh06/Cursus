@@ -1,0 +1,7 @@
+# Sinh ra bởi setup.py, chứa đường dẫn tuyệt đối của từng máy.
+# Commit vào là đồng đội nhận đường dẫn máy bạn và host trỏ sai chỗ.
+host_config.json
+com.ai20k.gitinfo.json
+run_host.bat
+run_host.sh
+host.log

@@ -1,0 +1,604 @@
+{
+  "subject_code": "SSA101",
+  "subject_name": "Kỹ năng học thuật",
+  "meta": {
+    "Syllabus ID": "13785",
+    "Syllabus Name": "Kỹ năng học thuật",
+    "Course Name English": "Academic skills",
+    "Subject Code": "SSA101",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) = 45 contact hours (60 sessions) + 1 hour final exam + 104 hours self-study",
+    "Pre-Requisite": "None",
+    "Description": "This course introduces essential academic skills for university success, focusing on effective study habits, critical and creative thinking, academic communication, and the responsible use of AI. Students will explore three key areas: AI and academic integrity, thinking skills for the digital age, and learning and communication at university. The course emphasizes self-directed learning and helps students manage their study, time, and learning strategies effectively in both traditional and online settings.",
+    "StudentTasks": "- Students must attend more than 80% of contact slots in order to be accepted to the final examination.\n- Student is responsible to do all exercises, assignments and labs given by instructor in class or at home and submit on time\n- Use laptop in class only for learning purpose\n- Promptly access the FLM system at https://flm.fpt.edu.vn\nfor up-to-date course information.",
+    "Tools": "- Internet",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "1318/QĐ-ĐHFPT dated 11/27/2025",
+    "IsApproved": "True",
+    "Note": "Progress marks:\n- 01 Participation: 10%\n- Project - Part 1: 10%\n- Project - Parts 2 & 3: 2x20%\n- 01 Quiz: 5%\n- 01 Individual Progress Test: 10%\n- 01 Final exam: 25%\nConditions to pass: Final exam >= 4\nGrade Average >= 5/10",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "11/27/2025"
+  },
+  "clo_count": 11,
+  "session_count": 60,
+  "chunks": [
+    {
+      "chunk_id": "SSA101-overview",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Overview & Grading Policy",
+      "text": "Description: This course introduces essential academic skills for university success, focusing on effective study habits, critical and creative thinking, academic communication, and the responsible use of AI. Students will explore three key areas: AI and academic integrity, thinking skills for the digital age, and learning and communication at university. The course emphasizes self-directed learning and helps students manage their study, time, and learning strategies effectively in both traditional and online settings.\nNoCredit: 3\nPre-Requisite: None\nTime Allocation: Study hour (150h) = 45 contact hours (60 sessions) + 1 hour final exam + 104 hours self-study\nStudentTasks: - Students must attend more than 80% of contact slots in order to be accepted to the final examination.\n- Student is responsible to do all exercises, assignments and labs given by instructor in class or at home and submit on time\n- Use laptop in class only for learning purpose\n- Promptly access the FLM system at https://flm.fpt.edu.vn\nfor up-to-date course information.\nNote: Progress marks:\n- 01 Participation: 10%\n- Project - Part 1: 10%\n- Project - Parts 2 & 3: 2x20%\n- 01 Quiz: 5%\n- 01 Individual Progress Test: 10%\n- 01 Final exam: 25%\nConditions to pass: Final exam >= 4\nGrade Average >= 5/10\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus SSA101 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "SSA101-CLO1",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Understand concepts of university learning expectations and student responsibilities.",
+      "source_label": "Syllabus SSA101 — CLO1"
+    },
+    {
+      "chunk_id": "SSA101-CLO2",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Apply effective study and memory strategies.",
+      "source_label": "Syllabus SSA101 — CLO2"
+    },
+    {
+      "chunk_id": "SSA101-CLO3",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Identify test-taking strategies used in academic assessments.",
+      "source_label": "Syllabus SSA101 — CLO3"
+    },
+    {
+      "chunk_id": "SSA101-CLO4",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Plan academic goals and manage study time effectively.",
+      "source_label": "Syllabus SSA101 — CLO4"
+    },
+    {
+      "chunk_id": "SSA101-CLO5",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Learning Outcome CLO5",
+      "text": "CLO5: Implement strategies to manage academic stress and maintain well-being.",
+      "source_label": "Syllabus SSA101 — CLO5"
+    },
+    {
+      "chunk_id": "SSA101-CLO6",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Learning Outcome CLO6",
+      "text": "CLO6: Demonstrate effective communication in academic contexts.",
+      "source_label": "Syllabus SSA101 — CLO6"
+    },
+    {
+      "chunk_id": "SSA101-CLO7",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Learning Outcome CLO7",
+      "text": "CLO7: Utilize digital learning tools and online learning strategies.",
+      "source_label": "Syllabus SSA101 — CLO7"
+    },
+    {
+      "chunk_id": "SSA101-CLO8",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Learning Outcome CLO8",
+      "text": "CLO8: Practice responsible and ethical use of AI in academic work.",
+      "source_label": "Syllabus SSA101 — CLO8"
+    },
+    {
+      "chunk_id": "SSA101-CLO9",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Learning Outcome CLO9",
+      "text": "CLO9: Evaluate the credibility of academic information sources.",
+      "source_label": "Syllabus SSA101 — CLO9"
+    },
+    {
+      "chunk_id": "SSA101-CLO10",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Learning Outcome CLO10",
+      "text": "CLO10: Apply thinking skills to analyze learning problems using critical or creative approaches.",
+      "source_label": "Syllabus SSA101 — CLO10"
+    },
+    {
+      "chunk_id": "SSA101-CLO11",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Learning Outcome CLO11",
+      "text": "CLO11: Integrate academic skills in practical learning tasks or project work.",
+      "source_label": "Syllabus SSA101 — CLO11"
+    },
+    {
+      "chunk_id": "SSA101-session-1",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 1",
+      "text": "Session 1 — Ice-breaking and Course introductions\nSession I. Effective Learning Skills\nExploring College:\nIntroduction\nWhy College?\nThe First Year of College Will Be an Experience\nTài liệu: College Success\nAI and Ethics in Higher Education\nLearning to Learn Online\nNhiệm vụ sinh viên: Reading syllabus overview; Introduce yourself and discuss expectations.\nNote: Students are required to complete the online course “Learning to Learn Online” before Session 21",
+      "source_label": "Syllabus SSA101 — Session 1"
+    },
+    {
+      "chunk_id": "SSA101-session-2",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 2",
+      "text": "Session 2 — Exploring College (cont):\nCollege culture and expectations\nDiscussion and Practice\nTài liệu: - College Success: Chapter 1. Exploring College\nNhiệm vụ sinh viên: Read the materials at home and prepare in-depth discussion questions for class.",
+      "source_label": "Syllabus SSA101 — Session 2"
+    },
+    {
+      "chunk_id": "SSA101-session-3",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 3",
+      "text": "Session 3 — Exploring College (cont):\nCollege culture and expectations\nDiscussion and Practice\nTài liệu: - College Success: Chapter 1. Exploring College\nNhiệm vụ sinh viên: Read the materials at home and prepare in-depth discussion questions for class.",
+      "source_label": "Syllabus SSA101 — Session 3"
+    },
+    {
+      "chunk_id": "SSA101-session-4",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 4",
+      "text": "Session 4 — Studying, memory and Test taking:\nIntroduction\nMemory\nDiscussion and Practice\nTài liệu: - College Success: Chapter 6.Studying, Memory, and Test Taking\nNhiệm vụ sinh viên: Read the materials at home and prepare in-depth discussion questions for class.",
+      "source_label": "Syllabus SSA101 — Session 4"
+    },
+    {
+      "chunk_id": "SSA101-session-5",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 5",
+      "text": "Session 5 — Studying, memory and Test taking:\nIntroduction\nStudying\nDiscussion and Practice\nTài liệu: - College Success: Chapter 6.Studying, Memory, and Test Taking\nNhiệm vụ sinh viên: Read the materials at home and prepare in-depth discussion questions for class.",
+      "source_label": "Syllabus SSA101 — Session 5"
+    },
+    {
+      "chunk_id": "SSA101-session-6",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 6",
+      "text": "Session 6 — Studying, memory and Test taking (cont):\nTest taking\nDiscussion and Practice\nTài liệu: - College Success: Chapter 3. Managing Your Time and Priorities\nChapter 11.3 Taking Care of Your Emotional Health\nNhiệm vụ sinh viên: Read the materials at home and prepare in-depth discussion questions for class.",
+      "source_label": "Syllabus SSA101 — Session 6"
+    },
+    {
+      "chunk_id": "SSA101-session-7",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 7",
+      "text": "Session 7 — Time Management Skills:\nIntroduction\nThe Benefits of Time Management\nDiscussion and Practice\nTài liệu: - College Success: Chapter 3. Managing Your Time and Priorities\nChapter 11.3 Taking Care of Your Emotional Health\nNhiệm vụ sinh viên: Read the materials at home and prepare in-depth discussion questions for class.",
+      "source_label": "Syllabus SSA101 — Session 7"
+    },
+    {
+      "chunk_id": "SSA101-session-8",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 8",
+      "text": "Session 8 — Time Management Skills (cont.)\nTime Management in College\nDiscussion and Practice\nTài liệu: - College Success: Chapter 3. Managing Your Time and Priorities\nChapter 11.3 Taking Care of Your Emotional Health\nNhiệm vụ sinh viên: Read the materials at home and prepare in-depth discussion questions for class.",
+      "source_label": "Syllabus SSA101 — Session 8"
+    },
+    {
+      "chunk_id": "SSA101-session-9",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 9",
+      "text": "Session 9 — Time Management Skills (cont.):\nProcrastination: The Enemy Within\nHow to Manage Time\nDiscussion and Practice\nTài liệu: - College Success: Chapter 3. Managing Your Time and Priorities\nChapter 11.3 Taking Care of Your Emotional Health\nNhiệm vụ sinh viên: Read the materials at home and prepare in-depth discussion questions for class.",
+      "source_label": "Syllabus SSA101 — Session 9"
+    },
+    {
+      "chunk_id": "SSA101-session-10",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 10",
+      "text": "Session 10 — Time Management Skills (cont.):\nPrioritization: Self-Management of What You Do and When You Do It\nGoal Setting and Motivation\nDiscussion and Practice\nTài liệu: - College Success: Chapter 3. Managing Your Time and Priorities\nChapter 11.3 Taking Care of Your Emotional Health\nNhiệm vụ sinh viên: Read the materials at home and prepare in-depth discussion questions for class.",
+      "source_label": "Syllabus SSA101 — Session 10"
+    },
+    {
+      "chunk_id": "SSA101-session-11",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 11",
+      "text": "Session 11 — Time Management Skills (cont.):\nEnhanced Strategies for Time and\nDiscussion and Practice\nTài liệu: - College Success: Chapter 3. Managing Your Time and Priorities\nChapter 11.3 Taking Care of Your Emotional Health\nNhiệm vụ sinh viên: Read the materials at home and prepare in-depth discussion questions for class.",
+      "source_label": "Syllabus SSA101 — Session 11"
+    },
+    {
+      "chunk_id": "SSA101-session-12",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 12",
+      "text": "Session 12 — Time Management Skills (cont.):\nIdentifying and Managing Stress\nDiscussion and Practice\nTài liệu: - College Success: Chapter 3. Managing Your Time and Priorities\nChapter 11.3 Taking Care of Your Emotional Health\nNhiệm vụ sinh viên: Read the materials at home and prepare in-depth discussion questions for class.",
+      "source_label": "Syllabus SSA101 — Session 12"
+    },
+    {
+      "chunk_id": "SSA101-session-13",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 13",
+      "text": "Session 13 — Part1 Project - Topic selection and planning\nTài liệu: Project Guidelines\nNhiệm vụ sinh viên: Read, comprehend, discuss, and collaborate in groups based on the Project Guidelines.",
+      "source_label": "Syllabus SSA101 — Session 13"
+    },
+    {
+      "chunk_id": "SSA101-session-14",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 14",
+      "text": "Session 14 — Part1 Project - Research and preparation\nTài liệu: Project Guidelines\nNhiệm vụ sinh viên: Read, comprehend, discuss, and collaborate in groups based on the Project Guidelines.",
+      "source_label": "Syllabus SSA101 — Session 14"
+    },
+    {
+      "chunk_id": "SSA101-session-15",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 15",
+      "text": "Session 15 — Part1 Project - Research and preparation\nTài liệu: Project Guidelines\nNhiệm vụ sinh viên: Read, comprehend, discuss, and collaborate in groups based on the Project Guidelines.",
+      "source_label": "Syllabus SSA101 — Session 15"
+    },
+    {
+      "chunk_id": "SSA101-session-16",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 16",
+      "text": "Session 16 — Communication Skills:\nIntroduction\nAn Overview of Communication\nPurpose of Communication\nCommunication and Technology\nTài liệu: - College Success: Chapter 8 Communicating\nNhiệm vụ sinh viên: Reading; Review College Success Chapter 8",
+      "source_label": "Syllabus SSA101 — Session 16"
+    },
+    {
+      "chunk_id": "SSA101-session-17",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 17",
+      "text": "Session 17 — Communication Skills (cont.):\nCommunication and Technology\nDiscussion and Practice\nTài liệu: - College Success: Chapter 8 Communicating\nNhiệm vụ sinh viên: Reading; Review College Success Chapter 8",
+      "source_label": "Syllabus SSA101 — Session 17"
+    },
+    {
+      "chunk_id": "SSA101-session-18",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 18",
+      "text": "Session 18 — Communication Skills (cont.):\nThe Context of Communication\nBarriers to Effective Communication\nDiscussion and Practice\nTài liệu: - College Success: Chapter 8 Communicating\nNhiệm vụ sinh viên: Reading; Review College Success Chapter 8",
+      "source_label": "Syllabus SSA101 — Session 18"
+    },
+    {
+      "chunk_id": "SSA101-session-19",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 19",
+      "text": "Session 19 — Learning to Learn Online:\n1. Who am I as an online learner?\n2. Who am I on my learning journey with?\n3. Who are my instructors? What is their role?\nTài liệu: Learning to Learn Online: Part 1 to Part 7\nNhiệm vụ sinh viên: Complete the online course “Learning to Learn Online” before starting this module.\nReview Learning to Learn Online: Parts 1–7",
+      "source_label": "Syllabus SSA101 — Session 19"
+    },
+    {
+      "chunk_id": "SSA101-session-20",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 20",
+      "text": "Session 20 — Learning to Learn Online:\n1. Who am I as an online learner?\n2. Who am I on my learning journey with?\n3. Who are my instructors? What is their role?\nTài liệu: Learning to Learn Online: Part 1 to Part 7\nNhiệm vụ sinh viên: Complete the online course “Learning to Learn Online” before starting this module.\nReview Learning to Learn Online: Parts 1–7",
+      "source_label": "Syllabus SSA101 — Session 20"
+    },
+    {
+      "chunk_id": "SSA101-session-21",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 21",
+      "text": "Session 21 — Learning to Learn Online:\n1. Who am I as an online learner?\n2. Who am I on my learning journey with?\n3. Who are my instructors? What is their role?\nTài liệu: Learning to Learn Online: Part 1 to Part 7\nNhiệm vụ sinh viên: Complete the online course “Learning to Learn Online” before starting this module.\nReview Learning to Learn Online: Parts 1–7",
+      "source_label": "Syllabus SSA101 — Session 21"
+    },
+    {
+      "chunk_id": "SSA101-session-22",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 22",
+      "text": "Session 22 — Information Literacy\nDiscussion and Practice\nTài liệu: - College Success: 7.7 Information Literacy of Chapter 7\nNhiệm vụ sinh viên: Reading; Reflect: Information Literacy",
+      "source_label": "Syllabus SSA101 — Session 22"
+    },
+    {
+      "chunk_id": "SSA101-session-23",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 23",
+      "text": "Session 23 — Information Literacy\nDiscussion and Practice\nTài liệu: - College Success: 7.7 Information Literacy of Chapter 7\nNhiệm vụ sinh viên: Reading; Review Session II",
+      "source_label": "Syllabus SSA101 — Session 23"
+    },
+    {
+      "chunk_id": "SSA101-session-24",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 24",
+      "text": "Session 24 — Review session I\nQuiz 1\nTài liệu: College Success: Chapter 1, 6, 3, 8\n& Learning to Learn Online: Part 1 to Part 7\nNhiệm vụ sinh viên: Review previous lessons; prepare reflection",
+      "source_label": "Syllabus SSA101 — Session 24"
+    },
+    {
+      "chunk_id": "SSA101-session-25",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 25",
+      "text": "Session 25 — Session II. Issues in AI Use and Academic Ethics\nIntroduction AI and Ethics in Higher Education\nTài liệu: AI and Ethics in Higher Education: Introduction AI and Ethics in Higher Education\nNhiệm vụ sinh viên: Applied Practice",
+      "source_label": "Syllabus SSA101 — Session 25"
+    },
+    {
+      "chunk_id": "SSA101-session-26",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 26",
+      "text": "Session 26 — AI and Digital Literacy\nWhat is Digital Literacy?\nAI Literacy\nThe Benefits and Drawbacks of AI\nTài liệu: Foundations of AI and Ethics, Section I\nNhiệm vụ sinh viên: Reading; Reflect: AI and digital literacy",
+      "source_label": "Syllabus SSA101 — Session 26"
+    },
+    {
+      "chunk_id": "SSA101-session-27",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 27",
+      "text": "Session 27 — AI and Digital Literacy (cont.)\nPrivacy\nAI Hallucinations\nAI Accountability\nDiscussion and Practice\nTài liệu: Foundations of AI and Ethics, Section I\nNhiệm vụ sinh viên: Applied Practice",
+      "source_label": "Syllabus SSA101 — Session 27"
+    },
+    {
+      "chunk_id": "SSA101-session-28",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 28",
+      "text": "Session 28 — Ethics of Using AI in Higher Education and Its Impact on Academic Integrity\n-Implications of Using AI in Higher Education\n- Ethical Challenges of Using AI in Higher Education\n- Ethical Concerns About Biases and Surveillance in AI Algorithms\nTài liệu: Foundations of AI and Ethics, Section I\nNhiệm vụ sinh viên: Reading; Reflect: Ethics of Using AI in Higher Education and Its Impact on Academic Integrity",
+      "source_label": "Syllabus SSA101 — Session 28"
+    },
+    {
+      "chunk_id": "SSA101-session-29",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 29",
+      "text": "Session 29 — Ethics of Using AI in Higher Education and Its Impact on Academic Integrity (Cont)\nAcademic Integrity in Higher Education Under the Lens of AI\nImpact on Academic Integrity in the Form of Plagiarism Due to AI Tools\nTài liệu: Foundations of AI and Ethics, Section I\nNhiệm vụ sinh viên: Applied Practice",
+      "source_label": "Syllabus SSA101 — Session 29"
+    },
+    {
+      "chunk_id": "SSA101-session-30",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 30",
+      "text": "Session 30 — Ethics of Using AI in Higher Education and Its Impact on Academic Integrity (Cont)\nImpact on Academic Integrity Due to Efficacy of AI Detection Tools\nImpact on Academic Integrity Due to Human Biases Generated By AI tools\nTài liệu: Foundations of AI and Ethics, Section I\nNhiệm vụ sinh viên: Applied Practice",
+      "source_label": "Syllabus SSA101 — Session 30"
+    },
+    {
+      "chunk_id": "SSA101-session-31",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 31",
+      "text": "Session 31 — How to use AI to Help, Not Hinder, Your Learning\nTài liệu: Foundations of AI and Ethics, Section I\nNhiệm vụ sinh viên: Applied Practice",
+      "source_label": "Syllabus SSA101 — Session 31"
+    },
+    {
+      "chunk_id": "SSA101-session-32",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 32",
+      "text": "Session 32 — How to use AI to Help, Not Hinder, Your Learning (cont.)\nDiscussion and Practice\nTài liệu: Foundations of AI and Ethics, Section I\nNhiệm vụ sinh viên: Applied Practice",
+      "source_label": "Syllabus SSA101 — Session 32"
+    },
+    {
+      "chunk_id": "SSA101-session-33",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 33",
+      "text": "Session 33 — Review session II\nTài liệu: AI and Ethics in Higher Education: Session I\nNhiệm vụ sinh viên: Review previous lessons; prepare reflection",
+      "source_label": "Syllabus SSA101 — Session 33"
+    },
+    {
+      "chunk_id": "SSA101-session-34",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 34",
+      "text": "Session 34 — Part2 Project - Application of knowledge to practice\nTài liệu: Project Guidelines\nIn or outside\nNhiệm vụ sinh viên: Conduct a mid-project review and preparation for the final phase",
+      "source_label": "Syllabus SSA101 — Session 34"
+    },
+    {
+      "chunk_id": "SSA101-session-35",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 35",
+      "text": "Session 35 — Part2 Project - Application of knowledge to practice\nTài liệu: Project Guidelines\nIn or outside\nNhiệm vụ sinh viên: Conduct a mid-project review and preparation for the final phase",
+      "source_label": "Syllabus SSA101 — Session 35"
+    },
+    {
+      "chunk_id": "SSA101-session-36",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 36",
+      "text": "Session 36 — Part2 Project - Application of knowledge to practice\nTài liệu: Project Guidelines\nIn or outside\nNhiệm vụ sinh viên: Conduct a mid-project review and preparation for the final phase",
+      "source_label": "Syllabus SSA101 — Session 36"
+    },
+    {
+      "chunk_id": "SSA101-session-37",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 37",
+      "text": "Session 37 — Session III. Thinking Skills for the Digital Age\nWhat thinking means\nAnalytical Thinking\nTài liệu: College Success, chapter 7\nNhiệm vụ sinh viên: Read the materials at home and prepare in-depth discussion questions for class.",
+      "source_label": "Syllabus SSA101 — Session 37"
+    },
+    {
+      "chunk_id": "SSA101-session-38",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 38",
+      "text": "Session 38 — Discussion and Practice\nTài liệu: College Success, chapter 7\nNhiệm vụ sinh viên: Applied Practice",
+      "source_label": "Syllabus SSA101 — Session 38"
+    },
+    {
+      "chunk_id": "SSA101-session-39",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 39",
+      "text": "Session 39 — Discussion and Practice\nTài liệu: College Success, chapter 7\nNhiệm vụ sinh viên: Applied Practice",
+      "source_label": "Syllabus SSA101 — Session 39"
+    },
+    {
+      "chunk_id": "SSA101-session-40",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 40",
+      "text": "Session 40 — Creative thinking\nTài liệu: College Success, chapter 7\nNhiệm vụ sinh viên: Read the materials at home and prepare in-depth discussion questions for class.",
+      "source_label": "Syllabus SSA101 — Session 40"
+    },
+    {
+      "chunk_id": "SSA101-session-41",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 41",
+      "text": "Session 41 — Discussion and Practice\nTài liệu: College Success, chapter 7\nNhiệm vụ sinh viên: Applied Practice",
+      "source_label": "Syllabus SSA101 — Session 41"
+    },
+    {
+      "chunk_id": "SSA101-session-42",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 42",
+      "text": "Session 42 — Discussion and Practice\nTài liệu: College Success, chapter 7\nNhiệm vụ sinh viên: Applied Practice",
+      "source_label": "Syllabus SSA101 — Session 42"
+    },
+    {
+      "chunk_id": "SSA101-session-43",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 43",
+      "text": "Session 43 — Critical thinking\nTài liệu: College Success, chapter 7\nNhiệm vụ sinh viên: Read the materials at home and prepare in-depth discussion questions for class.",
+      "source_label": "Syllabus SSA101 — Session 43"
+    },
+    {
+      "chunk_id": "SSA101-session-44",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 44",
+      "text": "Session 44 — Discussion and Practice\nTài liệu: College Success, chapter 7\nNhiệm vụ sinh viên: Applied Practice",
+      "source_label": "Syllabus SSA101 — Session 44"
+    },
+    {
+      "chunk_id": "SSA101-session-45",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 45",
+      "text": "Session 45 — Discussion and Practice\nTài liệu: College Success, chapter 7\nNhiệm vụ sinh viên: Applied Practice",
+      "source_label": "Syllabus SSA101 — Session 45"
+    },
+    {
+      "chunk_id": "SSA101-session-46",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 46",
+      "text": "Session 46 — Problem - Solving\nTài liệu: College Success, chapter 7\nNhiệm vụ sinh viên: Read the materials at home and prepare in-depth discussion questions for class.",
+      "source_label": "Syllabus SSA101 — Session 46"
+    },
+    {
+      "chunk_id": "SSA101-session-47",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 47",
+      "text": "Session 47 — Discussion and Practice\nTài liệu: College Success, chapter 7\nNhiệm vụ sinh viên: Applied Practice",
+      "source_label": "Syllabus SSA101 — Session 47"
+    },
+    {
+      "chunk_id": "SSA101-session-48",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 48",
+      "text": "Session 48 — Discussion and Practice\nTài liệu: College Success, chapter 5\nNhiệm vụ sinh viên: Applied Practice",
+      "source_label": "Syllabus SSA101 — Session 48"
+    },
+    {
+      "chunk_id": "SSA101-session-49",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 49",
+      "text": "Session 49 — Metacognition\nTài liệu: College Success, chapter 7\nNhiệm vụ sinh viên: Read the materials at home and prepare in-depth discussion questions for class.",
+      "source_label": "Syllabus SSA101 — Session 49"
+    },
+    {
+      "chunk_id": "SSA101-session-50",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 50",
+      "text": "Session 50 — Discussion and Practice\nTài liệu: College Success, chapter 7\nNhiệm vụ sinh viên: Applied Practice",
+      "source_label": "Syllabus SSA101 — Session 50"
+    },
+    {
+      "chunk_id": "SSA101-session-51",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 51",
+      "text": "Session 51 — Discussion and Practice\nReview session III\nTài liệu: College Success, chapter 7\nNhiệm vụ sinh viên: Review previous lessons; prepare reflection",
+      "source_label": "Syllabus SSA101 — Session 51"
+    },
+    {
+      "chunk_id": "SSA101-session-52",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 52",
+      "text": "Session 52 — Individual Progress Test\nTài liệu: Revise all materials covered in the course.\nNhiệm vụ sinh viên: Write learning reflection",
+      "source_label": "Syllabus SSA101 — Session 52"
+    },
+    {
+      "chunk_id": "SSA101-session-53",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 53",
+      "text": "Session 53 — Individual Progress Test\nTài liệu: Revise all materials covered in the course.\nNhiệm vụ sinh viên: Write learning reflection",
+      "source_label": "Syllabus SSA101 — Session 53"
+    },
+    {
+      "chunk_id": "SSA101-session-54",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 54",
+      "text": "Session 54 — Individual Progress Test\nTài liệu: Revise all materials covered in the course.\nNhiệm vụ sinh viên: Write learning reflection",
+      "source_label": "Syllabus SSA101 — Session 54"
+    },
+    {
+      "chunk_id": "SSA101-session-55",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 55",
+      "text": "Session 55 — Group Project Part 3: Presentation & Final report of group project\nTài liệu: Course materials\nNhiệm vụ sinh viên: Prepare and present final group report",
+      "source_label": "Syllabus SSA101 — Session 55"
+    },
+    {
+      "chunk_id": "SSA101-session-56",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 56",
+      "text": "Session 56 — Group Project Part 3: Presentation & Final report of group project\nTài liệu: Course materials\nNhiệm vụ sinh viên: Prepare and present final group report",
+      "source_label": "Syllabus SSA101 — Session 56"
+    },
+    {
+      "chunk_id": "SSA101-session-57",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 57",
+      "text": "Session 57 — Group Project Part 3: Presentation & Final report of group project\nTài liệu: Course materials\nNhiệm vụ sinh viên: Prepare and present final group report",
+      "source_label": "Syllabus SSA101 — Session 57"
+    },
+    {
+      "chunk_id": "SSA101-session-58",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 58",
+      "text": "Session 58 — Group Project Part 3: Presentation & Final report of group project (cont)\nTài liệu: Course materials\nNhiệm vụ sinh viên: Prepare and present final group report",
+      "source_label": "Syllabus SSA101 — Session 58"
+    },
+    {
+      "chunk_id": "SSA101-session-59",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 59",
+      "text": "Session 59 — Group Project Part 3: Presentation & Final report of group project (cont)\nTài liệu: Course materials\nNhiệm vụ sinh viên: Review previous lessons; prepare reflection",
+      "source_label": "Syllabus SSA101 — Session 59"
+    },
+    {
+      "chunk_id": "SSA101-session-60",
+      "subject_code": "SSA101",
+      "subject_name": "Kỹ năng học thuật",
+      "section": "Session 60",
+      "text": "Session 60 — Revise course content and prepare for the final examination.\nTài liệu: Course materials\nNhiệm vụ sinh viên: Review previous lessons; prepare reflection",
+      "source_label": "Syllabus SSA101 — Session 60"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+version: "3.8"
+
+# Production DB/Auth is Supabase-managed Postgres (ADR-001 in
+# docs/decisions/ADR.md) — DATABASE_URL in .env points at Supabase's pooler
+# by default. `db`/`redis` below are for contributors who don't have Supabase
+# credentials and want `docker-compose up` to work fully offline: point
+# DATABASE_URL at `postgresql://cursus:cursus@db:5432/cursus` and REDIS_URL
+# at `redis://redis:6379/0` in your local .env to use them instead.
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  db:
+    image: postgres:16-alpine
+    profiles: ["local-db"]
+    environment:
+      POSTGRES_USER: cursus
+      POSTGRES_PASSWORD: cursus
+      POSTGRES_DB: cursus
+    ports:
+      - "5432:5432"
+    volumes:
+      - cursus_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cursus"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    profiles: ["local-db"]
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  cursus_db_data:

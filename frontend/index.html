@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- PNG fallback: older Safari/Windows and browsers that don't yet
+         support SVG favicons ignore the icon above entirely without this. -->
+    <link rel="icon" type="image/png" sizes="1024x1024" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#F5F5F2" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#171817" media="(prefers-color-scheme: dark)" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cursus – Trợ lý học tập theo chu trình Plan–Do–Reflect</title>
+    <meta name="description" content="Cursus giúp sinh viên lập kế hoạch từ syllabus, hỏi đáp có trích nguồn và phản tư hằng tuần, đồng thời hỗ trợ giảng viên can thiệp đúng thời điểm." />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://cursus.edu.vn/" />
+    <meta property="og:title" content="Cursus – Trợ lý học tập theo chu trình Plan–Do–Reflect" />
+    <meta property="og:description" content="Cursus giúp sinh viên lập kế hoạch từ syllabus, hỏi đáp có trích nguồn và phản tư hằng tuần, đồng thời hỗ trợ giảng viên can thiệp đúng thời điểm." />
+    <!-- 1200x630 (the OG/Twitter standard 1.91:1 ratio) — /logo.png is
+         1024x1024 and gets center-cropped by Facebook/LinkedIn/Slack/Zalo,
+         cutting the wordmark off. TODO(cinematic-hero): swap for a still
+         from the real day/night hero footage once that asset contract
+         lands (see section 12); this is a proper-ratio placeholder using
+         the same H1 copy/brand colors in the meantime, not a broken link. -->
+    <meta property="og:image" content="https://cursus.edu.vn/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://cursus.edu.vn/" />
+    <meta name="twitter:title" content="Cursus – Trợ lý học tập theo chu trình Plan–Do–Reflect" />
+    <meta name="twitter:description" content="Cursus giúp sinh viên lập kế hoạch từ syllabus, hỏi đáp có trích nguồn và phản tư hằng tuần, đồng thời hỗ trợ giảng viên can thiệp đúng thời điểm." />
+    <meta name="twitter:image" content="https://cursus.edu.vn/og-image.png" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://cursus.edu.vn/" />
+
+    <!-- Structured data: only real, verifiable facts (name/url) — no ratings,
+         reviews, pricing, or user counts, per the no-fake-social-proof rule.
+         Not SoftwareApplication — there's no real installCount/rating/price
+         to declare, and WebSite is what the page actually is. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Cursus",
+        "url": "https://cursus.edu.vn/",
+        "description": "Cursus giúp sinh viên lập kế hoạch từ syllabus, hỏi đáp có trích nguồn và phản tư hằng tuần, đồng thời hỗ trợ giảng viên can thiệp đúng thời điểm."
+      }
+    </script>
+    <script>
+      // Anti-FOUC: apply the saved theme/language before first paint so
+      // returning users never see a flash of the wrong theme on load.
+      (function () {
+        try {
+          var isDark = localStorage.getItem('cursus_theme') === 'dark';
+          document.documentElement.classList.add(isDark ? 'dark' : 'light');
+          var savedLang = localStorage.getItem('cursus_lang');
+          document.documentElement.lang = savedLang === 'en' ? 'en' : 'vi';
+
+          // LCP fix: on mobile, the hero <video> is skipped entirely and this
+          // poster <img> IS the largest contentful paint element — but as a
+          // client-rendered React tree, it isn't in the initial HTML, so the
+          // browser's preload scanner can't discover it until the JS bundle
+          // has downloaded/parsed/executed (measured: real production
+          // Lighthouse run flagged "requestDiscoverable: false" here, and
+          // this was the LCP bottleneck on mobile — 3.5s vs. the 2.5s
+          // budget). Injecting the preload synchronously, this early, lets
+          // the browser start fetching it in parallel with the JS bundle
+          // instead of after. Same file is used on desktop as the poster
+          // fallback for reduced-motion users, so this isn't mobile-only
+          // dead weight there either.
+          var link = document.createElement('link');
+          link.rel = 'preload';
+          link.as = 'image';
+          link.fetchPriority = 'high';
+          link.href = isDark
+            ? '/media/hero/cursus-hero-night-poster.webp'
+            : '/media/hero/cursus-hero-day-poster.webp';
+          document.head.appendChild(link);
+        } catch (e) {
+          // Ignore storage access errors (e.g. privacy mode)
+        }
+      })();
+    </script>
+
+    <!-- Google Fonts Imports — Outfit, Plus Jakarta Sans and Source Serif 4
+         were previously requested here but are not referenced by any
+         font-family rule in the codebase (verified via repo-wide grep) —
+         removed as dead render-blocking weight, not a design change. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&family=IBM+Plex+Mono:wght@500;600;700&family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

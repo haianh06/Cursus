@@ -1,0 +1,127 @@
+# Production / VPS stack (self-contained — do not merge with docker-compose.yml)
+#
+#   cp .env.production.example .env.production   # then fill secrets
+#   docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build
+#   docker compose -f docker-compose.prod.yml --env-file .env.production ps
+#   docker compose -f docker-compose.prod.yml --env-file .env.production down
+#
+# Put nginx/Caddy on the host (or another container) terminating TLS and
+# proxying to 127.0.0.1:3000 (SPA) and 127.0.0.1:8000 (API).
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: cursus_postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-appdb}
+    ports:
+      - "${HOST_BIND:-127.0.0.1}:5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: cursus_redis
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?Set REDIS_PASSWORD}
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
+    ports:
+      - "${HOST_BIND:-127.0.0.1}:6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" ping | grep -q PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: cursus_backend
+    ports:
+      - "${HOST_BIND:-127.0.0.1}:${BACKEND_PORT:-8000}:8000"
+    environment:
+      APP_ENV: production
+      APP_HOST: 0.0.0.0
+      APP_PORT: 8000
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL}
+      REDIS_URL: ${REDIS_URL:?Set REDIS_URL}
+      SEED_ON_START: "false"
+      CORS_ORIGINS: ${CORS_ORIGINS:?Set CORS_ORIGINS}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:?Set JWT_SECRET_KEY}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+      MODEL_NAME: ${MODEL_NAME:-gemini-2.5-flash}
+      EMAIL_PROVIDER: ${EMAIL_PROVIDER:-none}
+      EMAIL_VERIFICATION_URL_BASE: ${EMAIL_VERIFICATION_URL_BASE:-}
+      PASSWORD_RESET_URL_BASE: ${PASSWORD_RESET_URL_BASE:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL:-}
+      SMTP_FROM_NAME: ${SMTP_FROM_NAME:-Cursus}
+      SMTP_USE_TLS: ${SMTP_USE_TLS:-true}
+      RATE_LIMIT_ENABLED: "true"
+      CSRF_PROTECTION_ENABLED: "true"
+      ACCESS_TOKEN_COOKIE_SECURE: "true"
+      REFRESH_TOKEN_COOKIE_SECURE: "true"
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    volumes:
+      - app_uploads:/app/data/uploads
+      - app_data:/app/data
+    # Redis is required for this stack. Postgres may be Compose-local or external
+    # (Supabase); entrypoint waits on DATABASE_URL either way.
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: always
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${PUBLIC_API_URL:?Set PUBLIC_API_URL}
+    container_name: cursus_frontend
+    ports:
+      - "${HOST_BIND:-127.0.0.1}:${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/ >/dev/null || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+volumes:
+  postgres_data:
+  redis_data:
+  app_uploads:
+  app_data:

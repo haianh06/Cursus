@@ -1,0 +1,222 @@
+{
+  "subject_code": "EXE201",
+  "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+  "meta": {
+    "Syllabus ID": "10361",
+    "Syllabus Name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+    "Course Name English": "Experiential Entrepreneurship 2",
+    "Subject Code": "EXE201",
+    "Learning-Teaching Method": "Online, coaching, project-based learning",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) =\n'-Self-paced online learning: 15 hours\n- Learning face-to-face with an instructor: 10 sessions (1 session/week x 10 weeks; 2,25 hrs/session)\n- Guest speakers' Sharing - Seminars: 3 sessions (2,25 hrs/session)\n- Mentors' Mentoring: 2 (2,25hr/session). 1-3 additional sessions can be set up depending on the necessity and on the mentor's avaibility.\n- 102h self-study",
+    "Pre-Requisite": "EXE101",
+    "Description": "In Experiental Entrepreneurship 2, groups of students will develop product/service for their start-up ideas prepared from Experiental Entrepreneurship 1 and deploy sales and find real customers for their group's products/services.\nThere is no mandatory content for this course, just a list of suggested lectures/talks that students can view to get useful tips and experiences for project realization.\nIn addition, there will be seminars and workshops with related topics planned and implemented each semester according to actual needs and implementation situation.",
+    "StudentTasks": "- Students must attend at least 80% of Instructor's Coaching sections, Seminars and Mentor's Mentoring.\n- Students are responsible for doing all exercises and assignments given by the instructor in class or at home and submitting them on time.\n- Students must meet all milestones' requirements.\n- Promplty access to the learning material platform https://flm.fpt.edu.vn/ for up to date course information.",
+    "Tools": "- A hall for seminars has a capacity of at least 200 people",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "871/QĐ-ĐHFPT dated 08/25/2023",
+    "IsApproved": "True",
+    "Note": "",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "8/25/2023"
+  },
+  "clo_count": 4,
+  "session_count": 19,
+  "chunks": [
+    {
+      "chunk_id": "EXE201-overview",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Overview & Grading Policy",
+      "text": "Description: In Experiental Entrepreneurship 2, groups of students will develop product/service for their start-up ideas prepared from Experiental Entrepreneurship 1 and deploy sales and find real customers for their group's products/services.\nThere is no mandatory content for this course, just a list of suggested lectures/talks that students can view to get useful tips and experiences for project realization.\nIn addition, there will be seminars and workshops with related topics planned and implemented each semester according to actual needs and implementation situation.\nNoCredit: 3\nPre-Requisite: EXE101\nTime Allocation: Study hour (150h) =\n'-Self-paced online learning: 15 hours\n- Learning face-to-face with an instructor: 10 sessions (1 session/week x 10 weeks; 2,25 hrs/session)\n- Guest speakers' Sharing - Seminars: 3 sessions (2,25 hrs/session)\n- Mentors' Mentoring: 2 (2,25hr/session). 1-3 additional sessions can be set up depending on the necessity and on the mentor's avaibility.\n- 102h self-study\nStudentTasks: - Students must attend at least 80% of Instructor's Coaching sections, Seminars and Mentor's Mentoring.\n- Students are responsible for doing all exercises and assignments given by the instructor in class or at home and submitting them on time.\n- Students must meet all milestones' requirements.\n- Promplty access to the learning material platform https://flm.fpt.edu.vn/ for up to date course information.\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus EXE201 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "EXE201-CLO1",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Build physical product/service",
+      "source_label": "Syllabus EXE201 — CLO1"
+    },
+    {
+      "chunk_id": "EXE201-CLO2",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Be able to map out the customer acquisition plan",
+      "source_label": "Syllabus EXE201 — CLO2"
+    },
+    {
+      "chunk_id": "EXE201-CLO3",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Launch product on different channels",
+      "source_label": "Syllabus EXE201 — CLO3"
+    },
+    {
+      "chunk_id": "EXE201-CLO4",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Able to analyze feedback from the channels",
+      "source_label": "Syllabus EXE201 — CLO4"
+    },
+    {
+      "chunk_id": "EXE201-session-1",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Session 1",
+      "text": "Session 1 — Week 1\nInstructor's coaching\nDesign for Startups - Part 1\nTài liệu: Watch video lectures below:\nhttps://www.ycombinator.com/library/7G-design-for-startups-part-1-sus-2018\n- (Optional) Read book The Lean Startup\nNhiệm vụ sinh viên: Present the group's implementing plan and the project's progress compared to the plan",
+      "source_label": "Syllabus EXE201 — Session 1"
+    },
+    {
+      "chunk_id": "EXE201-session-2",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Session 2",
+      "text": "Session 2 — Week 1\nSeminar 1\n“Be Successful in Your Own Way” – Guest speaker\nNhiệm vụ sinh viên: - Attend the seminar\nDuring Seminar:\n- Prepare questions for Guest speakers",
+      "source_label": "Syllabus EXE201 — Session 2"
+    },
+    {
+      "chunk_id": "EXE201-session-3",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Session 3",
+      "text": "Session 3 — Week 2\nInstructor's coaching\nDesign for Startups, Part 2\nTài liệu: Watch video lectures below:\nhttps://www.ycombinator.com/library/7H-design-for-startups-part-2-sus-2018\n- (Optional) Read book The Lean Startup\nNhiệm vụ sinh viên: - Follow the instructions and requirements of the Lecturer, review assigned video lectures\n- Present the progress of building product/service and demonstrate the result\n- Modify plan regarding lecturer's comments\n- Keep developing product/service",
+      "source_label": "Syllabus EXE201 — Session 3"
+    },
+    {
+      "chunk_id": "EXE201-session-4",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Session 4",
+      "text": "Session 4 — Week 3\nInstructor's coaching\nBuilding Product\nTài liệu: Watch video lectures below:\nhttps://www.ycombinator.com/library/7s-building-product-sus-2018\n- (Optional) Read book The Lean Startup\nNhiệm vụ sinh viên: - Preparing the list of posible channels for launching product/service",
+      "source_label": "Syllabus EXE201 — Session 4"
+    },
+    {
+      "chunk_id": "EXE201-session-5",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Session 5",
+      "text": "Session 5 — Week 3\nSeminar 2\n“Choosing a Startup Idea” – Guest Speaker\nNhiệm vụ sinh viên: - Attend the seminar\nDuring Seminar:\n- Prepare questions for Guest speakers",
+      "source_label": "Syllabus EXE201 — Session 5"
+    },
+    {
+      "chunk_id": "EXE201-session-6",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Session 6",
+      "text": "Session 6 — Week 3\nMentoring 1\nNhiệm vụ sinh viên: Before mentoring:\nPrepare questions\nDuring mentoring: discuss and require guidance from the mentor.\nAfter mentoring:\nPut into practice the knowledge and try to deepen it in the project.",
+      "source_label": "Syllabus EXE201 — Session 6"
+    },
+    {
+      "chunk_id": "EXE201-session-7",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Session 7",
+      "text": "Session 7 — Week 4\nInstructor's coaching\nHow to Launch (Again and Again)\nTài liệu: Watch video lectures below:\nhttps://www.ycombinator.com/library/6i-how-to-launch-again-and-again\n- (Optional) Read book The Lean Startup\nNhiệm vụ sinh viên: - Present market analysis and problem statement, give insign information from its market research\n- Present the selected channels for launching.\n- Improve the product/service if needed",
+      "source_label": "Syllabus EXE201 — Session 7"
+    },
+    {
+      "chunk_id": "EXE201-session-8",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Session 8",
+      "text": "Session 8 — Week 5\nInstructor's coaching\nHow to get your first ten customers?\nOucome 2 presentation\nTài liệu: Watch video lectures below:\nhttps://www.ycombinator.com/library/9h-how-to-get-your-first-ten-customers\n- (Optional) Read book The Lean Startup\nNhiệm vụ sinh viên: Presents launching situation (channels, methods, cost, market fit, customer target, primilary feedback,…)",
+      "source_label": "Syllabus EXE201 — Session 8"
+    },
+    {
+      "chunk_id": "EXE201-session-9",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Session 9",
+      "text": "Session 9 — Week 5\nMentoring 2 (optional)\nNhiệm vụ sinh viên: Acquire the guidance of the mentor and put it into practice.",
+      "source_label": "Syllabus EXE201 — Session 9"
+    },
+    {
+      "chunk_id": "EXE201-session-10",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Session 10",
+      "text": "Session 10 — Week 6\nInstructor's coaching\nHow to Get Users and Grow\nTài liệu: Watch video lectures below:\nhttps://www.ycombinator.com/library/7K-how-to-get-users-and-grow-sus-2018\n- (Optional) Read book The Lean Startup\nNhiệm vụ sinh viên: Keep improving product/service if needed\nKeep launching product/service on selected channels",
+      "source_label": "Syllabus EXE201 — Session 10"
+    },
+    {
+      "chunk_id": "EXE201-session-11",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Session 11",
+      "text": "Session 11 — Week 6\nMentoring 3 (optional)\nNhiệm vụ sinh viên: Acquire the guidance of the mentor and put it into practice.",
+      "source_label": "Syllabus EXE201 — Session 11"
+    },
+    {
+      "chunk_id": "EXE201-session-12",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Session 12",
+      "text": "Session 12 — Week 7\nInstructor's coaching\nHow to Sell\nTài liệu: Watch videos below:\nhttps://www.ycombinator.com/library/7f-how-to-sell-sus-2018\nNhiệm vụ sinh viên: Prepare the feedback form and send it to at least 20 people. Collect feedback answers and analyze them.\nKeep improving product/service if needed\nKeep launching product/service on selected channels",
+      "source_label": "Syllabus EXE201 — Session 12"
+    },
+    {
+      "chunk_id": "EXE201-session-13",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Session 13",
+      "text": "Session 13 — Week 8\nInstructor's coaching\nHow to Set KPIs and Goals\nTài liệu: Watch videos below:\nhttps://www.ycombinator.com/library/6j-how-to-set-kpis-and-goals-sus-2019\nNhiệm vụ sinh viên: Present the feedback analysis and improvement plan if there is.\nKeep improving product/service if needed\nKeep launching product/service on selected channels",
+      "source_label": "Syllabus EXE201 — Session 13"
+    },
+    {
+      "chunk_id": "EXE201-session-14",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Session 14",
+      "text": "Session 14 — Week 8\nSeminar 3\nRecommended topics:\nHow to do market research – Instructor or Guest speaker\nMVP and How to Shorten Time-To- Market – Guest speaker\n“Startup Fundraising & Venture Investment” – Guest speaker\nNhiệm vụ sinh viên: - Attend the seminar\nDuring Seminar:\n- Prepare questions for Guest speakers",
+      "source_label": "Syllabus EXE201 — Session 14"
+    },
+    {
+      "chunk_id": "EXE201-session-15",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Session 15",
+      "text": "Session 15 — Week 8\nMentoring 4 (optional)\nNhiệm vụ sinh viên: Acquire the guidance of the mentor and put it into practice.",
+      "source_label": "Syllabus EXE201 — Session 15"
+    },
+    {
+      "chunk_id": "EXE201-session-16",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Session 16",
+      "text": "Session 16 — Week 9\nInstructor's coaching\nGrowth for Startups\nTài liệu: Watch videos below:\nhttps://www.ycombinator.com/library/6k-growth-for-startups\nNhiệm vụ sinh viên: Present the feedback analysis, improvement plan if there is.\nKeep improving product/service if needed\nKeep launching product/service on selected channels\nPrepare the final report",
+      "source_label": "Syllabus EXE201 — Session 16"
+    },
+    {
+      "chunk_id": "EXE201-session-17",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Session 17",
+      "text": "Session 17 — Week 9\nMentoring 5\nNhiệm vụ sinh viên: Prepare the pitch deck",
+      "source_label": "Syllabus EXE201 — Session 17"
+    },
+    {
+      "chunk_id": "EXE201-session-18",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Session 18",
+      "text": "Session 18 — Week 10\nEvaluate all the groups\n1 session offline\nNhiệm vụ sinh viên: Present the startup project and results",
+      "source_label": "Syllabus EXE201 — Session 18"
+    },
+    {
+      "chunk_id": "EXE201-session-19",
+      "subject_code": "EXE201",
+      "subject_name": "Experiential Entrepreneurship 2 - Trải nghiệm khởi nghiệp 2",
+      "section": "Session 19",
+      "text": "Session 19 — Week 11-14\nRelaunch & try to approach customers again if previously failed",
+      "source_label": "Syllabus EXE201 — Session 19"
+    }
+  ]
+}

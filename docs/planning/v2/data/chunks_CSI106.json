@@ -1,0 +1,622 @@
+{
+  "subject_code": "CSI106",
+  "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+  "meta": {
+    "Syllabus ID": "11585",
+    "Syllabus Name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+    "Course Name English": "Introduction to Computer Science",
+    "Subject Code": "CSI106",
+    "Learning-Teaching Method": "Social Constructivism,Inquiry-Based Learning,In-class lecture, Active Learning",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) = 45h contact hours + 5h online + 1h final exam + 99h self-study",
+    "Pre-Requisite": "",
+    "Description": "This course provides an overview of computer fundamentals. Topics cover all areas of computer science in breadth such as computer organization, network, operating system, data structure , file structure, social and ethical issues.\nMajor Instructional Areas\n- Introduction to Von Neumann Model and computer components\n- Numbering system & data representation\n- Different data types and operations on data\n- The concepts of computer networking and internet\n- Operating system\n- Introduction to basic algorithms and algorithms representation\n- Introduction to Data structure and File structure\n- The concepts of database\n- Software engineering\n- Computing Security & Ethics\n- Introduction to Artificial Intelligence (Additional Learning)",
+    "StudentTasks": "- Students must attend at least 80% of contact sessions in order to be accepted to the final examination.\n- Students are responsible to do all exercises, assignments and labs given by instructor in class or at home and submit on time\n- Use laptop in class only for learning purpose\n- Complete Additional Learning (AI For Everyone course in Coursera) and achieve the certificate\n- Promptly access to the https://flm.fpt.edu.vn for up-to-date course information\"",
+    "Tools": "",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "765/QĐ-ĐHFPT dated 07/29/2024",
+    "IsApproved": "True",
+    "Note": "",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "7/29/2024"
+  },
+  "clo_count": 13,
+  "session_count": 60,
+  "chunks": [
+    {
+      "chunk_id": "CSI106-overview",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Overview & Grading Policy",
+      "text": "Description: This course provides an overview of computer fundamentals. Topics cover all areas of computer science in breadth such as computer organization, network, operating system, data structure , file structure, social and ethical issues.\nMajor Instructional Areas\n- Introduction to Von Neumann Model and computer components\n- Numbering system & data representation\n- Different data types and operations on data\n- The concepts of computer networking and internet\n- Operating system\n- Introduction to basic algorithms and algorithms representation\n- Introduction to Data structure and File structure\n- The concepts of database\n- Software engineering\n- Computing Security & Ethics\n- Introduction to Artificial Intelligence (Additional Learning)\nNoCredit: 3\nTime Allocation: Study hour (150h) = 45h contact hours + 5h online + 1h final exam + 99h self-study\nStudentTasks: - Students must attend at least 80% of contact sessions in order to be accepted to the final examination.\n- Students are responsible to do all exercises, assignments and labs given by instructor in class or at home and submit on time\n- Use laptop in class only for learning purpose\n- Complete Additional Learning (AI For Everyone course in Coursera) and achieve the certificate\n- Promptly access to the https://flm.fpt.edu.vn for up-to-date course information\"\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus CSI106 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "CSI106-CLO1",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Understand the subsystems of a computer and describe the role of these components",
+      "source_label": "Syllabus CSI106 — CLO1"
+    },
+    {
+      "chunk_id": "CSI106-CLO2",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Know how to convert a number from one base to other base( decimal, binary, octal and hexadecimal)",
+      "source_label": "Syllabus CSI106 — CLO2"
+    },
+    {
+      "chunk_id": "CSI106-CLO3",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Describe how different data type is stored inside a computer as bit patterns and operations on data",
+      "source_label": "Syllabus CSI106 — CLO3"
+    },
+    {
+      "chunk_id": "CSI106-CLO4",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Describe the layers in netwoking and their relationship",
+      "source_label": "Syllabus CSI106 — CLO4"
+    },
+    {
+      "chunk_id": "CSI106-CLO5",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Learning Outcome CLO5",
+      "text": "CLO5: Undestand the role of OS in a computer system",
+      "source_label": "Syllabus CSI106 — CLO5"
+    },
+    {
+      "chunk_id": "CSI106-CLO6",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Learning Outcome CLO6",
+      "text": "CLO6: Define a algorithm and describe tools used to develop algorithms",
+      "source_label": "Syllabus CSI106 — CLO6"
+    },
+    {
+      "chunk_id": "CSI106-CLO7",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Learning Outcome CLO7",
+      "text": "CLO7: Explain how a program in a high-level language is translated into machine language",
+      "source_label": "Syllabus CSI106 — CLO7"
+    },
+    {
+      "chunk_id": "CSI106-CLO8",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Learning Outcome CLO8",
+      "text": "CLO8: Describe the software lifecycle",
+      "source_label": "Syllabus CSI106 — CLO8"
+    },
+    {
+      "chunk_id": "CSI106-CLO9",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Learning Outcome CLO9",
+      "text": "CLO9: Discuss some data structures: Array, Records, Linked list",
+      "source_label": "Syllabus CSI106 — CLO9"
+    },
+    {
+      "chunk_id": "CSI106-CLO10",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Learning Outcome CLO10",
+      "text": "CLO10: Distinguish between text file and binary file and access methods",
+      "source_label": "Syllabus CSI106 — CLO10"
+    },
+    {
+      "chunk_id": "CSI106-CLO11",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Learning Outcome CLO11",
+      "text": "CLO11: Describe and explain operations within a relational database",
+      "source_label": "Syllabus CSI106 — CLO11"
+    },
+    {
+      "chunk_id": "CSI106-CLO12",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Learning Outcome CLO12",
+      "text": "CLO12: Descibe security goals and discuss ethical issues",
+      "source_label": "Syllabus CSI106 — CLO12"
+    },
+    {
+      "chunk_id": "CSI106-CLO13",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Learning Outcome CLO13",
+      "text": "CLO13: Describe artificial intelligence and its basic concepts",
+      "source_label": "Syllabus CSI106 — CLO13"
+    },
+    {
+      "chunk_id": "CSI106-session-1",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 1",
+      "text": "Session 1 — Introduction to the Course\n1.Computer Organization\n1.1 Von Neumann model\nTài liệu: - Chapter 1, text book\n- Slides: Part 1-1,\n- EduNext Slot 1 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 1-1;\nAnswer Edunext question in slot 1",
+      "source_label": "Syllabus CSI106 — Session 1"
+    },
+    {
+      "chunk_id": "CSI106-session-2",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 2",
+      "text": "Session 2 — 1.2 Computer generations\nTài liệu: - Chapter 1, text book\n- Slides: Part 1-2\n- EduNext Slot 1 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 1-2\nAnswer Edunext question in slot 1",
+      "source_label": "Syllabus CSI106 — Session 2"
+    },
+    {
+      "chunk_id": "CSI106-session-3",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 3",
+      "text": "Session 3 — 1.3 Subsystems and the role of subsystems\nTài liệu: - Chapter 1&5, text book\n- Slides: Part 1-3\n- EduNext Slot 1 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 1-3\nAnswer Edunext question in slot 1",
+      "source_label": "Syllabus CSI106 — Session 3"
+    },
+    {
+      "chunk_id": "CSI106-session-4",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 4",
+      "text": "Session 4 — 1.4 Central Processing Unit\nTài liệu: - Chapter 1&5, text book\n- Slides: Part 1-4\n- EduNext Slot 2 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 1-4\nAnswer Edunext question in slot 2",
+      "source_label": "Syllabus CSI106 — Session 4"
+    },
+    {
+      "chunk_id": "CSI106-session-5",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 5",
+      "text": "Session 5 — 1.5 Memory: main memory\nTài liệu: - Chapter 5, text book\n- Slides: Part 1-5\n- EduNext Slot 2 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 1-5\nAnswer Edunext question in slot 2",
+      "source_label": "Syllabus CSI106 — Session 5"
+    },
+    {
+      "chunk_id": "CSI106-session-6",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 6",
+      "text": "Session 6 — 1.6 Input/Output subsystems\nTài liệu: - Chapter 5, text book\n- Slides: Part 1-6\n- EduNext Slot 2 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 1-6\nAnswer Edunext question in slot 2",
+      "source_label": "Syllabus CSI106 — Session 6"
+    },
+    {
+      "chunk_id": "CSI106-session-7",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 7",
+      "text": "Session 7 — 1.7 Different architectures\nTài liệu: - Chapter 5, text book\n- Slides: Part 1-7\n- EduNext Slot 3 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 1-7\nAnswer Edunext question in slot 3",
+      "source_label": "Syllabus CSI106 — Session 7"
+    },
+    {
+      "chunk_id": "CSI106-session-8",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 8",
+      "text": "Session 8 — 2. Numbering systems\n2.1 Introduction\n2.2 Positional Number Systems\nTài liệu: - Chapter 2, text book\n- Slides: Part 2\n- EduNext Slot 3 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 2\nAnswer Edunext question in slot 3",
+      "source_label": "Syllabus CSI106 — Session 8"
+    },
+    {
+      "chunk_id": "CSI106-session-9",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 9",
+      "text": "Session 9 — 2. Numbering systems\n2.3 Conversion\nTài liệu: - Chapter 2, text book\n- Slides: Part 2\n- EduNext Slot 3 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 2\nAnswer Edunext question in slot 3",
+      "source_label": "Syllabus CSI106 — Session 9"
+    },
+    {
+      "chunk_id": "CSI106-session-10",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 10",
+      "text": "Session 10 — Lab 1: Guide\nTài liệu: TextBook Chapter 2,\nInstructor manuals",
+      "source_label": "Syllabus CSI106 — Session 10"
+    },
+    {
+      "chunk_id": "CSI106-session-11",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 11",
+      "text": "Session 11 — Lab 1: Guide\nTài liệu: TextBook Chapter 2,\nInstructor manuals",
+      "source_label": "Syllabus CSI106 — Session 11"
+    },
+    {
+      "chunk_id": "CSI106-session-12",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 12",
+      "text": "Session 12 — Introduction to presentation 1\nTài liệu: TextBook Chapter 6->16,\nInstructor manuals",
+      "source_label": "Syllabus CSI106 — Session 12"
+    },
+    {
+      "chunk_id": "CSI106-session-13",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 13",
+      "text": "Session 13 — 3.Data storage and Operations on Data\n3.1 Storing Numbers\nTài liệu: - Chapter 3, text book\n- Slides: Part 3\n- EduNext Slot 5 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 3\nAnswer Edunext question in slot 5",
+      "source_label": "Syllabus CSI106 — Session 13"
+    },
+    {
+      "chunk_id": "CSI106-session-14",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 14",
+      "text": "Session 14 — 3.Data storage and Operations on Data\n3.2 Storing Text, Media, Image, Video\nTài liệu: - Chapter 3, text book\n- Slides: Part 3\n- EduNext Slot 5 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 3\nAnswer Edunext question in slot 5",
+      "source_label": "Syllabus CSI106 — Session 14"
+    },
+    {
+      "chunk_id": "CSI106-session-15",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 15",
+      "text": "Session 15 — 3.3 Logic operations\nTài liệu: - Chapter 4, text book\n- Slides: Part 3\n- EduNext Slot 5 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 3\nAnswer Edunext question in slot 5",
+      "source_label": "Syllabus CSI106 — Session 15"
+    },
+    {
+      "chunk_id": "CSI106-session-16",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 16",
+      "text": "Session 16 — 3.3 Shift, Arithmetic operations\nTài liệu: - Chapter 4, text book\n- Slides: Part 3\n- EduNext Slot 5 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 3\nAnswer Edunext question in slot 5",
+      "source_label": "Syllabus CSI106 — Session 16"
+    },
+    {
+      "chunk_id": "CSI106-session-17",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 17",
+      "text": "Session 17 — 4. Computer Networks and Internet\n4.1 Overview\n4.1.1 LAN & WAN\n4.1.2 TCP/IP protocol\nTài liệu: - Chapter 6, text book\n- Slides: Part 4\n- EduNext Slot 6 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 4\nAnswer Edunext question in slot 6",
+      "source_label": "Syllabus CSI106 — Session 17"
+    },
+    {
+      "chunk_id": "CSI106-session-18",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 18",
+      "text": "Session 18 — 4. Computer Networks and Internet\n4.2 layers in netwoking\nTài liệu: - Chapter 6, text book\n- Slides: Part 4\n- EduNext Slot 6 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 4\nAnswer Edunext question in slot 6",
+      "source_label": "Syllabus CSI106 — Session 18"
+    },
+    {
+      "chunk_id": "CSI106-session-19",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 19",
+      "text": "Session 19 — Progress test 1",
+      "source_label": "Syllabus CSI106 — Session 19"
+    },
+    {
+      "chunk_id": "CSI106-session-20",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 20",
+      "text": "Session 20 — 5. Operating System\n5.1 Introduction\n5.2 Evolution\nTài liệu: - Chapter 7, text book\n- Slides: Part 5\n- EduNext Slot 7 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 5\nAnswer Edunext question in slot 7",
+      "source_label": "Syllabus CSI106 — Session 20"
+    },
+    {
+      "chunk_id": "CSI106-session-21",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 21",
+      "text": "Session 21 — 5. Operating System\n5.3 Components of OS: UI, memory manager\nTài liệu: - Chapter 7, text book\n- Slides: Part 5\n- EduNext Slot 7 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 5\nAnswer Edunext question in slot 7",
+      "source_label": "Syllabus CSI106 — Session 21"
+    },
+    {
+      "chunk_id": "CSI106-session-22",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 22",
+      "text": "Session 22 — 5. Operating System\n5.3 Components of OS: file manager\nTài liệu: - Chapter 7, text book\n- Slides: Part 5\n- EduNext Slot 7 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 5\nAnswer Edunext question in slot 7",
+      "source_label": "Syllabus CSI106 — Session 22"
+    },
+    {
+      "chunk_id": "CSI106-session-23",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 23",
+      "text": "Session 23 — 5. Operating System\n5.3 Components of OS: device manager\nTài liệu: - Chapter 7, text book\n- Slides: Part 5\n- EduNext Slot 7 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 5\nAnswer Edunext question in slot 7",
+      "source_label": "Syllabus CSI106 — Session 23"
+    },
+    {
+      "chunk_id": "CSI106-session-24",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 24",
+      "text": "Session 24 — 6. Algorithms\n6.1 Concepts: input, output, processing\n6.2 Three basic constructs\nTài liệu: - Chapter 8, text book\n- Slides: Part 6\n- EduNext Slot 8 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 6\nAnswer Edunext question in slot 8",
+      "source_label": "Syllabus CSI106 — Session 24"
+    },
+    {
+      "chunk_id": "CSI106-session-25",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 25",
+      "text": "Session 25 — 6. Algorithms\n6.1 Concepts: input, output, processing\n6.2 Three basic constructs\nTài liệu: - Chapter 8, text book\n- Slides: Part 6\n- EduNext Slot 9 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 6\nAnswer Edunext question in slot 9",
+      "source_label": "Syllabus CSI106 — Session 25"
+    },
+    {
+      "chunk_id": "CSI106-session-26",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 26",
+      "text": "Session 26 — 6.3 Algorithm representation\n6.4 Search Algorithms: linear, binary\nTài liệu: - Chapter 8, text book\n- Slides: Part 6\n- EduNext Slot 9 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 6\nAnswer Edunext question in slot 9",
+      "source_label": "Syllabus CSI106 — Session 26"
+    },
+    {
+      "chunk_id": "CSI106-session-27",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 27",
+      "text": "Session 27 — 6.3 Algorithm representation\n6.4 Search Algorithms: linear, binary\nTài liệu: - Chapter 8, text book\n- Slides: Part 6\n- EduNext Slot 9 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 6\nAnswer Edunext question in slot 9",
+      "source_label": "Syllabus CSI106 — Session 27"
+    },
+    {
+      "chunk_id": "CSI106-session-28",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 28",
+      "text": "Session 28 — Presentations 1\nTài liệu: Slide for presentation",
+      "source_label": "Syllabus CSI106 — Session 28"
+    },
+    {
+      "chunk_id": "CSI106-session-29",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 29",
+      "text": "Session 29 — Presentations 1\nTài liệu: Slide for presentation",
+      "source_label": "Syllabus CSI106 — Session 29"
+    },
+    {
+      "chunk_id": "CSI106-session-30",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 30",
+      "text": "Session 30 — Introduction to Additional Learning: \"AI For Everyone\" course in Coursera\nIntroduction to presentation 2\n(Students have to complete Additional Learning and achieve the certificate before Presentation 2)",
+      "source_label": "Syllabus CSI106 — Session 30"
+    },
+    {
+      "chunk_id": "CSI106-session-31",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 31",
+      "text": "Session 31 — 7. Programming\n7.1 translation\nTài liệu: - Chapter 9, text book\n- Slides: Part 7\n- EduNext Slot 11 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 7\nAnswer Edunext question in slot 11",
+      "source_label": "Syllabus CSI106 — Session 31"
+    },
+    {
+      "chunk_id": "CSI106-session-32",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 32",
+      "text": "Session 32 — 7. Programming\n7.2 programming paradigms\nTài liệu: - Chapter 9, text book\n- Slides: Part 7\n- EduNext Slot 11 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 7\nAnswer Edunext question in slot 11",
+      "source_label": "Syllabus CSI106 — Session 32"
+    },
+    {
+      "chunk_id": "CSI106-session-33",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 33",
+      "text": "Session 33 — Lab2: Guide\nTài liệu: TextBook Chapter 8, 9\nInstructor manuals",
+      "source_label": "Syllabus CSI106 — Session 33"
+    },
+    {
+      "chunk_id": "CSI106-session-34",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 34",
+      "text": "Session 34 — Lab2: Guide\nTài liệu: TextBook Chapter 8, 9\nInstructor manuals",
+      "source_label": "Syllabus CSI106 — Session 34"
+    },
+    {
+      "chunk_id": "CSI106-session-35",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 35",
+      "text": "Session 35 — 8.Software engineering\n8.1 The software lifecycle\n8.2 Analysis phase\nTài liệu: - Chapter 10, text book\n- Slides: Part 8\n- EduNext Slot 12 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 8\nAnswer Edunext question in slot 12",
+      "source_label": "Syllabus CSI106 — Session 35"
+    },
+    {
+      "chunk_id": "CSI106-session-36",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 36",
+      "text": "Session 36 — 8.Software engineering\n8.1 The software lifecycle\n8.2 Analysis phase\n8.3 Design phase\nTài liệu: - Chapter 10, text book\n- Slides: Part 8\n- EduNext Slot 12 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 8\nAnswer Edunext question in slot 12",
+      "source_label": "Syllabus CSI106 — Session 36"
+    },
+    {
+      "chunk_id": "CSI106-session-37",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 37",
+      "text": "Session 37 — 8.4 Implementation phase\nTài liệu: - Chapter 10, text book\n- Slides: Part 8\n- EduNext Slot 13 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 8\nAnswer Edunext question in slot 13",
+      "source_label": "Syllabus CSI106 — Session 37"
+    },
+    {
+      "chunk_id": "CSI106-session-38",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 38",
+      "text": "Session 38 — 8.5 Testing phase\nTài liệu: - Chapter 10, text book\n- Slides: Part 8\n- EduNext Slot 13 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 8\nAnswer Edunext question in slot 13",
+      "source_label": "Syllabus CSI106 — Session 38"
+    },
+    {
+      "chunk_id": "CSI106-session-39",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 39",
+      "text": "Session 39 — 9. Data structures\n9.1 Arrays\n9.2 Records\nTài liệu: - Chapter 11, text book\n- Slides: Part 9\n- EduNext Slot 14 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 9\nAnswer Edunext question in slot 14",
+      "source_label": "Syllabus CSI106 — Session 39"
+    },
+    {
+      "chunk_id": "CSI106-session-40",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 40",
+      "text": "Session 40 — 9. Data structures\n9.3 Linked List\nTài liệu: - Chapter 11, text book\n- Slides: Part 9\n- EduNext Slot 14 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 9\nAnswer Edunext question in slot 14",
+      "source_label": "Syllabus CSI106 — Session 40"
+    },
+    {
+      "chunk_id": "CSI106-session-41",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 41",
+      "text": "Session 41 — 9.4 Introduction: Stack, Queue, Tree, graph\nTài liệu: - Chapter 11, text book\n- Slides: Part 9\n- EduNext Slot 14 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 9\nAnswer Edunext question in slot 14",
+      "source_label": "Syllabus CSI106 — Session 41"
+    },
+    {
+      "chunk_id": "CSI106-session-42",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 42",
+      "text": "Session 42 — Progress test 2",
+      "source_label": "Syllabus CSI106 — Session 42"
+    },
+    {
+      "chunk_id": "CSI106-session-43",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 43",
+      "text": "Session 43 — 10.File structure\n10.1 Text versus Binary\nTài liệu: - Chapter 13, text book\n- Slides: Part 10\n- EduNext Slot 15 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 10\nAnswer Edunext question in slot 15",
+      "source_label": "Syllabus CSI106 — Session 43"
+    },
+    {
+      "chunk_id": "CSI106-session-44",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 44",
+      "text": "Session 44 — 10.File structure\n10.2 Access methods\nTài liệu: - Chapter 13, text book\n- Slides: Part 10\n- EduNext Slot 15 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 10\nAnswer Edunext question in slot 15",
+      "source_label": "Syllabus CSI106 — Session 44"
+    },
+    {
+      "chunk_id": "CSI106-session-45",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 45",
+      "text": "Session 45 — 11. Database\n11.1 Introduction\nTài liệu: - Chapter 14, text book\n- Slides: Part 11\n- EduNext Slot 16 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 11\nAnswer Edunext question in slot 16",
+      "source_label": "Syllabus CSI106 — Session 45"
+    },
+    {
+      "chunk_id": "CSI106-session-46",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 46",
+      "text": "Session 46 — 11. Database\n11.2 Database architecture\nTài liệu: - Chapter 14, text book\n- Slides: Part 11\n- EduNext Slot 16 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 11\nAnswer Edunext question in slot 16",
+      "source_label": "Syllabus CSI106 — Session 46"
+    },
+    {
+      "chunk_id": "CSI106-session-47",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 47",
+      "text": "Session 47 — 11.3 Database model\n11.4 The relationship database model\nTài liệu: - Chapter 14, text book\n- Slides: Part 11\n- EduNext Slot 16 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 11\nAnswer Edunext question in slot 16",
+      "source_label": "Syllabus CSI106 — Session 47"
+    },
+    {
+      "chunk_id": "CSI106-session-48",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 48",
+      "text": "Session 48 — 11.5 Database design\nTài liệu: - Chapter 14, text book\n- Slides: Part 11\n- EduNext Slot 16 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 11\nAnswer Edunext question in slot 16",
+      "source_label": "Syllabus CSI106 — Session 48"
+    },
+    {
+      "chunk_id": "CSI106-session-49",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 49",
+      "text": "Session 49 — 11.6 Guide do practice set (database)\nTài liệu: - Chapter 14, text book\n- Slides: Part 11\n- EduNext Slot 16 (Q&A)",
+      "source_label": "Syllabus CSI106 — Session 49"
+    },
+    {
+      "chunk_id": "CSI106-session-50",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 50",
+      "text": "Session 50 — 12. Security and Ethical Issues\n12.1 Introduction\n12.2 Confidentiality\nTài liệu: - Chapter 16 & 20, text book\n- Slides: Part 12\n- EduNext Slot 17 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 12\nAnswer Edunext question in slot 17",
+      "source_label": "Syllabus CSI106 — Session 50"
+    },
+    {
+      "chunk_id": "CSI106-session-51",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 51",
+      "text": "Session 51 — 12. Security and Ethical Issues\n12.3 Ethical Principles\nTài liệu: - Chapter 16 & 20, text book\n- Slides: Part 12\n- EduNext Slot 17 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 12\nAnswer Edunext question in slot 17",
+      "source_label": "Syllabus CSI106 — Session 51"
+    },
+    {
+      "chunk_id": "CSI106-session-52",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 52",
+      "text": "Session 52 — 12.4 Privacy\nTài liệu: - Chapter 16 & 20, text book\n- Slides: Part 12\n- EduNext Slot 18 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 12\nAnswer Edunext question in slot 18",
+      "source_label": "Syllabus CSI106 — Session 52"
+    },
+    {
+      "chunk_id": "CSI106-session-53",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 53",
+      "text": "Session 53 — 12.5 Hackers\nTài liệu: - Chapter 16 & 20, text book\n- Slides: Part 12\n- EduNext Slot 18 (Q&A)\nNhiệm vụ sinh viên: Read & Review Slides Part 12\nAnswer Edunext question in slot 18",
+      "source_label": "Syllabus CSI106 — Session 53"
+    },
+    {
+      "chunk_id": "CSI106-session-54",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 54",
+      "text": "Session 54 — Presentation 2\nTài liệu: Slide for presentation",
+      "source_label": "Syllabus CSI106 — Session 54"
+    },
+    {
+      "chunk_id": "CSI106-session-55",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 55",
+      "text": "Session 55 — Presentation 2\nTài liệu: Slide for presentation",
+      "source_label": "Syllabus CSI106 — Session 55"
+    },
+    {
+      "chunk_id": "CSI106-session-56",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 56",
+      "text": "Session 56 — Review Additional Learning (AI For Everyone course)",
+      "source_label": "Syllabus CSI106 — Session 56"
+    },
+    {
+      "chunk_id": "CSI106-session-57",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 57",
+      "text": "Session 57 — Progress test 3\nNhiệm vụ sinh viên: Test yourself",
+      "source_label": "Syllabus CSI106 — Session 57"
+    },
+    {
+      "chunk_id": "CSI106-session-58",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 58",
+      "text": "Session 58 — Review",
+      "source_label": "Syllabus CSI106 — Session 58"
+    },
+    {
+      "chunk_id": "CSI106-session-59",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 59",
+      "text": "Session 59 — Review",
+      "source_label": "Syllabus CSI106 — Session 59"
+    },
+    {
+      "chunk_id": "CSI106-session-60",
+      "subject_code": "CSI106",
+      "subject_name": "Introduction to Computer Science_Nhập môn khoa học máy tính",
+      "section": "Session 60",
+      "text": "Session 60 — Review",
+      "source_label": "Syllabus CSI106 — Session 60"
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+========================================================================
+ AI20K LOG BRIDGE  —  ĐỌC FILE NÀY TRƯỚC
+========================================================================
+
+Extension trình duyệt ghi lại prompt bạn gõ cho AI (ChatGPT, Claude,
+Gemini...) rồi gửi lên grading server của BTC, kèm repo / branch / commit.
+
+Nó CHỈ đọc ô soạn thảo bạn gõ vào. Không đọc câu trả lời của AI, không đọc
+trang nào ngoài danh sách bạn bật.
+
+Cài mất khoảng 5 phút. Mỗi người tự cài trên máy mình.
+
+
+------------------------------------------------------------------------
+ CHUẨN BỊ  —  hai giá trị bạn cần có
+------------------------------------------------------------------------
+
+Mở file .env ở thư mục gốc repo của BẠN, lấy hai dòng:
+
+    AI_LOG_SERVER=...
+    AI_LOG_API_KEY=...
+
+Không có file .env thì hỏi trưởng nhóm.
+
+  !! API key là của chung cả team. Đừng đăng lên chat nhóm công khai,
+     đừng commit vào git, đừng gửi kèm khi chuyển tiếp gói này.
+
+Cần sẵn: Chrome hoặc Edge bản 111 trở lên, Python 3.8+, và Git.
+
+
+------------------------------------------------------------------------
+ BƯỚC 1  —  Đặt thư mục
+------------------------------------------------------------------------
+
+Giải nén, rồi chép thư mục  ai-log-extension  vào repo của bạn:
+
+    <repo cua ban>\tools\ai-log-extension\
+
+Để chỗ khác cũng được, nhưng đặt đúng đây thì bước 2 không phải gõ thêm
+đường dẫn.
+
+  !! ĐƯỜNG DẪN LÀ CỦA MÁY BẠN, không phải của người gửi.
+     Repo mỗi người nằm một chỗ khác nhau.
+
+
+------------------------------------------------------------------------
+ BƯỚC 2  —  Chạy một lệnh (vừa cài vừa kiểm tra)
+------------------------------------------------------------------------
+
+Mở terminal TẠI THƯ MỤC GỐC REPO của bạn:
+
+  Windows:
+      tools\ai-log-extension\setup.cmd --server
+
+  macOS / Linux:
+      bash tools/ai-log-extension/setup.sh --server
+
+Trên Windows nhấn đúp vào setup.cmd cũng chạy được.
+
+Nếu bạn KHÔNG đặt thư mục ở tools\ai-log-extension, phải chỉ rõ repo:
+
+      setup.cmd --repo "D:\duong\dan\repo-cua-ban" --server
+
+  !! Đường dẫn phải là GỐC repo — thư mục chứa .git
+     Trỏ vào thư mục con sẽ bị từ chối. Lý do: lệnh git dò ngược lên cây
+     thư mục, nên đường dẫn sai có thể lấy nhầm commit của một project
+     hoàn toàn khác mà không báo lỗi gì.
+
+  Mong đợi:   TAT CA DAT (14 muc OK)
+
+  Nếu ra "CON n MUC HONG" thì mỗi mục đều in kèm cách sửa. Làm theo rồi
+  chạy lại lệnh trên.
+
+Chạy lại bao nhiêu lần cũng được, không hỏng gì.
+
+
+------------------------------------------------------------------------
+ BƯỚC 3  —  Khởi động lại trình duyệt
+------------------------------------------------------------------------
+
+BẮT BUỘC. Chrome chỉ đọc đăng ký native host lúc khởi động.
+
+Đóng HẾT cửa sổ Chrome rồi mở lại. Thu nhỏ xuống khay hệ thống không tính.
+
+Bỏ qua bước này thì extension vẫn báo "chưa cài native host" dù bạn đã cài
+xong, và bạn sẽ mất thời gian tìm một lỗi không tồn tại.
+
+
+------------------------------------------------------------------------
+ BƯỚC 4  —  Nạp extension
+------------------------------------------------------------------------
+
+  1. Mở  chrome://extensions      (Edge:  edge://extensions)
+  2. Bật  Developer mode  ở góc phải trên
+  3. Bấm  Load unpacked
+  4. Chọn thư mục  ai-log-extension  (thư mục có file manifest.json)
+
+  !! Kiểm tra ID hiện dưới tên extension, phải đúng chuỗi này:
+
+         cheofncpckkpmfjoeflampnmainmblac
+
+     ID khác nghĩa là Chrome không đọc được trường "key" trong
+     manifest.json. Hậu quả: native host sẽ IM LẶNG không trả lời — không
+     báo lỗi gì cả. Thường do chọn nhầm thư mục cha.
+
+
+------------------------------------------------------------------------
+ BƯỚC 5  —  Điền cấu hình
+------------------------------------------------------------------------
+
+Bấm icon extension trên thanh công cụ (ghim lại cho tiện).
+
+  a) Mục "Cấu hình"
+       Server URL  <- lấy từ .env, dòng AI_LOG_SERVER
+       API Key     <- lấy từ .env, dòng AI_LOG_API_KEY
+     Bấm "Lưu cấu hình", rồi bấm "Test kết nối".
+     Đúng thì hiện:  HTTP 202
+
+  b) Vẫn trong mục Cấu hình, bấm "Hoặc lấy từ repo trên máy".
+     Nó tự điền repo, branch, email, commit từ repo của bạn.
+
+  c) Mục "Bắt đầu" -> bấm "Kiểm tra tất cả".
+     Đủ xanh là xong. Mục màu vàng là tuỳ chọn, không chặn.
+
+
+------------------------------------------------------------------------
+ DÙNG HẰNG NGÀY
+------------------------------------------------------------------------
+
+Cứ chat với AI như bình thường. Prompt bạn gõ sẽ vào danh sách "Chờ duyệt".
+
+Mở popup, tick những mục muốn nộp -> "Gửi mục đã chọn".
+Mục không muốn nộp -> "Xoá mục đã chọn", nó không bao giờ rời khỏi máy bạn.
+
+Bấm vào một dòng log để xem toàn văn prompt.
+
+Mặc định là chế độ Chờ duyệt, vì hỏi AI một câu riêng tư rồi mới nhận ra
+nó đã lên server thì không rút lại được. Muốn nhanh thì chuyển sang "Tự động".
+
+Hai công tắc tắt nhanh, đều có hiệu lực ngay không cần tải lại trang:
+  - Công tắc ở header      -> tắt toàn bộ
+  - Công tắc theo site     -> chỉ tắt cho trang đang mở
+
+
+------------------------------------------------------------------------
+ KHI CÓ GÌ ĐÓ KHÔNG CHẠY
+------------------------------------------------------------------------
+
+Chạy lệnh này, nó chỉ ra chính xác mục nào hỏng và cách sửa:
+
+      tools\ai-log-extension\setup.cmd --check
+
+Vài lỗi hay gặp:
+
+  "Chưa cài native host"
+        -> chưa khởi động lại trình duyệt (bước 3)
+        -> hoặc ID extension không khớp (bước 4)
+
+  "Đường dẫn không phải gốc repo"
+        -> setup.cmd --repo "<thư mục chứa .git>"
+
+  Test kết nối trả 401 hoặc 403
+        -> API key sai, lấy lại từ .env
+
+  "server nhận 0" và mục "Từ chối" tăng
+        -> tên repo không khớp repo BTC cấp. Sửa ô Repo rồi bấm "Gửi lại".
+
+  Gõ prompt mà không thấy thông báo nào hiện lên
+        -> kiểm tra hai công tắc, và xem site đó đã bật chưa
+
+
+------------------------------------------------------------------------
+ ĐỌC THÊM
+------------------------------------------------------------------------
+
+  ai-log-extension/HUONG-DAN.md   Hướng dẫn đầy đủ. Mục 4 nói kỹ về đường
+                                  dẫn — chỗ sai nhiều nhất, và sai kiểu
+                                  âm thầm không báo lỗi.
+  ai-log-extension/README.md      Cách hoạt động bên trong, thiết kế.
+  ai-log-extension/TESTING.md     Quy trình kiểm tra 7 tầng.
+
+
+------------------------------------------------------------------------
+ LƯU Ý VỀ GÓI NÀY
+------------------------------------------------------------------------
+
+Gói này KHÔNG chứa file cấu hình của người gửi. Ba file sau bị cố ý loại
+bỏ vì chúng nhúng cứng đường dẫn tuyệt đối của máy người đóng gói:
+
+      native/host_config.json
+      native/run_host.bat
+      native/com.ai20k.gitinfo.json
+
+setup.cmd sẽ sinh lại chúng theo đúng máy bạn. Đó là lý do không được bỏ
+qua bước 2, kể cả khi thấy thư mục "trông có vẻ đã cài sẵn".
+
+Gói này cũng KHÔNG chứa API key. Bạn tự lấy từ .env của mình.

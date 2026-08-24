@@ -1,0 +1,1077 @@
+{
+  "subject_code": "SBA301",
+  "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+  "meta": {
+    "Subject Code": "SBA301",
+    "JPD316": "Intermediate Japanese 1-B1/B2_Tiếng Nhật trung cấp 1-B1/B2",
+    "KOR311": "Hàn ngữ trung cấp 1",
+    "AIL304m": "Machine Learning_Học máy",
+    "DBM301": "Data Mining_Khai phá dữ liệu",
+    "MMA301": "Multiplatform Mobile App Development_Phát triển ứng dụng di động đa nền tảng",
+    "SDN302": "Server-Side development with NodeJS, Express, and MongoDB_Phát triển Server-Side với NodeJS, Express và MongoDB",
+    "MIP201": "Microcontroller Programming_Lập trình vi điều khiển",
+    "DCD301": "Digital Circuit Design_Thiết kế vi mạch số",
+    "SBA301": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+    "GDC301": "Game Design Fundamentals - From Concept to Creation_Thiết kế game cơ bản - Từ ý tưởng đến thực hiện",
+    "AGU301": "Advanced Game Development_Phát triển game nâng cao",
+    "DHV301": "Data Handling and Visualization_Xử lý và Trực quan hóa Dữ liệu",
+    "MDS301": "Machine Learning in Data Science_Học máy trong khoa học dữ liệu",
+    "PRN222": "Advanced Cross-Platform Application Programming With .NET_Lập trình ứng dụng đa nền tảng nâng cao với .NET",
+    "PRU213": "Game Programming with C#_Lập trình Game với C#",
+    "Syllabus ID": "13801",
+    "Syllabus Name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+    "Course Name English": "Integrate single page application with Spring Boot",
+    "Learning-Teaching Method": "Project based learning,Problem based learning,Active learning,In-class lecture",
+    "NoCredit": "6",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (300h) = 90h contact hours + 145-minute final exam + 207.6h self-study",
+    "Pre-Requisite": "HSF302",
+    "Description": "Upon completion of this course students shoud:\n1. Understand the followings:\n• ReactJS concepts for building Front-End application\n• RESTful API concepts\n• RESTful API using Spring Boot's built-in features and frameworks\n• Security features (authentication and authorization) with RESTful API\n• Handling HTTP requests and responses using Spring Boot's framework\n• Error handling and exception management in Spring Boot RESTful APIs\n2. Be able to:\n• Build RESTful APIs using Spring Boot's built-in features and frameworks\n• Implement security features with authentication and authorization\n• Handle HTTP requests and responses using Spring Boot's framework\n• Build Front-End application using ReactJS components\n• Integrate Spring Boot with other technologies and frameworks SQL Server, MongoDB, and ReactJS\n3. Be able to work in team and present group's results",
+    "StudentTasks": "- Students must attend at least 80% of contact sessions in order to be accepted to the final examination.\n- Student is responsible to do all assigned exercises given by instructor in class or at home and submit on time\n- Use laptop in class only for learning purpose\n- Promptly access to the FU CMS at http://flm.fpt.edu.vn for up-to-date course information",
+    "Tools": "- Internet\n- IntelliJ IDEA\n- JDK 21\n- Platform: SpringBoot 3, Node 21",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "1402/QĐ-ĐHFPT dated 12/12/2025",
+    "IsApproved": "True",
+    "Note": "",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "12/12/2025"
+  },
+  "clo_count": 8,
+  "session_count": 120,
+  "chunks": [
+    {
+      "chunk_id": "SBA301-overview",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Overview & Grading Policy",
+      "text": "Description: Upon completion of this course students shoud:\n1. Understand the followings:\n• ReactJS concepts for building Front-End application\n• RESTful API concepts\n• RESTful API using Spring Boot's built-in features and frameworks\n• Security features (authentication and authorization) with RESTful API\n• Handling HTTP requests and responses using Spring Boot's framework\n• Error handling and exception management in Spring Boot RESTful APIs\n2. Be able to:\n• Build RESTful APIs using Spring Boot's built-in features and frameworks\n• Implement security features with authentication and authorization\n• Handle HTTP requests and responses using Spring Boot's framework\n• Build Front-End application using ReactJS components\n• Integrate Spring Boot with other technologies and frameworks SQL Server, MongoDB, and ReactJS\n3. Be able to work in team and present group's results\nNoCredit: 6\nPre-Requisite: HSF302\nTime Allocation: Study hour (300h) = 90h contact hours + 145-minute final exam + 207.6h self-study\nStudentTasks: - Students must attend at least 80% of contact sessions in order to be accepted to the final examination.\n- Student is responsible to do all assigned exercises given by instructor in class or at home and submit on time\n- Use laptop in class only for learning purpose\n- Promptly access to the FU CMS at http://flm.fpt.edu.vn for up-to-date course information\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus SBA301 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "SBA301-CLO1",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Understand of the ReactJS library, services, and dependency injection.",
+      "source_label": "Syllabus SBA301 — CLO1"
+    },
+    {
+      "chunk_id": "SBA301-CLO2",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Apply fetch and catching data in Client-Server Communication",
+      "source_label": "Syllabus SBA301 — CLO2"
+    },
+    {
+      "chunk_id": "SBA301-CLO3",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Describe RESTful APIs using Spring Boot's built-in features and frameworks",
+      "source_label": "Syllabus SBA301 — CLO3"
+    },
+    {
+      "chunk_id": "SBA301-CLO4",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Describe the connecting RESTful Web Service with JPA",
+      "source_label": "Syllabus SBA301 — CLO4"
+    },
+    {
+      "chunk_id": "SBA301-CLO5",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Learning Outcome CLO5",
+      "text": "CLO5: Apply security features such as authentication and authorization",
+      "source_label": "Syllabus SBA301 — CLO5"
+    },
+    {
+      "chunk_id": "SBA301-CLO6",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Learning Outcome CLO6",
+      "text": "CLO6: Create application with Hibernate and Spring Framework.",
+      "source_label": "Syllabus SBA301 — CLO6"
+    },
+    {
+      "chunk_id": "SBA301-CLO7",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Learning Outcome CLO7",
+      "text": "CLO7: Apply Spring Data with MongoDB to build an application.",
+      "source_label": "Syllabus SBA301 — CLO7"
+    },
+    {
+      "chunk_id": "SBA301-CLO8",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Learning Outcome CLO8",
+      "text": "CLO8: Develop teamwork skills, communication skills (including presentation skills)",
+      "source_label": "Syllabus SBA301 — CLO8"
+    },
+    {
+      "chunk_id": "SBA301-session-1",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 1",
+      "text": "Session 1 — Course Introduction",
+      "source_label": "Syllabus SBA301 — Session 1"
+    },
+    {
+      "chunk_id": "SBA301-session-2",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 2",
+      "text": "Session 2 — Working Environment (JDK, Spring Boot, SQL Server, MongoDB, ReactJS)\nTài liệu: IDE: https://spring.io/tools\nNhiệm vụ sinh viên: - Setup Environment",
+      "source_label": "Syllabus SBA301 — Session 2"
+    },
+    {
+      "chunk_id": "SBA301-session-3",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 3",
+      "text": "Session 3 — Group Project Introduction\nNhiệm vụ sinh viên: - Choose Group\n- Choose Topic\n- Collect requirements about topic",
+      "source_label": "Syllabus SBA301 — Session 3"
+    },
+    {
+      "chunk_id": "SBA301-session-4",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 4",
+      "text": "Session 4 — Chapter 01. Introduction to ReactJS\nTài liệu: https://react.dev/reference/react\nhttps://www.w3schools.com/react/default.asp\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 4"
+    },
+    {
+      "chunk_id": "SBA301-session-5",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 5",
+      "text": "Session 5 — Chapter 01. Introduction to ReactJS (contd.)\nTài liệu: https://react.dev/reference/react\nhttps://www.w3schools.com/react/default.asp\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 5"
+    },
+    {
+      "chunk_id": "SBA301-session-6",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 6",
+      "text": "Session 6 — Chapter 01. Introduction to ReactJS (contd.)\nTài liệu: https://react.dev/reference/react\nhttps://www.w3schools.com/react/default.asp\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 6"
+    },
+    {
+      "chunk_id": "SBA301-session-7",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 7",
+      "text": "Session 7 — Chapter 02. React Component\nTài liệu: https://react.dev/reference/react-dom/components\nhttps://react.dev/reference/react/components\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 7"
+    },
+    {
+      "chunk_id": "SBA301-session-8",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 8",
+      "text": "Session 8 — Chapter 02. React Component (contd.)\nTài liệu: https://react.dev/reference/react-dom/components\nhttps://react.dev/reference/react/components\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 8"
+    },
+    {
+      "chunk_id": "SBA301-session-9",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 9",
+      "text": "Session 9 — Chapter 02. React Component (contd.)\nTài liệu: https://react.dev/reference/react-dom/components\nhttps://react.dev/reference/react/components\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 9"
+    },
+    {
+      "chunk_id": "SBA301-session-10",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 10",
+      "text": "Session 10 — Chapter 03. Introduction to React-Bootstrap\nTài liệu: https://react-bootstrap.netlify.app/docs/getting-started/why-react-bootstrap\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 10"
+    },
+    {
+      "chunk_id": "SBA301-session-11",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 11",
+      "text": "Session 11 — Chapter 03. Introduction to React-Bootstrap (contd.)\nTài liệu: https://react-bootstrap.netlify.app/docs/getting-started/why-react-bootstrap\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 11"
+    },
+    {
+      "chunk_id": "SBA301-session-12",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 12",
+      "text": "Session 12 — Chapter 03. Introduction to React-Bootstrap (contd.)\nTài liệu: https://react-bootstrap.netlify.app/docs/getting-started/why-react-bootstrap\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 12"
+    },
+    {
+      "chunk_id": "SBA301-session-13",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 13",
+      "text": "Session 13 — Chapter 04. Props, State and Context\nTài liệu: https://react.dev/learn/passing-props-to-a-component\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 13"
+    },
+    {
+      "chunk_id": "SBA301-session-14",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 14",
+      "text": "Session 14 — Chapter 04. Props, State and Context (contd.)\nTài liệu: https://react.dev/learn/passing-props-to-a-component\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 14"
+    },
+    {
+      "chunk_id": "SBA301-session-15",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 15",
+      "text": "Session 15 — Chapter 05. React Hook\nTài liệu: https://react.dev/reference/react-dom/hooks\nhttps://react.dev/reference/react/hooks\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 15"
+    },
+    {
+      "chunk_id": "SBA301-session-16",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 16",
+      "text": "Session 16 — Chapter 05. React Hook (contd.)\nTài liệu: https://react.dev/reference/react-dom/hooks\nhttps://react.dev/reference/react/hooks\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 16"
+    },
+    {
+      "chunk_id": "SBA301-session-17",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 17",
+      "text": "Session 17 — Lab 01. Working with ReactJS application\nTài liệu: Lab 01\nNhiệm vụ sinh viên: - Do Lab 01",
+      "source_label": "Syllabus SBA301 — Session 17"
+    },
+    {
+      "chunk_id": "SBA301-session-18",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 18",
+      "text": "Session 18 — Lab 01. Working with ReactJS application (contd.)\nTài liệu: Lab 01\nNhiệm vụ sinh viên: - Do Lab 01",
+      "source_label": "Syllabus SBA301 — Session 18"
+    },
+    {
+      "chunk_id": "SBA301-session-19",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 19",
+      "text": "Session 19 — Chapter 06. Handling Navigation with Routes\nTài liệu: https://reactrouter.com/en/main/components/navigate\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 19"
+    },
+    {
+      "chunk_id": "SBA301-session-20",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 20",
+      "text": "Session 20 — Chapter 06. Handling Navigation with Routes (contd.)\nTài liệu: https://reactrouter.com/en/main/components/navigate\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 20"
+    },
+    {
+      "chunk_id": "SBA301-session-21",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 21",
+      "text": "Session 21 — Chapter 07. Client-Server Communication\nTài liệu: https://developer.mozilla.org/en-US/docs/Learn/Server-side/First_steps/Introduction\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 21"
+    },
+    {
+      "chunk_id": "SBA301-session-22",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 22",
+      "text": "Session 22 — Chapter 07. Client-Server Communication (contd.)\nTài liệu: https://developer.mozilla.org/en-US/docs/Learn/Server-side/First_steps/Introduction\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 22"
+    },
+    {
+      "chunk_id": "SBA301-session-23",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 23",
+      "text": "Session 23 — Chapter 07. Client-Server Communication (contd.)\nTài liệu: https://developer.mozilla.org/en-US/docs/Learn/Server-side/First_steps/Introduction\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 23"
+    },
+    {
+      "chunk_id": "SBA301-session-24",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 24",
+      "text": "Session 24 — Chapter 08. Fetching and Caching Data\nTài liệu: https://react.dev/reference/react/cache\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 24"
+    },
+    {
+      "chunk_id": "SBA301-session-25",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 25",
+      "text": "Session 25 — Chapter 08. Fetching and Caching Data (contd.)\nTài liệu: https://react.dev/reference/react/cache\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 25"
+    },
+    {
+      "chunk_id": "SBA301-session-26",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 26",
+      "text": "Session 26 — Chapter 08. Fetching and Caching Data (contd.)\nTài liệu: https://react.dev/reference/react/cache\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 26"
+    },
+    {
+      "chunk_id": "SBA301-session-27",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 27",
+      "text": "Session 27 — Chapter 09. React Router and Single Page Application (SPA)\nTài liệu: https://www.w3schools.com/react/react_router.asp\n\nhttps://reactrouter.com/en/main/start/tutorial\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 27"
+    },
+    {
+      "chunk_id": "SBA301-session-28",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 28",
+      "text": "Session 28 — Chapter 09. React Router and Single Page Application (SPA) (contd.)\nTài liệu: https://www.w3schools.com/react/react_router.asp\n\nhttps://reactrouter.com/en/main/start/tutorial\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 28"
+    },
+    {
+      "chunk_id": "SBA301-session-29",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 29",
+      "text": "Session 29 — Chapter 09. React Router and Single Page Application (SPA) (contd.)\nTài liệu: https://www.w3schools.com/react/react_router.asp\n\nhttps://reactrouter.com/en/main/start/tutorial\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 29"
+    },
+    {
+      "chunk_id": "SBA301-session-30",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 30",
+      "text": "Session 30 — Lab 02. Create Single Page Application with ReactJS\nTài liệu: Lab 02\nNhiệm vụ sinh viên: - Do Lab 02",
+      "source_label": "Syllabus SBA301 — Session 30"
+    },
+    {
+      "chunk_id": "SBA301-session-31",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 31",
+      "text": "Session 31 — Lab 02. Create Single Page Application with ReactJS (contd.)\nTài liệu: Lab 02\nNhiệm vụ sinh viên: - Do Lab 02",
+      "source_label": "Syllabus SBA301 — Session 31"
+    },
+    {
+      "chunk_id": "SBA301-session-32",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 32",
+      "text": "Session 32 — Assignment 01 Guide - Create Single Page Application with ReactJS",
+      "source_label": "Syllabus SBA301 — Session 32"
+    },
+    {
+      "chunk_id": "SBA301-session-33",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 33",
+      "text": "Session 33 — Project Assistant - 01\nTài liệu: - Discuss project problems\nNhiệm vụ sinh viên: - Discuss project problems",
+      "source_label": "Syllabus SBA301 — Session 33"
+    },
+    {
+      "chunk_id": "SBA301-session-34",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 34",
+      "text": "Session 34 — Progress Test 01\nNhiệm vụ sinh viên: - Take Quiz 01",
+      "source_label": "Syllabus SBA301 — Session 34"
+    },
+    {
+      "chunk_id": "SBA301-session-35",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 35",
+      "text": "Session 35 — Chapter 10. RESTful Web Services with Spring Boot\nTài liệu: https://spring.io/guides/tutorials/rest/\nhttps://www.baeldung.com/rest-with-spring-series\nSpring REST: Building Java Microservices and Cloud Applications: Chapter 01, 03\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 35"
+    },
+    {
+      "chunk_id": "SBA301-session-36",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 36",
+      "text": "Session 36 — Chapter 10. RESTful Web Services with Spring Boot (contd.)\nTài liệu: https://spring.io/guides/tutorials/rest/\nhttps://www.baeldung.com/rest-with-spring-series\nSpring REST: Building Java Microservices and Cloud Applications: Chapter 01, 03\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 36"
+    },
+    {
+      "chunk_id": "SBA301-session-37",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 37",
+      "text": "Session 37 — Chapter 10. RESTful Web Services with Spring Boot (contd.)\nTài liệu: https://spring.io/guides/tutorials/rest/\nhttps://www.baeldung.com/rest-with-spring-series\nSpring REST: Building Java Microservices and Cloud Applications: Chapter 01, 03\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 37"
+    },
+    {
+      "chunk_id": "SBA301-session-38",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 38",
+      "text": "Session 38 — Chapter 10. RESTful Web Services with Spring Boot (contd.)\nTài liệu: https://spring.io/guides/tutorials/rest/\nhttps://www.baeldung.com/rest-with-spring-series\nSpring REST: Building Java Microservices and Cloud Applications: Chapter 01, 03\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 38"
+    },
+    {
+      "chunk_id": "SBA301-session-39",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 39",
+      "text": "Session 39 — Chapter 10. RESTful Web Services with Spring Boot (contd.)\nTài liệu: https://spring.io/guides/tutorials/rest/\nhttps://www.baeldung.com/rest-with-spring-series\nSpring REST: Building Java Microservices and Cloud Applications: Chapter 01, 03\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 39"
+    },
+    {
+      "chunk_id": "SBA301-session-40",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 40",
+      "text": "Session 40 — Chapter 11. Documenting REST Services\nTài liệu: https://www.baeldung.com/spring-rest-openapi-documentation\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 40"
+    },
+    {
+      "chunk_id": "SBA301-session-41",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 41",
+      "text": "Session 41 — Chapter 11. Documenting REST Services (contd.)\nTài liệu: https://www.baeldung.com/spring-rest-openapi-documentation\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 41"
+    },
+    {
+      "chunk_id": "SBA301-session-42",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 42",
+      "text": "Session 42 — Chapter 11. Documenting REST Services (contd.)\nTài liệu: https://www.baeldung.com/spring-rest-openapi-documentation\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 42"
+    },
+    {
+      "chunk_id": "SBA301-session-43",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 43",
+      "text": "Session 43 — Chapter 12. Versioning, Paging, Sorting and Testing\nTài liệu: https://bootify.io/spring-boot/pagination-in-spring-boot-rest-api.html\n\nSpring REST: Building Java Microservices and Cloud Applications: Chapter 07\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 43"
+    },
+    {
+      "chunk_id": "SBA301-session-44",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 44",
+      "text": "Session 44 — Chapter 12. Versioning, Paging, Sorting and Testing (contd.)\nTài liệu: https://bootify.io/spring-boot/pagination-in-spring-boot-rest-api.html\n\nSpring REST: Building Java Microservices and Cloud Applications: Chapter 07\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 44"
+    },
+    {
+      "chunk_id": "SBA301-session-45",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 45",
+      "text": "Session 45 — Lab 03. RESTful Web Services with Spring Boot\nTài liệu: Lab 03\nNhiệm vụ sinh viên: - Do Lab 03",
+      "source_label": "Syllabus SBA301 — Session 45"
+    },
+    {
+      "chunk_id": "SBA301-session-46",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 46",
+      "text": "Session 46 — Lab 03. RESTful Web Services with Spring Boot (contd.)\nTài liệu: Lab 03\nNhiệm vụ sinh viên: - Do Lab 03",
+      "source_label": "Syllabus SBA301 — Session 46"
+    },
+    {
+      "chunk_id": "SBA301-session-47",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 47",
+      "text": "Session 47 — Project Assistant - 02\nNhiệm vụ sinh viên: - Discuss project problems",
+      "source_label": "Syllabus SBA301 — Session 47"
+    },
+    {
+      "chunk_id": "SBA301-session-48",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 48",
+      "text": "Session 48 — Chapter 13. Connecting RESTful Web Service to JPA\nTài liệu: https://spring.io/guides/gs/rest-service\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 48"
+    },
+    {
+      "chunk_id": "SBA301-session-49",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 49",
+      "text": "Session 49 — Chapter 13. Connecting RESTful Web Service to JPA (contd.)\nTài liệu: https://spring.io/guides/gs/rest-service\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 49"
+    },
+    {
+      "chunk_id": "SBA301-session-50",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 50",
+      "text": "Session 50 — Chapter 13. Connecting RESTful Web Service to JPA (contd.)\nTài liệu: https://spring.io/guides/gs/rest-service\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 50"
+    },
+    {
+      "chunk_id": "SBA301-session-51",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 51",
+      "text": "Session 51 — Chapter 13. Connecting RESTful Web Service to JPA (contd.)\nTài liệu: https://spring.io/guides/gs/rest-service\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 51"
+    },
+    {
+      "chunk_id": "SBA301-session-52",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 52",
+      "text": "Session 52 — Chapter 13. Connecting RESTful Web Service to JPA (contd.)\nTài liệu: https://spring.io/guides/gs/rest-service\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 52"
+    },
+    {
+      "chunk_id": "SBA301-session-53",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 53",
+      "text": "Session 53 — Chapter 13. Connecting RESTful Web Service to JPA (contd.)\nTài liệu: https://spring.io/guides/gs/rest-service\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 53"
+    },
+    {
+      "chunk_id": "SBA301-session-54",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 54",
+      "text": "Session 54 — Lab 04. Spring Boot RESTful Web Service and JPA\nTài liệu: Lab 04\nNhiệm vụ sinh viên: - Do Lab 04",
+      "source_label": "Syllabus SBA301 — Session 54"
+    },
+    {
+      "chunk_id": "SBA301-session-55",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 55",
+      "text": "Session 55 — Lab 04. Spring Boot RESTful Web Service and JPA (contd.)\nTài liệu: Lab 04\nNhiệm vụ sinh viên: - Do Lab 04",
+      "source_label": "Syllabus SBA301 — Session 55"
+    },
+    {
+      "chunk_id": "SBA301-session-56",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 56",
+      "text": "Session 56 — Progress Test 02\nNhiệm vụ sinh viên: - Take Quiz 02",
+      "source_label": "Syllabus SBA301 — Session 56"
+    },
+    {
+      "chunk_id": "SBA301-session-57",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 57",
+      "text": "Session 57 — Project Assistant 03\nTài liệu: - Discuss project problems\nNhiệm vụ sinh viên: - Discuss project problems",
+      "source_label": "Syllabus SBA301 — Session 57"
+    },
+    {
+      "chunk_id": "SBA301-session-58",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 58",
+      "text": "Session 58 — Chapter 14. Create Single Page Application\nTài liệu: https://www.baeldung.com/spring-boot-react-crud\nhttps://developer.mozilla.org/en-US/docs/Glossary/SPA\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 58"
+    },
+    {
+      "chunk_id": "SBA301-session-59",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 59",
+      "text": "Session 59 — Chapter 14. Create Single Page Application (contd.)\nTài liệu: https://www.baeldung.com/spring-boot-react-crud\nhttps://developer.mozilla.org/en-US/docs/Glossary/SPA\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 59"
+    },
+    {
+      "chunk_id": "SBA301-session-60",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 60",
+      "text": "Session 60 — Chapter 14. Create Single Page Application (contd.)\nTài liệu: https://www.baeldung.com/spring-boot-react-crud\nhttps://developer.mozilla.org/en-US/docs/Glossary/SPA\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 60"
+    },
+    {
+      "chunk_id": "SBA301-session-61",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 61",
+      "text": "Session 61 — Chapter 14. Create Single Page Application (contd.)\nTài liệu: https://www.baeldung.com/spring-boot-react-crud\nhttps://developer.mozilla.org/en-US/docs/Glossary/SPA\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 61"
+    },
+    {
+      "chunk_id": "SBA301-session-62",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 62",
+      "text": "Session 62 — Chapter 14. Create Single Page Application (contd.)\nTài liệu: https://www.baeldung.com/spring-boot-react-crud\nhttps://developer.mozilla.org/en-US/docs/Glossary/SPA\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 62"
+    },
+    {
+      "chunk_id": "SBA301-session-63",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 63",
+      "text": "Session 63 — Lab 05. Create Single Page Application with Spring Boot RESTful API\nTài liệu: Lab 05\nNhiệm vụ sinh viên: - Do Lab 05",
+      "source_label": "Syllabus SBA301 — Session 63"
+    },
+    {
+      "chunk_id": "SBA301-session-64",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 64",
+      "text": "Session 64 — Lab 05. Create Single Page Application with Spring Boot RESTful API (contd.)\nTài liệu: Lab 05\nNhiệm vụ sinh viên: - Do Lab 05",
+      "source_label": "Syllabus SBA301 — Session 64"
+    },
+    {
+      "chunk_id": "SBA301-session-65",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 65",
+      "text": "Session 65 — Chapter 15. Implement CRUD Application with RESTful Web Service and ReactJS\nTài liệu: https://www.baeldung.com/spring-boot-react-crud\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 65"
+    },
+    {
+      "chunk_id": "SBA301-session-66",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 66",
+      "text": "Session 66 — Chapter 15. Implement CRUD Application with RESTful Web Service and ReactJS (contd.)\nTài liệu: https://www.baeldung.com/spring-boot-react-crud\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 66"
+    },
+    {
+      "chunk_id": "SBA301-session-67",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 67",
+      "text": "Session 67 — Chapter 15. Implement CRUD Application with RESTful Web Service and ReactJS (contd.)\nTài liệu: https://www.baeldung.com/spring-boot-react-crud\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 67"
+    },
+    {
+      "chunk_id": "SBA301-session-68",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 68",
+      "text": "Session 68 — Chapter 15. Implement CRUD Application with RESTful Web Service and ReactJS (contd.)\nTài liệu: https://www.baeldung.com/spring-boot-react-crud\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 68"
+    },
+    {
+      "chunk_id": "SBA301-session-69",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 69",
+      "text": "Session 69 — Chapter 15. Implement CRUD Application with RESTful Web Service and ReactJS (contd.)\nTài liệu: https://www.baeldung.com/spring-boot-react-crud\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 69"
+    },
+    {
+      "chunk_id": "SBA301-session-70",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 70",
+      "text": "Session 70 — Chapter 15. Implement CRUD Application with RESTful Web Service and ReactJS (contd.)\nTài liệu: https://www.baeldung.com/spring-boot-react-crud\nNhiệm vụ sinh viên: - Read the slide, related reference document\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 70"
+    },
+    {
+      "chunk_id": "SBA301-session-71",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 71",
+      "text": "Session 71 — Assignment 02 Guide\nTài liệu: Assignment 02\nNhiệm vụ sinh viên: - Read the requirements of Assignment 02\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 71"
+    },
+    {
+      "chunk_id": "SBA301-session-72",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 72",
+      "text": "Session 72 — Chapter 16. Securing REST Services with Spring Boot\nTài liệu: https://www.baeldung.com/spring-boot-api-key-secret\nhttps://spring.io/guides/gs/rest-service-cors\nhttps://spring.io/guides/tutorials/spring-boot-oauth2/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 72"
+    },
+    {
+      "chunk_id": "SBA301-session-73",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 73",
+      "text": "Session 73 — Chapter 16. Securing REST Services with Spring Boot (contd.)\nTài liệu: https://www.baeldung.com/spring-boot-api-key-secret\nhttps://spring.io/guides/gs/rest-service-cors\nhttps://spring.io/guides/tutorials/spring-boot-oauth2/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 73"
+    },
+    {
+      "chunk_id": "SBA301-session-74",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 74",
+      "text": "Session 74 — Chapter 16. Securing REST Services with Spring Boot (contd.)\nTài liệu: https://www.baeldung.com/spring-boot-api-key-secret\nhttps://spring.io/guides/gs/rest-service-cors\nhttps://spring.io/guides/tutorials/spring-boot-oauth2/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 74"
+    },
+    {
+      "chunk_id": "SBA301-session-75",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 75",
+      "text": "Session 75 — Chapter 16. Securing REST Services with Spring Boot (contd.)\nTài liệu: https://www.baeldung.com/spring-boot-api-key-secret\nhttps://spring.io/guides/gs/rest-service-cors\nhttps://spring.io/guides/tutorials/spring-boot-oauth2/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 75"
+    },
+    {
+      "chunk_id": "SBA301-session-76",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 76",
+      "text": "Session 76 — Chapter 16. Securing REST Services with Spring Boot (contd.)\nTài liệu: https://www.baeldung.com/spring-boot-api-key-secret\nhttps://spring.io/guides/gs/rest-service-cors\nhttps://spring.io/guides/tutorials/spring-boot-oauth2/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 76"
+    },
+    {
+      "chunk_id": "SBA301-session-77",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 77",
+      "text": "Session 77 — Chapter 16. Securing REST Services with Spring Boot (contd.)\nTài liệu: https://www.baeldung.com/spring-boot-api-key-secret\nhttps://spring.io/guides/gs/rest-service-cors\nhttps://spring.io/guides/tutorials/spring-boot-oauth2/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 77"
+    },
+    {
+      "chunk_id": "SBA301-session-78",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 78",
+      "text": "Session 78 — Chapter 16. Securing REST Services with Spring Boot (contd.)\nTài liệu: https://www.baeldung.com/spring-boot-api-key-secret\nhttps://spring.io/guides/gs/rest-service-cors\nhttps://spring.io/guides/tutorials/spring-boot-oauth2/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 78"
+    },
+    {
+      "chunk_id": "SBA301-session-79",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 79",
+      "text": "Session 79 — Lab 06. Securing REST Services with Spring Boot\nTài liệu: Lab 06\nNhiệm vụ sinh viên: - Do Lab 06",
+      "source_label": "Syllabus SBA301 — Session 79"
+    },
+    {
+      "chunk_id": "SBA301-session-80",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 80",
+      "text": "Session 80 — Lab 06. Securing REST Services with Spring Boot (contd.)\nTài liệu: Lab 06\nNhiệm vụ sinh viên: - Do Lab 06",
+      "source_label": "Syllabus SBA301 — Session 80"
+    },
+    {
+      "chunk_id": "SBA301-session-81",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 81",
+      "text": "Session 81 — Assignment 03 Guide\nTài liệu: Assignment 03\nNhiệm vụ sinh viên: - Read the requirements of Assignment 03\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 81"
+    },
+    {
+      "chunk_id": "SBA301-session-82",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 82",
+      "text": "Session 82 — Chapter 17: Hibernate Architecture, Configuration, Mapping\nTài liệu: https://hibernate.org/orm/documentation/6.3/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 82"
+    },
+    {
+      "chunk_id": "SBA301-session-83",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 83",
+      "text": "Session 83 — Chapter 17: Hibernate Architecture, Configuration, Mapping (contd.)\nTài liệu: https://hibernate.org/orm/documentation/6.3/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 83"
+    },
+    {
+      "chunk_id": "SBA301-session-84",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 84",
+      "text": "Session 84 — Chapter 17: Hibernate Architecture, Configuration, Mapping (contd.)\nTài liệu: https://hibernate.org/orm/documentation/6.3/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 84"
+    },
+    {
+      "chunk_id": "SBA301-session-85",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 85",
+      "text": "Session 85 — Chapter 17: Hibernate Architecture, Configuration, Mapping (contd.)\nTài liệu: https://hibernate.org/orm/documentation/6.3/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 85"
+    },
+    {
+      "chunk_id": "SBA301-session-86",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 86",
+      "text": "Session 86 — Chapter 17: Hibernate Architecture, Configuration, Mapping (contd.)\nTài liệu: https://hibernate.org/orm/documentation/6.3/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 86"
+    },
+    {
+      "chunk_id": "SBA301-session-87",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 87",
+      "text": "Session 87 — Chapter 18: Hibernate Application Development & CRUD Operations\nTài liệu: https://openjfx.io/openjfx-docs/\nhttps://hibernate.org/orm/documentation/6.3/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 87"
+    },
+    {
+      "chunk_id": "SBA301-session-88",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 88",
+      "text": "Session 88 — Chapter 18: Hibernate Application Development & CRUD Operations (contd.)\nTài liệu: https://openjfx.io/openjfx-docs/\nhttps://hibernate.org/orm/documentation/6.3/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 88"
+    },
+    {
+      "chunk_id": "SBA301-session-89",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 89",
+      "text": "Session 89 — Chapter 18: Hibernate Application Development & CRUD Operations (contd.)\nTài liệu: https://openjfx.io/openjfx-docs/\nhttps://hibernate.org/orm/documentation/6.3/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 89"
+    },
+    {
+      "chunk_id": "SBA301-session-90",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 90",
+      "text": "Session 90 — Chapter 18: Hibernate Application Development & CRUD Operations (contd.)\nTài liệu: https://openjfx.io/openjfx-docs/\nhttps://hibernate.org/orm/documentation/6.3/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 90"
+    },
+    {
+      "chunk_id": "SBA301-session-91",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 91",
+      "text": "Session 91 — Chapter 18: Hibernate Application Development & CRUD Operations (contd.)\nTài liệu: https://openjfx.io/openjfx-docs/\nhttps://hibernate.org/orm/documentation/6.3/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 91"
+    },
+    {
+      "chunk_id": "SBA301-session-92",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 92",
+      "text": "Session 92 — Chapter 18: Hibernate Application Development & CRUD Operations (contd.)\nTài liệu: https://openjfx.io/openjfx-docs/\nhttps://hibernate.org/orm/documentation/6.3/\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 92"
+    },
+    {
+      "chunk_id": "SBA301-session-93",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 93",
+      "text": "Session 93 — Lab 7 - Hibernate Application Development & CRUD Operations\nTài liệu: Lab 07\nNhiệm vụ sinh viên: - Do Lab 07",
+      "source_label": "Syllabus SBA301 — Session 93"
+    },
+    {
+      "chunk_id": "SBA301-session-94",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 94",
+      "text": "Session 94 — Lab 7 - Hibernate Application Development & CRUD Operations (contd.)\nTài liệu: Lab 07\nNhiệm vụ sinh viên: - Do Lab 07",
+      "source_label": "Syllabus SBA301 — Session 94"
+    },
+    {
+      "chunk_id": "SBA301-session-95",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 95",
+      "text": "Session 95 — Progress Test 03\nAssignment 03\nNhiệm vụ sinh viên: Quiz LMS",
+      "source_label": "Syllabus SBA301 — Session 95"
+    },
+    {
+      "chunk_id": "SBA301-session-96",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 96",
+      "text": "Session 96 — Project Assistant - 04\nTài liệu: - Discuss project problems\nNhiệm vụ sinh viên: - Discuss project problems",
+      "source_label": "Syllabus SBA301 — Session 96"
+    },
+    {
+      "chunk_id": "SBA301-session-97",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 97",
+      "text": "Session 97 — Chapter 19. Data Management with MongoDB\nTài liệu: https://www.mongodb.com/docs/\n\nBeginning Spring Data: Data Access and Persistence for Spring Framework 6 and Boot 3 : Chapter 08\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 97"
+    },
+    {
+      "chunk_id": "SBA301-session-98",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 98",
+      "text": "Session 98 — Chapter 19. Data Management with MongoDB (contd.)\nTài liệu: https://www.mongodb.com/docs/\n\nBeginning Spring Data: Data Access and Persistence for Spring Framework 6 and Boot 3 : Chapter 08\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 98"
+    },
+    {
+      "chunk_id": "SBA301-session-99",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 99",
+      "text": "Session 99 — Chapter 19. Data Management with MongoDB (contd.)\nTài liệu: https://www.mongodb.com/docs/\n\nBeginning Spring Data: Data Access and Persistence for Spring Framework 6 and Boot 3 : Chapter 08\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 99"
+    },
+    {
+      "chunk_id": "SBA301-session-100",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 100",
+      "text": "Session 100 — Chapter 20. Spring Data with MongoDB\nTài liệu: https://www.mongodb.com/docs/\n\nBeginning Spring Data: Data Access and Persistence for Spring Framework 6 and Boot 3 : Chapter 08\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 100"
+    },
+    {
+      "chunk_id": "SBA301-session-101",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 101",
+      "text": "Session 101 — Chapter 20. Spring Data with MongoDB (contd.)\nTài liệu: https://www.mongodb.com/docs/\n\nBeginning Spring Data: Data Access and Persistence for Spring Framework 6 and Boot 3 : Chapter 08\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 101"
+    },
+    {
+      "chunk_id": "SBA301-session-102",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 102",
+      "text": "Session 102 — Chapter 20. Spring Data with MongoDB (contd.)\nTài liệu: https://www.mongodb.com/docs/\n\nBeginning Spring Data: Data Access and Persistence for Spring Framework 6 and Boot 3 : Chapter 08\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 102"
+    },
+    {
+      "chunk_id": "SBA301-session-103",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 103",
+      "text": "Session 103 — Chapter 21. Build Application with Spring Boot and Spring Data (NoSQL)\nTài liệu: https://docs.spring.io/spring-boot/docs/current/reference/html/\n\nhttps://www.mongodb.com/docs/\n\nhttps://docs.spring.io/spring-data/mongodb/reference/index.html\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 103"
+    },
+    {
+      "chunk_id": "SBA301-session-104",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 104",
+      "text": "Session 104 — Chapter 21. Build Application with Spring Boot and Spring Data (NoSQL) (contd.)\nTài liệu: https://docs.spring.io/spring-boot/docs/current/reference/html/\n\nhttps://www.mongodb.com/docs/\n\nhttps://docs.spring.io/spring-data/mongodb/reference/index.html\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 104"
+    },
+    {
+      "chunk_id": "SBA301-session-105",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 105",
+      "text": "Session 105 — Chapter 21. Build Application with Spring Boot and Spring Data (NoSQL) (contd.)\nTài liệu: https://docs.spring.io/spring-boot/docs/current/reference/html/\n\nhttps://www.mongodb.com/docs/\n\nhttps://docs.spring.io/spring-data/mongodb/reference/index.html\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 105"
+    },
+    {
+      "chunk_id": "SBA301-session-106",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 106",
+      "text": "Session 106 — Lab 08 - Build Application with Spring Boot and Spring Data (NoSQL)\nTài liệu: Lab 08\nNhiệm vụ sinh viên: - Do Lab 08",
+      "source_label": "Syllabus SBA301 — Session 106"
+    },
+    {
+      "chunk_id": "SBA301-session-107",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 107",
+      "text": "Session 107 — Lab 08 - Build Application with Spring Boot and Spring Data (NoSQL) (contd.)\nTài liệu: Lab 08\nNhiệm vụ sinh viên: - Do Lab 08",
+      "source_label": "Syllabus SBA301 — Session 107"
+    },
+    {
+      "chunk_id": "SBA301-session-108",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 108",
+      "text": "Session 108 — Project Assistant 05\nTài liệu: - Discuss project problems\nNhiệm vụ sinh viên: - Discuss project problems",
+      "source_label": "Syllabus SBA301 — Session 108"
+    },
+    {
+      "chunk_id": "SBA301-session-109",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 109",
+      "text": "Session 109 — Chapter 22. Spring Boot - DevOps Tools\nTài liệu: https://docs.spring.io/spring-boot/reference/using/devtools.html\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 109"
+    },
+    {
+      "chunk_id": "SBA301-session-110",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 110",
+      "text": "Session 110 — Chapter 22. Spring Boot - DevOps Tools (contd.)\nTài liệu: https://docs.spring.io/spring-boot/reference/using/devtools.html\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 110"
+    },
+    {
+      "chunk_id": "SBA301-session-111",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 111",
+      "text": "Session 111 — Chapter 22. Spring Boot - DevOps Tools (contd.)\nTài liệu: https://docs.spring.io/spring-boot/reference/using/devtools.html\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 111"
+    },
+    {
+      "chunk_id": "SBA301-session-112",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 112",
+      "text": "Session 112 — Chapter 22. Spring Boot - DevOps Tools (contd.)\nTài liệu: https://docs.spring.io/spring-boot/reference/using/devtools.html\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 112"
+    },
+    {
+      "chunk_id": "SBA301-session-113",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 113",
+      "text": "Session 113 — Chapter 22. Spring Boot - DevOps Tools (contd.)\nTài liệu: https://docs.spring.io/spring-boot/reference/using/devtools.html\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 113"
+    },
+    {
+      "chunk_id": "SBA301-session-114",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 114",
+      "text": "Session 114 — Chapter 22. Spring Boot - DevOps Tools (contd.)\nTài liệu: https://docs.spring.io/spring-boot/reference/using/devtools.html\nNhiệm vụ sinh viên: - Read the slide, related reference documents\n- Do exercises\n- Self practice",
+      "source_label": "Syllabus SBA301 — Session 114"
+    },
+    {
+      "chunk_id": "SBA301-session-115",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 115",
+      "text": "Session 115 — Project Evaluation\nNhiệm vụ sinh viên: - Project demonstration",
+      "source_label": "Syllabus SBA301 — Session 115"
+    },
+    {
+      "chunk_id": "SBA301-session-116",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 116",
+      "text": "Session 116 — Project Evaluation (contd.)\nNhiệm vụ sinh viên: - Project demonstration",
+      "source_label": "Syllabus SBA301 — Session 116"
+    },
+    {
+      "chunk_id": "SBA301-session-117",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 117",
+      "text": "Session 117 — Project Evaluation (contd.)\nNhiệm vụ sinh viên: - Project demonstration",
+      "source_label": "Syllabus SBA301 — Session 117"
+    },
+    {
+      "chunk_id": "SBA301-session-118",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 118",
+      "text": "Session 118 — Project Evaluation (contd.)\nNhiệm vụ sinh viên: - Project demonstration",
+      "source_label": "Syllabus SBA301 — Session 118"
+    },
+    {
+      "chunk_id": "SBA301-session-119",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 119",
+      "text": "Session 119 — Project Evaluation (contd.)\nNhiệm vụ sinh viên: - Project demonstration",
+      "source_label": "Syllabus SBA301 — Session 119"
+    },
+    {
+      "chunk_id": "SBA301-session-120",
+      "subject_code": "SBA301",
+      "subject_name": "Integrate single page application with Spring Boot_Tích hợp ứng dụng trang đơn với Spring Boot",
+      "section": "Session 120",
+      "text": "Session 120 — Project Evaluation (contd.)\nNhiệm vụ sinh viên: - Project demonstration",
+      "source_label": "Syllabus SBA301 — Session 120"
+    }
+  ]
+}

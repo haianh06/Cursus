@@ -1,0 +1,166 @@
+{
+  "subject_code": "ITE302c",
+  "subject_name": "Ethics in IT_Đạo đức trong CNTT",
+  "meta": {
+    "Syllabus ID": "12637",
+    "Syllabus Name": "Ethics in IT_Đạo đức trong CNTT",
+    "Course Name English": "",
+    "Subject Code": "ITE302c",
+    "Learning-Teaching Method": "Blended,Online,Active learning,Inquiry-based Teaching",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) = 128h online + 3h offline + 1h TE + 18h self-study",
+    "Pre-Requisite": "None",
+    "Description": "Organizations and governments are seeking out ethics professionals to minimize risk and guide their decision-making about the design of inclusive, responsible, and trusted technology. An algorithm not designed and assessed in alignment with ethical standards can create further inequity across race, gender and marginalized populations. The reputational and financial impact of an ethics violation can devastate a company. Knowledgeable ethics leaders are needed who can navigate through the more than 160 frameworks and guidelines to select and implement the best strategy to promote fairness and minimize risk for their organization. This specialization is designed for learners who want to create and lead initiatives that prioritize ethical integrity within emerging data-driven technology fields such as artificial intelligence and data science and will be prepared to bridge the gap between theory and practice.",
+    "StudentTasks": "Student must get the following certificatations to be accepted to the final examination:\n- Certification of CertNexus Certified Ethical Emerging Technologist Professional Certificate (CertNexus) specialization\n- Certification of Ethics of Artificial Intelligence course",
+    "Tools": "- Internet",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "359/QĐ-ĐHFPT dated 04/09/2025",
+    "IsApproved": "True",
+    "Note": "1. Complete the online courses and get all certifications to be allowed to take Final Exam\n2. Final Exam included Final Theory Exam (TE): 100%\n3. Students who complete all MOOCs before the course deadline will receive 1 bonus point; otherwise, no bonus point will be awarded.\n4. Completion Criteria: Final TE Score >=4 & (Final TE Score + bonus) >= 5",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "4/9/2025"
+  },
+  "clo_count": 4,
+  "session_count": 12,
+  "chunks": [
+    {
+      "chunk_id": "ITE302c-overview",
+      "subject_code": "ITE302c",
+      "subject_name": "Ethics in IT_Đạo đức trong CNTT",
+      "section": "Overview & Grading Policy",
+      "text": "Description: Organizations and governments are seeking out ethics professionals to minimize risk and guide their decision-making about the design of inclusive, responsible, and trusted technology. An algorithm not designed and assessed in alignment with ethical standards can create further inequity across race, gender and marginalized populations. The reputational and financial impact of an ethics violation can devastate a company. Knowledgeable ethics leaders are needed who can navigate through the more than 160 frameworks and guidelines to select and implement the best strategy to promote fairness and minimize risk for their organization. This specialization is designed for learners who want to create and lead initiatives that prioritize ethical integrity within emerging data-driven technology fields such as artificial intelligence and data science and will be prepared to bridge the gap between theory and practice.\nNoCredit: 3\nPre-Requisite: None\nTime Allocation: Study hour (150h) = 128h online + 3h offline + 1h TE + 18h self-study\nStudentTasks: Student must get the following certificatations to be accepted to the final examination:\n- Certification of CertNexus Certified Ethical Emerging Technologist Professional Certificate (CertNexus) specialization\n- Certification of Ethics of Artificial Intelligence course\nNote: 1. Complete the online courses and get all certifications to be allowed to take Final Exam\n2. Final Exam included Final Theory Exam (TE): 100%\n3. Students who complete all MOOCs before the course deadline will receive 1 bonus point; otherwise, no bonus point will be awarded.\n4. Completion Criteria: Final TE Score >=4 & (Final TE Score + bonus) >= 5\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus ITE302c — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "ITE302c-CLO1",
+      "subject_code": "ITE302c",
+      "subject_name": "Ethics in IT_Đạo đức trong CNTT",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Apply ethical principles, frameworks, regulations, and standards utilized in data-driven technologies and analyze the challenges that may compromise their implementation.",
+      "source_label": "Syllabus ITE302c — CLO1"
+    },
+    {
+      "chunk_id": "ITE302c-CLO2",
+      "subject_code": "ITE302c",
+      "subject_name": "Ethics in IT_Đạo đức trong CNTT",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Detect and mitigate ethical risks in the design, development, and deployment of data-driven technologies.",
+      "source_label": "Syllabus ITE302c — CLO2"
+    },
+    {
+      "chunk_id": "ITE302c-CLO3",
+      "subject_code": "ITE302c",
+      "subject_name": "Ethics in IT_Đạo đức trong CNTT",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Communicate effectively with diverse stakeholders about ethical safeguards, ethical risks, and mitigation strategies",
+      "source_label": "Syllabus ITE302c — CLO3"
+    },
+    {
+      "chunk_id": "ITE302c-CLO4",
+      "subject_code": "ITE302c",
+      "subject_name": "Ethics in IT_Đạo đức trong CNTT",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Create, implement, and evaluate the organizational policies and governance structure required for ethical data-driven technologies.",
+      "source_label": "Syllabus ITE302c — CLO4"
+    },
+    {
+      "chunk_id": "ITE302c-session-1",
+      "subject_code": "ITE302c",
+      "subject_name": "Ethics in IT_Đạo đức trong CNTT",
+      "section": "Session 1",
+      "text": "Session 1 — Specialization Introduction\nPromote the Ethical Use of Data-Driven Technologies\n- Identify Data-Driven Emerging Technologies\n- Examine Legal and Ethical Privacy Concepts as they Relate to Data-Driven Technology\nOffline 1: Introduction to the online course ITE302c\nTài liệu: MOOC 1\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)\nAll students should participate in offline slot (if any question)",
+      "source_label": "Syllabus ITE302c — Session 1"
+    },
+    {
+      "chunk_id": "ITE302c-session-2",
+      "subject_code": "ITE302c",
+      "subject_name": "Ethics in IT_Đạo đức trong CNTT",
+      "section": "Session 2",
+      "text": "Session 2 — - Examine Types of Bias\n- Examine Common Ethical Theories\n- Examine Ethical Principles that Apply to Data-Driven Technology\nTài liệu: MOOC 1\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus ITE302c — Session 2"
+    },
+    {
+      "chunk_id": "ITE302c-session-3",
+      "subject_code": "ITE302c",
+      "subject_name": "Ethics in IT_Đạo đức trong CNTT",
+      "section": "Session 3",
+      "text": "Session 3 — - Apply What You've Learned\nTài liệu: MOOC 1\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus ITE302c — Session 3"
+    },
+    {
+      "chunk_id": "ITE302c-session-4",
+      "subject_code": "ITE302c",
+      "subject_name": "Ethics in IT_Đạo đức trong CNTT",
+      "section": "Session 4",
+      "text": "Session 4 — Turn Ethical Frameworks into Actionable Steps\n- Apply Frameworks to Your Ethical Responsibilities for Data-Driven Technologies\n- Apply an Ethical Frameork to Navigate an Ethically Challenging Dilemma\n- Follow Regulations and Standards That Have an Impact on Business Strategy\n- Reconcile Conflicts Between Ethics, Regulations, Societal Needs, and Business Demands\nTài liệu: MOOC 2\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus ITE302c — Session 4"
+    },
+    {
+      "chunk_id": "ITE302c-session-5",
+      "subject_code": "ITE302c",
+      "subject_name": "Ethics in IT_Đạo đức trong CNTT",
+      "section": "Session 5",
+      "text": "Session 5 — - Apply What You've Learned\nTài liệu: MOOC 2\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus ITE302c — Session 5"
+    },
+    {
+      "chunk_id": "ITE302c-session-6",
+      "subject_code": "ITE302c",
+      "subject_name": "Ethics in IT_Đạo đức trong CNTT",
+      "section": "Session 6",
+      "text": "Session 6 — Detect and Mitigate Ethical Risks\n- Ethical Risk Analysis Fundamentals\n- Manage Privacy Risks\n- Manage Accountability Risks\nTài liệu: MOOC 3\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus ITE302c — Session 6"
+    },
+    {
+      "chunk_id": "ITE302c-session-7",
+      "subject_code": "ITE302c",
+      "subject_name": "Ethics in IT_Đạo đức trong CNTT",
+      "section": "Session 7",
+      "text": "Session 7 — - Manage Transparency and Explainability Risks\n- Manage Fairness and Non-Discrimination Risks\n- Manage Safety and Security Risks\nTài liệu: MOOC 3\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus ITE302c — Session 7"
+    },
+    {
+      "chunk_id": "ITE302c-session-8",
+      "subject_code": "ITE302c",
+      "subject_name": "Ethics in IT_Đạo đức trong CNTT",
+      "section": "Session 8",
+      "text": "Session 8 — - Apply What You've Learned\nTài liệu: MOOC 3\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus ITE302c — Session 8"
+    },
+    {
+      "chunk_id": "ITE302c-session-9",
+      "subject_code": "ITE302c",
+      "subject_name": "Ethics in IT_Đạo đức trong CNTT",
+      "section": "Session 9",
+      "text": "Session 9 — Communicate Effectively about Ethical Challenges in Data-Driven Technologies\n- Communicate the Business Impacts of Ethical Risks to Diverse Stakeholders\n- Design Diverse, Equitable, and Inclusive External Communication Strategies\n- Manage a Crisis, Communicate Critical Messages, and Ensure Business Continuity\n- Manage the Media During an Ethical Crisis\nTài liệu: MOOC 4\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus ITE302c — Session 9"
+    },
+    {
+      "chunk_id": "ITE302c-session-10",
+      "subject_code": "ITE302c",
+      "subject_name": "Ethics in IT_Đạo đức trong CNTT",
+      "section": "Session 10",
+      "text": "Session 10 — - Apply What You’ve Learned\nCreate and Lead an Ethical Data-Driven Organization\n- Promote an Ethical Organizational Culture\n- Maintain Ethical Considerations in Governance and Policy Making\nTài liệu: MOOC 4, MOOC 5\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus ITE302c — Session 10"
+    },
+    {
+      "chunk_id": "ITE302c-session-11",
+      "subject_code": "ITE302c",
+      "subject_name": "Ethics in IT_Đạo đức trong CNTT",
+      "section": "Session 11",
+      "text": "Session 11 — - Develop and Deploy a Code of Ethics\n- Develop and Deploy Ethical Organizational Policies\n- Apply What You've Learned\nTài liệu: MOOC 5\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus ITE302c — Session 11"
+    },
+    {
+      "chunk_id": "ITE302c-session-12",
+      "subject_code": "ITE302c",
+      "subject_name": "Ethics in IT_Đạo đức trong CNTT",
+      "section": "Session 12",
+      "text": "Session 12 — Preparing for Your CertNexus Certification Exam\nAdditional Learning: Ethics of Artificial Intelligence\n- Ethics, AI and Fesponsibility\n- Case studies, Examples and Ethical Frameworks\n- Issues and challenges\n- Goverance and policies\nOffline 2: Review CertNexus Certified Ethical Emerging Technologist Professional Certificate\nTài liệu: MOOC 6, MOOC 7\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)\nDeadline of Coursera completion: End of Friday of the week.\nAll students should participate in review slot (if any question)",
+      "source_label": "Syllabus ITE302c — Session 12"
+    }
+  ]
+}

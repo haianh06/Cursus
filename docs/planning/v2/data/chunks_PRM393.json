@@ -1,0 +1,574 @@
+{
+  "subject_code": "PRM393",
+  "subject_name": "Mobile Programming_Lập trình di động",
+  "meta": {
+    "Syllabus ID": "13822",
+    "Syllabus Name": "Mobile Programming_Lập trình di động",
+    "Course Name English": "Mobile Programming",
+    "Subject Code": "PRM393",
+    "Learning-Teaching Method": "Project based learning, In-class lecture, Inquiry-based Teaching",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) = 45h contact hours + 1h final exam + 104h self-study",
+    "Pre-Requisite": "PRO192",
+    "Description": "1. Understand the fundamental concepts of mobile programming with Flutter and Dart.\n2. Experience using popular widgets and plugins to build cross-platform user interfaces.\n3. Knowledge of state management, form handling, and navigation between screens in mobile applications.\n4. Learn and apply asynchronous programming techniques with Future and async/await.\n5. Ability to integrate RESTful APIs to exchange data between mobile applications and servers, as well as store data locally using SharedPreferences and SQLite.\n6. Proficient in using Dart libraries and command-line tools to optimize the application development process.\n7. Knowledge of implementing mobile notification systems, including local and push notifications.",
+    "StudentTasks": "- Students must attend more than 80% of contact sessions in order to be accepted to the final examination.\n- Student is responsible to do all assigned exercises given by instructor in class or at home and submit on time\n- Use laptop in class only for learning purpose\n- Promptly access to the FU LMS at http://lms.fpt.edu.vn for up-to-date course information",
+    "Tools": "- Android Studio + Flutter SDK + Dart SDK (Latest Version)\n- Virtual device attached android studio (or other virtual device), android mobile (only for learning, not for exam - optional)\n- Laptop: 16GB RAM, 25GB free space before installing studio\nNote:\n- Install all neccessary tools before the first slot of the course",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "1402/QĐ-ĐHFPT dated 12/12/2025",
+    "IsApproved": "True",
+    "Note": "- Visual Studio Code (recommended, lightweight and supports many Flutter/Dart extensions).\n- Xcode (only needed if building & testing iOS, required on macOS).",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "12/12/2025"
+  },
+  "clo_count": 7,
+  "session_count": 60,
+  "chunks": [
+    {
+      "chunk_id": "PRM393-overview",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Overview & Grading Policy",
+      "text": "Description: 1. Understand the fundamental concepts of mobile programming with Flutter and Dart.\n2. Experience using popular widgets and plugins to build cross-platform user interfaces.\n3. Knowledge of state management, form handling, and navigation between screens in mobile applications.\n4. Learn and apply asynchronous programming techniques with Future and async/await.\n5. Ability to integrate RESTful APIs to exchange data between mobile applications and servers, as well as store data locally using SharedPreferences and SQLite.\n6. Proficient in using Dart libraries and command-line tools to optimize the application development process.\n7. Knowledge of implementing mobile notification systems, including local and push notifications.\nNoCredit: 3\nPre-Requisite: PRO192\nTime Allocation: Study hour (150h) = 45h contact hours + 1h final exam + 104h self-study\nStudentTasks: - Students must attend more than 80% of contact sessions in order to be accepted to the final examination.\n- Student is responsible to do all assigned exercises given by instructor in class or at home and submit on time\n- Use laptop in class only for learning purpose\n- Promptly access to the FU LMS at http://lms.fpt.edu.vn for up-to-date course information\nNote: - Visual Studio Code (recommended, lightweight and supports many Flutter/Dart extensions).\n- Xcode (only needed if building & testing iOS, required on macOS).\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus PRM393 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "PRM393-CLO1",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Understand the fundamental concepts of mobile programming with Flutter and Dart.",
+      "source_label": "Syllabus PRM393 — CLO1"
+    },
+    {
+      "chunk_id": "PRM393-CLO2",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Experience using popular widgets and plugins to build cross-platform user interfaces.",
+      "source_label": "Syllabus PRM393 — CLO2"
+    },
+    {
+      "chunk_id": "PRM393-CLO3",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Knowledge of state management, form handling, and navigation between screens in mobile applications.",
+      "source_label": "Syllabus PRM393 — CLO3"
+    },
+    {
+      "chunk_id": "PRM393-CLO4",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Learn and apply asynchronous programming techniques with Future and async/await.",
+      "source_label": "Syllabus PRM393 — CLO4"
+    },
+    {
+      "chunk_id": "PRM393-CLO5",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Learning Outcome CLO5",
+      "text": "CLO5: Ability to integrate RESTful APIs to exchange data between mobile applications and servers, as well as store data locally using SharedPreferences and SQLite.",
+      "source_label": "Syllabus PRM393 — CLO5"
+    },
+    {
+      "chunk_id": "PRM393-CLO6",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Learning Outcome CLO6",
+      "text": "CLO6: Proficient in using Dart libraries and command-line tools to optimize the application development process.",
+      "source_label": "Syllabus PRM393 — CLO6"
+    },
+    {
+      "chunk_id": "PRM393-CLO7",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Learning Outcome CLO7",
+      "text": "CLO7: Knowledge of implementing mobile notification systems, including local and push notifications.",
+      "source_label": "Syllabus PRM393 — CLO7"
+    },
+    {
+      "chunk_id": "PRM393-session-1",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 1",
+      "text": "Session 1 — Flutter Overview & Environment Setup\nTài liệu: M1 – Introduction to Flutter. Reference: Ch.1 Getting Started, tooling, project structure.\nNhiệm vụ sinh viên: Verify setups; troubleshoot common install issues; walk-through run configurations.",
+      "source_label": "Syllabus PRM393 — Session 1"
+    },
+    {
+      "chunk_id": "PRM393-session-2",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 2",
+      "text": "Session 2 — Project Structure & Tooling\nTài liệu: M1 – Introduction to Flutter. Reference: Ch.1 Getting Started, tooling, project structure\nNhiệm vụ sinh viên: Explain folder structure; demonstrate build flavors; answer Q&A.",
+      "source_label": "Syllabus PRM393 — Session 2"
+    },
+    {
+      "chunk_id": "PRM393-session-3",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 3",
+      "text": "Session 3 — Hot Reload/Restart & Widget Tree\nTài liệu: M1 – Introduction to Flutter. Reference: Ch.1 Getting Started, tooling, project structure.\nNhiệm vụ sinh viên: Demo hot reload/hot restart; show DevTools widget inspector.",
+      "source_label": "Syllabus PRM393 — Session 3"
+    },
+    {
+      "chunk_id": "PRM393-session-4",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 4",
+      "text": "Session 4 — Basic UI Composition with Scaffold\nTài liệu: M1 – Introduction to Flutter. Reference: Ch.1 Getting Started, tooling, project structure.\nNhiệm vụ sinh viên: Live-code scaffold customization; review students’ changes.",
+      "source_label": "Syllabus PRM393 — Session 4"
+    },
+    {
+      "chunk_id": "PRM393-session-5",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 5",
+      "text": "Session 5 — Summary & Setup Issues\nTài liệu: M1 – Introduction to Flutter. Reference: Ch.1 Getting Started, tooling, project structure.\nNhiệm vụ sinh viên: Summarize pitfalls; collect environment reports; set expectations.",
+      "source_label": "Syllabus PRM393 — Session 5"
+    },
+    {
+      "chunk_id": "PRM393-session-6",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 6",
+      "text": "Session 6 — Dart Types & Variables\nTài liệu: M2 – Dart Essentials. Reference: Ch.2–3 Dart syntax, types, functions, classes.\nNhiệm vụ sinh viên: Review type system & null safety; address common errors.",
+      "source_label": "Syllabus PRM393 — Session 6"
+    },
+    {
+      "chunk_id": "PRM393-session-7",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 7",
+      "text": "Session 7 — Functions & Functional Patterns\nTài liệu: M2 – Dart Essentials. Reference: Ch.2–3 Dart syntax, types, functions, classes.\nNhiệm vụ sinh viên: Demonstrate function patterns; code review live.",
+      "source_label": "Syllabus PRM393 — Session 7"
+    },
+    {
+      "chunk_id": "PRM393-session-8",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 8",
+      "text": "Session 8 — Classes & Constructors\nTài liệu: M2 – Dart Essentials. Reference: Ch.2–3 Dart syntax, types, functions, classes.\nNhiệm vụ sinh viên: Explain class design; refactor student solutions.",
+      "source_label": "Syllabus PRM393 — Session 8"
+    },
+    {
+      "chunk_id": "PRM393-session-9",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 9",
+      "text": "Session 9 — Collections & Operations\nTài liệu: M2 – Dart Essentials. Reference: Ch.2–3 Dart syntax, types, functions, classes.\nNhiệm vụ sinh viên: Show idiomatic collection usage; performance tips.",
+      "source_label": "Syllabus PRM393 — Session 9"
+    },
+    {
+      "chunk_id": "PRM393-session-10",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 10",
+      "text": "Session 10 — Intro to Futures & Async\nTài liệu: M2 – Dart Essentials. Reference: Ch.2–3 Dart syntax, types, functions, classes.\nNhiệm vụ sinh viên: Introduce async model; clarify event loop concepts.",
+      "source_label": "Syllabus PRM393 — Session 10"
+    },
+    {
+      "chunk_id": "PRM393-session-11",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 11",
+      "text": "Session 11 — Future-based Async Programming\nTài liệu: M3 – OOP & Asynchronous. Reference: Ch.3–4 OOP patterns, Futures, Streams, async/await.\nNhiệm vụ sinh viên: Explain Future scheduling; demonstrate error propagation.",
+      "source_label": "Syllabus PRM393 — Session 11"
+    },
+    {
+      "chunk_id": "PRM393-session-12",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 12",
+      "text": "Session 12 — Streams & StreamController\nTài liệu: M3 – OOP & Asynchronous. Reference: Ch.3–4 OOP patterns, Futures, Streams, async/await.\nNhiệm vụ sinh viên: Show StreamController patterns; memory-safety notes.",
+      "source_label": "Syllabus PRM393 — Session 12"
+    },
+    {
+      "chunk_id": "PRM393-session-13",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 13",
+      "text": "Session 13 — StreamBuilder in Flutter\nTài liệu: M3 – OOP & Asynchronous. Reference: Ch.3–4 OOP patterns, Futures, Streams, async/await.\nNhiệm vụ sinh viên: Live-code StreamBuilder; discuss rebuild behavior.",
+      "source_label": "Syllabus PRM393 — Session 13"
+    },
+    {
+      "chunk_id": "PRM393-session-14",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 14",
+      "text": "Session 14 — Repository Pattern\nTài liệu: M3 – OOP & Asynchronous. Reference: Ch.3–4 OOP patterns, Futures, Streams, async/await.\nNhiệm vụ sinh viên: Present repository abstraction; layering guidance.",
+      "source_label": "Syllabus PRM393 — Session 14"
+    },
+    {
+      "chunk_id": "PRM393-session-15",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 15",
+      "text": "Session 15 — Reactive Patterns (Concept)\nTài liệu: M3 – OOP & Asynchronous. Reference: Ch.3–4 OOP patterns, Futures, Streams, async/await.\nNhiệm vụ sinh viên: Discuss reactive patterns; pitfalls and best practices.",
+      "source_label": "Syllabus PRM393 — Session 15"
+    },
+    {
+      "chunk_id": "PRM393-session-16",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 16",
+      "text": "Session 16 — Progress Test 1\nTài liệu: Progress Test 1\nNhiệm vụ sinh viên: Progress Test 1",
+      "source_label": "Syllabus PRM393 — Session 16"
+    },
+    {
+      "chunk_id": "PRM393-session-17",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 17",
+      "text": "Session 17 — UI Basics – Scaffold Layout\nListView & Card/ListTile\nTài liệu: M4 – UI Fundamentals. Reference: Ch.4 Widgets, Layouts, MaterialApp, lists & pickers.\nNhiệm vụ sinh viên: Demonstrate composition; spacing best practices.\nCode-along list patterns; performance considerations.",
+      "source_label": "Syllabus PRM393 — Session 17"
+    },
+    {
+      "chunk_id": "PRM393-session-18",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 18",
+      "text": "Session 18 — Interactive Widgets\nTài liệu: M4 – UI Fundamentals. Reference: Ch.4 Widgets, Layouts, MaterialApp, lists & pickers.\nNhiệm vụ sinh viên: Handle onChanged; explain ephemeral vs app state.",
+      "source_label": "Syllabus PRM393 — Session 18"
+    },
+    {
+      "chunk_id": "PRM393-session-19",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 19",
+      "text": "Session 19 — Pickers – Date/Time\nTài liệu: M4 – UI Fundamentals. Reference: Ch.4 Widgets, Layouts, MaterialApp, lists & pickers.\nNhiệm vụ sinh viên: Show pickers & result handling; UX guidance.",
+      "source_label": "Syllabus PRM393 — Session 19"
+    },
+    {
+      "chunk_id": "PRM393-session-20",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 20",
+      "text": "Session 20 — Theming & UI Polishing\nTài liệu: M4 – UI Fundamentals. Reference: Ch.4 Widgets, Layouts, MaterialApp, lists & pickers.\nNhiệm vụ sinh viên: Review theming knobs; show common polish tips.",
+      "source_label": "Syllabus PRM393 — Session 20"
+    },
+    {
+      "chunk_id": "PRM393-session-21",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 21",
+      "text": "Session 21 — Navigator 1.0 – Push/Pop\nTài liệu: M5 – Navigation & State Management. Reference: Ch.8 Navigator 1.0/2.0, named routes, deep links, basic state. Session focus: Part 1.\nNhiệm vụ sinh viên: Explain Navigator stack; demo simple flow.",
+      "source_label": "Syllabus PRM393 — Session 21"
+    },
+    {
+      "chunk_id": "PRM393-session-22",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 22",
+      "text": "Session 22 — Named Routes & Arguments\nTài liệu: M5 – Navigation & State Management. Reference: Ch.8 Navigator 1.0/2.0, named routes, deep links, basic state.\nNhiệm vụ sinh viên: Show RouteSettings & argument handling patterns.",
+      "source_label": "Syllabus PRM393 — Session 22"
+    },
+    {
+      "chunk_id": "PRM393-session-23",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 23",
+      "text": "Session 23 — Navigator 2.0 Concepts\nTài liệu: M5 – Navigation & State Management. Reference: Ch.8 Navigator 1.0/2.0, named routes, deep links, basic state.\nNhiệm vụ sinh viên: Present RouterDelegate/RouteInformationParser overview.",
+      "source_label": "Syllabus PRM393 — Session 23"
+    },
+    {
+      "chunk_id": "PRM393-session-24",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 24",
+      "text": "Session 24 — Android Deep Linking\nTài liệu: M5 – Navigation & State Management. Reference: Ch.8 Navigator 1.0/2.0, named routes, deep links, basic state.\nNhiệm vụ sinh viên: Walk-through manifest intent-filters; test live.",
+      "source_label": "Syllabus PRM393 — Session 24"
+    },
+    {
+      "chunk_id": "PRM393-session-25",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 25",
+      "text": "Session 25 — iOS URL Scheme Navigation\nTài liệu: M5 – Navigation & State Management. Reference: Ch.8 Navigator 1.0/2.0, named routes, deep links, basic state.\nNhiệm vụ sinh viên: Guide Info.plist & associated domains; QA routing.\nAssign and confirm project topics",
+      "source_label": "Syllabus PRM393 — Session 25"
+    },
+    {
+      "chunk_id": "PRM393-session-26",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 26",
+      "text": "Session 26 — Flex Layout (Row/Column)\nTài liệu: M6 – Layout & Responsive Design. Reference: Ch.5–6 Advanced layouts (Grid/Stack/Flex), responsive patterns.\nNhiệm vụ sinh viên: Explain constraints; demonstrate Flex factors.",
+      "source_label": "Syllabus PRM393 — Session 26"
+    },
+    {
+      "chunk_id": "PRM393-session-27",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 27",
+      "text": "Session 27 — GridView & Stack\nTài liệu: M6 – Layout & Responsive Design. Reference: Ch.5–6 Advanced layouts (Grid/Stack/Flex), responsive patterns.\nNhiệm vụ sinh viên: Show grid/stack patterns; layering tips.",
+      "source_label": "Syllabus PRM393 — Session 27"
+    },
+    {
+      "chunk_id": "PRM393-session-28",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 28",
+      "text": "Session 28 — LayoutBuilder & MediaQuery\nTài liệu: M6 – Layout & Responsive Design. Reference: Ch.5–6 Advanced layouts (Grid/Stack/Flex), responsive patterns.\nNhiệm vụ sinh viên: Introduce breakpoints; compute layout decisions.",
+      "source_label": "Syllabus PRM393 — Session 28"
+    },
+    {
+      "chunk_id": "PRM393-session-29",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 29",
+      "text": "Session 29 — Responsive UI Design\nTài liệu: M6 – Layout & Responsive Design. Reference: Ch.5–6 Advanced layouts (Grid/Stack/Flex), responsive patterns.\nNhiệm vụ sinh viên: Critique responsive solutions; UX considerations.",
+      "source_label": "Syllabus PRM393 — Session 29"
+    },
+    {
+      "chunk_id": "PRM393-session-30",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 30",
+      "text": "Session 30 — Responsive Refactor\nTài liệu: M6 – Layout & Responsive Design. Reference: Ch.5–6 Advanced layouts (Grid/Stack/Flex), responsive patterns.\nNhiệm vụ sinh viên: Refactor example; code review and feedback.",
+      "source_label": "Syllabus PRM393 — Session 30"
+    },
+    {
+      "chunk_id": "PRM393-session-31",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 31",
+      "text": "Session 31 — Progress Test 2\nTài liệu: Progress Test 2\nNhiệm vụ sinh viên: Progress Test 2",
+      "source_label": "Syllabus PRM393 — Session 31"
+    },
+    {
+      "chunk_id": "PRM393-session-32",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 32",
+      "text": "Session 32 — Forms & Controllers\nValidation & Errors\nTài liệu: M7 – Forms & Validation. Reference: Chapter 4 (Basic Widgets) & Chapter 14 (User Input)\nChapter 4 (Form Widgets) & Chapter 14 (Validation UX)\nNhiệm vụ sinh viên: Explain controllers lifecycle; disposal rules.\nDemonstrate validation patterns; UX for errors.",
+      "source_label": "Syllabus PRM393 — Session 32"
+    },
+    {
+      "chunk_id": "PRM393-session-33",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 33",
+      "text": "Session 33 — Submit Flow & Data\nTài liệu: M7 – Forms & Validation. Reference: Chapter 14 (Input Flow), Chapter 6 (State Concepts)\nNhiệm vụ sinh viên: Show submit flow; data handling & confirmation.",
+      "source_label": "Syllabus PRM393 — Session 33"
+    },
+    {
+      "chunk_id": "PRM393-session-34",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 34",
+      "text": "Session 34 — Form Draft Save\nTài liệu: M7 – Forms & Validation. Reference: Chapter 6 (State Basics) & Chapter 14 (Input Events)\nNhiệm vụ sinh viên: Discuss draft-saving approaches; data model notes.",
+      "source_label": "Syllabus PRM393 — Session 34"
+    },
+    {
+      "chunk_id": "PRM393-session-35",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 35",
+      "text": "Session 35 — Focus & Keyboard Actions\nTài liệu: M7 – Forms & Validation. Reference: Chapter 14 (Focus, Keyboard Actions)\nNhiệm vụ sinh viên: Show focus traversal; accessibility considerations.",
+      "source_label": "Syllabus PRM393 — Session 35"
+    },
+    {
+      "chunk_id": "PRM393-session-36",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 36",
+      "text": "Session 36 — HTTP Request & JSON Parsing\nTài liệu: M8 – Networking & JSON API. Reference: Ch.9 HTTP/REST, JSON parsing, FutureBuilder.\nNhiệm vụ sinh viên: Explain HTTP basics; JSON to model mapping.",
+      "source_label": "Syllabus PRM393 — Session 36"
+    },
+    {
+      "chunk_id": "PRM393-session-37",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 37",
+      "text": "Session 37 — FutureBuilder & List Rendering\nTài liệu: M8 – Networking & JSON API. Reference: Ch.9 HTTP/REST, JSON parsing, FutureBuilder.\nNhiệm vụ sinh viên: Live-code FutureBuilder; list rendering tips.",
+      "source_label": "Syllabus PRM393 — Session 37"
+    },
+    {
+      "chunk_id": "PRM393-session-38",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 38",
+      "text": "Session 38 — Error/Loading UI\nTài liệu: M8 – Networking & JSON API. Reference: Ch.9 HTTP/REST, JSON parsing, FutureBuilder.\nNhiệm vụ sinh viên: Error/empty/loading design; UX standards.",
+      "source_label": "Syllabus PRM393 — Session 38"
+    },
+    {
+      "chunk_id": "PRM393-session-39",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 39",
+      "text": "Session 39 — Detail Screen via API ID\nTài liệu: M8 – Networking & JSON API. Reference: Ch.9 HTTP/REST, JSON parsing, FutureBuilder.\nNhiệm vụ sinh viên: Route to detail by ID; data flow sanity checks.",
+      "source_label": "Syllabus PRM393 — Session 39"
+    },
+    {
+      "chunk_id": "PRM393-session-40",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 40",
+      "text": "Session 40 — Retry & Caching\nTài liệu: M8 – Networking & JSON API. Reference: Ch.9 HTTP/REST, JSON parsing, FutureBuilde\nNhiệm vụ sinh viên: Discuss caching layers; avoiding redundant calls.",
+      "source_label": "Syllabus PRM393 — Session 40"
+    },
+    {
+      "chunk_id": "PRM393-session-41",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 41",
+      "text": "Session 41 — SharedPreferences Basics\nTài liệu: M9 – Local Storage & Persistence. Reference: Ch.10 SharedPreferences, SQLite/Hive, caching..\nNhiệm vụ sinh viên: Contrast prefs vs database; data lifecycle.",
+      "source_label": "Syllabus PRM393 — Session 41"
+    },
+    {
+      "chunk_id": "PRM393-session-42",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 42",
+      "text": "Session 42 — Local DB (SQLite/Hive)\nTài liệu: M9 – Local Storage & Persistence. Reference: Ch.10 SharedPreferences, SQLite/Hive, caching.\nNhiệm vụ sinh viên: Schema modeling; CRUD operations overview.",
+      "source_label": "Syllabus PRM393 — Session 42"
+    },
+    {
+      "chunk_id": "PRM393-session-43",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 43",
+      "text": "Session 43 — Persistent List Rendering\nTài liệu: M9 – Local Storage & Persistence. Reference: Ch.10 SharedPreferences, SQLite/Hive, caching.\nNhiệm vụ sinh viên: Render persisted data; integrity checks.",
+      "source_label": "Syllabus PRM393 — Session 43"
+    },
+    {
+      "chunk_id": "PRM393-session-44",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 44",
+      "text": "Session 44 — Sync-Up Concept\nTài liệu: M9 – Local Storage & Persistence. Reference: Ch.10 SharedPreferences, SQLite/Hive, caching.\nNhiệm vụ sinh viên: Discuss sync patterns; conflict resolution basics.",
+      "source_label": "Syllabus PRM393 — Session 44"
+    },
+    {
+      "chunk_id": "PRM393-session-45",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 45",
+      "text": "Session 45 — Export/Backup JSON\nTài liệu: M9 – Local Storage & Persistence. Reference: Ch.10 SharedPreferences, SQLite/Hive, caching.\nNhiệm vụ sinh viên: Show export concept; data portability discussion.",
+      "source_label": "Syllabus PRM393 — Session 45"
+    },
+    {
+      "chunk_id": "PRM393-session-46",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 46",
+      "text": "Session 46 — Login Form & Mock Auth\nTài liệu: M10 – Authentication & User Management. Reference: Ch.11 Auth basics, session, guarded routes.\nNhiệm vụ sinh viên: Explain auth concepts; security caveats.",
+      "source_label": "Syllabus PRM393 — Session 46"
+    },
+    {
+      "chunk_id": "PRM393-session-47",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 47",
+      "text": "Session 47 — Session State Management\nTài liệu: M10 – Authentication & User Management. Reference: Ch.11 Auth basics, session, guarded routes.\nNhiệm vụ sinh viên: Session/state handling; update UI accordingly.",
+      "source_label": "Syllabus PRM393 — Session 47"
+    },
+    {
+      "chunk_id": "PRM393-session-48",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 48",
+      "text": "Session 48 — Guarded Routes\nTài liệu: M10 – Authentication & User Management. Reference: Ch.11 Auth basics, session, guarded routes.\nNhiệm vụ sinh viên: Route guarding patterns; navigation decisions.",
+      "source_label": "Syllabus PRM393 — Session 48"
+    },
+    {
+      "chunk_id": "PRM393-session-49",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 49",
+      "text": "Session 49 — Token Persistence (Mock)\nTài liệu: M10 – Authentication & User Management. Reference: Ch.11 Auth basics, session, guarded routes.\nNhiệm vụ sinh viên: Persist token mock; discuss security limits.",
+      "source_label": "Syllabus PRM393 — Session 49"
+    },
+    {
+      "chunk_id": "PRM393-session-50",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 50",
+      "text": "Session 50 — Integrated Auth Flow\nTài liệu: M10 – Authentication & User Management. Reference: Ch.11 Auth basics, session, guarded routes. Session focus: Part 5.\nNhiệm vụ sinh viên: End-to-end demo; troubleshooting common issues.",
+      "source_label": "Syllabus PRM393 — Session 50"
+    },
+    {
+      "chunk_id": "PRM393-session-51",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 51",
+      "text": "Session 51 — Unit Tests for Project Features\nTài liệu: M11 – Testing & Debugging. Core concepts from Ch.12.\nNhiệm vụ sinh viên: Explain testing setup in project context; assist integration.",
+      "source_label": "Syllabus PRM393 — Session 51"
+    },
+    {
+      "chunk_id": "PRM393-session-52",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 52",
+      "text": "Session 52 — Widget Tests & Debugging\nTài liệu: M11 – Testing & Debugging. Core debugging tools.\nNhiệm vụ sinh viên: Review test coverage; show debugging techniques.",
+      "source_label": "Syllabus PRM393 — Session 52"
+    },
+    {
+      "chunk_id": "PRM393-session-53",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 53",
+      "text": "Session 53 — Progress Test 3\nTài liệu: Progress Test 3\nNhiệm vụ sinh viên: Progress Test 3",
+      "source_label": "Syllabus PRM393 — Session 53"
+    },
+    {
+      "chunk_id": "PRM393-session-54",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 54",
+      "text": "Session 54 — Sprint 3 Review\nRefactoring & Polishing\nTài liệu: Project Work – Sprint 3 Review.\nProject Work – Polishing & Refactoring.\nNhiệm vụ sinh viên: Conduct sprint review; give improvement feedback.\nProvide code review session; guide refactoring priorities.",
+      "source_label": "Syllabus PRM393 — Session 54"
+    },
+    {
+      "chunk_id": "PRM393-session-55",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 55",
+      "text": "Session 55 — User Testing & Report\nTài liệu: Project Work – User Testing.\nNhiệm vụ sinh viên: Supervise test execution; monitor report documentation.",
+      "source_label": "Syllabus PRM393 — Session 55"
+    },
+    {
+      "chunk_id": "PRM393-session-56",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 56",
+      "text": "Session 56 — Build & Release Config\nTài liệu: M12 – Build & Release. Ch.13 (condensed).\nNhiệm vụ sinh viên: Demonstrate build process (debug/release).",
+      "source_label": "Syllabus PRM393 — Session 56"
+    },
+    {
+      "chunk_id": "PRM393-session-57",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 57",
+      "text": "Session 57 — Packaging & Release Build\nTài liệu: Project Work – Packaging.\nNhiệm vụ sinh viên: Guide deployment process; validate final artifacts.",
+      "source_label": "Syllabus PRM393 — Session 57"
+    },
+    {
+      "chunk_id": "PRM393-session-58",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 58",
+      "text": "Session 58 — Presentation Rehearsal\nTài liệu: Project Work – Presentation Rehearsal.\nNhiệm vụ sinh viên: Mentor on presentation skills; storytelling & flow.",
+      "source_label": "Syllabus PRM393 — Session 58"
+    },
+    {
+      "chunk_id": "PRM393-session-59",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 59",
+      "text": "Session 59 — Mock Defense\nTài liệu: Final Evaluation – Mock Defense.\nNhiệm vụ sinh viên: Act as evaluator; simulate defense Q&A.",
+      "source_label": "Syllabus PRM393 — Session 59"
+    },
+    {
+      "chunk_id": "PRM393-session-60",
+      "subject_code": "PRM393",
+      "subject_name": "Mobile Programming_Lập trình di động",
+      "section": "Session 60",
+      "text": "Session 60 — Final Project Submission\nTài liệu: Final Project Presentation\nNhiệm vụ sinh viên: Grade presentation; summarize learning outcomes.",
+      "source_label": "Syllabus PRM393 — Session 60"
+    }
+  ]
+}

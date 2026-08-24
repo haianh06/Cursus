@@ -1,0 +1,558 @@
+{
+  "subject_code": "PRJ301",
+  "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+  "meta": {
+    "Syllabus ID": "13165",
+    "Syllabus Name": "Java Web Application Development_Phát triển ứng dụng Java web",
+    "Course Name English": "Java Web Application Development",
+    "Subject Code": "PRJ301",
+    "Learning-Teaching Method": "Project based learning,Active learning,Social Constructivism,In-class lecture",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) = 45h contact hours + 1h final exam + 85' practical exam + 102.6h self-study",
+    "Pre-Requisite": "DBI202, PRO192",
+    "Description": "By the end of this course Students will be able to:\na) Knowledge: (what will students know?)\n• Understand the core technologies of Java web programming:\n- Servlet and JSP\n- Scope of sharing state (session, application, request,page)\n• Know how to develop and deploy your own websites using Java\n• Understand and be able to apply MVC architecture for the web\n- Learning how to apply JPA in websites using Java\n• Learning how to apply AI in your own website using Java\nb) Skills: (what will students be able to do?)\n• Basic Web application development applying MVC Design Pattern using Servlet/Filter as Controller\n• Creating a simple Web Application demo using JPA",
+    "StudentTasks": "- Attend at least 80% of contact hours in order to be accepted to the final examination\n- Actively participate in class activities\n- Fulfil tasks given by intructor after class\n- Use their own laptop in class only for learning purpose\n- Read the textbook in advance\n- Promptly access to the https://flm.fpt.edu.vn/ for up-to-date course information",
+    "Tools": "Web server application :Tomcat 9 or higher\nIDE: Netbeans 13 or higher (as defined by the subject leader)\nJava EE: 1.8 or higher\nMS SQL Server 2019 or higher",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "932/QĐ-ĐHFPT dated 08/22/2025",
+    "IsApproved": "True",
+    "Note": "",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "8/22/2025"
+  },
+  "clo_count": 9,
+  "session_count": 56,
+  "chunks": [
+    {
+      "chunk_id": "PRJ301-overview",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Overview & Grading Policy",
+      "text": "Description: By the end of this course Students will be able to:\na) Knowledge: (what will students know?)\n• Understand the core technologies of Java web programming:\n- Servlet and JSP\n- Scope of sharing state (session, application, request,page)\n• Know how to develop and deploy your own websites using Java\n• Understand and be able to apply MVC architecture for the web\n- Learning how to apply JPA in websites using Java\n• Learning how to apply AI in your own website using Java\nb) Skills: (what will students be able to do?)\n• Basic Web application development applying MVC Design Pattern using Servlet/Filter as Controller\n• Creating a simple Web Application demo using JPA\nNoCredit: 3\nPre-Requisite: DBI202, PRO192\nTime Allocation: Study hour (150h) = 45h contact hours + 1h final exam + 85' practical exam + 102.6h self-study\nStudentTasks: - Attend at least 80% of contact hours in order to be accepted to the final examination\n- Actively participate in class activities\n- Fulfil tasks given by intructor after class\n- Use their own laptop in class only for learning purpose\n- Read the textbook in advance\n- Promptly access to the https://flm.fpt.edu.vn/ for up-to-date course information\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus PRJ301 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "PRJ301-CLO1",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: understand the basic web application structure and be able to deploy Web application",
+      "source_label": "Syllabus PRJ301 — CLO1"
+    },
+    {
+      "chunk_id": "PRJ301-CLO2",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: understand and be able to work with the basic features of Java web application",
+      "source_label": "Syllabus PRJ301 — CLO2"
+    },
+    {
+      "chunk_id": "PRJ301-CLO3",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: be able to work with JDBC",
+      "source_label": "Syllabus PRJ301 — CLO3"
+    },
+    {
+      "chunk_id": "PRJ301-CLO4",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: be able to use different languages in JSP",
+      "source_label": "Syllabus PRJ301 — CLO4"
+    },
+    {
+      "chunk_id": "PRJ301-CLO5",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Learning Outcome CLO5",
+      "text": "CLO5: understand and be able to work with other server side objects in Java Web Application",
+      "source_label": "Syllabus PRJ301 — CLO5"
+    },
+    {
+      "chunk_id": "PRJ301-CLO6",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Learning Outcome CLO6",
+      "text": "CLO6: understand and be able to work with simple MVC Architecture",
+      "source_label": "Syllabus PRJ301 — CLO6"
+    },
+    {
+      "chunk_id": "PRJ301-CLO7",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Learning Outcome CLO7",
+      "text": "CLO7: be able to combine web front-end & back-end in the Java web application.",
+      "source_label": "Syllabus PRJ301 — CLO7"
+    },
+    {
+      "chunk_id": "PRJ301-CLO8",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Learning Outcome CLO8",
+      "text": "CLO8: be able to use JPA in the Java web application.",
+      "source_label": "Syllabus PRJ301 — CLO8"
+    },
+    {
+      "chunk_id": "PRJ301-CLO9",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Learning Outcome CLO9",
+      "text": "CLO9: be able to use AI in the Java web application.",
+      "source_label": "Syllabus PRJ301 — CLO9"
+    },
+    {
+      "chunk_id": "PRJ301-session-1",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 1",
+      "text": "Session 1 — Introduction to java web application\n+ The core and basic of Java web server technologies\n+ Web design vs server technologies\nTài liệu: Textbook: Chapter 1 & 2\nNhiệm vụ sinh viên: Read textbook, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 1"
+    },
+    {
+      "chunk_id": "PRJ301-session-2",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 2",
+      "text": "Session 2 — Setup Environment :\nJDK: 1.8 or higher\nServlet container: Tomcat 10 or higher\nIntergrate Netbeans 13 with the web container.\nTài liệu: Textbook: Chapter 1 & 2\nNhiệm vụ sinh viên: Read textbook, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 2"
+    },
+    {
+      "chunk_id": "PRJ301-session-3",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 3",
+      "text": "Session 3 — Creating/Building the first application:\nLearn to create Servlet\nGuide to Using Prompt Engineering Effectively with Java Web\nTài liệu: Textbook: Chapter 1 & 2\nNhiệm vụ sinh viên: Read textbook, do exercise\nStudents learn how to use prompt engineering, which is essential when integrating AI-driven solutions into Java Web applications. When using large language models (LLMs) like OpenAI’s models, a well-structured prompt can significantly improve the accuracy and relevance of AI-generated responses\n- Do exercise",
+      "source_label": "Syllabus PRJ301 — Session 3"
+    },
+    {
+      "chunk_id": "PRJ301-session-4",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 4",
+      "text": "Session 4 — Learn to create JSP\nDeploy the web application\nTài liệu: Textbook: Chapter 1 & 2\nNhiệm vụ sinh viên: Read textbook, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 4"
+    },
+    {
+      "chunk_id": "PRJ301-session-5",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 5",
+      "text": "Session 5 — Wiritting the First Servlet\nCreate a servlet\n+ Create a servlet class\n+ Configure servlet for deployment\nTài liệu: Textbook: Chapter 3\nNhiệm vụ sinh viên: Read textbook, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 5"
+    },
+    {
+      "chunk_id": "PRJ301-session-6",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 6",
+      "text": "Session 6 — Work with request and response objects\n+ Understanding DoGet and DoPost\nTài liệu: Textbook: Chapter 3\nNhiệm vụ sinh viên: Read textbook, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 6"
+    },
+    {
+      "chunk_id": "PRJ301-session-7",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 7",
+      "text": "Session 7 — + Using parameter to accept form submition & query string\n+ Response text content to client\nTài liệu: Textbook: Chapter 3\nNhiệm vụ sinh viên: Read textbook, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 7"
+    },
+    {
+      "chunk_id": "PRJ301-session-8",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 8",
+      "text": "Session 8 — Using AI in Netbeans24\nTài liệu: Textbook: Chapter 3\nNhiệm vụ sinh viên: Students will study how to use Jeddict AI assisstant in Netbeans",
+      "source_label": "Syllabus PRJ301 — Session 8"
+    },
+    {
+      "chunk_id": "PRJ301-session-9",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 9",
+      "text": "Session 9 — Practice Classwork 1\nTài liệu: Textbook: Chapter 3\nNhiệm vụ sinh viên: Read textbook, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 9"
+    },
+    {
+      "chunk_id": "PRJ301-session-10",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 10",
+      "text": "Session 10 — Practice Classwork 1\nTài liệu: Textbook: Chapter 3\nNhiệm vụ sinh viên: Read textbook, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 10"
+    },
+    {
+      "chunk_id": "PRJ301-session-11",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 11",
+      "text": "Session 11 — Web Application Interacting with Database\n+ JDBC Introduction\n+ Types of JDBC Drivers\nTài liệu: http://docs.oracle.com/javase/tutorial/jdbc/index.html\nNhiệm vụ sinh viên: Read textbook, complete classwork and Workshop 1",
+      "source_label": "Syllabus PRJ301 — Session 11"
+    },
+    {
+      "chunk_id": "PRJ301-session-12",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 12",
+      "text": "Session 12 — Web Application Interacting with Database\n+ JDBC Introduction\n+ Types of JDBC Drivers\nTài liệu: http://docs.oracle.com/javase/tutorial/jdbc/index.html\nNhiệm vụ sinh viên: Read textbook, complete classwork and Workshop 1",
+      "source_label": "Syllabus PRJ301 — Session 12"
+    },
+    {
+      "chunk_id": "PRJ301-session-13",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 13",
+      "text": "Session 13 — + JDBC Basics: Processing SQL Statements\nTài liệu: http://docs.oracle.com/javase/tutorial/jdbc/index.html\nNhiệm vụ sinh viên: Read textbook, complete classwork and Workshop 1",
+      "source_label": "Syllabus PRJ301 — Session 13"
+    },
+    {
+      "chunk_id": "PRJ301-session-14",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 14",
+      "text": "Session 14 — + JDBC Basics: Processing SQL Statements\nTài liệu: http://docs.oracle.com/javase/tutorial/jdbc/index.html\nNhiệm vụ sinh viên: Read textbook, complete classwork and Workshop 1",
+      "source_label": "Syllabus PRJ301 — Session 14"
+    },
+    {
+      "chunk_id": "PRJ301-session-15",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 15",
+      "text": "Session 15 — JDBC Basics: Processing SQL Statements\nUse a Database Query Agent in Java Web Applications\nTài liệu: http://docs.oracle.com/javase/tutorial/jdbc/index.html",
+      "source_label": "Syllabus PRJ301 — Session 15"
+    },
+    {
+      "chunk_id": "PRJ301-session-16",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 16",
+      "text": "Session 16 — Implement CRUD application using MS SQL Server 2019 or version higher\nTài liệu: http://docs.oracle.com/javase/tutorial/jdbc/index.html\nNhiệm vụ sinh viên: Read textbook, complete classwork and Workshop 1",
+      "source_label": "Syllabus PRJ301 — Session 16"
+    },
+    {
+      "chunk_id": "PRJ301-session-17",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 17",
+      "text": "Session 17 — Implement CRUD application using MS SQL Server 2019 or version higher\nTài liệu: http://docs.oracle.com/javase/tutorial/jdbc/index.html\nNhiệm vụ sinh viên: Read textbook, complete classwork and Workshop 1",
+      "source_label": "Syllabus PRJ301 — Session 17"
+    },
+    {
+      "chunk_id": "PRJ301-session-18",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 18",
+      "text": "Session 18 — Implement CRUD application using MS SQL Server 2019 or version higher\nTài liệu: http://docs.oracle.com/javase/tutorial/jdbc/index.html\nNhiệm vụ sinh viên: Read textbook, complete classwork and Workshop 1",
+      "source_label": "Syllabus PRJ301 — Session 18"
+    },
+    {
+      "chunk_id": "PRJ301-session-19",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 19",
+      "text": "Session 19 — Practice Classwork 2\nTài liệu: http://docs.oracle.com/javase/tutorial/jdbc/index.html\nNhiệm vụ sinh viên: Read textbook, complete classwork and Workshop 1",
+      "source_label": "Syllabus PRJ301 — Session 19"
+    },
+    {
+      "chunk_id": "PRJ301-session-20",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 20",
+      "text": "Session 20 — Practice Classwork 2\nTài liệu: http://docs.oracle.com/javase/tutorial/jdbc/index.html\nNhiệm vụ sinh viên: Read textbook, complete classwork and Workshop 1",
+      "source_label": "Syllabus PRJ301 — Session 20"
+    },
+    {
+      "chunk_id": "PRJ301-session-21",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 21",
+      "text": "Session 21 — Using JSP to display content\nCreate JSP?\n+ Why use JSP?\n3 Ways to use JSP\n+ Only HTML in a JSP file\n+ Only JSP code in a JSP file\nTài liệu: Textbook: Chapter 4\nNhiệm vụ sinh viên: Read textbook,\ndo exercise",
+      "source_label": "Syllabus PRJ301 — Session 21"
+    },
+    {
+      "chunk_id": "PRJ301-session-22",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 22",
+      "text": "Session 22 — +A mixture of JSP code with HTML text in A JSP file Using the Implicit variables in A JSP\nTài liệu: Textbook: Chapter 4\nNhiệm vụ sinh viên: Read textbook,\ndo exercise",
+      "source_label": "Syllabus PRJ301 — Session 22"
+    },
+    {
+      "chunk_id": "PRJ301-session-23",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 23",
+      "text": "Session 23 — Configuring JSP properties in the web.xml\nTài liệu: Textbook: Chapter 4\nNhiệm vụ sinh viên: Read textbook,\ndo exercise",
+      "source_label": "Syllabus PRJ301 — Session 23"
+    },
+    {
+      "chunk_id": "PRJ301-session-24",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 24",
+      "text": "Session 24 — Combining JSP and Servlet\nTài liệu: Textbook: Chapter 4\nNhiệm vụ sinh viên: Read textbook,\ndo exercise",
+      "source_label": "Syllabus PRJ301 — Session 24"
+    },
+    {
+      "chunk_id": "PRJ301-session-25",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 25",
+      "text": "Session 25 — Practice Classwork 3\nTài liệu: Textbook: Chapter 4\nNhiệm vụ sinh viên: Read textbook,\ndo exercise",
+      "source_label": "Syllabus PRJ301 — Session 25"
+    },
+    {
+      "chunk_id": "PRJ301-session-26",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 26",
+      "text": "Session 26 — Practice Classwork 3\nTài liệu: Textbook: Chapter 4\nNhiệm vụ sinh viên: Read textbook,\ndo exercise",
+      "source_label": "Syllabus PRJ301 — Session 26"
+    },
+    {
+      "chunk_id": "PRJ301-session-27",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 27",
+      "text": "Session 27 — Introduction to MVC Architecture\n+ General of Java Application Design\nTài liệu: Textbook: Chapter 4\nNhiệm vụ sinh viên: Read article 2, complete classwork",
+      "source_label": "Syllabus PRJ301 — Session 27"
+    },
+    {
+      "chunk_id": "PRJ301-session-28",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 28",
+      "text": "Session 28 — Introduction to MVC Architecture\n+ General of Java Application Design\nTài liệu: Textbook: Chapter 4\nNhiệm vụ sinh viên: Read article 2, complete classwork",
+      "source_label": "Syllabus PRJ301 — Session 28"
+    },
+    {
+      "chunk_id": "PRJ301-session-29",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 29",
+      "text": "Session 29 — + MVC Pattern\n+ How to apply MVC in Java Web Application\nTài liệu: Textbook: Chapter 4\nNhiệm vụ sinh viên: Read article 2, complete classwork",
+      "source_label": "Syllabus PRJ301 — Session 29"
+    },
+    {
+      "chunk_id": "PRJ301-session-30",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 30",
+      "text": "Session 30 — + MVC Pattern\n+ How to apply MVC in Java Web Application\nTài liệu: Textbook: Chapter 4\nNhiệm vụ sinh viên: Read article 2, complete classwork",
+      "source_label": "Syllabus PRJ301 — Session 30"
+    },
+    {
+      "chunk_id": "PRJ301-session-31",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 31",
+      "text": "Session 31 — Practice\nTài liệu: Textbook: Chapter 4\nNhiệm vụ sinh viên: Read article 2, complete classwork",
+      "source_label": "Syllabus PRJ301 — Session 31"
+    },
+    {
+      "chunk_id": "PRJ301-session-32",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 32",
+      "text": "Session 32 — Practice\nTài liệu: Textbook: Chapter 4\nNhiệm vụ sinh viên: Read article 2, complete classwork",
+      "source_label": "Syllabus PRJ301 — Session 32"
+    },
+    {
+      "chunk_id": "PRJ301-session-33",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 33",
+      "text": "Session 33 — Maintaining state using session and cookie\n+ Explain why session is nessesary\n+ How session and cookie work\nTài liệu: Textbook: Chapter 5\nNhiệm vụ sinh viên: Read textbook, complete classwork, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 33"
+    },
+    {
+      "chunk_id": "PRJ301-session-34",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 34",
+      "text": "Session 34 — + Store and Retreive data to session and cookie\nTài liệu: Textbook: Chapter 5\nNhiệm vụ sinh viên: Read textbook, complete classwork, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 34"
+    },
+    {
+      "chunk_id": "PRJ301-session-35",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 35",
+      "text": "Session 35 — Practice Classwork 4\nTài liệu: Textbook: Chapter 5\nNhiệm vụ sinh viên: Read textbook, complete classwork, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 35"
+    },
+    {
+      "chunk_id": "PRJ301-session-36",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 36",
+      "text": "Session 36 — Practice Classwork 4\nTài liệu: Textbook: Chapter 5\nNhiệm vụ sinh viên: Read textbook, complete classwork, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 36"
+    },
+    {
+      "chunk_id": "PRJ301-session-37",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 37",
+      "text": "Session 37 — Expression Language\nWhat and Why use Expression Language\nHow to write with the EL syntax\n+ Immediate evaluation , [ ] operator,array, Arithmetic EL,Relational EL, Static Field\nTài liệu: Textbook: Chapter 6\nNhiệm vụ sinh viên: Read textbook, complete classwork, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 37"
+    },
+    {
+      "chunk_id": "PRJ301-session-38",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 38",
+      "text": "Session 38 — + EL functions\n+ Collections\nHow to use scoped variables in EL expressions\n+ pageContext\nTài liệu: Textbook: Chapter 6\nNhiệm vụ sinh viên: Read textbook, complete classwork, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 38"
+    },
+    {
+      "chunk_id": "PRJ301-session-39",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 39",
+      "text": "Session 39 — + sessionScope\n+ applicationScope\nImplicit Variables in EL\nTài liệu: Textbook: Chapter 6\nNhiệm vụ sinh viên: Read textbook, complete classwork, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 39"
+    },
+    {
+      "chunk_id": "PRJ301-session-40",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 40",
+      "text": "Session 40 — Practice Classwork 5\nTài liệu: Textbook: Chapter 6\nNhiệm vụ sinh viên: Read textbook, complete classwork, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 40"
+    },
+    {
+      "chunk_id": "PRJ301-session-41",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 41",
+      "text": "Session 41 — Using JPA\n+ Guide to work with persistance connect to DB\nTài liệu: Textbook: Chapter 19\nNhiệm vụ sinh viên: Read textbook, complete classwork, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 41"
+    },
+    {
+      "chunk_id": "PRJ301-session-44",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 44",
+      "text": "Session 44 — Practice Classwork 6\nTài liệu: Textbook: Chapter 19\nNhiệm vụ sinh viên: Read textbook, complete classwork, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 44"
+    },
+    {
+      "chunk_id": "PRJ301-session-45",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 45",
+      "text": "Session 45 — Using Custom tag\n+ Guide to create a simple Web Application demo using JPA\nTài liệu: Textbook: Chapter 19\nNhiệm vụ sinh viên: Read textbook, complete classwork, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 45"
+    },
+    {
+      "chunk_id": "PRJ301-session-48",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 48",
+      "text": "Session 48 — Practice Classwork 7\nTài liệu: Textbook: Chapter 19\nNhiệm vụ sinh viên: Read textbook, complete classwork, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 48"
+    },
+    {
+      "chunk_id": "PRJ301-session-49",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 49",
+      "text": "Session 49 — Introduction to Filter\n+ Understand the purpose of Filter\nTài liệu: Textbook: Chapter 9\nNhiệm vụ sinh viên: Read textbook, complete classwork, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 49"
+    },
+    {
+      "chunk_id": "PRJ301-session-50",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 50",
+      "text": "Session 50 — + Create, Declaring and Mapping Filter\nTài liệu: Textbook: Chapter 9\nNhiệm vụ sinh viên: Read textbook, complete classwork, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 50"
+    },
+    {
+      "chunk_id": "PRJ301-session-51",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 51",
+      "text": "Session 51 — Forward and Redirect to another servlet\nUsing init parameters\nBuilding a Coding AI Agent in a Java Web Application (Servlet-Based)\nTài liệu: Textbook: Chapter 9\nNhiệm vụ sinh viên: Read textbook, complete classwork and Workshop 1\nStudents are responsible for learning, implementing and experimenting with AI-driven database queries.",
+      "source_label": "Syllabus PRJ301 — Session 51"
+    },
+    {
+      "chunk_id": "PRJ301-session-52",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 52",
+      "text": "Session 52 — Practice Classwork 8\nTài liệu: Textbook: Chapter 9\nNhiệm vụ sinh viên: Read textbook, complete classwork, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 52"
+    },
+    {
+      "chunk_id": "PRJ301-session-53",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 53",
+      "text": "Session 53 — Introduction to Event Listener\n+ ServletContextEvent\n+ HttpSessionEvent\n+ ServletRequestEvent\nTài liệu: https://docs.oracle.com/cd/B14099_19/web.1012/b14017/filters.htm\nNhiệm vụ sinh viên: Read textbook, complete classwork, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 53"
+    },
+    {
+      "chunk_id": "PRJ301-session-54",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 54",
+      "text": "Session 54 — + ServletContext AttributeEvent\n+ HttpSessionBindingEvent\n+ ServletRequestAttributeEvent\nTài liệu: https://docs.oracle.com/cd/B14099_19/web.1012/b14017/filters.htm\nNhiệm vụ sinh viên: Read textbook, complete classwork, do exercise",
+      "source_label": "Syllabus PRJ301 — Session 54"
+    },
+    {
+      "chunk_id": "PRJ301-session-55",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 55",
+      "text": "Session 55 — Assignment Evaluation\nCourse Summary for Final Exam",
+      "source_label": "Syllabus PRJ301 — Session 55"
+    },
+    {
+      "chunk_id": "PRJ301-session-56",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 56",
+      "text": "Session 56 — Assignment Evaluation\nCourse Summary for Final Exam",
+      "source_label": "Syllabus PRJ301 — Session 56"
+    },
+    {
+      "chunk_id": "PRJ301-session-57",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 57",
+      "text": "Session 57 — Assignment Evaluation\nCourse Summary for Final Exam",
+      "source_label": "Syllabus PRJ301 — Session 57"
+    },
+    {
+      "chunk_id": "PRJ301-session-58",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 58",
+      "text": "Session 58 — Assignment Evaluation\nCourse Summary for Final Exam",
+      "source_label": "Syllabus PRJ301 — Session 58"
+    },
+    {
+      "chunk_id": "PRJ301-session-59",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 59",
+      "text": "Session 59 — Assignment Evaluation\nCourse Summary for Final Exam",
+      "source_label": "Syllabus PRJ301 — Session 59"
+    },
+    {
+      "chunk_id": "PRJ301-session-60",
+      "subject_code": "PRJ301",
+      "subject_name": "Java Web Application Development_Phát triển ứng dụng Java web",
+      "section": "Session 60",
+      "text": "Session 60 — Assignment Evaluation\nCourse Summary for Final Exam",
+      "source_label": "Syllabus PRJ301 — Session 60"
+    }
+  ]
+}

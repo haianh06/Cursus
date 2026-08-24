@@ -1,0 +1,590 @@
+{
+  "subject_code": "PRF192",
+  "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+  "meta": {
+    "Syllabus ID": "12223",
+    "Syllabus Name": "Programming Fundamentals_Cơ sở lập trình",
+    "Course Name English": "Programming Fundamentals",
+    "Subject Code": "PRF192",
+    "Learning-Teaching Method": "Problem based learning, Active Learning",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) = 45h contact hours + 1h final exam + 104h self-study",
+    "Pre-Requisite": "None",
+    "Description": "Understand basics computer system and methods of software development, focus on function-oriented programming design, coding, testing and discipline in programming.\nExplain basic concepts of programming, function-oriented programming design, modularity, understand and coding programs using C language.\n\nUpon completing the course, student should have:\n1. Knowledge: (ABET e)\n- Explain the way to solve a real problem using computer.\n- Understand the basic concepts computer system, and software development.\n- Understand the basic concepts of programming, focus on procedure programming, testing and debugging, unit testing.\n\n2. Skills in programming: (ABET k)\n- Read and understand the simple C programs;\n- Solve real problems using C.\n\n3. Apply learning methods effectively: (ABET i)\n- Academic reading.\n- Individual and team work behaviors.",
+    "StudentTasks": "- Students must attend at least 80% of contact sessions in order to be accepted to the final examination.\n- Student is responsible to do all assigned exercises given by instructor in class or at home and submit on time.\n- Use laptop in class only for learning purpose.\n- Promptly access to the https://flm.fpt.edu.vn/ for up-to-date course information.",
+    "Tools": "Tools:\n- Internet\n- C language utility (ex.DevC++ 6.3)",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "1286/QĐ-ĐHFPT dated 11/22/2024",
+    "IsApproved": "True",
+    "Note": "",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "11/22/2024"
+  },
+  "clo_count": 9,
+  "session_count": 60,
+  "chunks": [
+    {
+      "chunk_id": "PRF192-overview",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Overview & Grading Policy",
+      "text": "Description: Understand basics computer system and methods of software development, focus on function-oriented programming design, coding, testing and discipline in programming.\nExplain basic concepts of programming, function-oriented programming design, modularity, understand and coding programs using C language.\n\nUpon completing the course, student should have:\n1. Knowledge: (ABET e)\n- Explain the way to solve a real problem using computer.\n- Understand the basic concepts computer system, and software development.\n- Understand the basic concepts of programming, focus on procedure programming, testing and debugging, unit testing.\n\n2. Skills in programming: (ABET k)\n- Read and understand the simple C programs;\n- Solve real problems using C.\n\n3. Apply learning methods effectively: (ABET i)\n- Academic reading.\n- Individual and team work behaviors.\nNoCredit: 3\nPre-Requisite: None\nTime Allocation: Study hour (150h) = 45h contact hours + 1h final exam + 104h self-study\nStudentTasks: - Students must attend at least 80% of contact sessions in order to be accepted to the final examination.\n- Student is responsible to do all assigned exercises given by instructor in class or at home and submit on time.\n- Use laptop in class only for learning purpose.\n- Promptly access to the https://flm.fpt.edu.vn/ for up-to-date course information.\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus PRF192 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "PRF192-CLO1",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Understand and describe about a program, and the way it works on computer.",
+      "source_label": "Syllabus PRF192 — CLO1"
+    },
+    {
+      "chunk_id": "PRF192-CLO2",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Demonstrate about variables, expressions and basic operations and illustrate them by program examples.",
+      "source_label": "Syllabus PRF192 — CLO2"
+    },
+    {
+      "chunk_id": "PRF192-CLO3",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Explain the meaning and use of Logic constructs in C Language. Describe about programming styles.",
+      "source_label": "Syllabus PRF192 — CLO3"
+    },
+    {
+      "chunk_id": "PRF192-CLO4",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Describe about Modularity and Functions in C programs and their use.",
+      "source_label": "Syllabus PRF192 — CLO4"
+    },
+    {
+      "chunk_id": "PRF192-CLO5",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Learning Outcome CLO5",
+      "text": "CLO5: Understanding and using pointers in programs.",
+      "source_label": "Syllabus PRF192 — CLO5"
+    },
+    {
+      "chunk_id": "PRF192-CLO6",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Learning Outcome CLO6",
+      "text": "CLO6: Discuss about C Libraries and their use.",
+      "source_label": "Syllabus PRF192 — CLO6"
+    },
+    {
+      "chunk_id": "PRF192-CLO7",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Learning Outcome CLO7",
+      "text": "CLO7: Discuss about Arrays, Struct and their use in C programs.",
+      "source_label": "Syllabus PRF192 — CLO7"
+    },
+    {
+      "chunk_id": "PRF192-CLO8",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Learning Outcome CLO8",
+      "text": "CLO8: Discuss about Strings and their use in C programs.",
+      "source_label": "Syllabus PRF192 — CLO8"
+    },
+    {
+      "chunk_id": "PRF192-CLO9",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Learning Outcome CLO9",
+      "text": "CLO9: Discuss about Files and their use in C programs.",
+      "source_label": "Syllabus PRF192 — CLO9"
+    },
+    {
+      "chunk_id": "PRF192-session-1",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 1",
+      "text": "Session 1 — Introduction and installing tools\nTài liệu: Textbook\nNhiệm vụ sinh viên: Read Textbook, install tools",
+      "source_label": "Syllabus PRF192 — Session 1"
+    },
+    {
+      "chunk_id": "PRF192-session-2",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 2",
+      "text": "Session 2 — Basic concepts computer system; steps to develop a software\nTài liệu: Textbook\nNhiệm vụ sinh viên: Read Textbook",
+      "source_label": "Syllabus PRF192 — Session 2"
+    },
+    {
+      "chunk_id": "PRF192-session-3",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 3",
+      "text": "Session 3 — Structure of a simple C program; C compiler\nTài liệu: Textbook\nNhiệm vụ sinh viên: Practice a simple C program",
+      "source_label": "Syllabus PRF192 — Session 3"
+    },
+    {
+      "chunk_id": "PRF192-session-4",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 4",
+      "text": "Session 4 — Variable and constant used in the C programming language\nTài liệu: Textbook\nNhiệm vụ sinh viên: Practice declaration variable and constant",
+      "source_label": "Syllabus PRF192 — Session 4"
+    },
+    {
+      "chunk_id": "PRF192-session-5",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 5",
+      "text": "Session 5 — Understand what is a data type\nTài liệu: Textbook\nNhiệm vụ sinh viên: Read Textbook",
+      "source_label": "Syllabus PRF192 — Session 5"
+    },
+    {
+      "chunk_id": "PRF192-session-6",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 6",
+      "text": "Session 6 — Basic Memory Operations\nImplement basic input/output functions using scanf, printf\nTài liệu: Textbook\nNhiệm vụ sinh viên: Read Textbook\nPractice basic input/ ouput",
+      "source_label": "Syllabus PRF192 — Session 6"
+    },
+    {
+      "chunk_id": "PRF192-session-7",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 7",
+      "text": "Session 7 — Expressions: Arithmetic, Relational, Logical, Bit operators, Shorthand Assignment operators\nTài liệu: Textbook\nNhiệm vụ sinh viên: Implement operators",
+      "source_label": "Syllabus PRF192 — Session 7"
+    },
+    {
+      "chunk_id": "PRF192-session-8",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 8",
+      "text": "Session 8 — Expressions: Mixing Data Types, Casting, Precedence\nTài liệu: Textbook\nNhiệm vụ sinh viên: Practice Mixing data types and Casting",
+      "source_label": "Syllabus PRF192 — Session 8"
+    },
+    {
+      "chunk_id": "PRF192-session-9",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 9",
+      "text": "Session 9 — Structured Programming: Selection (if-else, switch-case)\nTài liệu: Textbook\nNhiệm vụ sinh viên: Implement if-else, switch-case",
+      "source_label": "Syllabus PRF192 — Session 9"
+    },
+    {
+      "chunk_id": "PRF192-session-10",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 10",
+      "text": "Session 10 — Structured Programming: Loop (for, while, do-while)\nTài liệu: Textbook\nNhiệm vụ sinh viên: Implement for, while, do-while",
+      "source_label": "Syllabus PRF192 — Session 10"
+    },
+    {
+      "chunk_id": "PRF192-session-11",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 11",
+      "text": "Session 11 — Review: The lecturer reviews the learned content\nTài liệu: Textbook\nNhiệm vụ sinh viên: Answer the Instructor's questions and practice the requirements",
+      "source_label": "Syllabus PRF192 — Session 11"
+    },
+    {
+      "chunk_id": "PRF192-session-12",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 12",
+      "text": "Session 12 — Review (contd): The lecturer reviews the learned content\nTài liệu: Textbook\nNhiệm vụ sinh viên: Answer the Instructor's questions and practice the requirements",
+      "source_label": "Syllabus PRF192 — Session 12"
+    },
+    {
+      "chunk_id": "PRF192-session-13",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 13",
+      "text": "Session 13 — Workshop 1: Practice declaring and initializing values ​​for variables.\nTài liệu: Completed Workshop\nNhiệm vụ sinh viên: Complete Workshop 1",
+      "source_label": "Syllabus PRF192 — Session 13"
+    },
+    {
+      "chunk_id": "PRF192-session-14",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 14",
+      "text": "Session 14 — Workshop 1: Use expressions to perform simple calculations.\nTài liệu: Completed Workshop\nNhiệm vụ sinh viên: Complete Workshop 1",
+      "source_label": "Syllabus PRF192 — Session 14"
+    },
+    {
+      "chunk_id": "PRF192-session-15",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 15",
+      "text": "Session 15 — Workshop 1: Practice techniques to control program structure using conditional and loop structures\nTài liệu: Completed Workshop\nNhiệm vụ sinh viên: Complete Workshop 1",
+      "source_label": "Syllabus PRF192 — Session 15"
+    },
+    {
+      "chunk_id": "PRF192-session-16",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 16",
+      "text": "Session 16 — Modules: What is a module? How to design modules for a program?\nTài liệu: Textbook\nNhiệm vụ sinh viên: Read Textbook",
+      "source_label": "Syllabus PRF192 — Session 16"
+    },
+    {
+      "chunk_id": "PRF192-session-17",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 17",
+      "text": "Session 17 — Modules: Characteristics of modules\nTài liệu: Textbook\nNhiệm vụ sinh viên: Read Textbook",
+      "source_label": "Syllabus PRF192 — Session 17"
+    },
+    {
+      "chunk_id": "PRF192-session-18",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 18",
+      "text": "Session 18 — Modules: Principles of defining modules\nTài liệu: Textbook\nNhiệm vụ sinh viên: Read Textbook",
+      "source_label": "Syllabus PRF192 — Session 18"
+    },
+    {
+      "chunk_id": "PRF192-session-19",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 19",
+      "text": "Session 19 — Functions: Function definitions\nTài liệu: Textbook\nNhiệm vụ sinh viên: Practice function definitions",
+      "source_label": "Syllabus PRF192 — Session 19"
+    },
+    {
+      "chunk_id": "PRF192-session-20",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 20",
+      "text": "Session 20 — Functions: Use a function. Parameters: Pass by value\nTài liệu: Textbook\nNhiệm vụ sinh viên: Practice use a function",
+      "source_label": "Syllabus PRF192 — Session 20"
+    },
+    {
+      "chunk_id": "PRF192-session-21",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 21",
+      "text": "Session 21 — Functions: Differentiate Built-in and User-defined functions\nTài liệu: Textbook\nNhiệm vụ sinh viên: Read Textbook",
+      "source_label": "Syllabus PRF192 — Session 21"
+    },
+    {
+      "chunk_id": "PRF192-session-22",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 22",
+      "text": "Session 22 — Functions: Extent and Scope of a Variable\nTài liệu: Textbook\nNhiệm vụ sinh viên: Implement scope of variable",
+      "source_label": "Syllabus PRF192 — Session 22"
+    },
+    {
+      "chunk_id": "PRF192-session-23",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 23",
+      "text": "Session 23 — Review: The lecturer reviews the learned content\nTài liệu: Textbook\nNhiệm vụ sinh viên: Answer the Instructor's questions and practice the requirements",
+      "source_label": "Syllabus PRF192 — Session 23"
+    },
+    {
+      "chunk_id": "PRF192-session-24",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 24",
+      "text": "Session 24 — Review (cont): The lecturer reviews the learned content\nTài liệu: Textbook\nNhiệm vụ sinh viên: Answer the Instructor's questions and practice the requirements",
+      "source_label": "Syllabus PRF192 — Session 24"
+    },
+    {
+      "chunk_id": "PRF192-session-25",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 25",
+      "text": "Session 25 — Workshop 2: Real-world problem analysis techniques for program modularization\nTài liệu: Textbook\nNhiệm vụ sinh viên: Complete Workshop 2",
+      "source_label": "Syllabus PRF192 — Session 25"
+    },
+    {
+      "chunk_id": "PRF192-session-26",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 26",
+      "text": "Session 26 — Workshop 2:Practice defining and using functions\nTài liệu: Textbook\nNhiệm vụ sinh viên: Complete Workshop 2",
+      "source_label": "Syllabus PRF192 — Session 26"
+    },
+    {
+      "chunk_id": "PRF192-session-27",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 27",
+      "text": "Session 27 — Workshop 2: Build a program in menu form to call functions\nTài liệu: Textbook\nNhiệm vụ sinh viên: Complete Workshop 2",
+      "source_label": "Syllabus PRF192 — Session 27"
+    },
+    {
+      "chunk_id": "PRF192-session-28",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 28",
+      "text": "Session 28 — Introduction to Pointers. Where are pointers used?\nTài liệu: Textbook\nNhiệm vụ sinh viên: Read Textbook",
+      "source_label": "Syllabus PRF192 — Session 28"
+    },
+    {
+      "chunk_id": "PRF192-session-29",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 29",
+      "text": "Session 29 — Pointer Declarations; Pointer operators\nTài liệu: Textbook\nNhiệm vụ sinh viên: Practice pointer declarations and Implement pointer operators",
+      "source_label": "Syllabus PRF192 — Session 29"
+    },
+    {
+      "chunk_id": "PRF192-session-30",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 30",
+      "text": "Session 30 — Pointers as parameters of a function. Pass by reference\nTài liệu: Textbook\nNhiệm vụ sinh viên: Practice pass by reference to parameters of a function",
+      "source_label": "Syllabus PRF192 — Session 30"
+    },
+    {
+      "chunk_id": "PRF192-session-31",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 31",
+      "text": "Session 31 — Pointers: Dynamic Allocated Data\nTài liệu: Textbook\nNhiệm vụ sinh viên: Practice dynamic allocated data",
+      "source_label": "Syllabus PRF192 — Session 31"
+    },
+    {
+      "chunk_id": "PRF192-session-32",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 32",
+      "text": "Session 32 — Libraries: Standard - stdlib.h; Time - time.h\nTài liệu: Textbook\nNhiệm vụ sinh viên: Read Textbook",
+      "source_label": "Syllabus PRF192 — Session 32"
+    },
+    {
+      "chunk_id": "PRF192-session-33",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 33",
+      "text": "Session 33 — Libraries (cond): Math - math.h; Character - ctype.h\nTài liệu: Textbook\nNhiệm vụ sinh viên: Read Textbook",
+      "source_label": "Syllabus PRF192 — Session 33"
+    },
+    {
+      "chunk_id": "PRF192-session-34",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 34",
+      "text": "Session 34 — Input/ Formatted Output\nTài liệu: Textbook\nNhiệm vụ sinh viên: Implement input and formatted output",
+      "source_label": "Syllabus PRF192 — Session 34"
+    },
+    {
+      "chunk_id": "PRF192-session-35",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 35",
+      "text": "Session 35 — Review: The lecturer reviews the learned content\nTài liệu: Textbook\nNhiệm vụ sinh viên: Answer the Instructor's questions and practice the requirements",
+      "source_label": "Syllabus PRF192 — Session 35"
+    },
+    {
+      "chunk_id": "PRF192-session-36",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 36",
+      "text": "Session 36 — Progress Test 1: Evaluate students on the theoretical knowledge they have learned\nTài liệu: Study Materials\nNhiệm vụ sinh viên: Complete Progress Test 1",
+      "source_label": "Syllabus PRF192 — Session 36"
+    },
+    {
+      "chunk_id": "PRF192-session-37",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 37",
+      "text": "Session 37 — Arrays: Conceps One-Dimensional array and Basic Operations on Array\nTài liệu: Textbook\nNhiệm vụ sinh viên: Practice one-demensional array declarations and basic operations on array: input/ output",
+      "source_label": "Syllabus PRF192 — Session 37"
+    },
+    {
+      "chunk_id": "PRF192-session-38",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 38",
+      "text": "Session 38 — Matrix: Two-Dimensional Arrays; Inputting, Outputting Data for Matrix and other operations\nTài liệu: Textbook\nNhiệm vụ sinh viên: Practice two-demensional array declarations, input/output, operations",
+      "source_label": "Syllabus PRF192 — Session 38"
+    },
+    {
+      "chunk_id": "PRF192-session-39",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 39",
+      "text": "Session 39 — Arrays: Solve Problems using Arrays (Linear Search and Selection Sort)\nTài liệu: Textbook\nNhiệm vụ sinh viên: Practice: Search, Sort",
+      "source_label": "Syllabus PRF192 — Session 39"
+    },
+    {
+      "chunk_id": "PRF192-session-40",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 40",
+      "text": "Session 40 — Struct: Using struct to organize complex data\nTài liệu: Textbook\nNhiệm vụ sinh viên: Practice declaration, use Struct",
+      "source_label": "Syllabus PRF192 — Session 40"
+    },
+    {
+      "chunk_id": "PRF192-session-41",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 41",
+      "text": "Session 41 — Review: The lecturer reviews the learned content\nTài liệu: Textbook\nNhiệm vụ sinh viên: Answer the Instructor's questions and practice the requirements",
+      "source_label": "Syllabus PRF192 — Session 41"
+    },
+    {
+      "chunk_id": "PRF192-session-42",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 42",
+      "text": "Session 42 — Review: Array or structs\nTài liệu: Textbook\nNhiệm vụ sinh viên: Practice case study",
+      "source_label": "Syllabus PRF192 — Session 42"
+    },
+    {
+      "chunk_id": "PRF192-session-43",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 43",
+      "text": "Session 43 — Workshop 3: Practice basic input/ output and operations of array\nTài liệu: Completed Workshop\nNhiệm vụ sinh viên: Complete Workshop 3",
+      "source_label": "Syllabus PRF192 — Session 43"
+    },
+    {
+      "chunk_id": "PRF192-session-44",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 44",
+      "text": "Session 44 — Workshop 3: Practice with character arrays using library functions in ctype.h\nTài liệu: Completed Workshop\nNhiệm vụ sinh viên: Complete Workshop 3",
+      "source_label": "Syllabus PRF192 — Session 44"
+    },
+    {
+      "chunk_id": "PRF192-session-45",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 45",
+      "text": "Session 45 — Workshop 3: Manage data with an array of struct\nTài liệu: Completed Workshop\nNhiệm vụ sinh viên: Complete Workshop 3",
+      "source_label": "Syllabus PRF192 — Session 45"
+    },
+    {
+      "chunk_id": "PRF192-session-46",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 46",
+      "text": "Session 46 — String: Declare/Initialize a string\nTài liệu: Textbook\nNhiệm vụ sinh viên: Practice declare/ initialize String",
+      "source_label": "Syllabus PRF192 — Session 46"
+    },
+    {
+      "chunk_id": "PRF192-session-47",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 47",
+      "text": "Session 47 — String: Input/ Output a String using buit-in Functions\nTài liệu: Textbook\nNhiệm vụ sinh viên: Practice input/ output and operations string",
+      "source_label": "Syllabus PRF192 — Session 47"
+    },
+    {
+      "chunk_id": "PRF192-session-48",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 48",
+      "text": "Session 48 — Array of strings; operations of String (string.h)\nTài liệu: Textbook\nNhiệm vụ sinh viên: Implement Array of string",
+      "source_label": "Syllabus PRF192 — Session 48"
+    },
+    {
+      "chunk_id": "PRF192-session-49",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 49",
+      "text": "Session 49 — Review: The lecturer reviews the learned content\nTài liệu: Textbook\nNhiệm vụ sinh viên: Answer the Instructor's questions and practice the requirements",
+      "source_label": "Syllabus PRF192 — Session 49"
+    },
+    {
+      "chunk_id": "PRF192-session-50",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 50",
+      "text": "Session 50 — Review (contd): The lecturer reviews the learned content\nTài liệu: Textbook\nNhiệm vụ sinh viên: Answer the Instructor's questions and practice the requirements",
+      "source_label": "Syllabus PRF192 — Session 50"
+    },
+    {
+      "chunk_id": "PRF192-session-51",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 51",
+      "text": "Session 51 — Workshop 4: Problem-Solving with String (input/ output/ operations)\nTài liệu: Completed Workshop\nNhiệm vụ sinh viên: Complete Workshop 4",
+      "source_label": "Syllabus PRF192 — Session 51"
+    },
+    {
+      "chunk_id": "PRF192-session-52",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 52",
+      "text": "Session 52 — File: Basic concepts File\nTài liệu: Textbook\nNhiệm vụ sinh viên: Read Textbook",
+      "source_label": "Syllabus PRF192 — Session 52"
+    },
+    {
+      "chunk_id": "PRF192-session-53",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 53",
+      "text": "Session 53 — File: File types (Text File, Binary File)\nTài liệu: Textbook\nNhiệm vụ sinh viên: Read Textbook",
+      "source_label": "Syllabus PRF192 — Session 53"
+    },
+    {
+      "chunk_id": "PRF192-session-54",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 54",
+      "text": "Session 54 — File: Ways for accessing files\nTài liệu: Textbook\nNhiệm vụ sinh viên: Implement acessing files",
+      "source_label": "Syllabus PRF192 — Session 54"
+    },
+    {
+      "chunk_id": "PRF192-session-55",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 55",
+      "text": "Session 55 — File: File Functions\nTài liệu: Textbook\nNhiệm vụ sinh viên: Practice file functions",
+      "source_label": "Syllabus PRF192 — Session 55"
+    },
+    {
+      "chunk_id": "PRF192-session-56",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 56",
+      "text": "Session 56 — Review: The lecturer reviews the learned content\nTài liệu: Textbook\nNhiệm vụ sinh viên: Answer the Instructor's questions and practice the requirements",
+      "source_label": "Syllabus PRF192 — Session 56"
+    },
+    {
+      "chunk_id": "PRF192-session-57",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 57",
+      "text": "Session 57 — Workshop 5: Open, read, write, and close files using C file handling functions\nTài liệu: Completed Workshop\nNhiệm vụ sinh viên: Complete Workshop 5",
+      "source_label": "Syllabus PRF192 — Session 57"
+    },
+    {
+      "chunk_id": "PRF192-session-58",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 58",
+      "text": "Session 58 — Progress Test 2\nTài liệu: Study Materials\nNhiệm vụ sinh viên: Complete Progress Test 2",
+      "source_label": "Syllabus PRF192 — Session 58"
+    },
+    {
+      "chunk_id": "PRF192-session-59",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 59",
+      "text": "Session 59 — Assigment\nTài liệu: Completed Assignment\nNhiệm vụ sinh viên: Complete Assignment",
+      "source_label": "Syllabus PRF192 — Session 59"
+    },
+    {
+      "chunk_id": "PRF192-session-60",
+      "subject_code": "PRF192",
+      "subject_name": "Programming Fundamentals_Cơ sở lập trình",
+      "section": "Session 60",
+      "text": "Session 60 — Final Review\nTài liệu: Study Materials\nNhiệm vụ sinh viên: Continue exam preparation",
+      "source_label": "Syllabus PRF192 — Session 60"
+    }
+  ]
+}

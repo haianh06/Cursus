@@ -1,0 +1,622 @@
+{
+  "subject_code": "IOT102",
+  "subject_name": "Internet of Things_Internet vạn vật",
+  "meta": {
+    "Syllabus ID": "12400",
+    "Syllabus Name": "Internet of Things_Internet vạn vật",
+    "Course Name English": "Internet of Things",
+    "Subject Code": "IOT102",
+    "Learning-Teaching Method": "Social Constructivism, Inquiry-Based Learning, In-class lecture, Active Learning, Project-based learning",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) = 22.5h contact hours + 22.5h online hours + 4.5h final project presentation + 1h final exam + 99.5h self-study",
+    "Pre-Requisite": "",
+    "Description": "This is a 3-credit course. This course has two parts: online and offline.\nThe content includes basic concepts and applications of IoT and practical exercises on learning KIT.\nStudents are taught how to learn online and practice some parts at home. Q&A sessions, Guidance for important issues, and performance assessments will be conducted in the classroom.",
+    "StudentTasks": "- Students must attend at least 80% of contact sessions in order to be accepted to the final examination.\n- Student is responsible to learn all VIDEOs (theory) online given by instructor on Syllabus at home.\n- Student is responsible to do all LABs given by instructor on Syllabus at home.\n- Constantly follow https://flm.fpt.edu.vn/ for up-to-date course information.",
+    "Tools": "",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "1363/QĐ-ĐHFPT dated 12/06/2024",
+    "IsApproved": "True",
+    "Note": "",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "12/6/2024"
+  },
+  "clo_count": 13,
+  "session_count": 60,
+  "chunks": [
+    {
+      "chunk_id": "IOT102-overview",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Overview & Grading Policy",
+      "text": "Description: This is a 3-credit course. This course has two parts: online and offline.\nThe content includes basic concepts and applications of IoT and practical exercises on learning KIT.\nStudents are taught how to learn online and practice some parts at home. Q&A sessions, Guidance for important issues, and performance assessments will be conducted in the classroom.\nNoCredit: 3\nTime Allocation: Study hour (150h) = 22.5h contact hours + 22.5h online hours + 4.5h final project presentation + 1h final exam + 99.5h self-study\nStudentTasks: - Students must attend at least 80% of contact sessions in order to be accepted to the final examination.\n- Student is responsible to learn all VIDEOs (theory) online given by instructor on Syllabus at home.\n- Student is responsible to do all LABs given by instructor on Syllabus at home.\n- Constantly follow https://flm.fpt.edu.vn/ for up-to-date course information.\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus IOT102 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "IOT102-CLO1",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Understand the concept of IoT and applications.",
+      "source_label": "Syllabus IOT102 — CLO1"
+    },
+    {
+      "chunk_id": "IOT102-CLO2",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Understand the concept of things in IoT.",
+      "source_label": "Syllabus IOT102 — CLO2"
+    },
+    {
+      "chunk_id": "IOT102-CLO3",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Understand the Networking in IoT.",
+      "source_label": "Syllabus IOT102 — CLO3"
+    },
+    {
+      "chunk_id": "IOT102-CLO4",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Understand the Securing in IoT.",
+      "source_label": "Syllabus IOT102 — CLO4"
+    },
+    {
+      "chunk_id": "IOT102-CLO5",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Learning Outcome CLO5",
+      "text": "CLO5: Select and calculate the electronics components, IoT Programming.",
+      "source_label": "Syllabus IOT102 — CLO5"
+    },
+    {
+      "chunk_id": "IOT102-CLO6",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Learning Outcome CLO6",
+      "text": "CLO6: Program IN/OUT Digital with Arduino UNO.",
+      "source_label": "Syllabus IOT102 — CLO6"
+    },
+    {
+      "chunk_id": "IOT102-CLO7",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Learning Outcome CLO7",
+      "text": "CLO7: Program Analog Input/Output with Arduino UNO.",
+      "source_label": "Syllabus IOT102 — CLO7"
+    },
+    {
+      "chunk_id": "IOT102-CLO8",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Learning Outcome CLO8",
+      "text": "CLO8: Program Sensors/Actuators with Arduino UNO.",
+      "source_label": "Syllabus IOT102 — CLO8"
+    },
+    {
+      "chunk_id": "IOT102-CLO9",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Learning Outcome CLO9",
+      "text": "CLO9: Program Communication with Arduino UNO.",
+      "source_label": "Syllabus IOT102 — CLO9"
+    },
+    {
+      "chunk_id": "IOT102-CLO10",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Learning Outcome CLO10",
+      "text": "CLO10: Concept planning, Draw and Install simple IoT circuits",
+      "source_label": "Syllabus IOT102 — CLO10"
+    },
+    {
+      "chunk_id": "IOT102-CLO11",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Learning Outcome CLO11",
+      "text": "CLO11: Understand the Arduino UNO and Atmega328 microcontroller architecture.",
+      "source_label": "Syllabus IOT102 — CLO11"
+    },
+    {
+      "chunk_id": "IOT102-CLO12",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Learning Outcome CLO12",
+      "text": "CLO12: Know how to use the Simulation Software.",
+      "source_label": "Syllabus IOT102 — CLO12"
+    },
+    {
+      "chunk_id": "IOT102-CLO13",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Learning Outcome CLO13",
+      "text": "CLO13: Understand the interrupts on Arduino UNO.",
+      "source_label": "Syllabus IOT102 — CLO13"
+    },
+    {
+      "chunk_id": "IOT102-session-1",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 1",
+      "text": "Session 1 — Introduction of IoT course\nWhat in the world is the Internet of Things?\nTài liệu: Slide\nVideo\nGUIDE Of Create an Account_Explore Courses_Quiz on edX.pdf\nNhiệm vụ sinh viên: Borrow theLearning KIT at the library.\nEnroll course:\nhttps://learning.edx.org/course/course-v1:CurtinX+IOT1x+2T2018/home",
+      "source_label": "Syllabus IOT102 — Session 1"
+    },
+    {
+      "chunk_id": "IOT102-session-2",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 2",
+      "text": "Session 2 — Arduino (ATmega328p) Architecture\nTài liệu: Slide\nVideo\nGUIDE Of Create an Account_Explore Courses_Quiz on edX.pdf\nNhiệm vụ sinh viên: Borrow theLearning KIT at the library.\nEnroll course:\nhttps://learning.edx.org/course/course-v1:CurtinX+IOT1x+2T2018/home",
+      "source_label": "Syllabus IOT102 — Session 2"
+    },
+    {
+      "chunk_id": "IOT102-session-3",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 3",
+      "text": "Session 3 — Lab:\n- Getting Started with Arduino and Genuino UNO\n- Fritzing_building_circuit\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Discuss with your instructor the lessons learned online and the new lesson.",
+      "source_label": "Syllabus IOT102 — Session 3"
+    },
+    {
+      "chunk_id": "IOT102-session-4",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 4",
+      "text": "Session 4 — The ‘things’ of the Internet of Things?\nTài liệu: Slide\nVideo\nNhiệm vụ sinh viên: Enroll course:\nhttps://learning.edx.org/course/course-v1:CurtinX+IOT1x+2T2018/home\nFollow the lessons online",
+      "source_label": "Syllabus IOT102 — Session 4"
+    },
+    {
+      "chunk_id": "IOT102-session-5",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 5",
+      "text": "Session 5 — Networking IoT\nTài liệu: Slide\nVideo\nNhiệm vụ sinh viên: Enroll course:\nhttps://learning.edx.org/course/course-v1:CurtinX+IOT1x+2T2018/home\nFollow the lessons online",
+      "source_label": "Syllabus IOT102 — Session 5"
+    },
+    {
+      "chunk_id": "IOT102-session-6",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 6",
+      "text": "Session 6 — Networking IoT (cnt)\nTài liệu: Slide\nVideo\nNhiệm vụ sinh viên: Enroll course:\nhttps://learning.edx.org/course/course-v1:CurtinX+IOT1x+2T2018/home\nFollow the lessons online",
+      "source_label": "Syllabus IOT102 — Session 6"
+    },
+    {
+      "chunk_id": "IOT102-session-7",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 7",
+      "text": "Session 7 — Lab:\n- Tinkercad arduino simulator tutorial\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Discuss with your instructor the lessons learned online and the new lesson.",
+      "source_label": "Syllabus IOT102 — Session 7"
+    },
+    {
+      "chunk_id": "IOT102-session-8",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 8",
+      "text": "Session 8 — Lab:\n- Blink an LED - Digital Write\n- Analog Input - Analog Read\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Discuss with your instructor the lessons learned online and the new lesson.",
+      "source_label": "Syllabus IOT102 — Session 8"
+    },
+    {
+      "chunk_id": "IOT102-session-9",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 9",
+      "text": "Session 9 — Lab:\n- Fading - Analog Write\nProject Topic Introduction\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Discuss with your instructor the lessons learned online and the new lesson.",
+      "source_label": "Syllabus IOT102 — Session 9"
+    },
+    {
+      "chunk_id": "IOT102-session-10",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 10",
+      "text": "Session 10 — Programming IoT\nTài liệu: Slide\nVideo\nNhiệm vụ sinh viên: Enroll course:\nhttps://learning.edx.org/course/course-v1:CurtinX+IOT1x+2T2018/home\nFollow the lessons online",
+      "source_label": "Syllabus IOT102 — Session 10"
+    },
+    {
+      "chunk_id": "IOT102-session-11",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 11",
+      "text": "Session 11 — Programming IoT (cnt)\nTài liệu: Slide\nVideo\nNhiệm vụ sinh viên: Enroll course:\nhttps://learning.edx.org/course/course-v1:CurtinX+IOT1x+2T2018/home\nFollow the lessons online",
+      "source_label": "Syllabus IOT102 — Session 11"
+    },
+    {
+      "chunk_id": "IOT102-session-12",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 12",
+      "text": "Session 12 — Lab:\nPractice at home by the tutorial: Led array effect.\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Follow the practice guide",
+      "source_label": "Syllabus IOT102 — Session 12"
+    },
+    {
+      "chunk_id": "IOT102-session-13",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 13",
+      "text": "Session 13 — Practice at home Evaluation\nLab:\n- Buttton - Digital Read\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Discuss with your instructor the lessons learned online and the new lesson.",
+      "source_label": "Syllabus IOT102 — Session 13"
+    },
+    {
+      "chunk_id": "IOT102-session-14",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 14",
+      "text": "Session 14 — Practice at home Evaluation\nLab:\n- Input Pullup - Serial\n- State Change Detection for push buttons\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Discuss with your instructor the lessons learned online and the new lesson.",
+      "source_label": "Syllabus IOT102 — Session 14"
+    },
+    {
+      "chunk_id": "IOT102-session-15",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 15",
+      "text": "Session 15 — Lab:\n- Analog In, Out Serial\n- Photoresistor - Analog Input\nProject Topic Resgistration\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Discuss with your instructor the lessons learned online and the new lesson.",
+      "source_label": "Syllabus IOT102 — Session 15"
+    },
+    {
+      "chunk_id": "IOT102-session-16",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 16",
+      "text": "Session 16 — Securing IoT\nTài liệu: Slide\nVideo\nNhiệm vụ sinh viên: Enroll course:\nhttps://learning.edx.org/course/course-v1:CurtinX+IOT1x+2T2018/home\nFollow the lessons online",
+      "source_label": "Syllabus IOT102 — Session 16"
+    },
+    {
+      "chunk_id": "IOT102-session-17",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 17",
+      "text": "Session 17 — Securing IoT (cnt)\nTài liệu: Slide\nVideo\nNhiệm vụ sinh viên: Enroll course:\nhttps://learning.edx.org/course/course-v1:CurtinX+IOT1x+2T2018/home\nFollow the lessons online",
+      "source_label": "Syllabus IOT102 — Session 17"
+    },
+    {
+      "chunk_id": "IOT102-session-18",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 18",
+      "text": "Session 18 — Lab:\n- Practice at home by the tutorial: Photoresistor - States of lights\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Follow the practice guide",
+      "source_label": "Syllabus IOT102 — Session 18"
+    },
+    {
+      "chunk_id": "IOT102-session-19",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 19",
+      "text": "Session 19 — Lab:\n- Photoresistor - while loop interation\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Discuss with your instructor the lessons learned online and the new lesson.",
+      "source_label": "Syllabus IOT102 — Session 19"
+    },
+    {
+      "chunk_id": "IOT102-session-20",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 20",
+      "text": "Session 20 — Lab:\n- Ping Ultrasonic Range Finder\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Discuss with your instructor the lessons learned online and the new lesson.",
+      "source_label": "Syllabus IOT102 — Session 20"
+    },
+    {
+      "chunk_id": "IOT102-session-21",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 21",
+      "text": "Session 21 — Lab:\n- Servo Motor - Sweep\n- Servo Motor - Knob\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Discuss with your instructor the lessons learned online and the new lesson.",
+      "source_label": "Syllabus IOT102 — Session 21"
+    },
+    {
+      "chunk_id": "IOT102-session-22",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 22",
+      "text": "Session 22 — Electrical circuits and electronics\nTài liệu: Slide\nVideo\nNhiệm vụ sinh viên: Enroll course:\nhttps://learning.edx.org/course/course-v1:CurtinX+IOT2x+2T2018/home\nFollow the lessons online",
+      "source_label": "Syllabus IOT102 — Session 22"
+    },
+    {
+      "chunk_id": "IOT102-session-23",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 23",
+      "text": "Session 23 — Electrical circuits and electronics (cnt)\nTài liệu: Slide\nVideo\nNhiệm vụ sinh viên: Enroll course:\nhttps://learning.edx.org/course/course-v1:CurtinX+IOT2x+2T2018/home\nFollow the lessons online",
+      "source_label": "Syllabus IOT102 — Session 23"
+    },
+    {
+      "chunk_id": "IOT102-session-24",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 24",
+      "text": "Session 24 — Project concept planning\nTài liệu: Slide\nVideo\nNhiệm vụ sinh viên: Enroll course:\nhttps://learning.edx.org/course/course-v1:CurtinX+IOT2x+2T2018/home\nFollow the lesson online",
+      "source_label": "Syllabus IOT102 — Session 24"
+    },
+    {
+      "chunk_id": "IOT102-session-25",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 25",
+      "text": "Session 25 — Project concept planning (cnt)\nTài liệu: Slide\nVideo\nNhiệm vụ sinh viên: Enroll course:\nhttps://learning.edx.org/course/course-v1:CurtinX+IOT2x+2T2018/home\nFollow the lesson online",
+      "source_label": "Syllabus IOT102 — Session 25"
+    },
+    {
+      "chunk_id": "IOT102-session-26",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 26",
+      "text": "Session 26 — Presentation\nNhiệm vụ sinh viên: Presentation about Final Project Planning",
+      "source_label": "Syllabus IOT102 — Session 26"
+    },
+    {
+      "chunk_id": "IOT102-session-27",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 27",
+      "text": "Session 27 — Presentation\nNhiệm vụ sinh viên: Presentation about Final Project Planning",
+      "source_label": "Syllabus IOT102 — Session 27"
+    },
+    {
+      "chunk_id": "IOT102-session-28",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 28",
+      "text": "Session 28 — Practice at home Evaluation\nLab:\n- IR Remote\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Discuss with your instructor the lessons learned online and the new lesson.",
+      "source_label": "Syllabus IOT102 — Session 28"
+    },
+    {
+      "chunk_id": "IOT102-session-29",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 29",
+      "text": "Session 29 — Lab:\n- Practice at home by the tutorial: Digital Read - Out Serial\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Follow the practice guide",
+      "source_label": "Syllabus IOT102 — Session 29"
+    },
+    {
+      "chunk_id": "IOT102-session-30",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 30",
+      "text": "Session 30 — Lab:\n- Practice at home by the tutorial: RGB LED Color Mixing (use tinkercad simulator)\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Follow the practice guide",
+      "source_label": "Syllabus IOT102 — Session 30"
+    },
+    {
+      "chunk_id": "IOT102-session-31",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 31",
+      "text": "Session 31 — Lab:\nPractice at home: Advanced Labs related to the Final Project\nTài liệu: Tutorial\nLearning KIT, Advanced components\nNhiệm vụ sinh viên: Follow the Advanced Lab guide",
+      "source_label": "Syllabus IOT102 — Session 31"
+    },
+    {
+      "chunk_id": "IOT102-session-32",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 32",
+      "text": "Session 32 — Practice at home Evaluation\nLab:\n- Led-7-segment-display\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Discuss with your instructor the lessons learned online and the new lesson.",
+      "source_label": "Syllabus IOT102 — Session 32"
+    },
+    {
+      "chunk_id": "IOT102-session-33",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 33",
+      "text": "Session 33 — Practice at home Evaluation\nLab:\n- Temperature sensor LM35\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Discuss with your instructor the lessons learned online and the new lesson.",
+      "source_label": "Syllabus IOT102 — Session 33"
+    },
+    {
+      "chunk_id": "IOT102-session-34",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 34",
+      "text": "Session 34 — Progress test 1",
+      "source_label": "Syllabus IOT102 — Session 34"
+    },
+    {
+      "chunk_id": "IOT102-session-35",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 35",
+      "text": "Session 35 — Lab:\n- Practice at home by the tutorial:\nRead ASCII String (use RGB led to indicator)\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Follow the practice guide",
+      "source_label": "Syllabus IOT102 — Session 35"
+    },
+    {
+      "chunk_id": "IOT102-session-36",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 36",
+      "text": "Session 36 — Lab:\n- Practice at home by the tutorial: Smoothing Graph: Send data to the computer and graph it in Processing.\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Follow the practice guide",
+      "source_label": "Syllabus IOT102 — Session 36"
+    },
+    {
+      "chunk_id": "IOT102-session-37",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 37",
+      "text": "Session 37 — Lab:\nPractice at home: Advanced Labs related to the Final Project\nTài liệu: Tutorial\nLearning KIT, Advanced components\nNhiệm vụ sinh viên: Follow the Advanced Lab guide",
+      "source_label": "Syllabus IOT102 — Session 37"
+    },
+    {
+      "chunk_id": "IOT102-session-38",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 38",
+      "text": "Session 38 — Practice at home Evaluation\nLab:\n- LCD Display 1602\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Discuss with your instructor the lessons learned online and the new lesson.",
+      "source_label": "Syllabus IOT102 — Session 38"
+    },
+    {
+      "chunk_id": "IOT102-session-39",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 39",
+      "text": "Session 39 — Practice at home Evaluation\nLab:\n- SerialEvent\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Discuss with your instructor the lessons learned online and the new lesson.",
+      "source_label": "Syllabus IOT102 — Session 39"
+    },
+    {
+      "chunk_id": "IOT102-session-40",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 40",
+      "text": "Session 40 — Practice at home Evaluation\nLab:\n- External Interrupts\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Discuss with your instructor the lessons learned online and the new lesson.",
+      "source_label": "Syllabus IOT102 — Session 40"
+    },
+    {
+      "chunk_id": "IOT102-session-41",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 41",
+      "text": "Session 41 — Lab:\nPractice at home by the tutorial: Blink Without Delay\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Follow the practice guide",
+      "source_label": "Syllabus IOT102 — Session 41"
+    },
+    {
+      "chunk_id": "IOT102-session-42",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 42",
+      "text": "Session 42 — Lab:\nPractice at home by the tutorial: ASCII Table\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Follow the practice guide",
+      "source_label": "Syllabus IOT102 — Session 42"
+    },
+    {
+      "chunk_id": "IOT102-session-43",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 43",
+      "text": "Session 43 — Lab:\nPractice at home: Advanced Labs related to the Final Project\nTài liệu: Tutorial\nLearning KIT, Advanced components\nNhiệm vụ sinh viên: Follow the Advanced Lab guide",
+      "source_label": "Syllabus IOT102 — Session 43"
+    },
+    {
+      "chunk_id": "IOT102-session-44",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 44",
+      "text": "Session 44 — Block diagram and Flowchart of Final Project\nNhiệm vụ sinh viên: Draw block diagram\nCreate circuit schematic/Hardware inferace/wiring diagram\nDraw flowchart",
+      "source_label": "Syllabus IOT102 — Session 44"
+    },
+    {
+      "chunk_id": "IOT102-session-45",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 45",
+      "text": "Session 45 — Practice at home Evaluation\nLab:\n- Timer Interrupts\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Discuss with your instructor the lessons learned online and the new lesson.",
+      "source_label": "Syllabus IOT102 — Session 45"
+    },
+    {
+      "chunk_id": "IOT102-session-46",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 46",
+      "text": "Session 46 — On-going project assessment 1\nNhiệm vụ sinh viên: Present Block diagram, Flowchart",
+      "source_label": "Syllabus IOT102 — Session 46"
+    },
+    {
+      "chunk_id": "IOT102-session-47",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 47",
+      "text": "Session 47 — On-going project assessment 1 (cnt)\nNhiệm vụ sinh viên: Present Block diagram, Flowchart",
+      "source_label": "Syllabus IOT102 — Session 47"
+    },
+    {
+      "chunk_id": "IOT102-session-48",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 48",
+      "text": "Session 48 — Lab:\nPractice at home by the tutorial: Serial Input\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Follow the practice guide",
+      "source_label": "Syllabus IOT102 — Session 48"
+    },
+    {
+      "chunk_id": "IOT102-session-49",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 49",
+      "text": "Session 49 — Lab:\nPractice at home by the tutorial: Debounce\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Follow the practice guide",
+      "source_label": "Syllabus IOT102 — Session 49"
+    },
+    {
+      "chunk_id": "IOT102-session-50",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 50",
+      "text": "Session 50 — Practice at home Evaluation\nLab:\n- Keypad 4x4\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Discuss with your instructor the lessons learned online and the new lesson.",
+      "source_label": "Syllabus IOT102 — Session 50"
+    },
+    {
+      "chunk_id": "IOT102-session-51",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 51",
+      "text": "Session 51 — Practice at home Evaluation\nLab:\n- EEPROM read / write\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Discuss with your instructor the lessons learned online and the new lesson.",
+      "source_label": "Syllabus IOT102 — Session 51"
+    },
+    {
+      "chunk_id": "IOT102-session-52",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 52",
+      "text": "Session 52 — Progress test 2",
+      "source_label": "Syllabus IOT102 — Session 52"
+    },
+    {
+      "chunk_id": "IOT102-session-53",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 53",
+      "text": "Session 53 — Lab:\nPractice at home: Advanced Labs related to the Final Project\nTài liệu: Tutorial\nLearning KIT, Advanced components\nNhiệm vụ sinh viên: Follow the Advanced Lab guide",
+      "source_label": "Syllabus IOT102 — Session 53"
+    },
+    {
+      "chunk_id": "IOT102-session-54",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 54",
+      "text": "Session 54 — Final project report preparation\nTài liệu: Latex/Overleaf Tutorial online or\nReport template and guildeline provided by instructor\nNhiệm vụ sinh viên: Prepare Final Report using Latex/Overleaf or\nDiscuss with your instructor for the guidance",
+      "source_label": "Syllabus IOT102 — Session 54"
+    },
+    {
+      "chunk_id": "IOT102-session-55",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 55",
+      "text": "Session 55 — Practice at home Evaluation\nLab:\n- 8x8 LED Matrix\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Discuss with your instructor the lessons learned online and the new lesson.",
+      "source_label": "Syllabus IOT102 — Session 55"
+    },
+    {
+      "chunk_id": "IOT102-session-56",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 56",
+      "text": "Session 56 — On-going project assessment 2\nNhiệm vụ sinh viên: Prepare for final project presentation",
+      "source_label": "Syllabus IOT102 — Session 56"
+    },
+    {
+      "chunk_id": "IOT102-session-57",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 57",
+      "text": "Session 57 — On-going project assessment 2 (cnt)\nNhiệm vụ sinh viên: Prepare for final project presentation",
+      "source_label": "Syllabus IOT102 — Session 57"
+    },
+    {
+      "chunk_id": "IOT102-session-58",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 58",
+      "text": "Session 58 — All labs\nSelf review:\nPractice at home by the tutorial: Team work prepares for the final project\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Follow the practice guide",
+      "source_label": "Syllabus IOT102 — Session 58"
+    },
+    {
+      "chunk_id": "IOT102-session-59",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 59",
+      "text": "Session 59 — All labs\nSelf review: (cnt)\nPractice at home by the tutorial: Team work prepares for the final project\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Follow the practice guide",
+      "source_label": "Syllabus IOT102 — Session 59"
+    },
+    {
+      "chunk_id": "IOT102-session-60",
+      "subject_code": "IOT102",
+      "subject_name": "Internet of Things_Internet vạn vật",
+      "section": "Session 60",
+      "text": "Session 60 — All labs\nSelf review:\nPractice at home by the tutorial: Team work prepares for the final project\nTài liệu: Tutorial\nLearning KIT\nNhiệm vụ sinh viên: Follow the practice guide",
+      "source_label": "Syllabus IOT102 — Session 60"
+    }
+  ]
+}

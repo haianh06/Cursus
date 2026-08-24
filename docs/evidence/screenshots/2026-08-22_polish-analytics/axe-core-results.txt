@@ -1,0 +1,4 @@
+axe-core 4.x run against the live "Analytics" tab (WCAG 2.0 A/AA + WCAG 2.1 AA rule tags), both light and dark theme, desktop viewport, English.
+
+[AXE:analytics-desktop-light-en] NO VIOLATIONS
+[AXE:analytics-desktop-dark-en] NO VIOLATIONS

@@ -1,0 +1,536 @@
+{
+  "class_summary": {
+    "subject_code": "SSA101",
+    "class_size": 12,
+    "students_with_alert": 3,
+    "class_avg_completion_by_week": [
+      0.9,
+      0.79,
+      0.73,
+      0.7
+    ]
+  },
+  "students": [
+    {
+      "student_id": "sv01",
+      "name": "Đăng",
+      "subject_code": "SSA101",
+      "weekly": [
+        {
+          "week": 1,
+          "tasks_total": 5,
+          "tasks_completed": 5,
+          "on_time_rate": 1.0,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 2,
+          "tasks_total": 5,
+          "tasks_completed": 4,
+          "on_time_rate": 0.8,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 3,
+          "tasks_total": 5,
+          "tasks_completed": 5,
+          "on_time_rate": 1.0,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 4,
+          "tasks_total": 5,
+          "tasks_completed": 4,
+          "on_time_rate": 0.8,
+          "deadline_missed_this_week": 0
+        }
+      ],
+      "avg_completion_4weeks": 0.9,
+      "alert": {
+        "triggered": false,
+        "type": null,
+        "reason": null,
+        "status": null
+      }
+    },
+    {
+      "student_id": "sv02",
+      "name": "Linh",
+      "subject_code": "SSA101",
+      "weekly": [
+        {
+          "week": 1,
+          "tasks_total": 5,
+          "tasks_completed": 5,
+          "on_time_rate": 1.0,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 2,
+          "tasks_total": 5,
+          "tasks_completed": 5,
+          "on_time_rate": 1.0,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 3,
+          "tasks_total": 5,
+          "tasks_completed": 4,
+          "on_time_rate": 0.8,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 4,
+          "tasks_total": 5,
+          "tasks_completed": 5,
+          "on_time_rate": 1.0,
+          "deadline_missed_this_week": 0
+        }
+      ],
+      "avg_completion_4weeks": 0.95,
+      "alert": {
+        "triggered": false,
+        "type": null,
+        "reason": null,
+        "status": null
+      }
+    },
+    {
+      "student_id": "sv03",
+      "name": "Huy",
+      "subject_code": "SSA101",
+      "weekly": [
+        {
+          "week": 1,
+          "tasks_total": 5,
+          "tasks_completed": 3,
+          "on_time_rate": 0.6,
+          "deadline_missed_this_week": 1
+        },
+        {
+          "week": 2,
+          "tasks_total": 5,
+          "tasks_completed": 2,
+          "on_time_rate": 0.4,
+          "deadline_missed_this_week": 1
+        },
+        {
+          "week": 3,
+          "tasks_total": 5,
+          "tasks_completed": 1,
+          "on_time_rate": 0.2,
+          "deadline_missed_this_week": 1
+        },
+        {
+          "week": 4,
+          "tasks_total": 5,
+          "tasks_completed": 2,
+          "on_time_rate": 0.4,
+          "deadline_missed_this_week": 1
+        }
+      ],
+      "avg_completion_4weeks": 0.4,
+      "alert": {
+        "triggered": true,
+        "type": "TRE_LIEN_TIEP",
+        "reason": "Trễ deadline liên tiếp 2 tuần gần nhất",
+        "status": "pending_review"
+      }
+    },
+    {
+      "student_id": "sv04",
+      "name": "Mai",
+      "subject_code": "SSA101",
+      "weekly": [
+        {
+          "week": 1,
+          "tasks_total": 5,
+          "tasks_completed": 5,
+          "on_time_rate": 1.0,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 2,
+          "tasks_total": 5,
+          "tasks_completed": 4,
+          "on_time_rate": 0.8,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 3,
+          "tasks_total": 4,
+          "tasks_completed": 1,
+          "on_time_rate": 0.25,
+          "deadline_missed_this_week": 1
+        },
+        {
+          "week": 4,
+          "tasks_total": 4,
+          "tasks_completed": 0,
+          "on_time_rate": 0.0,
+          "deadline_missed_this_week": 1
+        }
+      ],
+      "avg_completion_4weeks": 0.51,
+      "alert": {
+        "triggered": true,
+        "type": "TRE_LIEN_TIEP",
+        "reason": "Trễ deadline liên tiếp 2 tuần gần nhất",
+        "status": "pending_review"
+      }
+    },
+    {
+      "student_id": "sv05",
+      "name": "Khoa",
+      "subject_code": "SSA101",
+      "weekly": [
+        {
+          "week": 1,
+          "tasks_total": 5,
+          "tasks_completed": 4,
+          "on_time_rate": 0.8,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 2,
+          "tasks_total": 5,
+          "tasks_completed": 5,
+          "on_time_rate": 1.0,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 3,
+          "tasks_total": 5,
+          "tasks_completed": 4,
+          "on_time_rate": 0.8,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 4,
+          "tasks_total": 5,
+          "tasks_completed": 5,
+          "on_time_rate": 1.0,
+          "deadline_missed_this_week": 0
+        }
+      ],
+      "avg_completion_4weeks": 0.9,
+      "alert": {
+        "triggered": false,
+        "type": null,
+        "reason": null,
+        "status": null
+      }
+    },
+    {
+      "student_id": "sv06",
+      "name": "Trang",
+      "subject_code": "SSA101",
+      "weekly": [
+        {
+          "week": 1,
+          "tasks_total": 5,
+          "tasks_completed": 5,
+          "on_time_rate": 1.0,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 2,
+          "tasks_total": 5,
+          "tasks_completed": 3,
+          "on_time_rate": 0.6,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 3,
+          "tasks_total": 5,
+          "tasks_completed": 4,
+          "on_time_rate": 0.8,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 4,
+          "tasks_total": 5,
+          "tasks_completed": 5,
+          "on_time_rate": 1.0,
+          "deadline_missed_this_week": 0
+        }
+      ],
+      "avg_completion_4weeks": 0.85,
+      "alert": {
+        "triggered": false,
+        "type": null,
+        "reason": null,
+        "status": null
+      }
+    },
+    {
+      "student_id": "sv07",
+      "name": "Phúc",
+      "subject_code": "SSA101",
+      "weekly": [
+        {
+          "week": 1,
+          "tasks_total": 4,
+          "tasks_completed": 4,
+          "on_time_rate": 1.0,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 2,
+          "tasks_total": 4,
+          "tasks_completed": 3,
+          "on_time_rate": 0.75,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 3,
+          "tasks_total": 4,
+          "tasks_completed": 2,
+          "on_time_rate": 0.5,
+          "deadline_missed_this_week": 1
+        },
+        {
+          "week": 4,
+          "tasks_total": 4,
+          "tasks_completed": 1,
+          "on_time_rate": 0.25,
+          "deadline_missed_this_week": 1
+        }
+      ],
+      "avg_completion_4weeks": 0.62,
+      "alert": {
+        "triggered": true,
+        "type": "TRE_LIEN_TIEP",
+        "reason": "Trễ deadline liên tiếp 2 tuần gần nhất",
+        "status": "pending_review"
+      }
+    },
+    {
+      "student_id": "sv08",
+      "name": "An",
+      "subject_code": "SSA101",
+      "weekly": [
+        {
+          "week": 1,
+          "tasks_total": 5,
+          "tasks_completed": 5,
+          "on_time_rate": 1.0,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 2,
+          "tasks_total": 5,
+          "tasks_completed": 5,
+          "on_time_rate": 1.0,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 3,
+          "tasks_total": 5,
+          "tasks_completed": 5,
+          "on_time_rate": 1.0,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 4,
+          "tasks_total": 5,
+          "tasks_completed": 4,
+          "on_time_rate": 0.8,
+          "deadline_missed_this_week": 0
+        }
+      ],
+      "avg_completion_4weeks": 0.95,
+      "alert": {
+        "triggered": false,
+        "type": null,
+        "reason": null,
+        "status": null
+      }
+    },
+    {
+      "student_id": "sv09",
+      "name": "Bảo",
+      "subject_code": "SSA101",
+      "weekly": [
+        {
+          "week": 1,
+          "tasks_total": 5,
+          "tasks_completed": 4,
+          "on_time_rate": 0.8,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 2,
+          "tasks_total": 5,
+          "tasks_completed": 3,
+          "on_time_rate": 0.6,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 3,
+          "tasks_total": 5,
+          "tasks_completed": 4,
+          "on_time_rate": 0.8,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 4,
+          "tasks_total": 5,
+          "tasks_completed": 3,
+          "on_time_rate": 0.6,
+          "deadline_missed_this_week": 0
+        }
+      ],
+      "avg_completion_4weeks": 0.7,
+      "alert": {
+        "triggered": false,
+        "type": null,
+        "reason": null,
+        "status": null
+      }
+    },
+    {
+      "student_id": "sv10",
+      "name": "Chi",
+      "subject_code": "SSA101",
+      "weekly": [
+        {
+          "week": 1,
+          "tasks_total": 5,
+          "tasks_completed": 5,
+          "on_time_rate": 1.0,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 2,
+          "tasks_total": 5,
+          "tasks_completed": 4,
+          "on_time_rate": 0.8,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 3,
+          "tasks_total": 5,
+          "tasks_completed": 5,
+          "on_time_rate": 1.0,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 4,
+          "tasks_total": 5,
+          "tasks_completed": 5,
+          "on_time_rate": 1.0,
+          "deadline_missed_this_week": 0
+        }
+      ],
+      "avg_completion_4weeks": 0.95,
+      "alert": {
+        "triggered": false,
+        "type": null,
+        "reason": null,
+        "status": null
+      }
+    },
+    {
+      "student_id": "sv11",
+      "name": "Vinh",
+      "subject_code": "SSA101",
+      "weekly": [
+        {
+          "week": 1,
+          "tasks_total": 4,
+          "tasks_completed": 3,
+          "on_time_rate": 0.75,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 2,
+          "tasks_total": 4,
+          "tasks_completed": 3,
+          "on_time_rate": 0.75,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 3,
+          "tasks_total": 4,
+          "tasks_completed": 4,
+          "on_time_rate": 1.0,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 4,
+          "tasks_total": 4,
+          "tasks_completed": 3,
+          "on_time_rate": 0.75,
+          "deadline_missed_this_week": 0
+        }
+      ],
+      "avg_completion_4weeks": 0.81,
+      "alert": {
+        "triggered": false,
+        "type": null,
+        "reason": null,
+        "status": null
+      }
+    },
+    {
+      "student_id": "sv12",
+      "name": "Ngọc",
+      "subject_code": "SSA101",
+      "weekly": [
+        {
+          "week": 1,
+          "tasks_total": 5,
+          "tasks_completed": 4,
+          "on_time_rate": 0.8,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 2,
+          "tasks_total": 5,
+          "tasks_completed": 5,
+          "on_time_rate": 1.0,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 3,
+          "tasks_total": 5,
+          "tasks_completed": 3,
+          "on_time_rate": 0.6,
+          "deadline_missed_this_week": 0
+        },
+        {
+          "week": 4,
+          "tasks_total": 5,
+          "tasks_completed": 4,
+          "on_time_rate": 0.8,
+          "deadline_missed_this_week": 0
+        }
+      ],
+      "avg_completion_4weeks": 0.8,
+      "alert": {
+        "triggered": false,
+        "type": null,
+        "reason": null,
+        "status": null
+      }
+    }
+  ],
+  "kpi_comparison": {
+    "with_cursus_avg_by_week": [
+      0.9,
+      0.79,
+      0.73,
+      0.7
+    ],
+    "baseline_no_cursus_avg_by_week": [
+      0.6,
+      0.48,
+      0.43,
+      0.29
+    ],
+    "with_cursus_overall": 0.78,
+    "baseline_overall": 0.45,
+    "note": "2 kịch bản sinh độc lập, không dùng chung nguồn ngẫu nhiên — tránh thiên vị khi so sánh A/B mô phỏng."
+  }
+}

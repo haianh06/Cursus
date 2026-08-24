@@ -1,0 +1,590 @@
+{
+  "subject_code": "MAS291",
+  "subject_name": "Statistics & Probability_Xác suất thống kê",
+  "meta": {
+    "Syllabus ID": "13136",
+    "Syllabus Name": "Statistics & Probability_Xác suất thống kê",
+    "Course Name English": "",
+    "Subject Code": "MAS291",
+    "Learning-Teaching Method": "Lecture,Project based learning,Problem based learning,Social Constructivism,groupwork",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) = 45 contact hours (60 sessions) + 1 hour final exam + 104 hours self-study",
+    "Pre-Requisite": "MAE101 or MAC101",
+    "Description": "Upon finishing the course, students must acquire:\n1. the following knowledge:(ABET a1)\n• The fundamental principles of probability and their applications\n• The frequently used probability distributions.\n• The basics of descriptive statistics\n• The inferences of statistics: parameter estimations, hypothesis testing, regressions & correlations.\n2. the following skills: (ABET a2)\n• Recognize simple statistical models and applied them to solve engineering problems.\n• Use at least one statistical software (Excel, Maxima) for problem solving.\n• Self-study skill. (ABET i)",
+    "StudentTasks": "Students must attend at least 80% of contact hours in order to be\naccepted to the final examination.",
+    "Tools": "- Internet\n- Computerized tools (for example Excel and DDXL add-ons) (CT)",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "932/QĐ-ĐHFPT dated 08/22/2025",
+    "IsApproved": "True",
+    "Note": "\"On-going assessment:\n• 03 progress tests: 30% (a1, i)\n• 02 assignments 20% (a2)\n• 01 computer project 15%\nFinal Examination 35% (a1, a2)\nFinal results 100%\nCompletion Criteria: Every on-going assessment component > 0, Final Result >=5 & Final Exam Score >=4 \"",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "8/22/2025"
+  },
+  "clo_count": 9,
+  "session_count": 60,
+  "chunks": [
+    {
+      "chunk_id": "MAS291-overview",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Overview & Grading Policy",
+      "text": "Description: Upon finishing the course, students must acquire:\n1. the following knowledge:(ABET a1)\n• The fundamental principles of probability and their applications\n• The frequently used probability distributions.\n• The basics of descriptive statistics\n• The inferences of statistics: parameter estimations, hypothesis testing, regressions & correlations.\n2. the following skills: (ABET a2)\n• Recognize simple statistical models and applied them to solve engineering problems.\n• Use at least one statistical software (Excel, Maxima) for problem solving.\n• Self-study skill. (ABET i)\nNoCredit: 3\nPre-Requisite: MAE101 or MAC101\nTime Allocation: Study hour (150h) = 45 contact hours (60 sessions) + 1 hour final exam + 104 hours self-study\nStudentTasks: Students must attend at least 80% of contact hours in order to be\naccepted to the final examination.\nNote: \"On-going assessment:\n• 03 progress tests: 30% (a1, i)\n• 02 assignments 20% (a2)\n• 01 computer project 15%\nFinal Examination 35% (a1, a2)\nFinal results 100%\nCompletion Criteria: Every on-going assessment component > 0, Final Result >=5 & Final Exam Score >=4 \"\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus MAS291 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "MAS291-CLO1",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Discuss the roles of statistics in engineering LO1.1 Explain the types of reasoning of statistical inference; distinguish mechanistic models and empirical models, statistic and parameter, sample and population. LO1.2 Describe the different methods that engineers use to collect data.",
+      "source_label": "Syllabus MAS291 — CLO1"
+    },
+    {
+      "chunk_id": "MAS291-CLO2",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Identify sample spaces and events, and use basic rules to calculate the probability of an event LO2.1 Describe the sample space and events of an experiment; distinguish continuous and discrete sample spaces; perform operations on events. LO2.2 Calculate the probability of an event in a discrete sample space; use addition and complementary rules to find probabilities. LO2.3 Calculate conditional probabilities; use multiplication rule, total probability rule and Bayes theorem to find probabilities. LO2.4 Determine if two events are independent; use independence to find probabilities. LO2.5 Recognize a random variable; distinguish continuous and discrete random variables.",
+      "source_label": "Syllabus MAS291 — CLO2"
+    },
+    {
+      "chunk_id": "MAS291-CLO3",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Describe the probability distribution and calculate the mean and variance of a discrete random variable LO3.1 Describe a discrete random variable; check if a function is a probability mass function and use it to calculate probability; find the cumulative distribution function of a discrete random variable. LO3.2 Compute the mean and variance of a discrete random variable. LO3.3 Determine the probability, mean and variance of uniform, binomial, geometric and negative binomial, hypergeometric and Poisson distributions.",
+      "source_label": "Syllabus MAS291 — CLO3"
+    },
+    {
+      "chunk_id": "MAS291-CLO4",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Describe the probability distribution and calculate the mean and variance of a continuous random variable LO4.1 Describe a continuous random variable; check if a function is a probability density function and use it to calculate probability; find the cumulative distribution function of a continuous random variable. LO4.2 Compute the mean and variance of a continuous random variables LO4.3 Apply the formulas of continuous uniform distribution and exponential distribution to solve problems. LO4.4 Manipulate probabilities of a standard normal distribution using Excel or table of data; standardize a normal distribution. LO4.5 Use normal distribution to approximate binomial and Poisson distributions.",
+      "source_label": "Syllabus MAS291 — CLO4"
+    },
+    {
+      "chunk_id": "MAS291-CLO5",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Learning Outcome CLO5",
+      "text": "CLO5: Describe data using numerical summaries and visual displays LO5.1 Find numeric summaries of data; describe data using stem-and-leaf diagrams, frequency distributions, histograms, time series plots. LO5.2 Determine quartiles and construct the box plot for a data; identify outliers.",
+      "source_label": "Syllabus MAS291 — CLO5"
+    },
+    {
+      "chunk_id": "MAS291-CLO6",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Learning Outcome CLO6",
+      "text": "CLO6: Discuss sampling distributions and use the Central Limit Theorem to analyze sampling distribution of the means LO6.1 Discuss sampling distributions; find the point estimation of a parameter. LO6.2 Apply Central Limit Theorem to calculate probabilities regarding the sampling distribution of the means.",
+      "source_label": "Syllabus MAS291 — CLO6"
+    },
+    {
+      "chunk_id": "MAS291-CLO7",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Learning Outcome CLO7",
+      "text": "CLO7: Construct confidence intervals for a population parameter/difference of population parameters LO7.1 Construct a confidence interval for the population mean/difference of two population means and interpret its meaning; determine the size of the sample to improve the estimation. LO7.2 Construct a confidence interval for the population proportion/difference of two population pproportions and interpret its meaning; determine the size of the sample to improve the estimation.",
+      "source_label": "Syllabus MAS291 — CLO7"
+    },
+    {
+      "chunk_id": "MAS291-CLO8",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Learning Outcome CLO8",
+      "text": "CLO8: Verify a claim about a population parameter/difference of population parameters using hypothesis testing LO8.1 Formulate the two hypotheses; identify critical values, test statistic and compute P-value for a test of hypotheses on population mean/difference of two population means LO8.2 Formulate the two hypotheses; identify critical values, test statistic and compute P-value for a test of hypotheses on population proportion/difference of two population proportions LO8.3 Identify type of errors in testing hypotheses.",
+      "source_label": "Syllabus MAS291 — CLO8"
+    },
+    {
+      "chunk_id": "MAS291-CLO9",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Learning Outcome CLO9",
+      "text": "CLO9: Construct a simple linear regression model LO9.1 Compute various sums of squares for a set of data pairs. LO9.2 Determine the equation of linear regression and the correlation coefficient; use linear regression to predict future values. LO9.3 Perform a hypothesis test in simple linear regression; test the significance of regression using t-test.",
+      "source_label": "Syllabus MAS291 — CLO9"
+    },
+    {
+      "chunk_id": "MAS291-session-1",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 1",
+      "text": "Session 1 — The Roles of Statistics in Engineering\n1.1 The Engineering Method and Statistical Thinking\n1.2 Collecting Engineering Data\nTài liệu: Textbook Chapter 1\nNhiệm vụ sinh viên: Exercises Chapter 1\nAssignment 1",
+      "source_label": "Syllabus MAS291 — Session 1"
+    },
+    {
+      "chunk_id": "MAS291-session-2",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 2",
+      "text": "Session 2 — The Roles of Statistics in Engineering\n1.3 Mechanistic and Empirical Models\n1.4 Probability and Probability Models\nTài liệu: Textbook Chapter 1\nNhiệm vụ sinh viên: Exercises Chapter 1\nAssignment 1",
+      "source_label": "Syllabus MAS291 — Session 2"
+    },
+    {
+      "chunk_id": "MAS291-session-3",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 3",
+      "text": "Session 3 — Probability\n2.1 Sample Spaces and Events\nTài liệu: Textbook Chapter 2\nNhiệm vụ sinh viên: Exercises Chapter 2\nAssignment 1",
+      "source_label": "Syllabus MAS291 — Session 3"
+    },
+    {
+      "chunk_id": "MAS291-session-4",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 4",
+      "text": "Session 4 — Probability\n2.2 Interpretations of Probability\n2.3 Addition Rules\nTài liệu: Textbook Chapter 2\nNhiệm vụ sinh viên: Exercises Chapter 2\nAssignment 1",
+      "source_label": "Syllabus MAS291 — Session 4"
+    },
+    {
+      "chunk_id": "MAS291-session-5",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 5",
+      "text": "Session 5 — Probability\n2.4 Conditional Probability\nTài liệu: Textbook Chapter 2\nNhiệm vụ sinh viên: Exercises Chapter 2\nAssignment 1",
+      "source_label": "Syllabus MAS291 — Session 5"
+    },
+    {
+      "chunk_id": "MAS291-session-6",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 6",
+      "text": "Session 6 — Probability\n2.5 Multiplication and Total Probability Rules\n2.6 Independence\nTài liệu: Textbook Chapter 2\nNhiệm vụ sinh viên: Exercises Chapter 2\nAssignment 1",
+      "source_label": "Syllabus MAS291 — Session 6"
+    },
+    {
+      "chunk_id": "MAS291-session-7",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 7",
+      "text": "Session 7 — Probability\n2.7 Bayes' Theorem\nTài liệu: Textbook Chapter 2\nNhiệm vụ sinh viên: Exercises Chapter 2\nAssignment 1",
+      "source_label": "Syllabus MAS291 — Session 7"
+    },
+    {
+      "chunk_id": "MAS291-session-8",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 8",
+      "text": "Session 8 — Probability\n2.8 Random Variables\nTài liệu: Textbook Chapter 2\nNhiệm vụ sinh viên: Exercises Chapter 2\nAssignment 1",
+      "source_label": "Syllabus MAS291 — Session 8"
+    },
+    {
+      "chunk_id": "MAS291-session-9",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 9",
+      "text": "Session 9 — Discrete Random Variables and Probability Distribution\n3.1 Discrete Random Variables\nTài liệu: Textbook Chapter 3\nNhiệm vụ sinh viên: Exercises Chapter 3\nAssignment 1",
+      "source_label": "Syllabus MAS291 — Session 9"
+    },
+    {
+      "chunk_id": "MAS291-session-10",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 10",
+      "text": "Session 10 — Discrete Random Variables and Probability Distribution\n3.2 Probability Distributions and Probability Mass Functions\nTài liệu: Textbook Chapter 3\nNhiệm vụ sinh viên: Exercises Chapter 3\nAssignment 1",
+      "source_label": "Syllabus MAS291 — Session 10"
+    },
+    {
+      "chunk_id": "MAS291-session-11",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 11",
+      "text": "Session 11 — Discrete Random Variables and Probability Distribution\n3.3 Cumulative Distribution Functions\nTài liệu: Textbook Chapter 3\nNhiệm vụ sinh viên: Exercises Chapter 3\nAssignment 1",
+      "source_label": "Syllabus MAS291 — Session 11"
+    },
+    {
+      "chunk_id": "MAS291-session-12",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 12",
+      "text": "Session 12 — Discrete Random Variables and Probability Distribution\n3.4 Mean and Variance of a Discrete Random Varibale\nTài liệu: Textbook Chapter 3\nNhiệm vụ sinh viên: Exercises Chapter 3\nAssignment 1",
+      "source_label": "Syllabus MAS291 — Session 12"
+    },
+    {
+      "chunk_id": "MAS291-session-13",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 13",
+      "text": "Session 13 — Discrete Random Variables and Probability Distribution\n3.5 Discrete Uniform Distribution\n3.6 Binomial Distribution\nTài liệu: Textbook Chapter 3\nNhiệm vụ sinh viên: Exercises Chapter 3\nAssignment 1",
+      "source_label": "Syllabus MAS291 — Session 13"
+    },
+    {
+      "chunk_id": "MAS291-session-14",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 14",
+      "text": "Session 14 — Discrete Random Variables and Probability Distribution\n3.7 Geometric and Negative Binomial Distributions\nTài liệu: Textbook Chapter 3\nNhiệm vụ sinh viên: Exercises Chapter 3\nAssignment 1",
+      "source_label": "Syllabus MAS291 — Session 14"
+    },
+    {
+      "chunk_id": "MAS291-session-15",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 15",
+      "text": "Session 15 — Discrete Random Variables and Probability Distribution\n3.8 Hypergeometric Distribution\nTài liệu: Textbook Chapter 3\nNhiệm vụ sinh viên: Exercises Chapter 3\nAssignment 1",
+      "source_label": "Syllabus MAS291 — Session 15"
+    },
+    {
+      "chunk_id": "MAS291-session-16",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 16",
+      "text": "Session 16 — Discrete Random Variables and Probability Distribution\n3.9 Poisson Distribution\nTài liệu: Textbook Chapter 3\nNhiệm vụ sinh viên: Exercises Chapter 3\nAssignment 1",
+      "source_label": "Syllabus MAS291 — Session 16"
+    },
+    {
+      "chunk_id": "MAS291-session-17",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 17",
+      "text": "Session 17 — Solve questions and problems for Chapters 1 - 3\nTài liệu: Textbook Chapters 1 - 3\nNhiệm vụ sinh viên: Exercises Chapters 1 - 3\nAssignment 1",
+      "source_label": "Syllabus MAS291 — Session 17"
+    },
+    {
+      "chunk_id": "MAS291-session-18",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 18",
+      "text": "Session 18 — Progress Test 1",
+      "source_label": "Syllabus MAS291 — Session 18"
+    },
+    {
+      "chunk_id": "MAS291-session-19",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 19",
+      "text": "Session 19 — Continuous Random Variables and Probability Distribution\n4.1 Continuous Random Variables\n4.2 Probability Distributions and Probability Density Functions\nTài liệu: Textbook Chapter 4\nNhiệm vụ sinh viên: Exercises Chapter 4\nAssignment 2",
+      "source_label": "Syllabus MAS291 — Session 19"
+    },
+    {
+      "chunk_id": "MAS291-session-20",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 20",
+      "text": "Session 20 — Continuous Random Variables and Probability Distribution\n4.3 Cumulative Distribution Functions\nTài liệu: Textbook Chapter 4\nNhiệm vụ sinh viên: Exercises Chapter 4\nAssignment 2",
+      "source_label": "Syllabus MAS291 — Session 20"
+    },
+    {
+      "chunk_id": "MAS291-session-21",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 21",
+      "text": "Session 21 — Continuous Random Variables and Probability Distribution\n4.4 Mean and Variance of a Continuous Random Variable\nTài liệu: Textbook Chapter 4\nNhiệm vụ sinh viên: Exercises Chapter 4\nAssignment 2",
+      "source_label": "Syllabus MAS291 — Session 21"
+    },
+    {
+      "chunk_id": "MAS291-session-22",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 22",
+      "text": "Session 22 — Continuous Random Variables and Probability Distribution\n4.5 Continuous Uniform Distribution\nTài liệu: Textbook Chapter 4\nNhiệm vụ sinh viên: Exercises Chapter 4\nAssignment 2",
+      "source_label": "Syllabus MAS291 — Session 22"
+    },
+    {
+      "chunk_id": "MAS291-session-23",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 23",
+      "text": "Session 23 — Continuous Random Variables and Probability Distribution\n4.6 Normal Distribution\nTài liệu: Textbook Chapter 4\nNhiệm vụ sinh viên: Exercises Chapter 4\nAssignment 2",
+      "source_label": "Syllabus MAS291 — Session 23"
+    },
+    {
+      "chunk_id": "MAS291-session-24",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 24",
+      "text": "Session 24 — Continuous Random Variables and Probability Distribution\n4.6 Normal Distribution (Cont.)\nTài liệu: Textbook Chapter 4\nNhiệm vụ sinh viên: Exercises Chapter 4\nAssignment 2",
+      "source_label": "Syllabus MAS291 — Session 24"
+    },
+    {
+      "chunk_id": "MAS291-session-25",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 25",
+      "text": "Session 25 — Continuous Random Variables and Probability Distribution\n4.7 Normal Approximation to the Binomial and Poisson Distributions\nTài liệu: Textbook Chapter 4\nNhiệm vụ sinh viên: Exercises Chapter 4\nAssignment 2",
+      "source_label": "Syllabus MAS291 — Session 25"
+    },
+    {
+      "chunk_id": "MAS291-session-26",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 26",
+      "text": "Session 26 — Continuous Random Variables and Probability Distribution\n4.8 Exponential Distribution\nTài liệu: Textbook Chapter 4\nNhiệm vụ sinh viên: Exercises Chapter 4\nAssignment 2",
+      "source_label": "Syllabus MAS291 — Session 26"
+    },
+    {
+      "chunk_id": "MAS291-session-27",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 27",
+      "text": "Session 27 — Descriptive Statistics\n6.1 Numerical Summaries\nTài liệu: Textbook Chapter 6\nNhiệm vụ sinh viên: Exercises Chapter 6\nAssignment 2",
+      "source_label": "Syllabus MAS291 — Session 27"
+    },
+    {
+      "chunk_id": "MAS291-session-28",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 28",
+      "text": "Session 28 — Descriptive Statistics\n6.2 Stem-and-Leaf Diagrams\n6.3 Frequency Distributions and Histograms\nTài liệu: Textbook Chapter 6\nNhiệm vụ sinh viên: Exercises Chapter 6\nAssignment 2",
+      "source_label": "Syllabus MAS291 — Session 28"
+    },
+    {
+      "chunk_id": "MAS291-session-29",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 29",
+      "text": "Session 29 — Descriptive Statistics\n6.4 Box Plots\nTài liệu: Textbook Chapter 6\nNhiệm vụ sinh viên: Exercises Chapter 6\nAssignment 2",
+      "source_label": "Syllabus MAS291 — Session 29"
+    },
+    {
+      "chunk_id": "MAS291-session-30",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 30",
+      "text": "Session 30 — Descriptive Statistics\n6.5 Time Sequence Plots\nTài liệu: Textbook Chapter 6\nNhiệm vụ sinh viên: Exercises Chapter 6\nAssignment 2",
+      "source_label": "Syllabus MAS291 — Session 30"
+    },
+    {
+      "chunk_id": "MAS291-session-31",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 31",
+      "text": "Session 31 — Sampling Distributions and Point Estimation of Paramaters\n7.1 Point Estimation\nTài liệu: Textbook Chapter 7\nNhiệm vụ sinh viên: Exercises Chapter 7\nAssignment 2",
+      "source_label": "Syllabus MAS291 — Session 31"
+    },
+    {
+      "chunk_id": "MAS291-session-32",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 32",
+      "text": "Session 32 — Sampling Distributions and Point Estimation of Paramaters\n7.2 Sampling Distributions and the Central Limit Theorem\nTài liệu: Textbook Chapter 7\nNhiệm vụ sinh viên: Exercises Chapter 7\nAssignment 2",
+      "source_label": "Syllabus MAS291 — Session 32"
+    },
+    {
+      "chunk_id": "MAS291-session-33",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 33",
+      "text": "Session 33 — Solve questions and problems for Chapters 4, 6, and 7\nTài liệu: Textbook Chapters 4, 6, and 7\nNhiệm vụ sinh viên: Exercises Chapters 4, 6, and 7\nAssignment 2",
+      "source_label": "Syllabus MAS291 — Session 33"
+    },
+    {
+      "chunk_id": "MAS291-session-34",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 34",
+      "text": "Session 34 — Progress Test 2",
+      "source_label": "Syllabus MAS291 — Session 34"
+    },
+    {
+      "chunk_id": "MAS291-session-35",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 35",
+      "text": "Session 35 — Statistical Intervals for a Single Sample\n8.1 Confidence Interval on the Mean of a Normal Distribution, Variance Known\nTài liệu: Textbook Chapter 8\nNhiệm vụ sinh viên: Exercises Chapter 8\nProject",
+      "source_label": "Syllabus MAS291 — Session 35"
+    },
+    {
+      "chunk_id": "MAS291-session-36",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 36",
+      "text": "Session 36 — Statistical Intervals for a Single Sample\n8.1 Confidence Interval on the Mean of a Normal Distribution, Variance Known (Cont.)\nTài liệu: Textbook Chapter 8\nNhiệm vụ sinh viên: Exercises Chapter 8\nProject",
+      "source_label": "Syllabus MAS291 — Session 36"
+    },
+    {
+      "chunk_id": "MAS291-session-37",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 37",
+      "text": "Session 37 — Statistical Intervals for a Single Sample\n8.2 Confidence Interval on the Mean of a Normal Distribution, Variance Unknown\nTài liệu: Textbook Chapter 8\nNhiệm vụ sinh viên: Exercises Chapter 8\nProject",
+      "source_label": "Syllabus MAS291 — Session 37"
+    },
+    {
+      "chunk_id": "MAS291-session-38",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 38",
+      "text": "Session 38 — Statistical Intervals for a Single Sample\n8.2 Confidence Interval on the Mean of a Normal Distribution, Variance Unknown (Cont.)\nTài liệu: Textbook Chapter 8\nNhiệm vụ sinh viên: Exercises Chapter 8\nProject",
+      "source_label": "Syllabus MAS291 — Session 38"
+    },
+    {
+      "chunk_id": "MAS291-session-39",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 39",
+      "text": "Session 39 — Statistical Intervals for a Single Sample\n8.4 Large-Sample Confidence Interval for a Population Proportion\nTài liệu: Textbook Chapter 8\nNhiệm vụ sinh viên: Exercises Chapter 8\nProject",
+      "source_label": "Syllabus MAS291 — Session 39"
+    },
+    {
+      "chunk_id": "MAS291-session-40",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 40",
+      "text": "Session 40 — Statistical Intervals for a Single Sample\n8.4 Large-Sample Confidence Interval for a Population Proportion (Cont.)\nTài liệu: Textbook Chapter 8\nNhiệm vụ sinh viên: Exercises Chapter 8\nProject",
+      "source_label": "Syllabus MAS291 — Session 40"
+    },
+    {
+      "chunk_id": "MAS291-session-41",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 41",
+      "text": "Session 41 — Test of Hypotheses for a Single Sample\n9.1 Hypothesis Testing\nTài liệu: Textbook Chapter 9\nNhiệm vụ sinh viên: Exercises Chapter 9\nProject",
+      "source_label": "Syllabus MAS291 — Session 41"
+    },
+    {
+      "chunk_id": "MAS291-session-42",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 42",
+      "text": "Session 42 — Test of Hypotheses for a Single Sample\n9.1 Hypothesis Testing (Cont.)\nTài liệu: Textbook Chapter 9\nNhiệm vụ sinh viên: Exercises Chapter 9\nProject",
+      "source_label": "Syllabus MAS291 — Session 42"
+    },
+    {
+      "chunk_id": "MAS291-session-43",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 43",
+      "text": "Session 43 — Test of Hypotheses for a Single Sample\n9.2 Tests on the Mean of a Normal Distribution, Variance Known\nTài liệu: Textbook Chapter 9\nNhiệm vụ sinh viên: Exercises Chapter 9\nProject",
+      "source_label": "Syllabus MAS291 — Session 43"
+    },
+    {
+      "chunk_id": "MAS291-session-44",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 44",
+      "text": "Session 44 — Test of Hypotheses for a Single Sample\n9.2 Tests on the Mean of a Normal Distribution, Variance Known (Cont.)\nTài liệu: Textbook Chapter 9\nNhiệm vụ sinh viên: Exercises Chapter 9\nProject",
+      "source_label": "Syllabus MAS291 — Session 44"
+    },
+    {
+      "chunk_id": "MAS291-session-45",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 45",
+      "text": "Session 45 — Test of Hypotheses for a Single Sample\n9.3 Tests on the Mean of a Normal Distribution, Variance Unknown\nTài liệu: Textbook Chapter 9\nNhiệm vụ sinh viên: Exercises Chapter 9\nProject",
+      "source_label": "Syllabus MAS291 — Session 45"
+    },
+    {
+      "chunk_id": "MAS291-session-46",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 46",
+      "text": "Session 46 — Test of Hypotheses for a Single Sample\n9.5 Tests on a Population Proportion\nTài liệu: Textbook Chapter 9\nNhiệm vụ sinh viên: Exercises Chapter 9\nProject",
+      "source_label": "Syllabus MAS291 — Session 46"
+    },
+    {
+      "chunk_id": "MAS291-session-47",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 47",
+      "text": "Session 47 — Statistical Inference for Two Samples\n10.1 Inference on the Difference in Means of Two Normal Distributions, Variance Known\nTài liệu: Textbook Chapter 10\nNhiệm vụ sinh viên: Exercises Chapter 10\nProject",
+      "source_label": "Syllabus MAS291 — Session 47"
+    },
+    {
+      "chunk_id": "MAS291-session-48",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 48",
+      "text": "Session 48 — Statistical Inference for Two Samples\n10.2 Inference on the Difference in Means of Two Normal Distributions, Variance Unknown\nTài liệu: Textbook Chapter 10\nNhiệm vụ sinh viên: Exercises Chapter 10\nProject",
+      "source_label": "Syllabus MAS291 — Session 48"
+    },
+    {
+      "chunk_id": "MAS291-session-49",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 49",
+      "text": "Session 49 — Statistical Inference for Two Samples\n10.6 Inference on the Two Proportions\nTài liệu: Textbook Chapter 10\nNhiệm vụ sinh viên: Exercises Chapter 10\nProject",
+      "source_label": "Syllabus MAS291 — Session 49"
+    },
+    {
+      "chunk_id": "MAS291-session-50",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 50",
+      "text": "Session 50 — Statistical Inference for Two Samples\n10.6 Inference on the Two Proportions (Cont.)\nTài liệu: Textbook Chapter 10\nNhiệm vụ sinh viên: Exercises Chapter 10\nProject",
+      "source_label": "Syllabus MAS291 — Session 50"
+    },
+    {
+      "chunk_id": "MAS291-session-51",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 51",
+      "text": "Session 51 — Simple Linear Regression and Correlation\n11.1 Empirical Models\nTài liệu: Textbook Chapter 11\nNhiệm vụ sinh viên: Exercises Chapter 11\nProject",
+      "source_label": "Syllabus MAS291 — Session 51"
+    },
+    {
+      "chunk_id": "MAS291-session-52",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 52",
+      "text": "Session 52 — Simple Linear Regression and Correlation\n11.2 Simple Linear Regression\nTài liệu: Textbook Chapter 11\nNhiệm vụ sinh viên: Exercises Chapter 11\nProject",
+      "source_label": "Syllabus MAS291 — Session 52"
+    },
+    {
+      "chunk_id": "MAS291-session-53",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 53",
+      "text": "Session 53 — Simple Linear Regression and Correlation\n11.3 Properties of the Least Squares Estimators\nTài liệu: Textbook Chapter 11\nNhiệm vụ sinh viên: Exercises Chapter 11\nProject",
+      "source_label": "Syllabus MAS291 — Session 53"
+    },
+    {
+      "chunk_id": "MAS291-session-54",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 54",
+      "text": "Session 54 — Simple Linear Regression and Correlation\n11.4 Hypothesis Tests in Simple Linear Regression\nTài liệu: Textbook Chapter 11\nNhiệm vụ sinh viên: Exercises Chapter 11\nProject",
+      "source_label": "Syllabus MAS291 — Session 54"
+    },
+    {
+      "chunk_id": "MAS291-session-55",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 55",
+      "text": "Session 55 — Simple Linear Regression and Correlation\n11.8 Correlation\nTài liệu: Textbook Chapter 11\nNhiệm vụ sinh viên: Exercises Chapter 11\nProject",
+      "source_label": "Syllabus MAS291 — Session 55"
+    },
+    {
+      "chunk_id": "MAS291-session-56",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 56",
+      "text": "Session 56 — Simple Linear Regression and Correlation\n11.8 Correlation (Cont.)\nTài liệu: Textbook Chapter 11\nNhiệm vụ sinh viên: Exercises Chapter 11\nProject",
+      "source_label": "Syllabus MAS291 — Session 56"
+    },
+    {
+      "chunk_id": "MAS291-session-57",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 57",
+      "text": "Session 57 — Project presentation\nNhiệm vụ sinh viên: Project",
+      "source_label": "Syllabus MAS291 — Session 57"
+    },
+    {
+      "chunk_id": "MAS291-session-58",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 58",
+      "text": "Session 58 — Project presentation (Cont.)\nNhiệm vụ sinh viên: Project",
+      "source_label": "Syllabus MAS291 — Session 58"
+    },
+    {
+      "chunk_id": "MAS291-session-59",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 59",
+      "text": "Session 59 — Project presentation (Cont.)\nNhiệm vụ sinh viên: Project",
+      "source_label": "Syllabus MAS291 — Session 59"
+    },
+    {
+      "chunk_id": "MAS291-session-60",
+      "subject_code": "MAS291",
+      "subject_name": "Statistics & Probability_Xác suất thống kê",
+      "section": "Session 60",
+      "text": "Session 60 — Progress Test 3",
+      "source_label": "Syllabus MAS291 — Session 60"
+    }
+  ]
+}

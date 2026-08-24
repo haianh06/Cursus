@@ -1,0 +1,166 @@
+{
+  "subject_code": "PMG201c",
+  "subject_name": "Project management_Quản trị dự án",
+  "meta": {
+    "Syllabus ID": "12548",
+    "Syllabus Name": "Project management_Quản trị dự án",
+    "Course Name English": "Project management",
+    "Subject Code": "PMG201c",
+    "Learning-Teaching Method": "Online,Lecture,Project based learning",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) = 60h online + 3h offline + 1h TE + 2h PE + 84h self-study",
+    "Pre-Requisite": "None",
+    "Description": "This intensive and hands-on series of courses gives you the skills to ensure your projects are completed on time and on budget while giving the user the product they expect. You will gain a strong working knowledge of the basics of project management and be able to immediately use that knowledge to effectively manage work projects. At the end of the series you will be able to identify and manage the product scope, build a work breakdown structure, create a project plan, create the project budget, define and allocate resources and identify and manage risks, and then you will be able to manage the project development.",
+    "StudentTasks": "- Student must get the certification of Introduction to Project Management Principles and Practices specialization from Coursera to be accepted to the final examination\"",
+    "Tools": "",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "359/QĐ-ĐHFPT dated 04/09/2025",
+    "IsApproved": "True",
+    "Note": "1. Complete the online course to be allowed to take Final Exam\n2. Final Exam is included of Final Theory Exam (TE) & Final Practical Exam (PE): 100%\n3. Students who complete all MOOCs before the course deadline will receive 1 bonus point; otherwise, no bonus point will be awarded.\n4. Completion Criteria: Final TE Score >=4 & Final PE Score >=4 & FR >= 5\n(FR = min(10, (Final TE Score + Final PE Score)/2 + bonus)",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "4/9/2025"
+  },
+  "clo_count": 4,
+  "session_count": 12,
+  "chunks": [
+    {
+      "chunk_id": "PMG201c-overview",
+      "subject_code": "PMG201c",
+      "subject_name": "Project management_Quản trị dự án",
+      "section": "Overview & Grading Policy",
+      "text": "Description: This intensive and hands-on series of courses gives you the skills to ensure your projects are completed on time and on budget while giving the user the product they expect. You will gain a strong working knowledge of the basics of project management and be able to immediately use that knowledge to effectively manage work projects. At the end of the series you will be able to identify and manage the product scope, build a work breakdown structure, create a project plan, create the project budget, define and allocate resources and identify and manage risks, and then you will be able to manage the project development.\nNoCredit: 3\nPre-Requisite: None\nTime Allocation: Study hour (150h) = 60h online + 3h offline + 1h TE + 2h PE + 84h self-study\nStudentTasks: - Student must get the certification of Introduction to Project Management Principles and Practices specialization from Coursera to be accepted to the final examination\"\nNote: 1. Complete the online course to be allowed to take Final Exam\n2. Final Exam is included of Final Theory Exam (TE) & Final Practical Exam (PE): 100%\n3. Students who complete all MOOCs before the course deadline will receive 1 bonus point; otherwise, no bonus point will be awarded.\n4. Completion Criteria: Final TE Score >=4 & Final PE Score >=4 & FR >= 5\n(FR = min(10, (Final TE Score + Final PE Score)/2 + bonus)\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus PMG201c — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "PMG201c-CLO1",
+      "subject_code": "PMG201c",
+      "subject_name": "Project management_Quản trị dự án",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Define project plan",
+      "source_label": "Syllabus PMG201c — CLO1"
+    },
+    {
+      "chunk_id": "PMG201c-CLO2",
+      "subject_code": "PMG201c",
+      "subject_name": "Project management_Quản trị dự án",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: - Define a project’s scope - Build a work breakdown schedule - Allocate project resources- Create a project budget",
+      "source_label": "Syllabus PMG201c — CLO2"
+    },
+    {
+      "chunk_id": "PMG201c-CLO3",
+      "subject_code": "PMG201c",
+      "subject_name": "Project management_Quản trị dự án",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: - Define key elements of communications management plan - Identify and manage risks",
+      "source_label": "Syllabus PMG201c — CLO3"
+    },
+    {
+      "chunk_id": "PMG201c-CLO4",
+      "subject_code": "PMG201c",
+      "subject_name": "Project management_Quản trị dự án",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Practise to: - Define project plan - Define a project’s scope - Build a work breakdown schedule - Allocate project resources - Create a project budget - Define key elements of communications management plan - Identify and manage risks",
+      "source_label": "Syllabus PMG201c — CLO4"
+    },
+    {
+      "chunk_id": "PMG201c-session-1",
+      "subject_code": "PMG201c",
+      "subject_name": "Project management_Quản trị dự án",
+      "section": "Session 1",
+      "text": "Session 1 — Specialization Introduction\nInitiating and Planning Projects\n- Get Started!\n- What is a project?\n- Get to Know your Stakeholders\nOffline 1: Introduction to the online course PMG201c\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)\nAll students should participate in offline slot (if any question)",
+      "source_label": "Syllabus PMG201c — Session 1"
+    },
+    {
+      "chunk_id": "PMG201c-session-2",
+      "subject_code": "PMG201c",
+      "subject_name": "Project management_Quản trị dự án",
+      "section": "Session 2",
+      "text": "Session 2 — Initiating and Planning Projects\n- Scope Matters\n- Authority vs. Influence\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus PMG201c — Session 2"
+    },
+    {
+      "chunk_id": "PMG201c-session-3",
+      "subject_code": "PMG201c",
+      "subject_name": "Project management_Quản trị dự án",
+      "section": "Session 3",
+      "text": "Session 3 — Initiating and Planning Projects\n- Wrap Up\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus PMG201c — Session 3"
+    },
+    {
+      "chunk_id": "PMG201c-session-4",
+      "subject_code": "PMG201c",
+      "subject_name": "Project management_Quản trị dự án",
+      "section": "Session 4",
+      "text": "Session 4 — Budgeting and Scheduling Projects\n- Ressource Needs & Quality Management\n- Estimating\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus PMG201c — Session 4"
+    },
+    {
+      "chunk_id": "PMG201c-session-5",
+      "subject_code": "PMG201c",
+      "subject_name": "Project management_Quản trị dự án",
+      "section": "Session 5",
+      "text": "Session 5 — Budgeting and Scheduling Projects\n- Scheduling\n- Wrap Up\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus PMG201c — Session 5"
+    },
+    {
+      "chunk_id": "PMG201c-session-6",
+      "subject_code": "PMG201c",
+      "subject_name": "Project management_Quản trị dự án",
+      "section": "Session 6",
+      "text": "Session 6 — Managing Project Risks and Changes\n- Managing Project Risks\n- Change Happens\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus PMG201c — Session 6"
+    },
+    {
+      "chunk_id": "PMG201c-session-7",
+      "subject_code": "PMG201c",
+      "subject_name": "Project management_Quản trị dự án",
+      "section": "Session 7",
+      "text": "Session 7 — Managing Project Risks and Changes\n- Wrap Up\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus PMG201c — Session 7"
+    },
+    {
+      "chunk_id": "PMG201c-session-8",
+      "subject_code": "PMG201c",
+      "subject_name": "Project management_Quản trị dự án",
+      "section": "Session 8",
+      "text": "Session 8 — Project Management Capstone\n- Get Started!\n- Project Components & Instructions\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus PMG201c — Session 8"
+    },
+    {
+      "chunk_id": "PMG201c-session-9",
+      "subject_code": "PMG201c",
+      "subject_name": "Project management_Quản trị dự án",
+      "section": "Session 9",
+      "text": "Session 9 — Project Management Capstone\n- Project Components & Instructions\n- Content Review\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus PMG201c — Session 9"
+    },
+    {
+      "chunk_id": "PMG201c-session-10",
+      "subject_code": "PMG201c",
+      "subject_name": "Project management_Quản trị dự án",
+      "section": "Session 10",
+      "text": "Session 10 — Project Management Capstone\n- Feedback Peer Review\n- Final Project Assignment Submission\n- Final Project Peer Review Evaluation\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus PMG201c — Session 10"
+    },
+    {
+      "chunk_id": "PMG201c-session-11",
+      "subject_code": "PMG201c",
+      "subject_name": "Project management_Quản trị dự án",
+      "section": "Session 11",
+      "text": "Session 11 — Capstone Project Review & FE Introduction\nProject Management Capstone\n- Final Project Peer Review Evaluation\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus PMG201c — Session 11"
+    },
+    {
+      "chunk_id": "PMG201c-session-12",
+      "subject_code": "PMG201c",
+      "subject_name": "Project management_Quản trị dự án",
+      "section": "Session 12",
+      "text": "Session 12 — - Specialization Wrap-Up\nOffline 2: Review Project Management Principles and Practices Specialization (Spec)\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed) All students should participate in review slot (if any question)\nDeadline of Coursera completion: End of Friday of the week.\nAll students should participate in offline slot (if any question)",
+      "source_label": "Syllabus PMG201c — Session 12"
+    }
+  ]
+}

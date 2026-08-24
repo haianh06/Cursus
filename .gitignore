@@ -1,0 +1,69 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Environment variables
+.env
+.env.bak
+.env.local
+.env.production
+
+# Personal secrets notes (never commit — passwords/keys live here, not in docs/)
+SECRETS.local.md
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data (never commit large data) — data/* (not data/) so the negation below
+# can still re-include data/README.md; git can't un-ignore into an excluded dir.
+data/*
+!data/README.md
+*.db
+*.sqlite3
+
+# Generated mock data (regenerable, not source)
+mock_data/generated/
+
+# Logs
+logs/
+*.log
+
+# Test coverage
+htmlcov/
+.coverage
+coverage.xml
+
+# Docker
+docker-compose.override.yml
+
+# Node (frontend)
+node_modules/
+.next/
+out/
+.nuxt/
+
+# Build
+*.pyc
+*.pyo
+
+# AI logs — tracked structure, ignored content
+.ai-log/*.jsonl
+.ai-log/archive/

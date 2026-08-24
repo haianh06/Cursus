@@ -1,0 +1,590 @@
+{
+  "subject_code": "MAE101",
+  "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+  "meta": {
+    "Syllabus ID": "13137",
+    "Syllabus Name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+    "Course Name English": "",
+    "Subject Code": "MAE101",
+    "Learning-Teaching Method": "Lecture,Practice",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) = 45 contact hours (60 sessions) + 1 hour final exam + 104 hours self-study",
+    "Pre-Requisite": "None",
+    "Description": "Upon finishing the course, students must acquire:\n1. the following knowledge: (ABET a1)\n• The basic concepts of single variable calculus: limit, derivative, integral.\n• Concepts of linear system of equations, matrix and their applications\n• The concepts of vector spaces, basis and dimension, linear transformations and their applications.\n• The range of application of calculus and algebra in science, technology, economics & finance...\n2. the following skills: (ABET a2)\n• Find limit, derivative and integral of functions of single variables;\n• Find solutions to linear systems by using row-reduced echelon form, Cramer's Rule, inverse matrix\n• Find determinants and inverse of a matrix\n• Find linear transformations in R^2 and R^3.\n• Find dimensions and bases of vector spaces .\n• Apply the concepts of calculus and algebra in solving problems in science, technology, economics & finance, ...",
+    "StudentTasks": "Students must attend at least 80% of contact hours in order to be accepted to the final examination.",
+    "Tools": "",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "932/QĐ-ĐHFPT dated 08/22/2025",
+    "IsApproved": "True",
+    "Note": "",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "8/22/2025"
+  },
+  "clo_count": 9,
+  "session_count": 60,
+  "chunks": [
+    {
+      "chunk_id": "MAE101-overview",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Overview & Grading Policy",
+      "text": "Description: Upon finishing the course, students must acquire:\n1. the following knowledge: (ABET a1)\n• The basic concepts of single variable calculus: limit, derivative, integral.\n• Concepts of linear system of equations, matrix and their applications\n• The concepts of vector spaces, basis and dimension, linear transformations and their applications.\n• The range of application of calculus and algebra in science, technology, economics & finance...\n2. the following skills: (ABET a2)\n• Find limit, derivative and integral of functions of single variables;\n• Find solutions to linear systems by using row-reduced echelon form, Cramer's Rule, inverse matrix\n• Find determinants and inverse of a matrix\n• Find linear transformations in R^2 and R^3.\n• Find dimensions and bases of vector spaces .\n• Apply the concepts of calculus and algebra in solving problems in science, technology, economics & finance, ...\nNoCredit: 3\nPre-Requisite: None\nTime Allocation: Study hour (150h) = 45 contact hours (60 sessions) + 1 hour final exam + 104 hours self-study\nStudentTasks: Students must attend at least 80% of contact hours in order to be accepted to the final examination.\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus MAE101 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "MAE101-CLO1",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Describe basic properties and find the limit of a function LO1.1 Find the domain, range, zeros and analyze the symmetry of the graph; create new functions from old functions. LO1.2 Find the slope and write an equation of a line; describe how a function changes under graph translations. LO1.3 Compute the limit of a function using graphs and limit laws, including the Squeeze's Theorem. LO1.4 Find limits at infinity and infinity limits, and apply in finding asymptotes of a function. LO1.5 Identify where a function is continuous; use the Intermedia Value Theorem to show that an equation has a solution.",
+      "source_label": "Syllabus MAE101 — CLO1"
+    },
+    {
+      "chunk_id": "MAE101-CLO2",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Calculate derivatives of a function LO2.1 Find the average rate of change; identify derivative as the limit of a difference quotient. LO2.2 Recognize derivative as the instantaneous velocity and the slope of tangent lines. LO2.3 Find derivatives using basic formulas and the sum, difference, product, quotient, chain rules.",
+      "source_label": "Syllabus MAE101 — CLO2"
+    },
+    {
+      "chunk_id": "MAE101-CLO3",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Use derivatives to analyze a function and to solve applications LO3.1 Use implicit differentiation to find derivatives and to solve related rates problems. LO3.2 Find linear approximation of a function; calculate differentials and apply in calculating errors of approximation. LO3.3 Apply Rolle's Theorem and Mean Value Theorem to a function; find critical numbers and absolute extrema of a function. LO3.4 Identify local extrema, and describe the monotonicity of a function; solve optimization problems. LO3.5 Recognize acceleration as second derivative; determine inflection points and describe the concavity of a function. LO3.6 Use Newton method to approximate solutions of an equation.",
+      "source_label": "Syllabus MAE101 — CLO3"
+    },
+    {
+      "chunk_id": "MAE101-CLO4",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Calculate integrals and find area under the graph of a function LO4.1 Use Riemann sums to approximate area; recognize area as a definite integral which is the limit of Riemann sums. LO4.2 Apply the Fundamental Theorems of Calculus to find derivatives of integrals, and to evaluate definite integrals. LO4.3 Recognize indefinite integrals as anti-derivatives; find integrals using basic formulas and the techniques of substitution and integration by parts. LO4.4 Use integration to solve applications and to compute the average value of a function. LO4.5 Approximate definite integrals using Midpoint, Trapezoidal and Simpson rules. LO4.6 Determine if an improper integral converges.",
+      "source_label": "Syllabus MAE101 — CLO4"
+    },
+    {
+      "chunk_id": "MAE101-CLO5",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Learning Outcome CLO5",
+      "text": "CLO5: Solve a system of linear equations using Gaussian elimination LO5.1 Identify if a matrix is in echelon forms; carry a matrix into an echelon using row operations; calculate the rank of a matrix. LO5.2 Use echelon matrices to solve/describe the solution set of a linear system.",
+      "source_label": "Syllabus MAE101 — CLO5"
+    },
+    {
+      "chunk_id": "MAE101-CLO6",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Learning Outcome CLO6",
+      "text": "CLO6: Perform basic operations on matrices and manipulate matrix transformations LO6.1 Perform addition, scalar multiplication and transpose of matrices; verify if a matrix is symmetric. LO6.2 Multiply two matrices of appropriate sizes; transform between a linear system and a matrix equation. LO6.3 Determine the matrix of a linear transformation; use properties of linear transformations in solving problems.",
+      "source_label": "Syllabus MAE101 — CLO6"
+    },
+    {
+      "chunk_id": "MAE101-CLO7",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Learning Outcome CLO7",
+      "text": "CLO7: Find the determinant, inverse and diagonalization of a matrix LO7.1 Compute the cofactors and the determinant of a matrix; analyze determinants in relation with row/column operations. LO7.2 Check if a matrix is invertible; find the adjugate and the inverse of a matrix; use properties of inverses and determinants in solving problems. LO7.3 Solve a system of linear equations using inverse matrices or Cramer's rule. LO7.4 Find the characteristic polynomial, eigenvalues and eigenvectors to diagonalize a matrix; check if a matrix is diagonalizable.",
+      "source_label": "Syllabus MAE101 — CLO7"
+    },
+    {
+      "chunk_id": "MAE101-CLO8",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Learning Outcome CLO8",
+      "text": "CLO8: Manipulate vector operations and linear transformations in R^3. LO8.1 Manipulate vector operations; find equations of lines. LO8.2 Compute the dot product and the angle between two vectors; find the projection of a vector on another vector and manipulate equations of planes. LO8.3 Compute the cross product; analyze areas and volumns in relation with dot and cross products. LO8.4 Determine linear transformations in R^3 and discuss applications in computer graphic.",
+      "source_label": "Syllabus MAE101 — CLO8"
+    },
+    {
+      "chunk_id": "MAE101-CLO9",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Learning Outcome CLO9",
+      "text": "CLO9: Find the dimension and bases of a subspace LO9.1 Determine if a subset of vectors is a subspace; describe the subspace spanned by a set of vectors. LO9.2 Check if a set of vectors are independent; determine if a set of vectors form a basis. LO9.3 Find a basis and the dimension of a subspace; analyze the rank in relation with the dimension of the column, row and the null space of a matrix. LO9.4 Compute dot product and length of vectors; check if a set of vectors are orthogonal or orthonormal; write a vector as a linear combination of an orthogonal basis.",
+      "source_label": "Syllabus MAE101 — CLO9"
+    },
+    {
+      "chunk_id": "MAE101-session-1",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 1",
+      "text": "Session 1 — 0 Introduction.\n1.1 Review of Functions.\n1.2 Basic Classes of Functions\nTài liệu: Textbook Chapter 1\n(Calculus Vol. 1)\nNhiệm vụ sinh viên: Exercises Chapter 1\n(Calculus Vol. 1)",
+      "source_label": "Syllabus MAE101 — Session 1"
+    },
+    {
+      "chunk_id": "MAE101-session-2",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 2",
+      "text": "Session 2 — 2.1 A Preview of Calculus.\n2.2 The Limit of a Functions\nTài liệu: Textbook Chapter 2\n(Calculus Vol. 1)\nNhiệm vụ sinh viên: Exercises Chapter 2\n(Calculus Vol. 1)",
+      "source_label": "Syllabus MAE101 — Session 2"
+    },
+    {
+      "chunk_id": "MAE101-session-3",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 3",
+      "text": "Session 3 — 2.3 The Limit Laws\n2.4 Continuity\nTài liệu: Textbook Chapter 2\n(Calculus Vol. 1)\nNhiệm vụ sinh viên: Exercises Chapter 2\n(Calculus Vol. 1)",
+      "source_label": "Syllabus MAE101 — Session 3"
+    },
+    {
+      "chunk_id": "MAE101-session-4",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 4",
+      "text": "Session 4 — 3.1 Defining the Derivative\n3.2 The Derivative as a Function\nTài liệu: Textbook Chapter 3\n(Calculus Vol. 1)\nNhiệm vụ sinh viên: Exercises Chapter 3\n(Calculus Vol. 1)",
+      "source_label": "Syllabus MAE101 — Session 4"
+    },
+    {
+      "chunk_id": "MAE101-session-5",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 5",
+      "text": "Session 5 — 3.3 Differentiation Rule.\n3.4 Derivatives as Rates of Change\n3.5 Derivatives of Trigonometric Functions\nTài liệu: Textbook Chapter 3\n(Calculus Vol. 1)\nNhiệm vụ sinh viên: Exercises Chapter 3\n(Calculus Vol. 1)",
+      "source_label": "Syllabus MAE101 — Session 5"
+    },
+    {
+      "chunk_id": "MAE101-session-6",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 6",
+      "text": "Session 6 — 3.6 The Chain Rule. 3.8 Implicit Differentiation\nTài liệu: Textbook Chapter 3\n(Calculus Vol. 1)\nNhiệm vụ sinh viên: Exercises Chapter 3\n(Calculus Vol. 1)",
+      "source_label": "Syllabus MAE101 — Session 6"
+    },
+    {
+      "chunk_id": "MAE101-session-7",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 7",
+      "text": "Session 7 — 3.9 Derivatives of Exponential and Logarithmic Functions\nTài liệu: Textbook Chapter 3\n(Calculus Vol. 1)\nNhiệm vụ sinh viên: Exercises Chapter 3\n(Calculus Vol. 1)",
+      "source_label": "Syllabus MAE101 — Session 7"
+    },
+    {
+      "chunk_id": "MAE101-session-8",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 8",
+      "text": "Session 8 — 4.1 Related Rates\nTài liệu: Textbook Chapter 4\n(Calculus Vol. 1)\nNhiệm vụ sinh viên: Exercises Chapter 4\n(Calculus Vol. 1)",
+      "source_label": "Syllabus MAE101 — Session 8"
+    },
+    {
+      "chunk_id": "MAE101-session-9",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 9",
+      "text": "Session 9 — 4.2 Linear Approximations and Differentials\nTài liệu: Textbook Chapter 4\n(Calculus Vol. 1)\nNhiệm vụ sinh viên: Exercises Chapter 4\n(Calculus Vol. 1)",
+      "source_label": "Syllabus MAE101 — Session 9"
+    },
+    {
+      "chunk_id": "MAE101-session-10",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 10",
+      "text": "Session 10 — 4.3 Maxima and Minima\n4.4 The Mean Value Theorem\nTài liệu: Textbook Chapter 4\n(Calculus Vol. 1)\nNhiệm vụ sinh viên: Exercises Chapter 4\n(Calculus Vol. 1)",
+      "source_label": "Syllabus MAE101 — Session 10"
+    },
+    {
+      "chunk_id": "MAE101-session-11",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 11",
+      "text": "Session 11 — 4.5 Derivatives and the Shape of a Graph\n4.6 Limits at Infinity and Asymptotes\nTài liệu: Textbook Chapter 4\n(Calculus Vol. 1)\nNhiệm vụ sinh viên: Exercises Chapter 4\n(Calculus Vol. 1)",
+      "source_label": "Syllabus MAE101 — Session 11"
+    },
+    {
+      "chunk_id": "MAE101-session-12",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 12",
+      "text": "Session 12 — 4.7 Applied Optimization Problems\nTài liệu: Textbook Chapter 4\n(Calculus Vol. 1)\nNhiệm vụ sinh viên: Exercises Chapter 4\n(Calculus Vol. 1)",
+      "source_label": "Syllabus MAE101 — Session 12"
+    },
+    {
+      "chunk_id": "MAE101-session-13",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 13",
+      "text": "Session 13 — 4.9 Newton's Method\nTài liệu: Textbook Chapter 4\n(Calculus Vol. 1)\nNhiệm vụ sinh viên: Exercises Chapter 4\n(Calculus Vol. 1)",
+      "source_label": "Syllabus MAE101 — Session 13"
+    },
+    {
+      "chunk_id": "MAE101-session-14",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 14",
+      "text": "Session 14 — 4.10 Antiderivatives\nTài liệu: Textbook Chapter 4\n(Calculus Vol. 1)\nNhiệm vụ sinh viên: Exercises Chapter 4\n(Calculus Vol. 1)",
+      "source_label": "Syllabus MAE101 — Session 14"
+    },
+    {
+      "chunk_id": "MAE101-session-15",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 15",
+      "text": "Session 15 — 1.1 Approximating Areas\nTài liệu: Textbook Chapter 1\n(Calculus Vol. 2)\nNhiệm vụ sinh viên: Exercises Chapter 1\n(Calculus Vol. 2)",
+      "source_label": "Syllabus MAE101 — Session 15"
+    },
+    {
+      "chunk_id": "MAE101-session-16",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 16",
+      "text": "Session 16 — 1.2 The Definite Integral\n1.3 The Fundamental Theorem of Calculus\nTài liệu: Textbook Chapter 1\n(Calculus Vol. 2)\nNhiệm vụ sinh viên: Exercises Chapter 1\n(Calculus Vol. 2)",
+      "source_label": "Syllabus MAE101 — Session 16"
+    },
+    {
+      "chunk_id": "MAE101-session-17",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 17",
+      "text": "Session 17 — 1.4 Integration Formulas and the Net Change Theorem\nTài liệu: Textbook Chapter 1\n(Calculus Vol. 2)\nNhiệm vụ sinh viên: Exercises Chapter 1\n(Calculus Vol. 2)",
+      "source_label": "Syllabus MAE101 — Session 17"
+    },
+    {
+      "chunk_id": "MAE101-session-18",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 18",
+      "text": "Session 18 — 1.5 Substitution\nTài liệu: Textbook Chapter 1\n(Calculus Vol. 2)\nNhiệm vụ sinh viên: Exercises Chapter 1\n(Calculus Vol. 2)",
+      "source_label": "Syllabus MAE101 — Session 18"
+    },
+    {
+      "chunk_id": "MAE101-session-19",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 19",
+      "text": "Session 19 — 3.1 Integration by Parts 3.6 Numerical Integration\nTài liệu: Textbook Chapter 3\n(Calculus Vol. 2)\nNhiệm vụ sinh viên: Exercises Chapter 3 (Calculus Vol. 2)",
+      "source_label": "Syllabus MAE101 — Session 19"
+    },
+    {
+      "chunk_id": "MAE101-session-20",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 20",
+      "text": "Session 20 — 3.7 Improper integrals\nTài liệu: Textbook Chapter 3\n(Calculus Vol. 2)\nNhiệm vụ sinh viên: Exercises Chapter 3 (Calculus Vol. 2)",
+      "source_label": "Syllabus MAE101 — Session 20"
+    },
+    {
+      "chunk_id": "MAE101-session-21",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 21",
+      "text": "Session 21 — Review",
+      "source_label": "Syllabus MAE101 — Session 21"
+    },
+    {
+      "chunk_id": "MAE101-session-22",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 22",
+      "text": "Session 22 — Progress Test 1",
+      "source_label": "Syllabus MAE101 — Session 22"
+    },
+    {
+      "chunk_id": "MAE101-session-23",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 23",
+      "text": "Session 23 — 1.1 Solutions of Systems of Linear Equations\nTài liệu: Textbook Chapter 1 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 1 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 23"
+    },
+    {
+      "chunk_id": "MAE101-session-24",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 24",
+      "text": "Session 24 — 1.1 Elementary Operations\nTài liệu: Textbook Chapter 1 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 1 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 24"
+    },
+    {
+      "chunk_id": "MAE101-session-25",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 25",
+      "text": "Session 25 — 1.2 Gaussian Elimination\nTài liệu: Textbook Chapter 1 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 1 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 25"
+    },
+    {
+      "chunk_id": "MAE101-session-26",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 26",
+      "text": "Session 26 — 1.3 Homogeneous Equations\nTài liệu: Textbook Chapter 1 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 1 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 26"
+    },
+    {
+      "chunk_id": "MAE101-session-27",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 27",
+      "text": "Session 27 — 2.1 Matrix Addition, Scalar Multiplication, and Transposition\nTài liệu: Textbook Chapter 2 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 2 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 27"
+    },
+    {
+      "chunk_id": "MAE101-session-28",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 28",
+      "text": "Session 28 — 2.2 Matrix-Vector Multiplication\nTài liệu: Textbook Chapter 2 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 2 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 28"
+    },
+    {
+      "chunk_id": "MAE101-session-29",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 29",
+      "text": "Session 29 — 2.2 Matrix Transformations\nTài liệu: Textbook Chapter 2 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 2 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 29"
+    },
+    {
+      "chunk_id": "MAE101-session-30",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 30",
+      "text": "Session 30 — 2.3 Matrix multiplication\nTài liệu: Textbook Chapter 2 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 2 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 30"
+    },
+    {
+      "chunk_id": "MAE101-session-31",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 31",
+      "text": "Session 31 — 2.4 Matrix Inverses\nTài liệu: Textbook Chapter 2 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 2 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 31"
+    },
+    {
+      "chunk_id": "MAE101-session-32",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 32",
+      "text": "Session 32 — 2.4 Properties of Inverses\nTài liệu: Textbook Chapter 2 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 2 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 32"
+    },
+    {
+      "chunk_id": "MAE101-session-33",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 33",
+      "text": "Session 33 — 2.6 Linear Transformations\nTài liệu: Textbook Chapter 2 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 2 (Linear Algebra)\n\nOptional Practice:\nCoursera - FPT University Private Authored Courses: Linear transformation with Python (Guided Project)",
+      "source_label": "Syllabus MAE101 — Session 33"
+    },
+    {
+      "chunk_id": "MAE101-session-34",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 34",
+      "text": "Session 34 — 3.1 The Cofactor Expansion\nTài liệu: Textbook Chapter 3 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 3 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 34"
+    },
+    {
+      "chunk_id": "MAE101-session-35",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 35",
+      "text": "Session 35 — 3.1 Properties of Determinants\nTài liệu: Textbook Chapter 3 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 3 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 35"
+    },
+    {
+      "chunk_id": "MAE101-session-36",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 36",
+      "text": "Session 36 — 3.2 Determinants and Matrix Inverses\nTài liệu: Textbook Chapter 3 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 3 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 36"
+    },
+    {
+      "chunk_id": "MAE101-session-37",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 37",
+      "text": "Session 37 — 3.2 Cramer's Rule\nTài liệu: Textbook Chapter 3 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 3 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 37"
+    },
+    {
+      "chunk_id": "MAE101-session-38",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 38",
+      "text": "Session 38 — 3.3 Eigenvalues and Eigenvectors\nTài liệu: Textbook Chapter 3 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 3 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 38"
+    },
+    {
+      "chunk_id": "MAE101-session-39",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 39",
+      "text": "Session 39 — 3.3 Diagonalization\nTài liệu: Textbook Chapter 3 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 3 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 39"
+    },
+    {
+      "chunk_id": "MAE101-session-40",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 40",
+      "text": "Session 40 — Review",
+      "source_label": "Syllabus MAE101 — Session 40"
+    },
+    {
+      "chunk_id": "MAE101-session-41",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 41",
+      "text": "Session 41 — Progress Test 2",
+      "source_label": "Syllabus MAE101 — Session 41"
+    },
+    {
+      "chunk_id": "MAE101-session-42",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 42",
+      "text": "Session 42 — 4.1 Vectors\nTài liệu: Textbook\nChapter 4\n(Linear Algebra)\nNhiệm vụ sinh viên: Textbook\nChapter 4\n(Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 42"
+    },
+    {
+      "chunk_id": "MAE101-session-43",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 43",
+      "text": "Session 43 — 4.1 Lines in Space\nTài liệu: Textbook\nChapter 4\n(Linear Algebra)\nNhiệm vụ sinh viên: Textbook\nChapter 4\n(Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 43"
+    },
+    {
+      "chunk_id": "MAE101-session-44",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 44",
+      "text": "Session 44 — 4.2 Projections\nTài liệu: Textbook\nChapter 4\n(Linear Algebra)\nNhiệm vụ sinh viên: Textbook\nChapter 4\n(Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 44"
+    },
+    {
+      "chunk_id": "MAE101-session-45",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 45",
+      "text": "Session 45 — 4.2 Planes\nTài liệu: Textbook\nChapter 4\n(Linear Algebra)\nNhiệm vụ sinh viên: Textbook\nChapter 4\n(Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 45"
+    },
+    {
+      "chunk_id": "MAE101-session-46",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 46",
+      "text": "Session 46 — 4.2 Cross Product\nTài liệu: Textbook\nChapter 4\n(Linear Algebra)\nNhiệm vụ sinh viên: Textbook\nChapter 4\n(Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 46"
+    },
+    {
+      "chunk_id": "MAE101-session-47",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 47",
+      "text": "Session 47 — 4.3 More on the Cross Product\nTài liệu: Textbook\nChapter 4\n(Linear Algebra)\nNhiệm vụ sinh viên: Textbook\nChapter 4\n(Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 47"
+    },
+    {
+      "chunk_id": "MAE101-session-48",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 48",
+      "text": "Session 48 — 4.4 Linear Operations on R^3\nTài liệu: Textbook\nChapter 4\n(Linear Algebra)\nNhiệm vụ sinh viên: Textbook\nChapter 4\n(Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 48"
+    },
+    {
+      "chunk_id": "MAE101-session-49",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 49",
+      "text": "Session 49 — 4.4 Transformations of Areas and Volumes\nTài liệu: Textbook\nChapter 4\n(Linear Algebra)\nNhiệm vụ sinh viên: Textbook\nChapter 4\n(Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 49"
+    },
+    {
+      "chunk_id": "MAE101-session-50",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 50",
+      "text": "Session 50 — 4.5 An application in Computer Graphics\nTài liệu: Textbook\nChapter 4\n(Linear Algebra)\nNhiệm vụ sinh viên: Textbook\nChapter 4\n(Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 50"
+    },
+    {
+      "chunk_id": "MAE101-session-51",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 51",
+      "text": "Session 51 — 5.1 Subspaces of R^n\nTài liệu: Textbook Chapter 5 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 5 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 51"
+    },
+    {
+      "chunk_id": "MAE101-session-52",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 52",
+      "text": "Session 52 — 5.1 Spanning Sets\nTài liệu: Textbook Chapter 5 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 5 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 52"
+    },
+    {
+      "chunk_id": "MAE101-session-53",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 53",
+      "text": "Session 53 — 5.2 Linear Independence\nTài liệu: Textbook Chapter 5 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 5 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 53"
+    },
+    {
+      "chunk_id": "MAE101-session-54",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 54",
+      "text": "Session 54 — 5.2 Dimension\nTài liệu: Textbook Chapter 5 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 5 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 54"
+    },
+    {
+      "chunk_id": "MAE101-session-55",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 55",
+      "text": "Session 55 — 5.3 Dot Product, Length, and Distance\nTài liệu: Textbook Chapter 5 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 5 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 55"
+    },
+    {
+      "chunk_id": "MAE101-session-56",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 56",
+      "text": "Session 56 — 5.3 Orthogonal Sets and the Expansion Theorem\nTài liệu: Textbook Chapter 5 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 5 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 56"
+    },
+    {
+      "chunk_id": "MAE101-session-57",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 57",
+      "text": "Session 57 — 5.4 Rank of a Matrix\nTài liệu: Textbook Chapter 5 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 5 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 57"
+    },
+    {
+      "chunk_id": "MAE101-session-58",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 58",
+      "text": "Session 58 — 5.4 Rank, Nullity, and Linear Systems\nTài liệu: Textbook Chapter 5 (Linear Algebra)\nNhiệm vụ sinh viên: Exercises Chapter 5 (Linear Algebra)",
+      "source_label": "Syllabus MAE101 — Session 58"
+    },
+    {
+      "chunk_id": "MAE101-session-59",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 59",
+      "text": "Session 59 — Review",
+      "source_label": "Syllabus MAE101 — Session 59"
+    },
+    {
+      "chunk_id": "MAE101-session-60",
+      "subject_code": "MAE101",
+      "subject_name": "Mathematics for Engineering_Toán cho ngành kỹ thuật",
+      "section": "Session 60",
+      "text": "Session 60 — Progress Test 3",
+      "source_label": "Syllabus MAE101 — Session 60"
+    }
+  ]
+}

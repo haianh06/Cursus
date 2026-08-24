@@ -1,0 +1,598 @@
+{
+  "subject_code": "NWC204",
+  "subject_name": "Computer Networking_Mạng máy tính",
+  "meta": {
+    "Syllabus ID": "14428",
+    "Syllabus Name": "Computer Networking_Mạng máy tính",
+    "Course Name English": "Computer Networking",
+    "Subject Code": "NWC204",
+    "Learning-Teaching Method": "Lecture,Active learning,Offline",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "45 hours of contact learning (60 sessions) + 1.4 hours of Practical Examination (PE) + 1 hour of Final Examination (FE) + 102.6 hours of self-study.",
+    "Pre-Requisite": "",
+    "Description": "This course is based on the first course in the CCNA curriculum. It introduces the network architectures, models, protocols, and components that enable communication among users, devices, applications, and data across modern computer networks and the Internet. Key topics include Ethernet fundamentals, IP addressing, basic network operations, and introductory network security. By the end of the course, students will be able to build and configure simple local area networks (LANs), develop appropriate IP addressing schemes, apply basic security measures, configure routers and switches, verify network connectivity, and troubleshoot common network problems.\nThe course includes an individual Practical Examination (PE) that assesses each student’s ability to apply these skills independently. During the examination, students are required to design or complete a small network, calculate and configure IP addresses, perform basic router and switch configurations, secure network devices, verify connectivity, and identify and correct common configuration errors.\nThe course is organized into a series of modules, each of which represents an integrated unit of learning. Every module includes instructional content, practical activities, and assessments aligned with a defined set of competencies. The scope and duration of each module vary according to the level of knowledge and practical skill required. Some modules provide foundational knowledge that supports later learning and prepares students for concepts covered in the CCNA certification examination, even where the foundational content is not assessed directly.",
+    "StudentTasks": "- Students must attend at least 80% of contact sessions in order to be accepted to the final examination.\n- Students are responsible to do all exercises, assignments and labs given by instructor in class or at home and submit on time\n- Use laptop in class only for learning purpose\n- Promptly access to the https://flm.fpt.edu.vn/ for up-to-date course information\n- Students must complete all assignments on the Cisco Networking Academy (https://www.netacad.com/) with a result of at least 75%.",
+    "Tools": "Baseline Equipment Bundle:\n- 2 x ISR4221/K9 Routers\n- 2 x WS-C2960+24TC-L Catalyst switches\n- 1 wireless router (generic brand) with WPA2 support\n- Ethernet patch cables\n- PCs\n- Internet connection for lab and study PCs\n- Optional equipment for connecting to a WLAN\n+ 1 printer or integrated printer/scanner/copier for the class to share\n+ Smartphones and tablets are desirable for use with the labs\nSoftware:\n- Cisco IOS versions:\n+ Routers: Version 15.0 or higher, IP Base feature set\n+ Switches: Version 15.0 or higher, lanbaseK9 feature set\n- Packet Tracer, the most recent version.\n- Open-source server software:\n+ For various services and protocols, such as Telnet, SSH, HTTP, DHCP, FTP, TFTP, etc.\n- Tera Term source SSH client software for lab PCs.\n- Oracle VirtualBox, most recent version.\n- Wireshark, the most recent version.",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "968/QĐ-ĐHFPT dated 08/07/2026",
+    "IsApproved": "True",
+    "Note": "",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "8/7/2026"
+  },
+  "clo_count": 10,
+  "session_count": 60,
+  "chunks": [
+    {
+      "chunk_id": "NWC204-overview",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Overview & Grading Policy",
+      "text": "Description: This course is based on the first course in the CCNA curriculum. It introduces the network architectures, models, protocols, and components that enable communication among users, devices, applications, and data across modern computer networks and the Internet. Key topics include Ethernet fundamentals, IP addressing, basic network operations, and introductory network security. By the end of the course, students will be able to build and configure simple local area networks (LANs), develop appropriate IP addressing schemes, apply basic security measures, configure routers and switches, verify network connectivity, and troubleshoot common network problems.\nThe course includes an individual Practical Examination (PE) that assesses each student’s ability to apply these skills independently. During the examination, students are required to design or complete a small network, calculate and configure IP addresses, perform basic router and switch configurations, secure network devices, verify connectivity, and identify and correct common configuration errors.\nThe course is organized into a series of modules, each of which represents an integrated unit of learning. Every module includes instructional content, practical activities, and assessments aligned with a defined set of competencies. The scope and duration of each module vary according to the level of knowledge and practical skill required. Some modules provide foundational knowledge that supports later learning and prepares students for concepts covered in the CCNA certification examination, even where the foundational content is not assessed directly.\nNoCredit: 3\nTime Allocation: 45 hours of contact learning (60 sessions) + 1.4 hours of Practical Examination (PE) + 1 hour of Final Examination (FE) + 102.6 hours of self-study.\nStudentTasks: - Students must attend at least 80% of contact sessions in order to be accepted to the final examination.\n- Students are responsible to do all exercises, assignments and labs given by instructor in class or at home and submit on time\n- Use laptop in class only for learning purpose\n- Promptly access to the https://flm.fpt.edu.vn/ for up-to-date course information\n- Students must complete all assignments on the Cisco Networking Academy (https://www.netacad.com/) with a result of at least 75%.\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus NWC204 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "NWC204-CLO1",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Describe the evolution of network technologies and explain how layered protocols enable communication and support end-user applications.",
+      "source_label": "Syllabus NWC204 — CLO1"
+    },
+    {
+      "chunk_id": "NWC204-CLO10",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Learning Outcome CLO10",
+      "text": "CLO10: Students use AI and digital tools to collaborate, design, and present small network projects. The approach blends dialogue-based assessment with self-directed learning.",
+      "source_label": "Syllabus NWC204 — CLO10"
+    },
+    {
+      "chunk_id": "NWC204-CLO2",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Apply Ethernet and switching concepts to explain and configure technologies that support efficient and reliable data transfer.",
+      "source_label": "Syllabus NWC204 — CLO2"
+    },
+    {
+      "chunk_id": "NWC204-CLO3",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Configure switches, routers, and end devices with IP addressing and security settings to establish basic network connectivity.",
+      "source_label": "Syllabus NWC204 — CLO3"
+    },
+    {
+      "chunk_id": "NWC204-CLO4",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Explain how physical, data link, network, and transport layers interact to enable reliable and structured data communication.",
+      "source_label": "Syllabus NWC204 — CLO4"
+    },
+    {
+      "chunk_id": "NWC204-CLO5",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Learning Outcome CLO5",
+      "text": "CLO5: Design and implement IPv4 and IPv6 addressing schemes by calculating subnets and applying efficient address configurations in networks.",
+      "source_label": "Syllabus NWC204 — CLO5"
+    },
+    {
+      "chunk_id": "NWC204-CLO6",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Learning Outcome CLO6",
+      "text": "CLO6: Use diagnostic tools and techniques to test and troubleshoot network connectivity, including ICMP utilities and AI-assisted methods.",
+      "source_label": "Syllabus NWC204 — CLO6"
+    },
+    {
+      "chunk_id": "NWC204-CLO7",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Learning Outcome CLO7",
+      "text": "CLO7: Implement basic security measures by applying device hardening and configuration techniques to protect network devices and communications.",
+      "source_label": "Syllabus NWC204 — CLO7"
+    },
+    {
+      "chunk_id": "NWC204-CLO8",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Learning Outcome CLO8",
+      "text": "CLO8: Design and implement a small network topology with routers, switches, and end devices, considering performance and scalability.",
+      "source_label": "Syllabus NWC204 — CLO8"
+    },
+    {
+      "chunk_id": "NWC204-CLO9",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Learning Outcome CLO9",
+      "text": "CLO9: Utilize AI tools to analyze, configure, monitor, and troubleshoot networks, enhancing learning, efficiency, and network management capabilities.",
+      "source_label": "Syllabus NWC204 — CLO9"
+    },
+    {
+      "chunk_id": "NWC204-session-1",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 1",
+      "text": "Session 1 — Course overview\n1. Networking Today\n1.1 Networks Affect Our Lives\n1.2 Network Components\n1.3 Network Representations and Topologies\n1.4 Common Types of Networks\nTài liệu: Module 1: Networking Today\nNhiệm vụ sinh viên: Read Module 1",
+      "source_label": "Syllabus NWC204 — Session 1"
+    },
+    {
+      "chunk_id": "NWC204-session-2",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 2",
+      "text": "Session 2 — 1.5 Internet Connections\n1.6 Reliable Networks\n1.7 Network Trends\n1.8 Network Security\n1.9 The IT Professional\n1.10 Integrate AI Tools for Explaining Concepts\nTài liệu: Module 1: Networking Today\nNhiệm vụ sinh viên: Read Module 1",
+      "source_label": "Syllabus NWC204 — Session 2"
+    },
+    {
+      "chunk_id": "NWC204-session-3",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 3",
+      "text": "Session 3 — 2. Basic Switch and End Device Configuration\n2.1 Cisco IOS Access\n2.2 IOS Navigation\n2.3 The Command Structure\n2.4 Basic Device Configuration\nTài liệu: Module 2: Basic Switch and End Device Configuration\nNhiệm vụ sinh viên: Read Module 2",
+      "source_label": "Syllabus NWC204 — Session 3"
+    },
+    {
+      "chunk_id": "NWC204-session-4",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 4",
+      "text": "Session 4 — 2.5 Save Configurations\n2.6 Ports and Addresses\n2.7 Configure IP Addressing\n2.8 Verify Connectivity\n2.9 Integrate AI Tools for Explaining Concepts (Self Learning)\nTài liệu: Module 2: Basic Switch and End Device Configuration\nNhiệm vụ sinh viên: Read Module 2",
+      "source_label": "Syllabus NWC204 — Session 4"
+    },
+    {
+      "chunk_id": "NWC204-session-5",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 5",
+      "text": "Session 5 — Lab 1.1: Basic Switch and End Device Configuration\n- Navigate the IOS by Using Tera Term for Console Connectivity\n- Basic Switch and End Device Configuration\n- Use AI Tools for Configuration and Troubleshooting\nTài liệu: 2.3.8 Lab Manual (or 2.3.7 Packet Tracer)\n2.9.2 Lab Manual (or 2.9.1 Packet Tracer)\nNhiệm vụ sinh viên: Practice Lab 1.1",
+      "source_label": "Syllabus NWC204 — Session 5"
+    },
+    {
+      "chunk_id": "NWC204-session-6",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 6",
+      "text": "Session 6 — Lab 1.1 (continue)\nTài liệu: 2.3.8 Lab Manual (or 2.3.7 Packet Tracer)\n2.9.2 Lab Manual (or 2.9.1 Packet Tracer)\nNhiệm vụ sinh viên: Practice Lab 1.1",
+      "source_label": "Syllabus NWC204 — Session 6"
+    },
+    {
+      "chunk_id": "NWC204-session-7",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 7",
+      "text": "Session 7 — 3. Protocols and Models\n3.1 The Rules\n3.2 Protocols\n3.3 Protocol Suites\n3.4 Standards Organizations\nTài liệu: Module 3: Protocols and Models\nNhiệm vụ sinh viên: Read Module 3",
+      "source_label": "Syllabus NWC204 — Session 7"
+    },
+    {
+      "chunk_id": "NWC204-session-8",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 8",
+      "text": "Session 8 — 3.5 Reference Models\n3.6 Data Encapsulation\n3.7 Data Access\n3.8 Integrate AI Tools for Explaining Concepts (Self Learning)\nTài liệu: Module 3: Protocols and Models\nNhiệm vụ sinh viên: Read Module 3",
+      "source_label": "Syllabus NWC204 — Session 8"
+    },
+    {
+      "chunk_id": "NWC204-session-9",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 9",
+      "text": "Session 9 — Lab 1.2 (Dialogue-based Assessment & Self Learning)\n- Design a Communications System\n- Research Networking Standards\n- Install Wireshark\n- Integrate AI Tools for Explaining Concepts\nTài liệu: 3.0.3 Lab Manual\n3.4.4 Lab Manual\n3.7.9 Lab Manual\n3.7.10 Lab Manual\nNhiệm vụ sinh viên: Practice Lab 1.2",
+      "source_label": "Syllabus NWC204 — Session 9"
+    },
+    {
+      "chunk_id": "NWC204-session-10",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 10",
+      "text": "Session 10 — Lab 1.2 (continue)\nTài liệu: 3.0.3 Lab Manual\n3.4.4 Lab Manual\n3.7.9 Lab Manual\n3.7.10 Lab Manual\nNhiệm vụ sinh viên: Practice Lab 1.2",
+      "source_label": "Syllabus NWC204 — Session 10"
+    },
+    {
+      "chunk_id": "NWC204-session-11",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 11",
+      "text": "Session 11 — 4. Physical Layer\n4.1 Purpose of the Physical Layer\n4.2 Physical Layer Characteristics\n4.3 Copper Cabling\nTài liệu: Module 4: Physical Layer\nNhiệm vụ sinh viên: Student: Read Module 4",
+      "source_label": "Syllabus NWC204 — Session 11"
+    },
+    {
+      "chunk_id": "NWC204-session-12",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 12",
+      "text": "Session 12 — 4.4 UTP Cabling\n4.5 Fiber-Optic Cabling\n4.6 Wireless Media\n4.7 Integrate AI Tools for Explaining Concepts (Self Learning)\nTài liệu: Module 4: Physical Layer\nNhiệm vụ sinh viên: Student: Read Module 4",
+      "source_label": "Syllabus NWC204 — Session 12"
+    },
+    {
+      "chunk_id": "NWC204-session-13",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 13",
+      "text": "Session 13 — Lab 1.3 (Dialogue-based Assessment & Self Learning)\n- View Wired and Wireless NIC Information\n- Integrate AI Tools for Explaining Concepts\nTài liệu: 4.6.5 Packet Tracer\n4.6.6 Lab Manual\nNhiệm vụ sinh viên: Practice Lab 1.3",
+      "source_label": "Syllabus NWC204 — Session 13"
+    },
+    {
+      "chunk_id": "NWC204-session-14",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 14",
+      "text": "Session 14 — Lab 1.3 (continue)\nTài liệu: 4.6.5 Packet Tracer\n4.6.6 Lab Manual\nNhiệm vụ sinh viên: Practice Lab 1.3",
+      "source_label": "Syllabus NWC204 — Session 14"
+    },
+    {
+      "chunk_id": "NWC204-session-15",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 15",
+      "text": "Session 15 — 5. Data Link Layer\n5.1 Purpose of the Data Link Layer\nTài liệu: Module 6: Data Link Layer\nNhiệm vụ sinh viên: Student: Read Module 6",
+      "source_label": "Syllabus NWC204 — Session 15"
+    },
+    {
+      "chunk_id": "NWC204-session-16",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 16",
+      "text": "Session 16 — 5.2 Topologies\n5.3 Data Link Frame\n5.4 Integrate AI Tools for Explaining Concepts (Self Learning)\nTài liệu: Module 6: Data Link Layer\nNhiệm vụ sinh viên: Student: Read Module 6",
+      "source_label": "Syllabus NWC204 — Session 16"
+    },
+    {
+      "chunk_id": "NWC204-session-17",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 17",
+      "text": "Session 17 — 6. Ethernet Switching\n6.1 Ethernet Frame\n6.2 Ethernet MAC Address\nTài liệu: Module 7: Ethernet Switching\nNhiệm vụ sinh viên: Student: Read Module 7",
+      "source_label": "Syllabus NWC204 — Session 17"
+    },
+    {
+      "chunk_id": "NWC204-session-18",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 18",
+      "text": "Session 18 — 6.3 The MAC Address Table\n6.4 Switch Speeds and Forwarding Methods\n6.5 Integrate AI Tools for Explaining Concepts (Self Learning)\nTài liệu: Module 7: Ethernet Switching\nNhiệm vụ sinh viên: Student: Read Module 7",
+      "source_label": "Syllabus NWC204 — Session 18"
+    },
+    {
+      "chunk_id": "NWC204-session-19",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 19",
+      "text": "Session 19 — Lab 1.4 (Dialogue-based Assessment & Self Learning)\n- Use Wireshark to Examine Ethernet Frames\n- View Network Device MAC Addresses\n- View the Switch MAC Address Table\n- Use AI Tools for Analyzing Captured Packets\nTài liệu: 7.1.6 Lab Manual\n7.2.7 Lab Manual\n7.3.7 Lab Manual\nNhiệm vụ sinh viên: Practice Lab 1.4",
+      "source_label": "Syllabus NWC204 — Session 19"
+    },
+    {
+      "chunk_id": "NWC204-session-20",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 20",
+      "text": "Session 20 — Lab 1.4 (continue)\nTài liệu: 7.1.6 Lab Manual\n7.2.7 Lab Manual\n7.3.7 Lab Manual\nNhiệm vụ sinh viên: Practice Lab 1.4",
+      "source_label": "Syllabus NWC204 — Session 20"
+    },
+    {
+      "chunk_id": "NWC204-session-21",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 21",
+      "text": "Session 21 — 7. Network Layer\n7.1 Network Layer Characteristics\n7.2 IPv4 Packet\nTài liệu: Module 8: Network Layer\nNhiệm vụ sinh viên: Read Module 8",
+      "source_label": "Syllabus NWC204 — Session 21"
+    },
+    {
+      "chunk_id": "NWC204-session-22",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 22",
+      "text": "Session 22 — 7.3 IPv6 Packet\n7.4 How a Host Routes\n7.5 Router Routing Tables\n7.6 Integrate AI Tools for Explaining Concepts (Self Learning)\nTài liệu: Module 8: Network Layer\nNhiệm vụ sinh viên: Read Module 8",
+      "source_label": "Syllabus NWC204 — Session 22"
+    },
+    {
+      "chunk_id": "NWC204-session-23",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 23",
+      "text": "Session 23 — Review Modules 1-7\nNhiệm vụ sinh viên: Review",
+      "source_label": "Syllabus NWC204 — Session 23"
+    },
+    {
+      "chunk_id": "NWC204-session-24",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 24",
+      "text": "Session 24 — 8. Address Resolution\n8.1 MAC and IP\nTài liệu: Module 9: Address Resolution\nNhiệm vụ sinh viên: Read Module 9",
+      "source_label": "Syllabus NWC204 — Session 24"
+    },
+    {
+      "chunk_id": "NWC204-session-25",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 25",
+      "text": "Session 25 — 8.2 ARP\n8.3 Neighbor Discovery\n8.4 Integrate AI Tools for Explaining Concepts (Self Learning)\nTài liệu: Module 9: Address Resolution\nNhiệm vụ sinh viên: Read Module 9",
+      "source_label": "Syllabus NWC204 — Session 25"
+    },
+    {
+      "chunk_id": "NWC204-session-26",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 26",
+      "text": "Session 26 — 9. Basic Router Configuration\n9.1 Configure Initial Router Settings\nTài liệu: Module 10: Basic Router Configuration\nNhiệm vụ sinh viên: Read Module 10",
+      "source_label": "Syllabus NWC204 — Session 26"
+    },
+    {
+      "chunk_id": "NWC204-session-27",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 27",
+      "text": "Session 27 — 9.2 Configure Interfaces\n9.4 Configure the Default Gateway\n9.5 Integrate AI Tools for Explaining Concepts (Self Learning)\nTài liệu: Module 10: Basic Router Configuration\nNhiệm vụ sinh viên: Read Module 10",
+      "source_label": "Syllabus NWC204 — Session 27"
+    },
+    {
+      "chunk_id": "NWC204-session-28",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 28",
+      "text": "Session 28 — Lab 2.1: Build a Switch and Router Network\n- Build a Switch and Router Network\n- Use AI Tools for Configuration and Troubleshooting\nTài liệu: 10.4.4 Lab Manual\nNhiệm vụ sinh viên: Practice Lab 2.1",
+      "source_label": "Syllabus NWC204 — Session 28"
+    },
+    {
+      "chunk_id": "NWC204-session-29",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 29",
+      "text": "Session 29 — Lab 2.1 (continue)\nTài liệu: 10.4.4 Lab Manual\nNhiệm vụ sinh viên: Practice Lab 2.1",
+      "source_label": "Syllabus NWC204 — Session 29"
+    },
+    {
+      "chunk_id": "NWC204-session-30",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 30",
+      "text": "Session 30 — 10. IPv4 Addressing\n10.1 IPv4 Address Structure\n10.2 IPv4 Unicast, Broadcast, and Multicast\n10.3 Types of IPv4 Addresses\n10.4 Network Segmentation\nTài liệu: Module 11: IPv4 Addressing\nNhiệm vụ sinh viên: Read Module 11",
+      "source_label": "Syllabus NWC204 — Session 30"
+    },
+    {
+      "chunk_id": "NWC204-session-31",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 31",
+      "text": "Session 31 — 10.5 Subnet an IPv4\n10.6 Subnet a /16 and /8 Prefix\n10.7 Subnet to Meet Requirements\n10.8 Variable Length Subnet Masking\n10.9 Structured Design\n10.10 Integrate AI Tools for Explaining Concepts (Self Learning)\nTài liệu: Module 11: IPv4 Addressing\nNhiệm vụ sinh viên: Read Module 11",
+      "source_label": "Syllabus NWC204 — Session 31"
+    },
+    {
+      "chunk_id": "NWC204-session-32",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 32",
+      "text": "Session 32 — Lab 2.2 (Dialogue-based Assessment & Self Learning)\n- Calculate IPv4 Subnets\n- Design and Implement a VLSM Addressing Scheme\n- Use AI Tools for Calculating IPv4 Subnets\nTài liệu: 11.6.6 Lab Manual\n11.10.2 Lab Manual\nNhiệm vụ sinh viên: Practice Lab 2.2",
+      "source_label": "Syllabus NWC204 — Session 32"
+    },
+    {
+      "chunk_id": "NWC204-session-33",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 33",
+      "text": "Session 33 — Lab 2.2 (continue)\nTài liệu: 11.6.6 Lab Manual\n11.10.2 Lab Manual\nNhiệm vụ sinh viên: Practice Lab 2.2",
+      "source_label": "Syllabus NWC204 — Session 33"
+    },
+    {
+      "chunk_id": "NWC204-session-34",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 34",
+      "text": "Session 34 — Midterm Progress Test\nNhiệm vụ sinh viên: Review",
+      "source_label": "Syllabus NWC204 — Session 34"
+    },
+    {
+      "chunk_id": "NWC204-session-35",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 35",
+      "text": "Session 35 — 11. IPv6 Addressing\n11.1 IPv6 Addressing\n11.2 IPv4 Issues\n11.3 IPv6 Addressing\n11.4 IPv6 Address Types\nTài liệu: Module 12: IPv6 Addressing\nNhiệm vụ sinh viên: Read Module 12",
+      "source_label": "Syllabus NWC204 — Session 35"
+    },
+    {
+      "chunk_id": "NWC204-session-36",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 36",
+      "text": "Session 36 — 11.5 GUA and LLA Static Configuration\n11.6 Dynamic Addressing for IPv6 GUAs\n11.7 Dynamic Addressing for IPv6 LLAs\n11.8 IPv6 Multicast Addresses\n11.9 Subnet an IPv6 Network\n11.10 Integrate AI Tools for Explaining Concepts (Self Learning)\nTài liệu: Module 12: IPv6 Addressing\nNhiệm vụ sinh viên: Read Module 12",
+      "source_label": "Syllabus NWC204 — Session 36"
+    },
+    {
+      "chunk_id": "NWC204-session-37",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 37",
+      "text": "Session 37 — 12. ICMP\n12.1 ICMP Messages\nTài liệu: Module 13: ICMP\nNhiệm vụ sinh viên: Read Module 13",
+      "source_label": "Syllabus NWC204 — Session 37"
+    },
+    {
+      "chunk_id": "NWC204-session-38",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 38",
+      "text": "Session 38 — 12.2 Ping and Traceroute Testing\n12.3 Integrate AI Tools for Explaining Concepts (Self Learning)\nTài liệu: Module 13: ICMP\nNhiệm vụ sinh viên: Read Module 13",
+      "source_label": "Syllabus NWC204 — Session 38"
+    },
+    {
+      "chunk_id": "NWC204-session-39",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 39",
+      "text": "Session 39 — Lab 2.3: Use Ping and Traceroute to Test Network Connectivity\n- Use Ping and Traceroute to Test Network Connectivity\n- Use AI Tools for Configuration and Troubleshooting\nTài liệu: 13.3.2 Lab Manual\n(or 13.2.7 Packet Tracer, 13.3.1 Packet Tracer)\nNhiệm vụ sinh viên: Practice Lab 2.3",
+      "source_label": "Syllabus NWC204 — Session 39"
+    },
+    {
+      "chunk_id": "NWC204-session-40",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 40",
+      "text": "Session 40 — Lab 2.3 (continue)\nTài liệu: 13.3.2 Lab Manual\n(or 13.2.7 Packet Tracer, 13.3.1 Packet Tracer)\nNhiệm vụ sinh viên: Practice Lab 2.3",
+      "source_label": "Syllabus NWC204 — Session 40"
+    },
+    {
+      "chunk_id": "NWC204-session-41",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 41",
+      "text": "Session 41 — 13.Transport Layer\n13.1 Transportation of Data\n13.2 TCP Overview\n13.3 UDP Overview\nTài liệu: Module 14: Transport Layer\nNhiệm vụ sinh viên: Read Module 14",
+      "source_label": "Syllabus NWC204 — Session 41"
+    },
+    {
+      "chunk_id": "NWC204-session-42",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 42",
+      "text": "Session 42 — 13.4 Port Numbers\n13.5 TCP Communication Process\n13.6 Reliability and Flow Control .\n13.7 UDP Communication\n13.8 Integrate AI Tools for Explaining Concepts (Self Learning)\nTài liệu: Module 14: Transport Layer\nNhiệm vụ sinh viên: Read Module 14",
+      "source_label": "Syllabus NWC204 — Session 42"
+    },
+    {
+      "chunk_id": "NWC204-session-43",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 43",
+      "text": "Session 43 — Project: Design and Implement a Basic Small Network with AI Assistance\n- Divide student groups\nTài liệu: 15.4.8 Lab Manual\n16.2.6 Lab Manual\n16.4.7 Lab Manual (or 16.4.6 Packet Tracer)\n16.5.2 Lab Manual (or 16.5.1 Packet Tracer)\n17.4.6 Lab Manual\n17.7.6 Lab Manual (or 17.7.7 Packet Tracer)\n17.8.1 Lab Manual (or 17.8.2 Packet Tracer)\nNhiệm vụ sinh viên: Practice and Review Project",
+      "source_label": "Syllabus NWC204 — Session 43"
+    },
+    {
+      "chunk_id": "NWC204-session-44",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 44",
+      "text": "Session 44 — Project: Design and Implement a Basic Small Network with AI Assistance (continue)\n- Work on group and report project progress\n- Dialogue-based Assessment & Self Learning\nTài liệu: 15.4.8 Lab Manual\n16.2.6 Lab Manual\n16.4.7 Lab Manual (or 16.4.6 Packet Tracer)\n16.5.2 Lab Manual (or 16.5.1 Packet Tracer)\n17.4.6 Lab Manual\n17.7.6 Lab Manual (or 17.7.7 Packet Tracer)\n17.8.1 Lab Manual (or 17.8.2 Packet Tracer)\nNhiệm vụ sinh viên: Practice and Review Project",
+      "source_label": "Syllabus NWC204 — Session 44"
+    },
+    {
+      "chunk_id": "NWC204-session-45",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 45",
+      "text": "Session 45 — 14. Application Layer\n14.1 Application, Presentation, and Session\n14.2 Peer-to-Peer\nTài liệu: Module 15: Application Layer\nNhiệm vụ sinh viên: Read Module 15",
+      "source_label": "Syllabus NWC204 — Session 45"
+    },
+    {
+      "chunk_id": "NWC204-session-46",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 46",
+      "text": "Session 46 — 14.3 Web and Email Protocols\n14.4 IP Addressing Services\n14.5 File Sharing Services\n14.6 Integrate AI Tools for Explaining Concepts (Self Learning)\nTài liệu: Module 15: Application Layer\nNhiệm vụ sinh viên: Read Module 15",
+      "source_label": "Syllabus NWC204 — Session 46"
+    },
+    {
+      "chunk_id": "NWC204-session-47",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 47",
+      "text": "Session 47 — Project: Design and Implement a Basic Small Network with AI Assistance (continue)\n- Work on group and report project progress\n- Dialogue-based Assessment & Self Learning\nTài liệu: 15.4.8 Lab Manual\n16.2.6 Lab Manual\n16.4.7 Lab Manual (or 16.4.6 Packet Tracer)\n16.5.2 Lab Manual (or 16.5.1 Packet Tracer)\n17.4.6 Lab Manual\n17.7.6 Lab Manual (or 17.7.7 Packet Tracer)\n17.8.1 Lab Manual (or 17.8.2 Packet Tracer)\nNhiệm vụ sinh viên: Practice and Review Project",
+      "source_label": "Syllabus NWC204 — Session 47"
+    },
+    {
+      "chunk_id": "NWC204-session-48",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 48",
+      "text": "Session 48 — Project: Design and Implement a Basic Small Network with AI Assistance (continue)\n- Work on group and report project progress\n- Dialogue-based Assessment & Self Learning\nTài liệu: 15.4.8 Lab Manual\n16.2.6 Lab Manual\n16.4.7 Lab Manual (or 16.4.6 Packet Tracer)\n16.5.2 Lab Manual (or 16.5.1 Packet Tracer)\n17.4.6 Lab Manual\n17.7.6 Lab Manual (or 17.7.7 Packet Tracer)\n17.8.1 Lab Manual (or 17.8.2 Packet Tracer)\nNhiệm vụ sinh viên: Practice and Review Project",
+      "source_label": "Syllabus NWC204 — Session 48"
+    },
+    {
+      "chunk_id": "NWC204-session-49",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 49",
+      "text": "Session 49 — 15. Network Security Fundamentals\n15.1 Security Threats and Vulnerabilities\n15.2 Network Attacks\nTài liệu: Module 16: Network Security Fundamentals\nNhiệm vụ sinh viên: Read Module 16",
+      "source_label": "Syllabus NWC204 — Session 49"
+    },
+    {
+      "chunk_id": "NWC204-session-50",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 50",
+      "text": "Session 50 — 15.3 Network Attack Mitigation\n15.4 Device Security\n15.5 Integrate AI Tools for Explaining Concepts (Self Learning)\nTài liệu: Module 16: Network Security Fundamentals\nNhiệm vụ sinh viên: Read Module 16",
+      "source_label": "Syllabus NWC204 — Session 50"
+    },
+    {
+      "chunk_id": "NWC204-session-51",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 51",
+      "text": "Session 51 — Project: Design and Implement a Basic Small Network with AI Assistance (continue)\n- Work on group and report project progress\n- Dialogue-based Assessment & Self Learning\nTài liệu: 15.4.8 Lab Manual\n16.2.6 Lab Manual\n16.4.7 Lab Manual (or 16.4.6 Packet Tracer)\n16.5.2 Lab Manual (or 16.5.1 Packet Tracer)\n17.4.6 Lab Manual\n17.7.6 Lab Manual (or 17.7.7 Packet Tracer)\n17.8.1 Lab Manual (or 17.8.2 Packet Tracer)\nNhiệm vụ sinh viên: Practice and Review Project",
+      "source_label": "Syllabus NWC204 — Session 51"
+    },
+    {
+      "chunk_id": "NWC204-session-52",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 52",
+      "text": "Session 52 — Project: Design and Implement a Basic Small Network with AI Assistance (continue)\n- Work on group and report project progress\n- Dialogue-based Assessment & Self Learning\nTài liệu: 15.4.8 Lab Manual\n16.2.6 Lab Manual\n16.4.7 Lab Manual (or 16.4.6 Packet Tracer)\n16.5.2 Lab Manual (or 16.5.1 Packet Tracer)\n17.4.6 Lab Manual\n17.7.6 Lab Manual (or 17.7.7 Packet Tracer)\n17.8.1 Lab Manual (or 17.8.2 Packet Tracer)\nNhiệm vụ sinh viên: Practice and Review Project",
+      "source_label": "Syllabus NWC204 — Session 52"
+    },
+    {
+      "chunk_id": "NWC204-session-53",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 53",
+      "text": "Session 53 — Review Modules 8-15\nNhiệm vụ sinh viên: Review",
+      "source_label": "Syllabus NWC204 — Session 53"
+    },
+    {
+      "chunk_id": "NWC204-session-54",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 54",
+      "text": "Session 54 — 16. Build a Small Network\n16.1 Devices in a Small Network\n16.2 Small Network Applications and Protocols\n16.3 Scale to Larger Networks\nTài liệu: Module 17: Build a Small Network\nNhiệm vụ sinh viên: Read Module 17",
+      "source_label": "Syllabus NWC204 — Session 54"
+    },
+    {
+      "chunk_id": "NWC204-session-55",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 55",
+      "text": "Session 55 — 16.4 Verify Connectivity\n16.5 Host and IOS Commands\n16.6 Troubleshooting Methodologies\n16.7 Troubleshooting Scenarios\n16.8 Integrate AI Tools for Explaining Concepts (Self Learning)\nTài liệu: Module 17: Build a Small Network\nNhiệm vụ sinh viên: Read Module 17",
+      "source_label": "Syllabus NWC204 — Session 55"
+    },
+    {
+      "chunk_id": "NWC204-session-56",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 56",
+      "text": "Session 56 — Project: Design and Implement a Basic Small Network with AI Assistance (continue)\n- Work on group and report project progress\n- Dialogue-based Assessment & Self Learning\nTài liệu: 15.4.8 Lab Manual\n16.2.6 Lab Manual\n16.4.7 Lab Manual (or 16.4.6 Packet Tracer)\n16.5.2 Lab Manual (or 16.5.1 Packet Tracer)\n17.4.6 Lab Manual\n17.7.6 Lab Manual (or 17.7.7 Packet Tracer)\n17.8.1 Lab Manual (or 17.8.2 Packet Tracer)\nNhiệm vụ sinh viên: Practice and Review Project",
+      "source_label": "Syllabus NWC204 — Session 56"
+    },
+    {
+      "chunk_id": "NWC204-session-57",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 57",
+      "text": "Session 57 — Project: Design and Implement a Basic Small Network with AI Assistance (continue)\n- Work on group and report project progress\n- Dialogue-based Assessment & Self Learning\nTài liệu: 15.4.8 Lab Manual\n16.2.6 Lab Manual\n16.4.7 Lab Manual (or 16.4.6 Packet Tracer)\n16.5.2 Lab Manual (or 16.5.1 Packet Tracer)\n17.4.6 Lab Manual\n17.7.6 Lab Manual (or 17.7.7 Packet Tracer)\n17.8.1 Lab Manual (or 17.8.2 Packet Tracer)\nNhiệm vụ sinh viên: Practice and Review Project",
+      "source_label": "Syllabus NWC204 — Session 57"
+    },
+    {
+      "chunk_id": "NWC204-session-58",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 58",
+      "text": "Session 58 — Review\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Review",
+      "source_label": "Syllabus NWC204 — Session 58"
+    },
+    {
+      "chunk_id": "NWC204-session-59",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 59",
+      "text": "Session 59 — Review\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Review",
+      "source_label": "Syllabus NWC204 — Session 59"
+    },
+    {
+      "chunk_id": "NWC204-session-60",
+      "subject_code": "NWC204",
+      "subject_name": "Computer Networking_Mạng máy tính",
+      "section": "Session 60",
+      "text": "Session 60 — Review\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Review",
+      "source_label": "Syllabus NWC204 — Session 60"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{{ course.code }} — EduSync{% endblock %}
+{% block content %}
+  <p class="breadcrumb"><a href="/courses">&larr; Danh sách môn</a></p>
+  <h2 class="page-title">{{ course.code }} — {{ course.name }}</h2>
+  <p class="page-sub">{{ course.semester }} · {{ course.credit }} tín chỉ · {{ assignments|length }} assignment</p>
+
+  <div class="card-table">
+    <table>
+      <thead>
+        <tr><th>Assignment</th><th>Due date</th><th>Điểm</th><th>Cập nhật lúc</th><th>Sửa deadline</th></tr>
+      </thead>
+      <tbody>
+        {% for a in assignments %}
+        <tr>
+          <td>
+            {{ a.name }}
+            {% if a.description %}<br><span style="font-size:12px;color:var(--ink-muted)">{{ a.description }}</span>{% endif %}
+          </td>
+          <td>
+            {{ a.due_at.strftime('%Y-%m-%d') }}
+            {% if a.due_at < now %}
+              <span class="chip warn">Đã qua hạn</span>
+            {% else %}
+              <span class="chip ok">Sắp tới</span>
+            {% endif %}
+          </td>
+          <td>{{ a.points_possible }}</td>
+          <td>{{ a.updated_at.strftime('%Y-%m-%d %H:%M') }}</td>
+          <td>
+            <form class="edit-due" method="post" action="/courses/{{ course.code }}/assignments/{{ a.id }}/due-date"
+                  onsubmit="return confirm('Đổi deadline của \'{{ a.name }}\' từ {{ a.due_at.strftime('%Y-%m-%d') }} sang ' + this.due_at.value + '?')">
+              <input type="date" id="due-{{ a.id }}" name="due_at" aria-label="Deadline mới cho {{ a.name }}" value="{{ a.due_at.strftime('%Y-%m-%d') }}">
+              <button type="submit">Lưu</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

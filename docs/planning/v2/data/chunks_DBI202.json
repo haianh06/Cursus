@@ -1,0 +1,574 @@
+{
+  "subject_code": "DBI202",
+  "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+  "meta": {
+    "Syllabus ID": "12039",
+    "Syllabus Name": "Database Systems_Các hệ cơ sở dữ liệu",
+    "Course Name English": "Database Systems",
+    "Subject Code": "DBI202",
+    "Learning-Teaching Method": "Social Constructivism,In-class lecture,Inquiry-based Teaching",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) = 45h contact hours + 1h final exam + 85' practical exam + 104h self-study",
+    "Pre-Requisite": "",
+    "Description": "- Knowledge about database systems has become an essential part of an education in computer science because database management has evolved from a specialized computer application to a central component of a modern computing environment.\n- The content of this course includes aspects of database management basic concepts, database design, database languages, and database-system implementation. Basing on these contents, the course emphasizes on how to organize, maintain and retrieve efficiently data and information from a DBMS.",
+    "StudentTasks": "- Students must attend at least 80% of contact slots in order to be accepted to the final examination.\n- Student is responsible to do all exercises given by instructor in class or at home and submit on time\n- Promptly access to the https://flm.fpt.edu.vn/ for up-to-date course information",
+    "Tools": "Microsoft SQL Server",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "1286/QĐ-ĐHFPT dated 11/22/2024",
+    "IsApproved": "True",
+    "Note": "",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "11/22/2024"
+  },
+  "clo_count": 7,
+  "session_count": 60,
+  "chunks": [
+    {
+      "chunk_id": "DBI202-overview",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Overview & Grading Policy",
+      "text": "Description: - Knowledge about database systems has become an essential part of an education in computer science because database management has evolved from a specialized computer application to a central component of a modern computing environment.\n- The content of this course includes aspects of database management basic concepts, database design, database languages, and database-system implementation. Basing on these contents, the course emphasizes on how to organize, maintain and retrieve efficiently data and information from a DBMS.\nNoCredit: 3\nTime Allocation: Study hour (150h) = 45h contact hours + 1h final exam + 85' practical exam + 104h self-study\nStudentTasks: - Students must attend at least 80% of contact slots in order to be accepted to the final examination.\n- Student is responsible to do all exercises given by instructor in class or at home and submit on time\n- Promptly access to the https://flm.fpt.edu.vn/ for up-to-date course information\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus DBI202 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "DBI202-CLO1",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Understand thedatabase concepts and database management system software",
+      "source_label": "Syllabus DBI202 — CLO1"
+    },
+    {
+      "chunk_id": "DBI202-CLO2",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Understand the relation model of data and Algebraic Query Language",
+      "source_label": "Syllabus DBI202 — CLO2"
+    },
+    {
+      "chunk_id": "DBI202-CLO3",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Understand data normalization and apply normalization techniques in database design",
+      "source_label": "Syllabus DBI202 — CLO3"
+    },
+    {
+      "chunk_id": "DBI202-CLO4",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Be able to model an application’s data requirements using conceptual modeling tools like ER diagrams and design database schemas based on the conceptual model.",
+      "source_label": "Syllabus DBI202 — CLO4"
+    },
+    {
+      "chunk_id": "DBI202-CLO5",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Learning Outcome CLO5",
+      "text": "CLO5: Be proficient in structure query language including Data Definition Language(DDL) and Data Manipulation Language(DML)",
+      "source_label": "Syllabus DBI202 — CLO5"
+    },
+    {
+      "chunk_id": "DBI202-CLO6",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Learning Outcome CLO6",
+      "text": "CLO6: Understand PL/SQL concepts and manipulate with View, Cursors, Stored Procedures, Functions, Database Triggers",
+      "source_label": "Syllabus DBI202 — CLO6"
+    },
+    {
+      "chunk_id": "DBI202-CLO7",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Learning Outcome CLO7",
+      "text": "CLO7: Apply the Index in database design and query optimization",
+      "source_label": "Syllabus DBI202 — CLO7"
+    },
+    {
+      "chunk_id": "DBI202-session-1",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 1",
+      "text": "Session 1 — Chapter 1. The Worlds of Database Systems\n1.1 The Evolution of Database Systems\n1.2 Overview of Database Management System\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 1 in text book, focus on 1.1 and 1.2",
+      "source_label": "Syllabus DBI202 — Session 1"
+    },
+    {
+      "chunk_id": "DBI202-session-2",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 2",
+      "text": "Session 2 — 1.3 Outline of Database-System Studies\nAssignment Introduction (individual)\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 1 in text book, focus on 1.1 and 1.2",
+      "source_label": "Syllabus DBI202 — Session 2"
+    },
+    {
+      "chunk_id": "DBI202-session-3",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 3",
+      "text": "Session 3 — Chapter 2. The Relational Model of Data\n2.1 An Overview of Data Models\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 2 in text book, focus on 2.1 and 2.2",
+      "source_label": "Syllabus DBI202 — Session 3"
+    },
+    {
+      "chunk_id": "DBI202-session-4",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 4",
+      "text": "Session 4 — 2.2 Basics of the Relational Model\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 2 in text book, focus on 2.1 and 2.2",
+      "source_label": "Syllabus DBI202 — Session 4"
+    },
+    {
+      "chunk_id": "DBI202-session-5",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 5",
+      "text": "Session 5 — 2.4 An Algebraic Query Language\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 2 in text book, focus on 2.4",
+      "source_label": "Syllabus DBI202 — Session 5"
+    },
+    {
+      "chunk_id": "DBI202-session-6",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 6",
+      "text": "Session 6 — 2.4 An Algebraic Query Language (cont.)\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 2 in text book, focus on 2.4",
+      "source_label": "Syllabus DBI202 — Session 6"
+    },
+    {
+      "chunk_id": "DBI202-session-7",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 7",
+      "text": "Session 7 — Lab1 assistance\nTài liệu: Textbook, slides, lab's questions\nNhiệm vụ sinh viên: Do lab 1 as homework",
+      "source_label": "Syllabus DBI202 — Session 7"
+    },
+    {
+      "chunk_id": "DBI202-session-8",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 8",
+      "text": "Session 8 — Lab1 assistance (cont.)\nTài liệu: Textbook, slides, lab's questions\nNhiệm vụ sinh viên: Do lab 1 as homework",
+      "source_label": "Syllabus DBI202 — Session 8"
+    },
+    {
+      "chunk_id": "DBI202-session-9",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 9",
+      "text": "Session 9 — Chapter 3. Design Theory for Relational Databases\n3.1 Functional Dependencies\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 3 in text book, focus on 3.1 and 3.2",
+      "source_label": "Syllabus DBI202 — Session 9"
+    },
+    {
+      "chunk_id": "DBI202-session-10",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 10",
+      "text": "Session 10 — 3.2 Rules About Functional Dependencies\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 3 in text book, focus on 3.1 and 3.2",
+      "source_label": "Syllabus DBI202 — Session 10"
+    },
+    {
+      "chunk_id": "DBI202-session-11",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 11",
+      "text": "Session 11 — 3.3 Design of Relational Database Schema\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 3 in text book, focus on 3.3",
+      "source_label": "Syllabus DBI202 — Session 11"
+    },
+    {
+      "chunk_id": "DBI202-session-12",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 12",
+      "text": "Session 12 — 3.3 Design of Relational Database Schema (cont.)\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 3 in text book, focus on 3.3",
+      "source_label": "Syllabus DBI202 — Session 12"
+    },
+    {
+      "chunk_id": "DBI202-session-13",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 13",
+      "text": "Session 13 — 3.5 Normal Forms (1NF, 2NF)\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 3 in text book, focus on 3.5",
+      "source_label": "Syllabus DBI202 — Session 13"
+    },
+    {
+      "chunk_id": "DBI202-session-14",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 14",
+      "text": "Session 14 — 3.5 Normal Forms (cont. 3NF, BCNF)\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 3 in text book, focus on 3.5",
+      "source_label": "Syllabus DBI202 — Session 14"
+    },
+    {
+      "chunk_id": "DBI202-session-15",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 15",
+      "text": "Session 15 — Lab 2 assistance\nTài liệu: 'Textbook, slides, lab's questions\nNhiệm vụ sinh viên: Do lab 2 as homework",
+      "source_label": "Syllabus DBI202 — Session 15"
+    },
+    {
+      "chunk_id": "DBI202-session-16",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 16",
+      "text": "Session 16 — Lab 2 assistance (cont.)\nTài liệu: 'Textbook, slides, lab's questions\nNhiệm vụ sinh viên: Do lab 2 as homework",
+      "source_label": "Syllabus DBI202 — Session 16"
+    },
+    {
+      "chunk_id": "DBI202-session-17",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 17",
+      "text": "Session 17 — Progress test 1 (<=30')\nAssignment assistance\nTài liệu: Textbook, slides,assignment's questions\nNhiệm vụ sinh viên: Do assignment as homework",
+      "source_label": "Syllabus DBI202 — Session 17"
+    },
+    {
+      "chunk_id": "DBI202-session-18",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 18",
+      "text": "Session 18 — Assignment assistance (cont.)\nTài liệu: Textbook, slides,assignment's questions\nNhiệm vụ sinh viên: Do assignment as homework",
+      "source_label": "Syllabus DBI202 — Session 18"
+    },
+    {
+      "chunk_id": "DBI202-session-19",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 19",
+      "text": "Session 19 — Chapter 4. High-Level Database Models\n4.1 The Entity / Relationship Model\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 4 in text book, focus on 4.1, 4.2 and 4.3",
+      "source_label": "Syllabus DBI202 — Session 19"
+    },
+    {
+      "chunk_id": "DBI202-session-20",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 20",
+      "text": "Session 20 — 4.2 Design Principles\n4.3 Constraints in the E / R Model\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 4 in text book, focus on 4.1, 4.2 and 4.3",
+      "source_label": "Syllabus DBI202 — Session 20"
+    },
+    {
+      "chunk_id": "DBI202-session-21",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 21",
+      "text": "Session 21 — 4.4 Weak Entity Sets\n4.5 From E / R Diagrams to Relational Models\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 4 in text book, focus on 4.4, 4.5 and 4.6",
+      "source_label": "Syllabus DBI202 — Session 21"
+    },
+    {
+      "chunk_id": "DBI202-session-22",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 22",
+      "text": "Session 22 — 4.6 Converting Subclass Structures to Relations\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 4 in text book, focus on 4.4, 4.5 and 4.6",
+      "source_label": "Syllabus DBI202 — Session 22"
+    },
+    {
+      "chunk_id": "DBI202-session-23",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 23",
+      "text": "Session 23 — Lab 3 assistance\nTài liệu: Textbook, slides, lab's questions\nNhiệm vụ sinh viên: Do lab 3 as homework",
+      "source_label": "Syllabus DBI202 — Session 23"
+    },
+    {
+      "chunk_id": "DBI202-session-24",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 24",
+      "text": "Session 24 — Lab 3 assistance (cont.)\nTài liệu: Textbook, slides, lab's questions\nNhiệm vụ sinh viên: Do lab 3 as homework",
+      "source_label": "Syllabus DBI202 — Session 24"
+    },
+    {
+      "chunk_id": "DBI202-session-25",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 25",
+      "text": "Session 25 — Assignment assistance\nTài liệu: Textbook, slides,assignment's questions\nNhiệm vụ sinh viên: Do assignment as homework",
+      "source_label": "Syllabus DBI202 — Session 25"
+    },
+    {
+      "chunk_id": "DBI202-session-26",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 26",
+      "text": "Session 26 — Assignment assistance (cont.)\nTài liệu: Textbook, slides,assignment's questions\nNhiệm vụ sinh viên: Do assignment as homework",
+      "source_label": "Syllabus DBI202 — Session 26"
+    },
+    {
+      "chunk_id": "DBI202-session-27",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 27",
+      "text": "Session 27 — Chapter 6. The Database Language SQL\n6.1 Data Definition Lanaguage (DDL)\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 6 in text book, focus on 6.1 and 6.2",
+      "source_label": "Syllabus DBI202 — Session 27"
+    },
+    {
+      "chunk_id": "DBI202-session-28",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 28",
+      "text": "Session 28 — DDL (cont.)\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 6 in text book, focus on 6.1 and 6.2",
+      "source_label": "Syllabus DBI202 — Session 28"
+    },
+    {
+      "chunk_id": "DBI202-session-29",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 29",
+      "text": "Session 29 — 6.2. Implement constraints on attributes with MS SQL Server (Keys and Foreign Keys, UNIQUE, CHECK,..)\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 7 in text book, focus on 7.1 and 7.2",
+      "source_label": "Syllabus DBI202 — Session 29"
+    },
+    {
+      "chunk_id": "DBI202-session-30",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 30",
+      "text": "Session 30 — 6.2. Implement constraints on attributes with MS SQL Server (cont.)\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 7 in text book, focus on 7.1 and 7.2",
+      "source_label": "Syllabus DBI202 — Session 30"
+    },
+    {
+      "chunk_id": "DBI202-session-31",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 31",
+      "text": "Session 31 — 6.3 DML introduction & Basic of SQL Queries\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 6 in text book",
+      "source_label": "Syllabus DBI202 — Session 31"
+    },
+    {
+      "chunk_id": "DBI202-session-32",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 32",
+      "text": "Session 32 — DML (cont.)\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 6 in text book",
+      "source_label": "Syllabus DBI202 — Session 32"
+    },
+    {
+      "chunk_id": "DBI202-session-33",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 33",
+      "text": "Session 33 — 6.4 Query on more one relation\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 6 in text book",
+      "source_label": "Syllabus DBI202 — Session 33"
+    },
+    {
+      "chunk_id": "DBI202-session-34",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 34",
+      "text": "Session 34 — 6.4 Query on more one relation (cont.)\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 6 in text book",
+      "source_label": "Syllabus DBI202 — Session 34"
+    },
+    {
+      "chunk_id": "DBI202-session-35",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 35",
+      "text": "Session 35 — 6.5 Nested Queries in SQL\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 6 in text book",
+      "source_label": "Syllabus DBI202 — Session 35"
+    },
+    {
+      "chunk_id": "DBI202-session-36",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 36",
+      "text": "Session 36 — 6.5 Nested Queries in SQL (cont.)\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 6 in text book",
+      "source_label": "Syllabus DBI202 — Session 36"
+    },
+    {
+      "chunk_id": "DBI202-session-37",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 37",
+      "text": "Session 37 — 6.6 Aggregation Queries in SQL\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 6 in text book",
+      "source_label": "Syllabus DBI202 — Session 37"
+    },
+    {
+      "chunk_id": "DBI202-session-38",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 38",
+      "text": "Session 38 — 6.6 Aggregation Queries in SQL (cont.)\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 6 in text book",
+      "source_label": "Syllabus DBI202 — Session 38"
+    },
+    {
+      "chunk_id": "DBI202-session-39",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 39",
+      "text": "Session 39 — 6.7 Database Modifications (INSERT, UPDATE statement)\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 6 in text book",
+      "source_label": "Syllabus DBI202 — Session 39"
+    },
+    {
+      "chunk_id": "DBI202-session-40",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 40",
+      "text": "Session 40 — 6.7 Database Modifications (cont. DELETE statement)\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 6 in text book",
+      "source_label": "Syllabus DBI202 — Session 40"
+    },
+    {
+      "chunk_id": "DBI202-session-41",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 41",
+      "text": "Session 41 — Chapter 7. Practical Issues of database application\n7.1. Index\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 6 in text book",
+      "source_label": "Syllabus DBI202 — Session 41"
+    },
+    {
+      "chunk_id": "DBI202-session-42",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 42",
+      "text": "Session 42 — Index (cont.)\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 6 in text book",
+      "source_label": "Syllabus DBI202 — Session 42"
+    },
+    {
+      "chunk_id": "DBI202-session-43",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 43",
+      "text": "Session 43 — 7.2. Transaction, View and Query Optimization\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 6 in text book",
+      "source_label": "Syllabus DBI202 — Session 43"
+    },
+    {
+      "chunk_id": "DBI202-session-44",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 44",
+      "text": "Session 44 — 7.2. Transaction, View and Query Optimization (cont.)\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 6 in text book",
+      "source_label": "Syllabus DBI202 — Session 44"
+    },
+    {
+      "chunk_id": "DBI202-session-45",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 45",
+      "text": "Session 45 — Lab 4 assistance\nTài liệu: Textbook, slides, lab's questions\nNhiệm vụ sinh viên: Do lab 4 as homework",
+      "source_label": "Syllabus DBI202 — Session 45"
+    },
+    {
+      "chunk_id": "DBI202-session-46",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 46",
+      "text": "Session 46 — Lab 4 assistance (cont.)\nTài liệu: Textbook, slides, lab's questions\nNhiệm vụ sinh viên: Do lab 4 as homework",
+      "source_label": "Syllabus DBI202 — Session 46"
+    },
+    {
+      "chunk_id": "DBI202-session-47",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 47",
+      "text": "Session 47 — Assignment assistance (focus on query)\nTài liệu: 'Textbook, slides,assignment's questions\nNhiệm vụ sinh viên: Do assignment as homework",
+      "source_label": "Syllabus DBI202 — Session 47"
+    },
+    {
+      "chunk_id": "DBI202-session-48",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 48",
+      "text": "Session 48 — Assignment assistance (focus on query) (cont.)\nTài liệu: 'Textbook, slides,assignment's questions\nNhiệm vụ sinh viên: Do assignment as homework",
+      "source_label": "Syllabus DBI202 — Session 48"
+    },
+    {
+      "chunk_id": "DBI202-session-49",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 49",
+      "text": "Session 49 — Chapter 8. Constraints and T-SQL Programming\n8.1 Triggers\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 7 in text book, focus on 7.5",
+      "source_label": "Syllabus DBI202 — Session 49"
+    },
+    {
+      "chunk_id": "DBI202-session-50",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 50",
+      "text": "Session 50 — 8.2 Constraint with triggers\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 7 in text book, focus on 7.5",
+      "source_label": "Syllabus DBI202 — Session 50"
+    },
+    {
+      "chunk_id": "DBI202-session-51",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 51",
+      "text": "Session 51 — 8.3 View, Function\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 7 in text book",
+      "source_label": "Syllabus DBI202 — Session 51"
+    },
+    {
+      "chunk_id": "DBI202-session-52",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 52",
+      "text": "Session 52 — 8.3 View, Function (cont.)\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 7 in text book",
+      "source_label": "Syllabus DBI202 — Session 52"
+    },
+    {
+      "chunk_id": "DBI202-session-53",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 53",
+      "text": "Session 53 — 8.4 Cursors\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 9 in text book",
+      "source_label": "Syllabus DBI202 — Session 53"
+    },
+    {
+      "chunk_id": "DBI202-session-54",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 54",
+      "text": "Session 54 — 8.5 Implement stored procedure with MS SQL Server\nTài liệu: Textbook, slides\nNhiệm vụ sinh viên: Read chapter 9 in text book",
+      "source_label": "Syllabus DBI202 — Session 54"
+    },
+    {
+      "chunk_id": "DBI202-session-55",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 55",
+      "text": "Session 55 — Progress test 2\nLab 5 assistance\nTài liệu: Textbook, slides, lab's questions\nNhiệm vụ sinh viên: Do lab 5 as homework",
+      "source_label": "Syllabus DBI202 — Session 55"
+    },
+    {
+      "chunk_id": "DBI202-session-56",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 56",
+      "text": "Session 56 — Lab 5 assistance (cont.)\nTài liệu: Textbook, slides, lab's questions\nNhiệm vụ sinh viên: Do lab 5 as homework",
+      "source_label": "Syllabus DBI202 — Session 56"
+    },
+    {
+      "chunk_id": "DBI202-session-57",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 57",
+      "text": "Session 57 — Assignment review\nTài liệu: 'Textbook, slides,assignment's questions\nNhiệm vụ sinh viên: Do assignment as homework",
+      "source_label": "Syllabus DBI202 — Session 57"
+    },
+    {
+      "chunk_id": "DBI202-session-58",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 58",
+      "text": "Session 58 — Assignment review (cont.)\nTài liệu: 'Textbook, slides,assignment's questions\nNhiệm vụ sinh viên: Do assignment as homework",
+      "source_label": "Syllabus DBI202 — Session 58"
+    },
+    {
+      "chunk_id": "DBI202-session-59",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 59",
+      "text": "Session 59 — Review",
+      "source_label": "Syllabus DBI202 — Session 59"
+    },
+    {
+      "chunk_id": "DBI202-session-60",
+      "subject_code": "DBI202",
+      "subject_name": "Database Systems_Các hệ cơ sở dữ liệu",
+      "section": "Session 60",
+      "text": "Session 60 — Review",
+      "source_label": "Syllabus DBI202 — Session 60"
+    }
+  ]
+}

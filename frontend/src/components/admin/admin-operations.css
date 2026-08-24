@@ -1,0 +1,47 @@
+/* Admin Console structural layout — ported from the `chung` branch's
+ * `.admin-operations` scope (docs/branch-audit/chung-admin-frontend.md §5),
+ * with its separate "Ink & Citrine" color palette deliberately dropped.
+ *
+ * `chung`'s admin-operations.css redefined --bg-app/--accent/--danger/etc.
+ * inside this class, giving Admin its own look distinct from Student/
+ * Instructor. This branch already went through a round of unifying several
+ * different "brand blue" hex values into one token (see docs/archive/
+ * AUDIT_NHANH_CHUNG_ADMIN_23AUG.md §4) -- reintroducing a second, Admin-only
+ * palette here would silently redo the thing that cleanup fixed. Every
+ * `text-fg` / `bg-surface` / `border-line` / `bg-danger-soft` class chung's
+ * Admin JSX uses already resolves through frontend/src/index.css's shared
+ * @theme tokens, so no color redefinition is needed at all -- only the
+ * layout/structural rules that are genuinely Admin-specific.
+ */
+.admin-cockpit { min-height: 100%; }
+.admin-page-header { background: var(--bg-app); }
+.admin-cockpit-main {
+  width: 100%;
+  max-width: 1600px;
+  min-width: 0;
+  margin: 0 auto;
+  padding: 1rem;
+}
+.admin-scroll-x { overflow-x: auto; }
+.admin-case-ribbon { position: sticky; top: 0; z-index: 5; }
+
+.admin-operations button:focus-visible,
+.admin-operations a:focus-visible,
+.admin-operations input:focus-visible,
+.admin-operations select:focus-visible,
+.admin-operations textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (min-width: 768px) {
+  .admin-cockpit-main { padding: 1.5rem; }
+}
+
+@media (min-width: 1280px) {
+  .admin-cockpit-main { padding: 1.5rem 2rem 2rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-operations *, .admin-operations *::before, .admin-operations *::after { scroll-behavior: auto; transition-duration: 0.01ms; animation-duration: 0.01ms; }
+}

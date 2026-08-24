@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Courses — EduSync{% endblock %}
+{% block content %}
+  <h2 class="page-title">Danh sách môn học</h2>
+  <p class="page-sub">Dữ liệu môn học &amp; assignment do platform ngoài này quản lý — Cursus đọc qua REST API + OAuth, không đọc thẳng DB.</p>
+
+  <div class="stat-row">
+    <div class="stat-card"><div class="n">{{ courses|length }}</div><div class="l">Môn học</div></div>
+    <div class="stat-card"><div class="n">{{ courses|sum(attribute='credit') }}</div><div class="l">Tổng tín chỉ</div></div>
+    <div class="stat-card"><div class="n">{{ semesters|length }}</div><div class="l">Học kỳ</div></div>
+  </div>
+
+  <div class="toolbar">
+    <input type="search" id="course-search" placeholder="Lọc theo mã hoặc tên môn…" aria-label="Lọc danh sách môn học" oninput="filterCourses()">
+  </div>
+
+  {# Nhóm theo học kỳ -- đúng cách 1 catalogue môn học thật tổ chức (research:
+     Canvas "All Courses" lọc/nhóm theo kỳ, không trộn hết vào 1 lưới phẳng). #}
+  {% set palette = ['#2563eb', '#0d9488', '#c026d3', '#d97706', '#65a30d', '#e11d48', '#7c3aed', '#0891b2'] %}
+  {% for semester, courses_in_term in semesters %}
+  <section class="term-section">
+    <h3 class="term-heading">
+      {{ 'Kỳ ' ~ semester if semester.isdigit() else semester }}
+      <span class="count">({{ courses_in_term|length }} môn)</span>
+    </h3>
+    <div class="course-grid" data-term-grid>
+      {% for c in courses_in_term %}
+      <a class="course-card" href="/courses/{{ c.code }}" data-search="{{ (c.code ~ ' ' ~ c.name)|lower }}">
+        <div class="accent-bar" style="background: {{ palette[loop.index0 % palette|length] }};"></div>
+        <div class="body">
+          <div class="code" style="color: {{ palette[loop.index0 % palette|length] }};">{{ c.code }}</div>
+          <div class="name">{{ c.name }}</div>
+          <div class="meta">
+            <span>{{ c.credit }} tín chỉ</span>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endfor %}
+
+  <script>
+    function filterCourses() {
+      const q = document.getElementById('course-search').value.trim().toLowerCase();
+      document.querySelectorAll('[data-term-grid] .course-card').forEach(function (card) {
+        card.style.display = card.dataset.search.includes(q) ? '' : 'none';
+      });
+      document.querySelectorAll('.term-section').forEach(function (section) {
+        const anyVisible = Array.from(section.querySelectorAll('.course-card'))
+          .some(function (card) { return card.style.display !== 'none'; });
+        section.style.display = anyVisible ? '' : 'none';
+      });
+    }
+  </script>
+{% endblock %}

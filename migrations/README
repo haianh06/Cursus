@@ -1,0 +1,20 @@
+# Alembic migrations
+
+Active revisions live in `versions/`.
+
+- `20260808_baseline_schema.py` — full schema from `src.db.models` (Postgres-ready).
+- Older incomplete revisions are kept under `versions_legacy/` for history only;
+  Alembic does **not** load that folder.
+
+## Common commands
+
+```bash
+# Apply all migrations
+alembic upgrade head
+
+# Create a new revision after model changes
+alembic revision --autogenerate -m "describe_change"
+```
+
+With Docker Compose, `scripts/docker_entrypoint.py` runs `alembic upgrade head`
+automatically before starting uvicorn.

@@ -1,0 +1,540 @@
+{
+  "subject_code": "LAB211",
+  "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+  "meta": {
+    "Syllabus ID": "10021",
+    "Syllabus Name": "OOP with Java Lab_Thực hành OOP với Java",
+    "Course Name English": "OOP with Java Lab",
+    "Subject Code": "LAB211",
+    "Learning-Teaching Method": "Inquiry-based Teaching,Experiential learning methods,Practice",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) = 45h contact hours + 105h self-study",
+    "Pre-Requisite": "PRO192",
+    "Description": "This course focuses on basic problems related to Java programming skills. Students are required to implement all assignments by him/her self in lab rooms.\nEach assignment must be completed continuosly in the defined time.",
+    "StudentTasks": "- Students must attend at least 80% of contact slots in order to be accepted to the final results.\n- Students are responsible to conform to Lab Room Regulations\n- Use desktop computers only in lab room for learning purposes\n- Promptly access to the FU LMS at https://flm.fpt.edu.vn/ for up-to-date course information",
+    "Tools": "NetBean 8.0.2\nCheckStyle plugin for netbeans\nJAVA DOC\nJDK8\nTomcat Apache 8\nMicrosoft Excel 2007 or above\nMicrosoft Word 2007 or above\nMicrosoft Powerpoint 2007 or above\nMicrosoft Windows XP or above",
+    "DecisionNo MM/dd/yyyy": "808/QĐ-ĐHFPT dated 08/03/2023",
+    "IsApproved": "True",
+    "Note": "",
+    "Is Scored": "False",
+    "IsActive": "True",
+    "ApprovedDate": "8/3/2023"
+  },
+  "clo_count": 3,
+  "session_count": 60,
+  "chunks": [
+    {
+      "chunk_id": "LAB211-overview",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Overview & Grading Policy",
+      "text": "Description: This course focuses on basic problems related to Java programming skills. Students are required to implement all assignments by him/her self in lab rooms.\nEach assignment must be completed continuosly in the defined time.\nNoCredit: 3\nPre-Requisite: PRO192\nTime Allocation: Study hour (150h) = 45h contact hours + 105h self-study\nStudentTasks: - Students must attend at least 80% of contact slots in order to be accepted to the final results.\n- Students are responsible to conform to Lab Room Regulations\n- Use desktop computers only in lab room for learning purposes\n- Promptly access to the FU LMS at https://flm.fpt.edu.vn/ for up-to-date course information",
+      "source_label": "Syllabus LAB211 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "LAB211-CLO1",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Proficency in basic Java skills required in PRO192 Course",
+      "source_label": "Syllabus LAB211 — CLO1"
+    },
+    {
+      "chunk_id": "LAB211-CLO2",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Be able to Independently complete small-size assignments",
+      "source_label": "Syllabus LAB211 — CLO2"
+    },
+    {
+      "chunk_id": "LAB211-CLO3",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Be able to debug code using common tools",
+      "source_label": "Syllabus LAB211 — CLO3"
+    },
+    {
+      "chunk_id": "LAB211-session-1",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 1",
+      "text": "Session 1 — Orientation",
+      "source_label": "Syllabus LAB211 — Session 1"
+    },
+    {
+      "chunk_id": "LAB211-session-2",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 2",
+      "text": "Session 2 — Orientation",
+      "source_label": "Syllabus LAB211 — Session 2"
+    },
+    {
+      "chunk_id": "LAB211-session-3",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 3",
+      "text": "Session 3 — Orientation",
+      "source_label": "Syllabus LAB211 — Session 3"
+    },
+    {
+      "chunk_id": "LAB211-session-4",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 4",
+      "text": "Session 4 — Orientation",
+      "source_label": "Syllabus LAB211 — Session 4"
+    },
+    {
+      "chunk_id": "LAB211-session-5",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 5",
+      "text": "Session 5 — Practice",
+      "source_label": "Syllabus LAB211 — Session 5"
+    },
+    {
+      "chunk_id": "LAB211-session-6",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 6",
+      "text": "Session 6 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 6"
+    },
+    {
+      "chunk_id": "LAB211-session-7",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 7",
+      "text": "Session 7 — Practice",
+      "source_label": "Syllabus LAB211 — Session 7"
+    },
+    {
+      "chunk_id": "LAB211-session-8",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 8",
+      "text": "Session 8 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 8"
+    },
+    {
+      "chunk_id": "LAB211-session-9",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 9",
+      "text": "Session 9 — Practice",
+      "source_label": "Syllabus LAB211 — Session 9"
+    },
+    {
+      "chunk_id": "LAB211-session-10",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 10",
+      "text": "Session 10 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 10"
+    },
+    {
+      "chunk_id": "LAB211-session-11",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 11",
+      "text": "Session 11 — Practice",
+      "source_label": "Syllabus LAB211 — Session 11"
+    },
+    {
+      "chunk_id": "LAB211-session-12",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 12",
+      "text": "Session 12 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 12"
+    },
+    {
+      "chunk_id": "LAB211-session-13",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 13",
+      "text": "Session 13 — Practice",
+      "source_label": "Syllabus LAB211 — Session 13"
+    },
+    {
+      "chunk_id": "LAB211-session-14",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 14",
+      "text": "Session 14 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 14"
+    },
+    {
+      "chunk_id": "LAB211-session-15",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 15",
+      "text": "Session 15 — Practice",
+      "source_label": "Syllabus LAB211 — Session 15"
+    },
+    {
+      "chunk_id": "LAB211-session-16",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 16",
+      "text": "Session 16 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 16"
+    },
+    {
+      "chunk_id": "LAB211-session-17",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 17",
+      "text": "Session 17 — Practice",
+      "source_label": "Syllabus LAB211 — Session 17"
+    },
+    {
+      "chunk_id": "LAB211-session-18",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 18",
+      "text": "Session 18 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 18"
+    },
+    {
+      "chunk_id": "LAB211-session-19",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 19",
+      "text": "Session 19 — Practice",
+      "source_label": "Syllabus LAB211 — Session 19"
+    },
+    {
+      "chunk_id": "LAB211-session-20",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 20",
+      "text": "Session 20 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 20"
+    },
+    {
+      "chunk_id": "LAB211-session-21",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 21",
+      "text": "Session 21 — Practice",
+      "source_label": "Syllabus LAB211 — Session 21"
+    },
+    {
+      "chunk_id": "LAB211-session-22",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 22",
+      "text": "Session 22 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 22"
+    },
+    {
+      "chunk_id": "LAB211-session-23",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 23",
+      "text": "Session 23 — Practice",
+      "source_label": "Syllabus LAB211 — Session 23"
+    },
+    {
+      "chunk_id": "LAB211-session-24",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 24",
+      "text": "Session 24 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 24"
+    },
+    {
+      "chunk_id": "LAB211-session-25",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 25",
+      "text": "Session 25 — Practice",
+      "source_label": "Syllabus LAB211 — Session 25"
+    },
+    {
+      "chunk_id": "LAB211-session-26",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 26",
+      "text": "Session 26 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 26"
+    },
+    {
+      "chunk_id": "LAB211-session-27",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 27",
+      "text": "Session 27 — Practice",
+      "source_label": "Syllabus LAB211 — Session 27"
+    },
+    {
+      "chunk_id": "LAB211-session-28",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 28",
+      "text": "Session 28 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 28"
+    },
+    {
+      "chunk_id": "LAB211-session-29",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 29",
+      "text": "Session 29 — Practice",
+      "source_label": "Syllabus LAB211 — Session 29"
+    },
+    {
+      "chunk_id": "LAB211-session-30",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 30",
+      "text": "Session 30 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 30"
+    },
+    {
+      "chunk_id": "LAB211-session-31",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 31",
+      "text": "Session 31 — Practice",
+      "source_label": "Syllabus LAB211 — Session 31"
+    },
+    {
+      "chunk_id": "LAB211-session-32",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 32",
+      "text": "Session 32 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 32"
+    },
+    {
+      "chunk_id": "LAB211-session-33",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 33",
+      "text": "Session 33 — Practice",
+      "source_label": "Syllabus LAB211 — Session 33"
+    },
+    {
+      "chunk_id": "LAB211-session-34",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 34",
+      "text": "Session 34 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 34"
+    },
+    {
+      "chunk_id": "LAB211-session-35",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 35",
+      "text": "Session 35 — Practice",
+      "source_label": "Syllabus LAB211 — Session 35"
+    },
+    {
+      "chunk_id": "LAB211-session-36",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 36",
+      "text": "Session 36 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 36"
+    },
+    {
+      "chunk_id": "LAB211-session-37",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 37",
+      "text": "Session 37 — Practice",
+      "source_label": "Syllabus LAB211 — Session 37"
+    },
+    {
+      "chunk_id": "LAB211-session-38",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 38",
+      "text": "Session 38 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 38"
+    },
+    {
+      "chunk_id": "LAB211-session-39",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 39",
+      "text": "Session 39 — Practice",
+      "source_label": "Syllabus LAB211 — Session 39"
+    },
+    {
+      "chunk_id": "LAB211-session-40",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 40",
+      "text": "Session 40 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 40"
+    },
+    {
+      "chunk_id": "LAB211-session-41",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 41",
+      "text": "Session 41 — Practice",
+      "source_label": "Syllabus LAB211 — Session 41"
+    },
+    {
+      "chunk_id": "LAB211-session-42",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 42",
+      "text": "Session 42 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 42"
+    },
+    {
+      "chunk_id": "LAB211-session-43",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 43",
+      "text": "Session 43 — Practice",
+      "source_label": "Syllabus LAB211 — Session 43"
+    },
+    {
+      "chunk_id": "LAB211-session-44",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 44",
+      "text": "Session 44 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 44"
+    },
+    {
+      "chunk_id": "LAB211-session-45",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 45",
+      "text": "Session 45 — Practice",
+      "source_label": "Syllabus LAB211 — Session 45"
+    },
+    {
+      "chunk_id": "LAB211-session-46",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 46",
+      "text": "Session 46 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 46"
+    },
+    {
+      "chunk_id": "LAB211-session-47",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 47",
+      "text": "Session 47 — Practice",
+      "source_label": "Syllabus LAB211 — Session 47"
+    },
+    {
+      "chunk_id": "LAB211-session-48",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 48",
+      "text": "Session 48 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 48"
+    },
+    {
+      "chunk_id": "LAB211-session-49",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 49",
+      "text": "Session 49 — Practice",
+      "source_label": "Syllabus LAB211 — Session 49"
+    },
+    {
+      "chunk_id": "LAB211-session-50",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 50",
+      "text": "Session 50 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 50"
+    },
+    {
+      "chunk_id": "LAB211-session-51",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 51",
+      "text": "Session 51 — Practice",
+      "source_label": "Syllabus LAB211 — Session 51"
+    },
+    {
+      "chunk_id": "LAB211-session-52",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 52",
+      "text": "Session 52 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 52"
+    },
+    {
+      "chunk_id": "LAB211-session-53",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 53",
+      "text": "Session 53 — Practice",
+      "source_label": "Syllabus LAB211 — Session 53"
+    },
+    {
+      "chunk_id": "LAB211-session-54",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 54",
+      "text": "Session 54 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 54"
+    },
+    {
+      "chunk_id": "LAB211-session-55",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 55",
+      "text": "Session 55 — Practice",
+      "source_label": "Syllabus LAB211 — Session 55"
+    },
+    {
+      "chunk_id": "LAB211-session-56",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 56",
+      "text": "Session 56 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 56"
+    },
+    {
+      "chunk_id": "LAB211-session-57",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 57",
+      "text": "Session 57 — Practice",
+      "source_label": "Syllabus LAB211 — Session 57"
+    },
+    {
+      "chunk_id": "LAB211-session-58",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 58",
+      "text": "Session 58 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 58"
+    },
+    {
+      "chunk_id": "LAB211-session-59",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 59",
+      "text": "Session 59 — Practice",
+      "source_label": "Syllabus LAB211 — Session 59"
+    },
+    {
+      "chunk_id": "LAB211-session-60",
+      "subject_code": "LAB211",
+      "subject_name": "OOP with Java Lab_Thực hành OOP với Java",
+      "section": "Session 60",
+      "text": "Session 60 — Mentor review",
+      "source_label": "Syllabus LAB211 — Session 60"
+    }
+  ]
+}

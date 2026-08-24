@@ -1,0 +1,26 @@
+.git
+.gitignore
+.env
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+docs/
+presentation/
+eval/
+*.md
+!requirements.txt
+# Read-only corpus the app actually reads at runtime (src/services/mock/demo_data.py,
+# src/services/rag/rag.py, src/services/mock/gate2_demo.py, real_curriculum_service.py,
+# student_mock_data_service.py) -- everything else under docs/ is planning/eval docs,
+# genuinely not needed in the image. Each ancestor dir needs its own `!` line: Docker
+# (like git) won't re-include a path whose parent directory is still ignored.
+!docs/
+!docs/planning/
+!docs/planning/v2/
+!docs/planning/v2/data/
+!docs/planning/v2/data/**
+.dockerignore
+Dockerfile
+docker-compose.yml

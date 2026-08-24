@@ -1,0 +1,574 @@
+{
+  "subject_code": "SSG105",
+  "subject_name": "Kỹ năng giao tiếp và cộng tác",
+  "meta": {
+    "Syllabus ID": "14127",
+    "Syllabus Name": "Kỹ năng giao tiếp và cộng tác",
+    "Course Name English": "Communication and In-Group Working Skills",
+    "Subject Code": "SSG105",
+    "Learning-Teaching Method": "Offline; Teaching methods: A constructivist approach and project-based learning.",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) = 45 contact hours (60 sessions) + 40mins final exam + 105 hours self-study",
+    "Pre-Requisite": "N/A",
+    "Description": "This course develops students’ teamwork and workplace communication skills for academic and professional contexts. Students examine how teams function and practice building trust, leadership, and conflict management while communicating effectively in collaborative settings. The course also emphasizes academic integrity, netiquette, and ethical communication as essential principles for responsible participation in academic and professional communities. Through group projects and applied activities, students develop practical skills in writing, presentations, meetings, and career communication.",
+    "StudentTasks": "- Students must attend at least 80% of contact hours in order to be eligible for the final examination.\n- Students are responsible for completing all exercises, assignments, and lab work assigned by the instructor, whether in class or at home, and for submitting them on time.\n- Laptops may be used in class for learning purposes only.\n- Promptly access the FLM system at https://flm.fpt.edu.vn\nfor up-to-date course information.",
+    "Tools": "- Internet",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "377/QĐ-ĐHFPT dated 04/09/2026",
+    "IsApproved": "True",
+    "Note": "Progress marks:\n- 01 Participation: 10%\n- 02 Activities: 10%\n- Project:\nPart 1: 10% (Project Proposal & Presentation)\nPart 2: 20% (Group Project Deliverables & Final Project Report/Presentation)\n- 01 Quiz: 5%\n- 02 ASM: 20%\n- 01 Final exam: 25%\nConditions to pass: Final exam >= 4\nGrade Average >= 5/10",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "4/9/2026"
+  },
+  "clo_count": 7,
+  "session_count": 60,
+  "chunks": [
+    {
+      "chunk_id": "SSG105-overview",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Overview & Grading Policy",
+      "text": "Description: This course develops students’ teamwork and workplace communication skills for academic and professional contexts. Students examine how teams function and practice building trust, leadership, and conflict management while communicating effectively in collaborative settings. The course also emphasizes academic integrity, netiquette, and ethical communication as essential principles for responsible participation in academic and professional communities. Through group projects and applied activities, students develop practical skills in writing, presentations, meetings, and career communication.\nNoCredit: 3\nPre-Requisite: N/A\nTime Allocation: Study hour (150h) = 45 contact hours (60 sessions) + 40mins final exam + 105 hours self-study\nStudentTasks: - Students must attend at least 80% of contact hours in order to be eligible for the final examination.\n- Students are responsible for completing all exercises, assignments, and lab work assigned by the instructor, whether in class or at home, and for submitting them on time.\n- Laptops may be used in class for learning purposes only.\n- Promptly access the FLM system at https://flm.fpt.edu.vn\nfor up-to-date course information.\nNote: Progress marks:\n- 01 Participation: 10%\n- 02 Activities: 10%\n- Project:\nPart 1: 10% (Project Proposal & Presentation)\nPart 2: 20% (Group Project Deliverables & Final Project Report/Presentation)\n- 01 Quiz: 5%\n- 02 ASM: 20%\n- 01 Final exam: 25%\nConditions to pass: Final exam >= 4\nGrade Average >= 5/10\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus SSG105 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "SSG105-CLO1",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Explain key concepts of teamwork, leadership, and team dynamics in academic and workplace contexts.",
+      "source_label": "Syllabus SSG105 — CLO1"
+    },
+    {
+      "chunk_id": "SSG105-CLO2",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Apply teamwork and leadership skills to accomplish group tasks and projects effectively.",
+      "source_label": "Syllabus SSG105 — CLO2"
+    },
+    {
+      "chunk_id": "SSG105-CLO3",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Demonstrate effective communication in collaborative settings using emotional intelligence and meeting facilitation techniques.",
+      "source_label": "Syllabus SSG105 — CLO3"
+    },
+    {
+      "chunk_id": "SSG105-CLO4",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Analyze and resolve team conflicts using problem-solving and constructive feedback strategies.",
+      "source_label": "Syllabus SSG105 — CLO4"
+    },
+    {
+      "chunk_id": "SSG105-CLO5",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Learning Outcome CLO5",
+      "text": "CLO5: Produce professional written documents and deliver clear and persuasive presentations for academic and workplace purposes.",
+      "source_label": "Syllabus SSG105 — CLO5"
+    },
+    {
+      "chunk_id": "SSG105-CLO6",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Learning Outcome CLO6",
+      "text": "CLO6: Develop a personal career plan and demonstrate readiness for professional environments.",
+      "source_label": "Syllabus SSG105 — CLO6"
+    },
+    {
+      "chunk_id": "SSG105-CLO7",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Learning Outcome CLO7",
+      "text": "CLO7: Demonstrate ethical and responsible communication in teamwork and professional contexts.",
+      "source_label": "Syllabus SSG105 — CLO7"
+    },
+    {
+      "chunk_id": "SSG105-session-1",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 1",
+      "text": "Session 1 — 'Ice-breaking and Course introduction\nPart I. Teamwork Skills in University\nUnit 1. Overview of Teamwork\n1. The Team and the Organization\nTài liệu: - Part I. Teamwork Skills in University\n- Read slide 1.1\nNhiệm vụ sinh viên: - Read & review Part I.\n- Teamwork Skills in University\n- Read slide 1.1",
+      "source_label": "Syllabus SSG105 — Session 1"
+    },
+    {
+      "chunk_id": "SSG105-session-2",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 2",
+      "text": "Session 2 — 2. Why Teamwork Works\nTài liệu: - Part I. Teamwork Skills in University\n- Read slide 1.2\nNhiệm vụ sinh viên: - Read & review Part I.\n- Teamwork Skills in University\n- Read slide 1.2",
+      "source_label": "Syllabus SSG105 — Session 2"
+    },
+    {
+      "chunk_id": "SSG105-session-3",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 3",
+      "text": "Session 3 — 3. The Team and Its Members\nActivity: Form project groups (5–9 students per group)\nTài liệu: - Part I. Teamwork Skills in University\n- Read slide 1.3\nNhiệm vụ sinh viên: - Read & review Part I.\n- Teamwork Skills in University\n- Read slide 1.3",
+      "source_label": "Syllabus SSG105 — Session 3"
+    },
+    {
+      "chunk_id": "SSG105-session-4",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 4",
+      "text": "Session 4 — Unit 2. Project Launch\n1. Class Team Projects\n2. Create a Team Charter\nTài liệu: - Part II. Teamwork Skills in University\n- Read slide 2.1\nNhiệm vụ sinh viên: - Read & review Part II.\n- Teamwork Skills in University\n- Read slide 2.1",
+      "source_label": "Syllabus SSG105 — Session 4"
+    },
+    {
+      "chunk_id": "SSG105-session-5",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 5",
+      "text": "Session 5 — 3. The Importance of Trust\n4. Measuring Trust\n5. Building Trust\nTài liệu: - Part II. Teamwork Skills in University\n- Read slide 2.2\nNhiệm vụ sinh viên: - Read & review Part II. Teamwork Skills in University\n- Read slide 2.2",
+      "source_label": "Syllabus SSG105 — Session 5"
+    },
+    {
+      "chunk_id": "SSG105-session-6",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 6",
+      "text": "Session 6 — 6. Psychological Safety\n7. Creating Psychological Safety\n8. Trust and Communication\n9. Building Trust in Teams – Conclusion\nUnit 2 Activity: Preparing Project Ideas\nTài liệu: - Part II. Teamwork Skills in University\n- Read slide 2.3\nNhiệm vụ sinh viên: - Read & review Part II. Teamwork Skills in University\n- Read slide 2.3",
+      "source_label": "Syllabus SSG105 — Session 6"
+    },
+    {
+      "chunk_id": "SSG105-session-7",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 7",
+      "text": "Session 7 — Unit 3 Business Writing in Action\n1. Text, Email, and Netiquette\nTài liệu: - Chapter 9. Business Communication for Success\n- Read slide 3.1\nNhiệm vụ sinh viên: - Read & review Chapter 9. Business Communication for Success\n- Read slide 3.1",
+      "source_label": "Syllabus SSG105 — Session 7"
+    },
+    {
+      "chunk_id": "SSG105-session-8",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 8",
+      "text": "Session 8 — 2. Memorandums and Letters\nTài liệu: - Chapter 9. Business Communication for Success\n- Read slide 3.2\nNhiệm vụ sinh viên: - Read & review Chapter 9. Business Communication for Success\n- Read slide 3.2",
+      "source_label": "Syllabus SSG105 — Session 8"
+    },
+    {
+      "chunk_id": "SSG105-session-9",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 9",
+      "text": "Session 9 — 3. Business Proposal\nTài liệu: - Chapter 9. Business Communication for Success\n- Read slide 3.3\nNhiệm vụ sinh viên: - Read & review Chapter 9. Business Communication for Success\n- Read slide 3.3",
+      "source_label": "Syllabus SSG105 — Session 9"
+    },
+    {
+      "chunk_id": "SSG105-session-10",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 10",
+      "text": "Session 10 — 3. Practice: Business Proposal\nGuidance on Writing a Group Project Proposal\nTài liệu: - Chapter 9. Business Communication for Success\n- Read slide 3.4\nNhiệm vụ sinh viên: - Read & review Chapter 9. Business Communication for Success\n- Read slide 3.4",
+      "source_label": "Syllabus SSG105 — Session 10"
+    },
+    {
+      "chunk_id": "SSG105-session-11",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 11",
+      "text": "Session 11 — 3. Practice: Business Proposal (cont.)\nGuidance on Writing a Group Project Proposal (5–9 students per group)\nTài liệu: - Chapter 9. Business Communication for Success\n- Read slide 3.5\nNhiệm vụ sinh viên: - Read & review Chapter 9. Business Communication for Success\n- Read slide 3.5",
+      "source_label": "Syllabus SSG105 — Session 11"
+    },
+    {
+      "chunk_id": "SSG105-session-12",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 12",
+      "text": "Session 12 — 3. Practice: Business Proposal (cont.)\nGuidance on Writing a Group Project Proposal (5–9 students per group)\nTài liệu: - Chapter 9. Business Communication for Success\n- Read slide 3.6\nNhiệm vụ sinh viên: - Read & review Chapter 9. Business Communication for Success\n- Read slide 3.6",
+      "source_label": "Syllabus SSG105 — Session 12"
+    },
+    {
+      "chunk_id": "SSG105-session-13",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 13",
+      "text": "Session 13 — Unit 4. Team Leadership\n1. Challenges of Managing Team\n2. The Importance of Leadership\nTài liệu: - Part III. Teamwork Skills in University\n- Read slide 4.1\nNhiệm vụ sinh viên: - Read & review Part III. Teamwork Skills in University\n- Read slide 4.1",
+      "source_label": "Syllabus SSG105 — Session 13"
+    },
+    {
+      "chunk_id": "SSG105-session-14",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 14",
+      "text": "Session 14 — 3. Types of Leadership\n4. How to Build Leadership Skills\nTài liệu: - Part III. Teamwork Skills in University\n- Read slide 4.2\nNhiệm vụ sinh viên: - Read & review Part III. Teamwork Skills in University\n- Read slide 4.2",
+      "source_label": "Syllabus SSG105 — Session 14"
+    },
+    {
+      "chunk_id": "SSG105-session-15",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 15",
+      "text": "Session 15 — 5. Practice: Team Leadership\nTài liệu: - Part III. Teamwork Skills in University\n- Read slide 4.3\nNhiệm vụ sinh viên: - Read & review Part III. Teamwork Skills in University\n- Read slide 4.3",
+      "source_label": "Syllabus SSG105 — Session 15"
+    },
+    {
+      "chunk_id": "SSG105-session-16",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 16",
+      "text": "Session 16 — Group Project – Part 1: Proposal Presentation\nTài liệu: - Course Implementation\n- Syllabus SSG105\n'- Read slide 5\nNhiệm vụ sinh viên: Preparation and Presentation",
+      "source_label": "Syllabus SSG105 — Session 16"
+    },
+    {
+      "chunk_id": "SSG105-session-17",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 17",
+      "text": "Session 17 — Group Project – Part 1: Proposal Presentation\nTài liệu: Course Implementation\n- Syllabus SSG105\n- Read slide 5\nNhiệm vụ sinh viên: Preparation and Presentation",
+      "source_label": "Syllabus SSG105 — Session 17"
+    },
+    {
+      "chunk_id": "SSG105-session-18",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 18",
+      "text": "Session 18 — Group Project – Part 1: Proposal Presentation\nTài liệu: - Course Implementation\n- Syllabus SSG105\n- Read slide 5\nNhiệm vụ sinh viên: Preparation and Presentation",
+      "source_label": "Syllabus SSG105 — Session 18"
+    },
+    {
+      "chunk_id": "SSG105-session-19",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 19",
+      "text": "Session 19 — Unit 5. Working Together\n1. Importance of Emotional Intelligence\n2. Expressing Feelings Productively\n3. Working Together – Conclusion\nTài liệu: - Part V. Teamwork Skills in University\n- Read slide 6.1\nNhiệm vụ sinh viên: - Read & review Part V. Teamwork Skills in University\n- Read slide 6.1",
+      "source_label": "Syllabus SSG105 — Session 19"
+    },
+    {
+      "chunk_id": "SSG105-session-20",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 20",
+      "text": "Session 20 — Unit 6. Effective Team Meetings\n1. Team Meeting Planner\nTài liệu: - Part IV. Teamwork Skills in University\n- Read slide 6.2\nNhiệm vụ sinh viên: - Read & review Part IV. Teamwork Skills in University\n- Read slide 6.2",
+      "source_label": "Syllabus SSG105 — Session 20"
+    },
+    {
+      "chunk_id": "SSG105-session-21",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 21",
+      "text": "Session 21 — 2. Practice: Effective Team Meetings\nTài liệu: - Part IV. Teamwork Skills in University\n- Read slide 6.3\nNhiệm vụ sinh viên: - Read & review Part IV. Teamwork Skills in University\n- Read slide 6.3",
+      "source_label": "Syllabus SSG105 — Session 21"
+    },
+    {
+      "chunk_id": "SSG105-session-22",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 22",
+      "text": "Session 22 — Unit 7. Overcoming Challenges\n1. Group Problem Solving – Part 1\nTài liệu: - Part VI. Teamwork Skills in University\n- Read slide 7.1\nNhiệm vụ sinh viên: - Read & review Part VI. Teamwork Skills in University\n- Read slide 7.1",
+      "source_label": "Syllabus SSG105 — Session 22"
+    },
+    {
+      "chunk_id": "SSG105-session-23",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 23",
+      "text": "Session 23 — 2. Group Problem Solving – Part 2\nTài liệu: - Part VI. Teamwork Skills in University\n- Read slide 7.2\nNhiệm vụ sinh viên: - Read & review Part VI. Teamwork Skills in University\n- Read slide 7.2",
+      "source_label": "Syllabus SSG105 — Session 23"
+    },
+    {
+      "chunk_id": "SSG105-session-24",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 24",
+      "text": "Session 24 — 3. Practice: Group Problem Solving\nTài liệu: - Part VI. Teamwork Skills in University\n- Read slide 7.3\nNhiệm vụ sinh viên: - Read & review Part VI. Teamwork Skills in University\n- Read slide 7.3",
+      "source_label": "Syllabus SSG105 — Session 24"
+    },
+    {
+      "chunk_id": "SSG105-session-25",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 25",
+      "text": "Session 25 — 4. Sources of Conflict and How to Manage Conflict\n5. Effective Communication During Conflict\nTài liệu: - Part VI. Teamwork Skills in University\n- Read slide 7.4\nNhiệm vụ sinh viên: - Read & review Part VI. Teamwork Skills in University\n'- Read slide 7.4",
+      "source_label": "Syllabus SSG105 — Session 25"
+    },
+    {
+      "chunk_id": "SSG105-session-26",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 26",
+      "text": "Session 26 — 6. Ability to Provide Feedback\n7. Respectful Feedback\n8. Positive and Encouraging\n9. Goal-directed\n10. Collaborative and Feedback Communication\n11. Overcoming Challenges – Conclusion\nTài liệu: - Part VI. Teamwork Skills in University\n- Read slide 7.5\nNhiệm vụ sinh viên: - Read & review Part VI. Teamwork Skills in University\n- Read slide 7.5",
+      "source_label": "Syllabus SSG105 — Session 26"
+    },
+    {
+      "chunk_id": "SSG105-session-27",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 27",
+      "text": "Session 27 — 12. Practice: Conflict resolution skills\nTài liệu: - Part VI. Teamwork Skills in University\n- Read slide 7.6\nNhiệm vụ sinh viên: - Read & review Part VI. Teamwork Skills in University\n- Read slide 7.6",
+      "source_label": "Syllabus SSG105 — Session 27"
+    },
+    {
+      "chunk_id": "SSG105-session-28",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 28",
+      "text": "Session 28 — Part II: Business Communication for Success\nUnit 8: Nonverbal Delivery\n1. Principles of Nonverbal Communication\n2. Types of Nonverbal Communication\n3 Movement in Your Speech\n4. Visual Aids\n5. Nonverbal Strategies for Success with Your Audience\n6.Additional Resources\nTài liệu: - Chapter 11. Business Communication for Success\n- Read slide 8.1\nNhiệm vụ sinh viên: - Read & review Chapter 11. Business Communication for Success\n- Read slide 8.1",
+      "source_label": "Syllabus SSG105 — Session 28"
+    },
+    {
+      "chunk_id": "SSG105-session-29",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 29",
+      "text": "Session 29 — 6. Practice: Nonverbal Delivery\nTài liệu: - Chapter 11. Business Communication for Success\n- Read slide 8.2\nNhiệm vụ sinh viên: - Read & review Chapter 11. Business Communication for Success\n- Read slide 8.2",
+      "source_label": "Syllabus SSG105 — Session 29"
+    },
+    {
+      "chunk_id": "SSG105-session-30",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 30",
+      "text": "Session 30 — Unit 9: Presentations to Persuade\n1. What Is Persuasion?\n2. Principles of Persuasion\n3. Functions of the Presentation to Persuade\n4. Meeting the Listener’s Basic Needs\n5. Making an Argument\n6. Speaking Ethically and Avoiding Fallacies\n7. Sample Persuasive Speech\n8. Elevator Speech\nTài liệu: - Chapter 14. Business Communication for Success\n- Read slide 9.1\nNhiệm vụ sinh viên: - Read & review Chapter 14. Business Communication for Success\n- Read slide 9.1",
+      "source_label": "Syllabus SSG105 — Session 30"
+    },
+    {
+      "chunk_id": "SSG105-session-31",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 31",
+      "text": "Session 31 — 9. Practice: Presentations to Persuade\nTài liệu: - Chapter 14. Business Communication for Success\n- Read slide 11.2\nNhiệm vụ sinh viên: - Read & review Chapter 14. Business Communication for Success\n- Read slide 11.2",
+      "source_label": "Syllabus SSG105 — Session 31"
+    },
+    {
+      "chunk_id": "SSG105-session-32",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 32",
+      "text": "Session 32 — 9. Practice: Presentations to Persuade (cont.)\nTài liệu: - Chapter 14. Business Communication for Success\n- Read slide 9.2\nNhiệm vụ sinh viên: - Read & review Chapter 14. Business Communication for Success\n- Read slide 9.2",
+      "source_label": "Syllabus SSG105 — Session 32"
+    },
+    {
+      "chunk_id": "SSG105-session-33",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 33",
+      "text": "Session 33 — 9. Practice: Presentations to Persuade (cont.)\nTài liệu: - Chapter 14. Business Communication for Success\n- Read slide 9.3\nNhiệm vụ sinh viên: - Read & review Chapter 14. Business Communication for Success\n- Read slide 9.3",
+      "source_label": "Syllabus SSG105 — Session 33"
+    },
+    {
+      "chunk_id": "SSG105-session-34",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 34",
+      "text": "Session 34 — Unit 10. Effective Business Writing\n1. Oral versus Written Communication\n2. How Is Writing Learned?\n3. Good Writing\n4. Style in Written Communication\n5. Principles of Written Communication\n6. Overcoming Barriers to Effective Written Communication\nTài liệu: - Chapter 4. Business Communication for Success\n- Read slide 10\nNhiệm vụ sinh viên: - Read & review Chapter 4. Business Communication for Success\n- Read slide 10",
+      "source_label": "Syllabus SSG105 — Session 34"
+    },
+    {
+      "chunk_id": "SSG105-session-35",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 35",
+      "text": "Session 35 — Unit 11. Writing Preparation\n1. Think, Then Write: Writing Preparation\n2. A Planning Checklist for Business Messages\n3. Research and Investigation: Getting Started\n4. Ethics, Plagiarism, and Reliable Sources\n5. Completing Your Research and Investigation\n6. Reading and Analyzing\nTài liệu: - Chapter 5. Business Communication for Success\n- Read slide 11\nNhiệm vụ sinh viên: - Read & review Chapter 5. Business Communication for Success\n- Read slide 11",
+      "source_label": "Syllabus SSG105 — Session 35"
+    },
+    {
+      "chunk_id": "SSG105-session-36",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 36",
+      "text": "Session 36 — Unit 12: Writing\n1. Organization\n2. Writing Style\n3. Making an Argument\n4. Paraphrase and Summary versus Plagiarism\n5. Revising and Presenting Your Writing\n6. Feedback in the Writing Process\n\nHomework: Prepare information for a group project progress report (To what extent have the objectives been achieved? What has been accomplished, what remains incomplete, and what are the next steps?)\nTài liệu: - Chapter 6. Business Communication for Success\n- Read slide 12.1\nNhiệm vụ sinh viên: - Read & review Chapter 6. Business Communication for Success\n- Read slide 12.1",
+      "source_label": "Syllabus SSG105 — Session 36"
+    },
+    {
+      "chunk_id": "SSG105-session-37",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 37",
+      "text": "Session 37 — 7. Report\nWhat Is a Report?\nTypes of Report?\nTài liệu: - Chapter 9. Business Communication for Success\n- Read slide 12.2\nNhiệm vụ sinh viên: - Read & review Chapter 9. Business Communication for Success\n- Read slide 12.2",
+      "source_label": "Syllabus SSG105 — Session 37"
+    },
+    {
+      "chunk_id": "SSG105-session-38",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 38",
+      "text": "Session 38 — Pratice: Mid-project progress report\nTài liệu: - Chapter 9. Business Communication for Success\n- Read slide\nNhiệm vụ sinh viên: - Read & review Chapter 9. Business Communication for Success\n- Read slide",
+      "source_label": "Syllabus SSG105 — Session 38"
+    },
+    {
+      "chunk_id": "SSG105-session-39",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 39",
+      "text": "Session 39 — Pratice: Mid-project progress report (cont.)\nTài liệu: - Chapter 9. Business Communication for Success\n- Read slide 12.3\nNhiệm vụ sinh viên: - Read & review Chapter 9. Business Communication for Success\n- Read slide 12.3",
+      "source_label": "Syllabus SSG105 — Session 39"
+    },
+    {
+      "chunk_id": "SSG105-session-40",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 40",
+      "text": "Session 40 — 7. Report (cont.)\nInformational or Analytical Report?\nHow Are Reports Organized?\nPractice: Guidelines for Writing a Final Group Project Report\nTài liệu: - Chapter 9. Business Communication for Success\n- Read slide 12.4\nNhiệm vụ sinh viên: - Read & review Chapter 9. Business Communication for Success\n- Read slide 12.4",
+      "source_label": "Syllabus SSG105 — Session 40"
+    },
+    {
+      "chunk_id": "SSG105-session-41",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 41",
+      "text": "Session 41 — Practice in data collection: Data sources; data collected through a survey evaluating the effectiveness of the project.\nGuidelines for designing a survey to evaluate project effectiveness\nTài liệu: - Chapter 9. Business Communication for Success\n- Read slide 12.5\nNhiệm vụ sinh viên: - Read & review Chapter 9. Business Communication for Success\n- Read slide 12.5",
+      "source_label": "Syllabus SSG105 — Session 41"
+    },
+    {
+      "chunk_id": "SSG105-session-42",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 42",
+      "text": "Session 42 — Practice (cont.)\nHomework: Use a survey to evaluate the effectiveness of the group project and, after collecting the data, write a draft of the project report.\nTài liệu: - Chapter 9. Business Communication for Success\n- Read slide 12.6\nNhiệm vụ sinh viên: - Read & review Chapter 9. Business Communication for Success\n- Read slide 12.6",
+      "source_label": "Syllabus SSG105 — Session 42"
+    },
+    {
+      "chunk_id": "SSG105-session-43",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 43",
+      "text": "Session 43 — Unit 13: Career Exploration\n1. Words of Wisdom: Learn What You Don’t Want\n2. The Big Picture\n3. Career Paths\nTài liệu: Unit 7: Career Exploration, Blueprint for Success in College and Career\nRead slide 14.1\nNhiệm vụ sinh viên: Read & review Unit 7: Career Exploration, Blueprint for Success in College and Career\nRead slide 14.1",
+      "source_label": "Syllabus SSG105 — Session 43"
+    },
+    {
+      "chunk_id": "SSG105-session-44",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 44",
+      "text": "Session 44 — 4. Words of Wisdom: What Do You Enjoy Studying?\n5. College Majors\n6. Professional Skill Building\n7. Career Development\n8. Words of Wisdom: Transferable\n9. Networking\nTài liệu: - Unit 7: Career Exploration, Blueprint for Success in College and Career\n- Read slide 13.1\nNhiệm vụ sinh viên: - Read & review Unit 7: Career Exploration, Blueprint for Success in College and Career\n- Read slide 13.1",
+      "source_label": "Syllabus SSG105 — Session 44"
+    },
+    {
+      "chunk_id": "SSG105-session-45",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 45",
+      "text": "Session 45 — 11. Résumé and Cover Letter Guidelines and Review\nHomework: Prepare a CV/Résumé and a cover letter to participate in the Mini Job Fair.\nTài liệu: - Unit 7: Career Exploration, Blueprint for Success in College and Career\n- Read slide 13.2\nNhiệm vụ sinh viên: - Read & review Unit 7: Career Exploration, Blueprint for Success in College and Career\n- Read slide 13.2",
+      "source_label": "Syllabus SSG105 — Session 45"
+    },
+    {
+      "chunk_id": "SSG105-session-46",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 46",
+      "text": "Session 46 — '11. Résumé and Cover Letter Guidelines and Review (cont.)\nTài liệu: - Unit 7: Career Exploration, Blueprint for Success in College and Career\n- Read slide 13.3\nNhiệm vụ sinh viên: - Read & review Unit 7: Career Exploration, Blueprint for Success in College and Career\n- Read slide 13.3",
+      "source_label": "Syllabus SSG105 — Session 46"
+    },
+    {
+      "chunk_id": "SSG105-session-47",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 47",
+      "text": "Session 47 — '12. Interviewing\nTài liệu: - Unit 7: Career Exploration, Blueprint for Success in College and Career\n- Read slide 13.4\nNhiệm vụ sinh viên: - Read & review Unit 7: Career Exploration, Blueprint for Success in College and Career\n- Read slide 13.4",
+      "source_label": "Syllabus SSG105 — Session 47"
+    },
+    {
+      "chunk_id": "SSG105-session-48",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 48",
+      "text": "Session 48 — MINI CAREER FAIR: Preparation\nStudents participate in a mini job fair simulation to practice job-seeking skills and professional communication. After the activity, students are required to complete a Mini Job Fair Report reflecting on their experience.\n\nThe format of the Mini Job Fair will be determined by the instructor.\nTài liệu: - Unit 7: Career Exploration, Blueprint for Success in College and Career\n- Read slide 13.5\nNhiệm vụ sinh viên: - Clearly identify short-term and long-term career goals based on personal aspirations, individual competencies, and career development orientation.\n'- Develop a feasible career development plan aligned with personal direction and general labor market requirements.\n'- Complete, review, and submit a CV and Cover Letter tailored to a specific job position.",
+      "source_label": "Syllabus SSG105 — Session 48"
+    },
+    {
+      "chunk_id": "SSG105-session-49",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 49",
+      "text": "Session 49 — MINI CAREER FAIR (cont.)\nTài liệu: - Unit 7: Career Exploration, Blueprint for Success in College and Career\n- Read slide 13.5\nNhiệm vụ sinh viên: Participate in the Mini Career Fair as an employer or a job seeker (as assigned by the instructor)",
+      "source_label": "Syllabus SSG105 — Session 49"
+    },
+    {
+      "chunk_id": "SSG105-session-50",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 50",
+      "text": "Session 50 — MINI CAREER FAIR (cont.)\nTài liệu: - Unit 7: Career Exploration, Blueprint for Success in College and Career\n- Read slide 13.5\nNhiệm vụ sinh viên: Participate in the Mini Career Fair as an employer or a job seeker (as assigned by the instructor)",
+      "source_label": "Syllabus SSG105 — Session 50"
+    },
+    {
+      "chunk_id": "SSG105-session-51",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 51",
+      "text": "Session 51 — MINI CAREER FAIR (cont.)\nTài liệu: - Unit 7: Career Exploration, Blueprint for Success in College and Career\n- Read slide 13.5\nNhiệm vụ sinh viên: Participate in the Mini Career Fair as an employer or a job seeker (as assigned by the instructor)",
+      "source_label": "Syllabus SSG105 — Session 51"
+    },
+    {
+      "chunk_id": "SSG105-session-52",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 52",
+      "text": "Session 52 — AFTER THE MINI CAREER FAIR: Feedback & Reflection\n'- Employer feedback on: CV, Cover Letter, Interview Performance\n'- Students write and share a short reflection (150–200 words):\nTài liệu: - Unit 7: Career Exploration, Blueprint for Success in College and Career\n- Read slide 13.6\nNhiệm vụ sinh viên: Participate in the Mini Career Fair as an employer or a job seeker (as assigned by the instructor)",
+      "source_label": "Syllabus SSG105 — Session 52"
+    },
+    {
+      "chunk_id": "SSG105-session-53",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 53",
+      "text": "Session 53 — Quiz\nTài liệu: - Course Implementation\n- Syllabus SSG105\nNhiệm vụ sinh viên: Review course",
+      "source_label": "Syllabus SSG105 — Session 53"
+    },
+    {
+      "chunk_id": "SSG105-session-54",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 54",
+      "text": "Session 54 — Review the final group project report and prepare for the project presentation.\nTài liệu: - Course Implementation\n- Syllabus SSG105\n- Read slide 13.7\nNhiệm vụ sinh viên: Review course",
+      "source_label": "Syllabus SSG105 — Session 54"
+    },
+    {
+      "chunk_id": "SSG105-session-55",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 55",
+      "text": "Session 55 — Group Project – Part 2: Final Report & Presentation\nTài liệu: - Course Implementation\n- Syllabus SSG105\n'- Read slide 13.8\nNhiệm vụ sinh viên: Preparation and Presentation",
+      "source_label": "Syllabus SSG105 — Session 55"
+    },
+    {
+      "chunk_id": "SSG105-session-56",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 56",
+      "text": "Session 56 — Group Project – Part 2: Final Report & Presentation\nTài liệu: - Course Implementation\n- Syllabus SSG105\n'- Read slide 13.8\nNhiệm vụ sinh viên: Preparation and Presentation",
+      "source_label": "Syllabus SSG105 — Session 56"
+    },
+    {
+      "chunk_id": "SSG105-session-57",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 57",
+      "text": "Session 57 — Group Project – Part 2: Final Report & Presentation\nTài liệu: - Course Implementation\n- Syllabus SSG105\n'- Read slide 13.8\nNhiệm vụ sinh viên: Preparation and Presentation",
+      "source_label": "Syllabus SSG105 — Session 57"
+    },
+    {
+      "chunk_id": "SSG105-session-58",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 58",
+      "text": "Session 58 — Group Project – Part 2: Final Report & Presentation\nTài liệu: - Course Implementation\n- Syllabus SSG105\n'- Read slide 13.8\nNhiệm vụ sinh viên: Preparation and Presentation",
+      "source_label": "Syllabus SSG105 — Session 58"
+    },
+    {
+      "chunk_id": "SSG105-session-59",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 59",
+      "text": "Session 59 — Group Project – Part 2: Final Report & Presentation\nTài liệu: - Course Implementation\n- Syllabus SSG105\n'- Read slide 13.8\nNhiệm vụ sinh viên: Preparation and Presentation",
+      "source_label": "Syllabus SSG105 — Session 59"
+    },
+    {
+      "chunk_id": "SSG105-session-60",
+      "subject_code": "SSG105",
+      "subject_name": "Kỹ năng giao tiếp và cộng tác",
+      "section": "Session 60",
+      "text": "Session 60 — Comprehensive course review\nTài liệu: - Course Implementation\n- Syllabus SSG105\n'- Read slide 14\nNhiệm vụ sinh viên: Review course",
+      "source_label": "Syllabus SSG105 — Session 60"
+    }
+  ]
+}

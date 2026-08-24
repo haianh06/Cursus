@@ -1,0 +1,582 @@
+{
+  "subject_code": "MAD101",
+  "subject_name": "Toán rời rạc",
+  "meta": {
+    "Syllabus ID": "13144",
+    "Syllabus Name": "Toán rời rạc",
+    "Course Name English": "Discrete mathematics",
+    "Subject Code": "MAD101",
+    "Learning-Teaching Method": "Lecture,Project based learning,Problem based learning,Social Constructivism",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) = 45 contact hours (60 sessions) + 1 hour final exam + 104 hours self-study",
+    "Pre-Requisite": "None",
+    "Description": "Upon finishing the course, students must acquire:\n1. the following knowledge: (ABET a.1)\n• Concepts of logical expressions & predicate logic.\n• The method of induction and recursive definition.\n• Concepts of algorithms, recursive algorithms, the complexity.\n• Recurrence relations and divide-and-conquer algorithms.\n• Application of integers and congruence in information technology.\n• Set structure and map, counting principles and combinatorics concepts.\n• The terminologies and properties of graphs & trees & weighted graphs.\n• The applications of graphs, trees and weighted graphs in information technology.\n\n2. the following skills: (ABET a.2)\n• Manipulate logical expressions & produce equivalent logical expressions.\n• Produce proof of simple mathematical propositions, including applying induction method.\n• Evaluate complexity of algorithms.\n• Solving simple congruence equations.\n• Apply counting techniques in evaluating various set cardinalities.\n• Solve counting problems, apply in analyze algorithms.\n• Apply graph’s algorithms to solve problems related to graph theory.",
+    "StudentTasks": "Students must attend at least 80% of contact hours in order to be accepted to the final examination.",
+    "Tools": "- Testbank for ST1.\n- Powerpoint image in CD + Powerpoint prepared by previous lecturers (PP).\n- Computerized tools (for example C programming tools, Maxima http://maxima.sourceforge.net/) (CT)\n- Teaching Suggestion and Applications of Discrete Mathematics for ST1 (TS).",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "932/QĐ-ĐHFPT dated 08/22/2025",
+    "IsApproved": "True",
+    "Note": "",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "8/22/2025"
+  },
+  "clo_count": 8,
+  "session_count": 60,
+  "chunks": [
+    {
+      "chunk_id": "MAD101-overview",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Overview & Grading Policy",
+      "text": "Description: Upon finishing the course, students must acquire:\n1. the following knowledge: (ABET a.1)\n• Concepts of logical expressions & predicate logic.\n• The method of induction and recursive definition.\n• Concepts of algorithms, recursive algorithms, the complexity.\n• Recurrence relations and divide-and-conquer algorithms.\n• Application of integers and congruence in information technology.\n• Set structure and map, counting principles and combinatorics concepts.\n• The terminologies and properties of graphs & trees & weighted graphs.\n• The applications of graphs, trees and weighted graphs in information technology.\n\n2. the following skills: (ABET a.2)\n• Manipulate logical expressions & produce equivalent logical expressions.\n• Produce proof of simple mathematical propositions, including applying induction method.\n• Evaluate complexity of algorithms.\n• Solving simple congruence equations.\n• Apply counting techniques in evaluating various set cardinalities.\n• Solve counting problems, apply in analyze algorithms.\n• Apply graph’s algorithms to solve problems related to graph theory.\nNoCredit: 3\nPre-Requisite: None\nTime Allocation: Study hour (150h) = 45 contact hours (60 sessions) + 1 hour final exam + 104 hours self-study\nStudentTasks: Students must attend at least 80% of contact hours in order to be accepted to the final examination.\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus MAD101 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "MAD101-CLO1",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Manipulate logical expressions and use logic for inference LO1.1 Determine the truth value of a proposition; check if two propositions are equivalent; translate between logical expressions and sentences for propositional logic. LO1.2 Determine the truth value of a proposition; check if two propositions are equivalent; translate between logical expressions and sentences for predicate logic. LO1.3 Manipulate logical expressions with nested quantifiers. LO1.4 Recognize the inference rules used in a valid statemment; use inference rules to draw conclusions; check if a statement is valid.",
+      "source_label": "Syllabus MAD101 — CLO1"
+    },
+    {
+      "chunk_id": "MAD101-CLO2",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Perform basic operations on sets, functions and sequences LO2.1 Distinguish basic terminologies in set theory; find the power set and cartersian product; represent a subset using binary bits. LO2.2 Perform operations on sets; check if two sets are equal. LO2.3 Determine if a given rule represents a function; perform operations on functions and manipulate functions inlvolving the floor and the ceiling functions. LO2.4 Determine if a function is one-to-one, onto or a bijection, and describe how these properties can be used to compare two sets. LO2.5 Find a formula for a sequence; evaluate a finite sum with a possible use of special summations.",
+      "source_label": "Syllabus MAD101 — CLO2"
+    },
+    {
+      "chunk_id": "MAD101-CLO3",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Analyze basic algorithms written in pseudo codes and determine their complexities LO3.1 Determine if a procedure is an algorithm; work out basic algorithms written in pseudocodes including searching, sorting and greedy algorithms. LO3.2 Find big-O, big-Omega and big-Theta estimates of a function; describe complexity of an algorithm.",
+      "source_label": "Syllabus MAD101 — CLO3"
+    },
+    {
+      "chunk_id": "MAD101-CLO4",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Discuss applications of modular arithmetic and analyze algorithms on integers LO4.1 Perform integer division and modular arithmetic; apply congruence in generating pseudorandom numbers and in cryptology. LO4.2 Find the base b expansion of an integer; perform binary operations and modular exponentiation on integers. LO4.3 Check if a number is prime and find prime factorization of an integer; find greatest common divisor and least common multiple.",
+      "source_label": "Syllabus MAD101 — CLO4"
+    },
+    {
+      "chunk_id": "MAD101-CLO5",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Learning Outcome CLO5",
+      "text": "CLO5: Use induction and recursive definition to prove a statement or to describe an object, and write recursive algorithms LO5.1 Prove mathematical statements by induction. LO5.2 Manipulate sequences and sets defined by recursion. LO5.3 Work out recursive algorithms, including the mergesort algorithm; distinguish between iterative and recursive algorithms.",
+      "source_label": "Syllabus MAD101 — CLO5"
+    },
+    {
+      "chunk_id": "MAD101-CLO6",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Learning Outcome CLO6",
+      "text": "CLO6: Solve counting problems LO6.1 Use basic rules for counting LO6.2 Use recurrence relations for counting, including divide-and-conquer recurrence relations.",
+      "source_label": "Syllabus MAD101 — CLO6"
+    },
+    {
+      "chunk_id": "MAD101-CLO7",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Learning Outcome CLO7",
+      "text": "CLO7: Analyze the structure of a graph and find shortest paths in a weighted graph LO7.1 Classify and describe a graph; use hand-shaking theorem to analyze a graph; identify special graphs including bipartite graphs. LO7.2 Represent a graph using incidence and adjacency matrices; determine if two graphs are isomorphic. LO7.3 Check connectivity of a graph and identify its connected components; count paths in a graph. LO7.4 Determine if a graph has Euler/Hamilton paths/circuits; find Euler and Hamilton paths/circuits in a graph. LO7.5 Run Dijsktra's algorithm to determine the shortest paths and the shortest distance in a weighted graph.",
+      "source_label": "Syllabus MAD101 — CLO7"
+    },
+    {
+      "chunk_id": "MAD101-CLO8",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Learning Outcome CLO8",
+      "text": "CLO8: Analyze the structure of a tree and describe algorithms using trees LO8.1 Check if a graph is a tree, and identify basic terminologies of a tree; use properties of m-ary trees to solve problems. LO8.2 Build binary search trees and decision trees; analyze complexities of algorithms described using binary search trees and decision trees. LO8.3 Recognize and construct prefix codes; build optimal trees using Huffman coding. LO8.4 Traverse a tree and use tree traversal to generate notations; evaluate prefix and postfix expressions. LO8.5 Run Depth-first search and Breadth-first search algorithms to find spanning trees LO8.6 Find minimum spanning trees using Prim, Kruskal,... algorithms",
+      "source_label": "Syllabus MAD101 — CLO8"
+    },
+    {
+      "chunk_id": "MAD101-session-1",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 1",
+      "text": "Session 1 — 0 Introduction\n1.1 Propositional Logic (1.1 and 1.2, skip the topic on Logic Circuits)\nTài liệu: Textbook Chapter 1\nNhiệm vụ sinh viên: Exercises Chapter 1",
+      "source_label": "Syllabus MAD101 — Session 1"
+    },
+    {
+      "chunk_id": "MAD101-session-2",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 2",
+      "text": "Session 2 — 1.2 Propositional Equivalences (1.3, skip the topic on Satisfiability)\nTài liệu: Textbook Chapter 1\nNhiệm vụ sinh viên: Exercises Chapter 1",
+      "source_label": "Syllabus MAD101 — Session 2"
+    },
+    {
+      "chunk_id": "MAD101-session-3",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 3",
+      "text": "Session 3 — 1.3 Predicates (1.4)\nTài liệu: Textbook Chapter 1\nNhiệm vụ sinh viên: Exercises Chapter 1",
+      "source_label": "Syllabus MAD101 — Session 3"
+    },
+    {
+      "chunk_id": "MAD101-session-4",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 4",
+      "text": "Session 4 — 1.3 Quantifiers\nTài liệu: Textbook Chapter 1\nNhiệm vụ sinh viên: Exercises Chapter 1",
+      "source_label": "Syllabus MAD101 — Session 4"
+    },
+    {
+      "chunk_id": "MAD101-session-5",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 5",
+      "text": "Session 5 — 1.4 Nested Quantifiers (1.5)\nTài liệu: Textbook Chapter 1\nNhiệm vụ sinh viên: Exercises Chapter 1",
+      "source_label": "Syllabus MAD101 — Session 5"
+    },
+    {
+      "chunk_id": "MAD101-session-6",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 6",
+      "text": "Session 6 — 1.4 Nested Quantifiers (1.5) (cont.)\nTài liệu: Textbook Chapter 1\nNhiệm vụ sinh viên: Exercises Chapter 1",
+      "source_label": "Syllabus MAD101 — Session 6"
+    },
+    {
+      "chunk_id": "MAD101-session-7",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 7",
+      "text": "Session 7 — 1.5 Rules of Inference (1.6)\nTài liệu: Textbook Chapter 1\nNhiệm vụ sinh viên: Exercises Chapter 1",
+      "source_label": "Syllabus MAD101 — Session 7"
+    },
+    {
+      "chunk_id": "MAD101-session-8",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 8",
+      "text": "Session 8 — 1.5 Rules of Inference (1.6) (cont.)\nTài liệu: Textbook Chapter 1\nNhiệm vụ sinh viên: Exercises Chapter 1",
+      "source_label": "Syllabus MAD101 — Session 8"
+    },
+    {
+      "chunk_id": "MAD101-session-9",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 9",
+      "text": "Session 9 — 2.1 Introduction to sets\nTài liệu: Textbook Chapter 2\nNhiệm vụ sinh viên: Exercises Chapter 2",
+      "source_label": "Syllabus MAD101 — Session 9"
+    },
+    {
+      "chunk_id": "MAD101-session-10",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 10",
+      "text": "Session 10 — 2.2 Set operations\nTài liệu: Textbook Chapter 2\nNhiệm vụ sinh viên: Exercises Chapter 2",
+      "source_label": "Syllabus MAD101 — Session 10"
+    },
+    {
+      "chunk_id": "MAD101-session-11",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 11",
+      "text": "Session 11 — 2.3 Functions (2.3, skip the topic on Partial Functions)\nTài liệu: Textbook Chapter 2\nNhiệm vụ sinh viên: Exercises Chapter 2",
+      "source_label": "Syllabus MAD101 — Session 11"
+    },
+    {
+      "chunk_id": "MAD101-session-12",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 12",
+      "text": "Session 12 — 2.3 Functions (2.3, skip the topic on Partial Functions) (cont.)\nTài liệu: Textbook Chapter 2\nNhiệm vụ sinh viên: Exercises Chapter 2",
+      "source_label": "Syllabus MAD101 — Session 12"
+    },
+    {
+      "chunk_id": "MAD101-session-13",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 13",
+      "text": "Session 13 — 2.4 Sequences and Summations (2.4, skip the topic on Recurrence relations)\nTài liệu: Textbook Chapter 2\nNhiệm vụ sinh viên: Exercises Chapter 2",
+      "source_label": "Syllabus MAD101 — Session 13"
+    },
+    {
+      "chunk_id": "MAD101-session-14",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 14",
+      "text": "Session 14 — 2.4 Sequences and Summations (2.4, skip the topic on Recurrence relations) (cont.)\nTài liệu: Textbook Chapter 2\nNhiệm vụ sinh viên: Exercises Chapter 2",
+      "source_label": "Syllabus MAD101 — Session 14"
+    },
+    {
+      "chunk_id": "MAD101-session-15",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 15",
+      "text": "Session 15 — 5.1 Basic Counting Principles (6.1)\nTài liệu: Textbook Chapter 5\nNhiệm vụ sinh viên: Exercises Chapter 5",
+      "source_label": "Syllabus MAD101 — Session 15"
+    },
+    {
+      "chunk_id": "MAD101-session-16",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 16",
+      "text": "Session 16 — 5.1 Basic Counting Principles (6.1) (continued)\nTài liệu: Textbook Chapter 5\nNhiệm vụ sinh viên: Exercises Chapter 5",
+      "source_label": "Syllabus MAD101 — Session 16"
+    },
+    {
+      "chunk_id": "MAD101-session-17",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 17",
+      "text": "Session 17 — Review",
+      "source_label": "Syllabus MAD101 — Session 17"
+    },
+    {
+      "chunk_id": "MAD101-session-18",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 18",
+      "text": "Session 18 — Progress Test 1",
+      "source_label": "Syllabus MAD101 — Session 18"
+    },
+    {
+      "chunk_id": "MAD101-session-19",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 19",
+      "text": "Session 19 — 3.1 Algorithms\nTài liệu: Textbook Chapter 3\nNhiệm vụ sinh viên: Exercises Chapter 3",
+      "source_label": "Syllabus MAD101 — Session 19"
+    },
+    {
+      "chunk_id": "MAD101-session-20",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 20",
+      "text": "Session 20 — 3.2 The Growth of Functions\nTài liệu: Textbook Chapter 3\nNhiệm vụ sinh viên: Exercises Chapter 3",
+      "source_label": "Syllabus MAD101 — Session 20"
+    },
+    {
+      "chunk_id": "MAD101-session-21",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 21",
+      "text": "Session 21 — 3.3 Complexity of Algorithms (3.3, skip the topics on Matrix multiplication, Algorithmic Paradigms)\nTài liệu: Textbook Chapter 3\nNhiệm vụ sinh viên: Exercises Chapter 3",
+      "source_label": "Syllabus MAD101 — Session 21"
+    },
+    {
+      "chunk_id": "MAD101-session-22",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 22",
+      "text": "Session 22 — 3.4 The Integers and Division (4.1, 4.5, and the topic on Classical Cryptography 4.6)\nTài liệu: Textbook Chapter 3\nNhiệm vụ sinh viên: Exercises Chapter 3",
+      "source_label": "Syllabus MAD101 — Session 22"
+    },
+    {
+      "chunk_id": "MAD101-session-23",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 23",
+      "text": "Session 23 — 3.4 The Integers and Division (4.1, 4.5, and the topic on Classical Cryptography 4.6) (cont.)\nTài liệu: Textbook Chapter 3\nNhiệm vụ sinh viên: Exercises Chapter 3",
+      "source_label": "Syllabus MAD101 — Session 23"
+    },
+    {
+      "chunk_id": "MAD101-session-24",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 24",
+      "text": "Session 24 — 3.5 Primes and Greatest Common Divisors (4.3)\nTài liệu: Textbook Chapter 3\nNhiệm vụ sinh viên: Exercises Chapter 3",
+      "source_label": "Syllabus MAD101 — Session 24"
+    },
+    {
+      "chunk_id": "MAD101-session-25",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 25",
+      "text": "Session 25 — 3.5 Primes and Greatest Common Divisors (4.3) (cont.)\nTài liệu: Textbook Chapter 3\nNhiệm vụ sinh viên: Exercises Chapter 3",
+      "source_label": "Syllabus MAD101 — Session 25"
+    },
+    {
+      "chunk_id": "MAD101-session-26",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 26",
+      "text": "Session 26 — 3.6 Intergers and Algorithms (4.2)\nTài liệu: Textbook Chapter 3\nNhiệm vụ sinh viên: Exercises Chapter 3",
+      "source_label": "Syllabus MAD101 — Session 26"
+    },
+    {
+      "chunk_id": "MAD101-session-27",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 27",
+      "text": "Session 27 — 3.6 Intergers and Algorithms (4.2) (cont.)\nTài liệu: Textbook Chapter 3\nNhiệm vụ sinh viên: Exercises Chapter 3",
+      "source_label": "Syllabus MAD101 — Session 27"
+    },
+    {
+      "chunk_id": "MAD101-session-28",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 28",
+      "text": "Session 28 — 3.6 Intergers and Algorithms (4.2) (cont.)\nTài liệu: Textbook Chapter 3\nNhiệm vụ sinh viên: Exercises Chapter 3",
+      "source_label": "Syllabus MAD101 — Session 28"
+    },
+    {
+      "chunk_id": "MAD101-session-29",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 29",
+      "text": "Session 29 — 4.1 Mathematical Induction (5.1)\nTài liệu: Textbook Chapter 4\nNhiệm vụ sinh viên: Exercises Chapter 4",
+      "source_label": "Syllabus MAD101 — Session 29"
+    },
+    {
+      "chunk_id": "MAD101-session-30",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 30",
+      "text": "Session 30 — 4.2 Strong Induction (5.2)\nTài liệu: Textbook Chapter 4\nNhiệm vụ sinh viên: Exercises Chapter 4",
+      "source_label": "Syllabus MAD101 — Session 30"
+    },
+    {
+      "chunk_id": "MAD101-session-31",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 31",
+      "text": "Session 31 — 4.3 Recursive Definitions and Structural Induction (5.3)\nTài liệu: Textbook Chapter 4\nNhiệm vụ sinh viên: Exercises Chapter 4",
+      "source_label": "Syllabus MAD101 — Session 31"
+    },
+    {
+      "chunk_id": "MAD101-session-32",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 32",
+      "text": "Session 32 — 4.3 Recursive Definitions and Structural Induction (5.3) (cont.)\nTài liệu: Textbook Chapter 4\nNhiệm vụ sinh viên: Exercises Chapter 4",
+      "source_label": "Syllabus MAD101 — Session 32"
+    },
+    {
+      "chunk_id": "MAD101-session-33",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 33",
+      "text": "Session 33 — 4.4 Recursive Algorithms (5.4)\nTài liệu: Textbook Chapter 4\nNhiệm vụ sinh viên: Exercises Chapter 4",
+      "source_label": "Syllabus MAD101 — Session 33"
+    },
+    {
+      "chunk_id": "MAD101-session-34",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 34",
+      "text": "Session 34 — 4.4 Recursive Algorithms (5.4) (cont.)\nTài liệu: Textbook Chapter 4\nNhiệm vụ sinh viên: Exercises Chapter 4",
+      "source_label": "Syllabus MAD101 — Session 34"
+    },
+    {
+      "chunk_id": "MAD101-session-35",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 35",
+      "text": "Session 35 — 7.1 Recurrence Relations (8.1, skip the topic on Dynamic programming)\nTài liệu: Textbook Chapter 7\nNhiệm vụ sinh viên: Exercises Chapter 7",
+      "source_label": "Syllabus MAD101 — Session 35"
+    },
+    {
+      "chunk_id": "MAD101-session-36",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 36",
+      "text": "Session 36 — 7.3 Divide-and-Conquer Algorithms and Recurrence Relations (8.3)\nTài liệu: Textbook Chapter 7\nNhiệm vụ sinh viên: Exercises Chapter 7",
+      "source_label": "Syllabus MAD101 — Session 36"
+    },
+    {
+      "chunk_id": "MAD101-session-37",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 37",
+      "text": "Session 37 — Review",
+      "source_label": "Syllabus MAD101 — Session 37"
+    },
+    {
+      "chunk_id": "MAD101-session-38",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 38",
+      "text": "Session 38 — Progress Test 2",
+      "source_label": "Syllabus MAD101 — Session 38"
+    },
+    {
+      "chunk_id": "MAD101-session-39",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 39",
+      "text": "Session 39 — 9.1 Graphs and Graph Models (10.1)\nTài liệu: Textbook Chapter 9\nNhiệm vụ sinh viên: Exercises Chapter 9",
+      "source_label": "Syllabus MAD101 — Session 39"
+    },
+    {
+      "chunk_id": "MAD101-session-40",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 40",
+      "text": "Session 40 — 9.2 Graph Terminology and Special Types of Graphs\nTài liệu: Textbook Chapter 9\nNhiệm vụ sinh viên: Exercises Chapter 9",
+      "source_label": "Syllabus MAD101 — Session 40"
+    },
+    {
+      "chunk_id": "MAD101-session-41",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 41",
+      "text": "Session 41 — 9.3 Representing Graphs and Graph Isomorphism (10.3)\nTài liệu: Textbook Chapter 9\nNhiệm vụ sinh viên: Exercises Chapter 9",
+      "source_label": "Syllabus MAD101 — Session 41"
+    },
+    {
+      "chunk_id": "MAD101-session-42",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 42",
+      "text": "Session 42 — 9.3 Representing Graphs and Graph Isomorphism (10.3) (cont.)\nTài liệu: Textbook Chapter 9\nNhiệm vụ sinh viên: Exercises Chapter 9",
+      "source_label": "Syllabus MAD101 — Session 42"
+    },
+    {
+      "chunk_id": "MAD101-session-43",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 43",
+      "text": "Session 43 — 9.4 Connectivity (10.4)\nTài liệu: Textbook Chapter 9\nNhiệm vụ sinh viên: Exercises Chapter 9",
+      "source_label": "Syllabus MAD101 — Session 43"
+    },
+    {
+      "chunk_id": "MAD101-session-44",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 44",
+      "text": "Session 44 — 9.4 Connectivity (10.4) (cont.)\nTài liệu: Textbook Chapter 9\nNhiệm vụ sinh viên: Exercises Chapter 9",
+      "source_label": "Syllabus MAD101 — Session 44"
+    },
+    {
+      "chunk_id": "MAD101-session-45",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 45",
+      "text": "Session 45 — 9.5 Euler and Hamilton Paths (10.5)\nTài liệu: Textbook Chapter 9\nNhiệm vụ sinh viên: Exercises Chapter 9",
+      "source_label": "Syllabus MAD101 — Session 45"
+    },
+    {
+      "chunk_id": "MAD101-session-46",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 46",
+      "text": "Session 46 — 9.5 Euler and Hamilton Paths (10.5) (cont.)\nTài liệu: Textbook Chapter 9\nNhiệm vụ sinh viên: Exercises Chapter 9",
+      "source_label": "Syllabus MAD101 — Session 46"
+    },
+    {
+      "chunk_id": "MAD101-session-47",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 47",
+      "text": "Session 47 — 9.6 Shortest-Path Problems (10.6)\nTài liệu: Textbook Chapter 9\nNhiệm vụ sinh viên: Exercises Chapter 9",
+      "source_label": "Syllabus MAD101 — Session 47"
+    },
+    {
+      "chunk_id": "MAD101-session-48",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 48",
+      "text": "Session 48 — 9.6 Shortest-Path Problems (10.6) (cont.)\nTài liệu: Textbook Chapter 9\nNhiệm vụ sinh viên: Exercises Chapter 9",
+      "source_label": "Syllabus MAD101 — Session 48"
+    },
+    {
+      "chunk_id": "MAD101-session-49",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 49",
+      "text": "Session 49 — 10.1 Introduction to Trees (11.1)\nTài liệu: Textbook Chapter 10\nNhiệm vụ sinh viên: Exercises Chapter 10",
+      "source_label": "Syllabus MAD101 — Session 49"
+    },
+    {
+      "chunk_id": "MAD101-session-50",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 50",
+      "text": "Session 50 — 10.1 Introduction to Trees (11.1) (cont.)\nTài liệu: Textbook Chapter 10\nNhiệm vụ sinh viên: Exercises Chapter 10",
+      "source_label": "Syllabus MAD101 — Session 50"
+    },
+    {
+      "chunk_id": "MAD101-session-51",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 51",
+      "text": "Session 51 — 10.2 Applications of Trees (11.2)\nTài liệu: Textbook Chapter 10\nNhiệm vụ sinh viên: Exercises Chapter 10",
+      "source_label": "Syllabus MAD101 — Session 51"
+    },
+    {
+      "chunk_id": "MAD101-session-52",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 52",
+      "text": "Session 52 — 10.2 Applications of Trees (11.2) (cont.)\nTài liệu: Textbook Chapter 10\nNhiệm vụ sinh viên: Exercises Chapter 10",
+      "source_label": "Syllabus MAD101 — Session 52"
+    },
+    {
+      "chunk_id": "MAD101-session-53",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 53",
+      "text": "Session 53 — 10.3 Tree Traversal (11.3)\nTài liệu: Textbook Chapter 10\nNhiệm vụ sinh viên: Exercises Chapter 10",
+      "source_label": "Syllabus MAD101 — Session 53"
+    },
+    {
+      "chunk_id": "MAD101-session-54",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 54",
+      "text": "Session 54 — 10.3 Tree Traversal (11.3) (cont.)\nTài liệu: Textbook Chapter 10\nNhiệm vụ sinh viên: Exercises Chapter 10",
+      "source_label": "Syllabus MAD101 — Session 54"
+    },
+    {
+      "chunk_id": "MAD101-session-55",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 55",
+      "text": "Session 55 — 10.4 Spanning Trees (11.4)\nTài liệu: Textbook Chapter 10\nNhiệm vụ sinh viên: Exercises Chapter 10",
+      "source_label": "Syllabus MAD101 — Session 55"
+    },
+    {
+      "chunk_id": "MAD101-session-56",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 56",
+      "text": "Session 56 — 10.4 Spanning Trees (11.4) (cont.)\nTài liệu: Textbook Chapter 10\nNhiệm vụ sinh viên: Exercises Chapter 10",
+      "source_label": "Syllabus MAD101 — Session 56"
+    },
+    {
+      "chunk_id": "MAD101-session-57",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 57",
+      "text": "Session 57 — 10.5 Minimum Spanning Trees (11.5)\nTài liệu: Textbook Chapter 10\nNhiệm vụ sinh viên: Exercises Chapter 10",
+      "source_label": "Syllabus MAD101 — Session 57"
+    },
+    {
+      "chunk_id": "MAD101-session-58",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 58",
+      "text": "Session 58 — 10.5 Minimum Spanning Trees (11.5) (cont.)\nTài liệu: Textbook Chapter 10\nNhiệm vụ sinh viên: Exercises Chapter 10",
+      "source_label": "Syllabus MAD101 — Session 58"
+    },
+    {
+      "chunk_id": "MAD101-session-59",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 59",
+      "text": "Session 59 — Review",
+      "source_label": "Syllabus MAD101 — Session 59"
+    },
+    {
+      "chunk_id": "MAD101-session-60",
+      "subject_code": "MAD101",
+      "subject_name": "Toán rời rạc",
+      "section": "Session 60",
+      "text": "Session 60 — Progress Test 3",
+      "source_label": "Syllabus MAD101 — Session 60"
+    }
+  ]
+}

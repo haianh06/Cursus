@@ -1,0 +1,4 @@
+axe-core 4.x run against the live "Audit log" tab (WCAG 2.0 A/AA + WCAG 2.1 AA rule tags), both light and dark theme, desktop viewport, English.
+
+[AXE:audit-desktop-light-en] NO VIOLATIONS
+[AXE:audit-desktop-dark-en] NO VIOLATIONS

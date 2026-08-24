@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Disallow: /student
+Disallow: /admin
+Disallow: /instructor
+Disallow: /settings
+Disallow: /onboarding
+Disallow: /accept-invite
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /email-verification
+Disallow: /unauthorized
+
+Sitemap: https://cursus.edu.vn/sitemap.xml

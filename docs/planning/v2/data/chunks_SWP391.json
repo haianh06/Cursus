@@ -1,0 +1,566 @@
+{
+  "subject_code": "SWP391",
+  "subject_name": "Software development project_Dự án phát triển phần mềm",
+  "meta": {
+    "Syllabus ID": "14177",
+    "Syllabus Name": "Software development project_Dự án phát triển phần mềm",
+    "Course Name English": "Software Development Project",
+    "Subject Code": "SWP391",
+    "Learning-Teaching Method": "Lecture, Lab, Group Discussion, Presentation, Peer Review.AI-integrated tasks across all Software Development Life Cycle phases",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) = 45h contact hours + 1h Project Presentation + 104h self-study",
+    "Pre-Requisite": "PRJ301, SWE201c or SWE202c, pass LAB211",
+    "Description": "This course guides students through the full Software Development Life Cycle (SDLC) by working on a real-world team project, with an emphasis on applying AI responsibly in requirement analysis, design, implementation, and testing. Students will practice user story writing, system design, coding using MVC and OOP, workflow development, testing, and reporting. AI tools are integrated into each phase to enhance productivity and quality.",
+    "StudentTasks": "- Join the team as arranged by the teacher\n- Select the project topic & technology stack and get approval from teacher before implementing\n- Attend at least 80% of contact slots in order to be accepted to the final presentation.\n- Analyze requirements, write user requirements, and create system diagrams with AI-assisted tools.\n- Design system architecture, database schema, and UI/UX wireframes using MVC, OOP, and AI suggestions.\n- Implement core features with AI-supported coding, apply coding standards, and manage source code in Git.\n- Develop and run unit/integration tests, using AI to suggest and refine test cases.\n- Deploy the application to staging, verify functionality, and prepare for final delivery.\n- Manage project progress, present milestones, and prepare high-quality reports with AI support.",
+    "Tools": "- Requirement & Design: Miro, Lucidchart, Figma, Draw.io, ChatGPT, Gemini\n- Coding & Debugging: IntelliJ IDEA / VS Code / Visual Studio, GitHub Copilot, Tabnine\n- Database: MySQL Workbench, SQL Server Management Studio, pgAdmin\n-Testing: JUnit, NUnit, Postman, Selenium, AI-powered test case generators\n- Project Management: Jira, Trello, Notion, Git/GitHub\n- Deployment: Docker, Heroku, AWS / Azure / GCP, Vercel",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "377/QĐ-ĐHFPT dated 04/09/2026",
+    "IsApproved": "True",
+    "Note": "",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "4/9/2026"
+  },
+  "clo_count": 6,
+  "session_count": 60,
+  "chunks": [
+    {
+      "chunk_id": "SWP391-overview",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Overview & Grading Policy",
+      "text": "Description: This course guides students through the full Software Development Life Cycle (SDLC) by working on a real-world team project, with an emphasis on applying AI responsibly in requirement analysis, design, implementation, and testing. Students will practice user story writing, system design, coding using MVC and OOP, workflow development, testing, and reporting. AI tools are integrated into each phase to enhance productivity and quality.\nNoCredit: 3\nPre-Requisite: PRJ301, SWE201c or SWE202c, pass LAB211\nTime Allocation: Study hour (150h) = 45h contact hours + 1h Project Presentation + 104h self-study\nStudentTasks: - Join the team as arranged by the teacher\n- Select the project topic & technology stack and get approval from teacher before implementing\n- Attend at least 80% of contact slots in order to be accepted to the final presentation.\n- Analyze requirements, write user requirements, and create system diagrams with AI-assisted tools.\n- Design system architecture, database schema, and UI/UX wireframes using MVC, OOP, and AI suggestions.\n- Implement core features with AI-supported coding, apply coding standards, and manage source code in Git.\n- Develop and run unit/integration tests, using AI to suggest and refine test cases.\n- Deploy the application to staging, verify functionality, and prepare for final delivery.\n- Manage project progress, present milestones, and prepare high-quality reports with AI support.\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus SWP391 — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "SWP391-CLO1",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Analyze and clarify project requirements with AI-assisted elicitation and documentation",
+      "source_label": "Syllabus SWP391 — CLO1"
+    },
+    {
+      "chunk_id": "SWP391-CLO2",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: Design system modules and databases using MVC, OOP, and AI-supported modelling tools",
+      "source_label": "Syllabus SWP391 — CLO2"
+    },
+    {
+      "chunk_id": "SWP391-CLO3",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: Create ERD models and implement relational databases with SQL, applying AI tools for design validation and query optimization.",
+      "source_label": "Syllabus SWP391 — CLO3"
+    },
+    {
+      "chunk_id": "SWP391-CLO4",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: Develop web applications in Java/.NET/Node.js with AI-enhanced coding, debugging, and workflow implementation.",
+      "source_label": "Syllabus SWP391 — CLO4"
+    },
+    {
+      "chunk_id": "SWP391-CLO5",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Learning Outcome CLO5",
+      "text": "CLO5: Demonstrate teamwork, professional ethics, and responsible AI use in software development.",
+      "source_label": "Syllabus SWP391 — CLO5"
+    },
+    {
+      "chunk_id": "SWP391-CLO6",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Learning Outcome CLO6",
+      "text": "CLO6: Deliver effective presentations and reports with AI-aided content and visualization.",
+      "source_label": "Syllabus SWP391 — CLO6"
+    },
+    {
+      "chunk_id": "SWP391-session-1",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 1",
+      "text": "Session 1 — Course Introduction & Topic Allocation\nTài liệu: Course outline, IDE\nNhiệm vụ sinh viên: Listen to course overview, join teams",
+      "source_label": "Syllabus SWP391 — Session 1"
+    },
+    {
+      "chunk_id": "SWP391-session-2",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 2",
+      "text": "Session 2 — Course Introduction & Topic Allocation\nTài liệu: Course outline, IDE\nNhiệm vụ sinh viên: Listen to course overview, join teams",
+      "source_label": "Syllabus SWP391 — Session 2"
+    },
+    {
+      "chunk_id": "SWP391-session-3",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 3",
+      "text": "Session 3 — Introduction to AI-Augmented SDLC\nTài liệu: Reading file, IDE\nNhiệm vụ sinh viên: Learn SDLC concept, note AI examples",
+      "source_label": "Syllabus SWP391 — Session 3"
+    },
+    {
+      "chunk_id": "SWP391-session-4",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 4",
+      "text": "Session 4 — User Requirements Development with Domain Experts (invited guest, lecturer role-play or AI Agents).\nTài liệu: Requirement doc, IDE\nNhiệm vụ sinh viên: Practice requirement elicitation, draft simple requirement document",
+      "source_label": "Syllabus SWP391 — Session 4"
+    },
+    {
+      "chunk_id": "SWP391-session-5",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 5",
+      "text": "Session 5 — User Requirements Development with Domain Experts (invited guest, lecturer role-play or AI Agents).\nTài liệu: Requirement doc, IDE\nNhiệm vụ sinh viên: Practice requirement elicitation, draft simple requirement document",
+      "source_label": "Syllabus SWP391 — Session 5"
+    },
+    {
+      "chunk_id": "SWP391-session-6",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 6",
+      "text": "Session 6 — User Requirements Development with Domain Experts (invited guest, lecturer role-play or AI Agents).\nTài liệu: Requirement doc, IDE\nNhiệm vụ sinh viên: Practice requirement elicitation, draft simple requirement document",
+      "source_label": "Syllabus SWP391 — Session 6"
+    },
+    {
+      "chunk_id": "SWP391-session-7",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 7",
+      "text": "Session 7 — Data Modeling- ERD Conceptual & Logical\nTài liệu: ERD tool, diagrams\nNhiệm vụ sinh viên: Sketch ER diagram, refine with relationships, validate with data",
+      "source_label": "Syllabus SWP391 — Session 7"
+    },
+    {
+      "chunk_id": "SWP391-session-8",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 8",
+      "text": "Session 8 — Data Modeling- ERD Conceptual & Logical\nTài liệu: ERD tool, diagrams\nNhiệm vụ sinh viên: Sketch ER diagram, refine with relationships, validate with data",
+      "source_label": "Syllabus SWP391 — Session 8"
+    },
+    {
+      "chunk_id": "SWP391-session-9",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 9",
+      "text": "Session 9 — Data Modeling- ERD Conceptual & Logical\nTài liệu: ERD tool, diagrams\nNhiệm vụ sinh viên: Sketch ER diagram, refine with relationships, validate with data",
+      "source_label": "Syllabus SWP391 — Session 9"
+    },
+    {
+      "chunk_id": "SWP391-session-10",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 10",
+      "text": "Session 10 — Database design- Tables and Constraints\nTài liệu: SQL scripts, IDE\nNhiệm vụ sinh viên: Map ERD to tables, add keys/constraints, run sample DDL",
+      "source_label": "Syllabus SWP391 — Session 10"
+    },
+    {
+      "chunk_id": "SWP391-session-11",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 11",
+      "text": "Session 11 — Database design- Tables and Constraints\nTài liệu: SQL scripts, IDE\nNhiệm vụ sinh viên: Map ERD to tables, add keys/constraints, run sample DDL",
+      "source_label": "Syllabus SWP391 — Session 11"
+    },
+    {
+      "chunk_id": "SWP391-session-12",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 12",
+      "text": "Session 12 — Database design- Tables and Constraints\nTài liệu: SQL scripts, IDE\nNhiệm vụ sinh viên: Map ERD to tables, add keys/constraints, run sample DDL",
+      "source_label": "Syllabus SWP391 — Session 12"
+    },
+    {
+      "chunk_id": "SWP391-session-13",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 13",
+      "text": "Session 13 — Software design with MVC Pattern\nTài liệu: MVC design doc, IDE\nNhiệm vụ sinh viên: Sketch MVC design, define controllers/views, present diagram",
+      "source_label": "Syllabus SWP391 — Session 13"
+    },
+    {
+      "chunk_id": "SWP391-session-14",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 14",
+      "text": "Session 14 — Software design with MVC Pattern\nTài liệu: MVC design doc, IDE\nNhiệm vụ sinh viên: Sketch MVC design, define controllers/views, present diagram",
+      "source_label": "Syllabus SWP391 — Session 14"
+    },
+    {
+      "chunk_id": "SWP391-session-15",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 15",
+      "text": "Session 15 — Software design with MVC Pattern\nTài liệu: MVC design doc, IDE\nNhiệm vụ sinh viên: Sketch MVC design, define controllers/views, present diagram",
+      "source_label": "Syllabus SWP391 — Session 15"
+    },
+    {
+      "chunk_id": "SWP391-session-16",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 16",
+      "text": "Session 16 — UI & Workflow Prototyping\nTài liệu: Prototyping tool, UI mockups\nNhiệm vụ sinh viên: Draw wireframes, build prototype, present to peers",
+      "source_label": "Syllabus SWP391 — Session 16"
+    },
+    {
+      "chunk_id": "SWP391-session-17",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 17",
+      "text": "Session 17 — UI & Workflow Prototyping\nTài liệu: Prototyping tool, UI mockups\nNhiệm vụ sinh viên: Draw wireframes, build prototype, present to peers",
+      "source_label": "Syllabus SWP391 — Session 17"
+    },
+    {
+      "chunk_id": "SWP391-session-18",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 18",
+      "text": "Session 18 — UI & Workflow Prototyping\nTài liệu: Prototyping tool, UI mockups\nNhiệm vụ sinh viên: Draw wireframes, build prototype, present to peers",
+      "source_label": "Syllabus SWP391 — Session 18"
+    },
+    {
+      "chunk_id": "SWP391-session-19",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 19",
+      "text": "Session 19 — Milestone 1 Review & Evaluation\nTài liệu: Presentation slides, report\nNhiệm vụ sinh viên: Present milestone, receive feedback",
+      "source_label": "Syllabus SWP391 — Session 19"
+    },
+    {
+      "chunk_id": "SWP391-session-20",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 20",
+      "text": "Session 20 — Milestone 1 Review & Evaluation\nTài liệu: Presentation slides, report\nNhiệm vụ sinh viên: Present milestone, receive feedback",
+      "source_label": "Syllabus SWP391 — Session 20"
+    },
+    {
+      "chunk_id": "SWP391-session-21",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 21",
+      "text": "Session 21 — Milestone 1 Review & Evaluation\nTài liệu: Presentation slides, report\nNhiệm vụ sinh viên: Present milestone, receive feedback",
+      "source_label": "Syllabus SWP391 — Session 21"
+    },
+    {
+      "chunk_id": "SWP391-session-22",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 22",
+      "text": "Session 22 — Development Phase Planning (Phase 2)\nTài liệu: Planning doc, chart\nNhiệm vụ sinh viên: Make phase plan, assign tasks, confirm timeline",
+      "source_label": "Syllabus SWP391 — Session 22"
+    },
+    {
+      "chunk_id": "SWP391-session-23",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 23",
+      "text": "Session 23 — Environment Setup and Version Control\nTài liệu: Git client, IDE\nNhiệm vụ sinh viên: Install IDE & Git, configure environment, practice commit/push",
+      "source_label": "Syllabus SWP391 — Session 23"
+    },
+    {
+      "chunk_id": "SWP391-session-24",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 24",
+      "text": "Session 24 — Environment Setup and Version Control\nTài liệu: Git client, IDE\nNhiệm vụ sinh viên: Install IDE & Git, configure environment, practice commit/push",
+      "source_label": "Syllabus SWP391 — Session 24"
+    },
+    {
+      "chunk_id": "SWP391-session-25",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 25",
+      "text": "Session 25 — Build Model in MVC- Develop Repository & Service Layers\nTài liệu: Git client, IDE\nNhiệm vụ sinh viên: Write sample repository/service code, commit and test",
+      "source_label": "Syllabus SWP391 — Session 25"
+    },
+    {
+      "chunk_id": "SWP391-session-26",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 26",
+      "text": "Session 26 — Build Model in MVC- Develop Repository & Service Layers\nTài liệu: Git client, IDE\nNhiệm vụ sinh viên: Write sample repository/service code, commit and test",
+      "source_label": "Syllabus SWP391 — Session 26"
+    },
+    {
+      "chunk_id": "SWP391-session-27",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 27",
+      "text": "Session 27 — Build Model in MVC- Develop Repository & Service Layers\nTài liệu: Git client, IDE\nNhiệm vụ sinh viên: Write sample repository/service code, commit and test",
+      "source_label": "Syllabus SWP391 — Session 27"
+    },
+    {
+      "chunk_id": "SWP391-session-28",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 28",
+      "text": "Session 28 — Workflow 0: Basic Web Security- Register/Login/Logout/Forgot Password\nTài liệu: Git client, IDE\nNhiệm vụ sinh viên: Implement login form, add validation, connect DB",
+      "source_label": "Syllabus SWP391 — Session 28"
+    },
+    {
+      "chunk_id": "SWP391-session-29",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 29",
+      "text": "Session 29 — Workflow 0: Basic Web Security- Register/Login/Logout/Forgot Password\nTài liệu: Git client, IDE\nNhiệm vụ sinh viên: Implement login form, add validation, connect DB",
+      "source_label": "Syllabus SWP391 — Session 29"
+    },
+    {
+      "chunk_id": "SWP391-session-30",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 30",
+      "text": "Session 30 — Workflow 0: Basic Web Security- Register/Login/Logout/Forgot Password\nTài liệu: Git client, IDE\nNhiệm vụ sinh viên: Implement login form, add validation, connect DB",
+      "source_label": "Syllabus SWP391 — Session 30"
+    },
+    {
+      "chunk_id": "SWP391-session-31",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 31",
+      "text": "Session 31 — Workflow 1: Basic CRUD in DB Tables- Master Data Setup\nTài liệu: Git client, IDE\nNhiệm vụ sinh viên: Create CRUD forms, insert/update/test records",
+      "source_label": "Syllabus SWP391 — Session 31"
+    },
+    {
+      "chunk_id": "SWP391-session-32",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 32",
+      "text": "Session 32 — Workflow 1: Basic CRUD in DB Tables- Master Data Setup\nTài liệu: Git client, IDE\nNhiệm vụ sinh viên: Create CRUD forms, insert/update/test records",
+      "source_label": "Syllabus SWP391 — Session 32"
+    },
+    {
+      "chunk_id": "SWP391-session-33",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 33",
+      "text": "Session 33 — Workflow 1: Basic CRUD in DB Tables- Master Data Setup\nTài liệu: Git client, IDE\nNhiệm vụ sinh viên: Create CRUD forms, insert/update/test records",
+      "source_label": "Syllabus SWP391 — Session 33"
+    },
+    {
+      "chunk_id": "SWP391-session-34",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 34",
+      "text": "Session 34 — Workflow 2: Core Transaction Flow (Success Path)\nTài liệu: Git client, IDE\nNhiệm vụ sinh viên: Draw transaction flow, code success path, run tests",
+      "source_label": "Syllabus SWP391 — Session 34"
+    },
+    {
+      "chunk_id": "SWP391-session-35",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 35",
+      "text": "Session 35 — Workflow 2: Core Transaction Flow (Success Path)\nTài liệu: Git client, IDE\nNhiệm vụ sinh viên: Draw transaction flow, code success path, run tests",
+      "source_label": "Syllabus SWP391 — Session 35"
+    },
+    {
+      "chunk_id": "SWP391-session-36",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 36",
+      "text": "Session 36 — Workflow 2: Core Transaction Flow (Success Path)\nTài liệu: Git client, IDE\nNhiệm vụ sinh viên: Draw transaction flow, code success path, run tests",
+      "source_label": "Syllabus SWP391 — Session 36"
+    },
+    {
+      "chunk_id": "SWP391-session-37",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 37",
+      "text": "Session 37 — Workflow 2: Core Transaction Flow (Exception Path)\nTài liệu: Git client, IDE\nNhiệm vụ sinh viên: Draw transaction flow, code exception path, run tests",
+      "source_label": "Syllabus SWP391 — Session 37"
+    },
+    {
+      "chunk_id": "SWP391-session-38",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 38",
+      "text": "Session 38 — Workflow 2: Core Transaction Flow (Exception Path)\nTài liệu: Git client, IDE\nNhiệm vụ sinh viên: Draw transaction flow, code exception path, run tests",
+      "source_label": "Syllabus SWP391 — Session 38"
+    },
+    {
+      "chunk_id": "SWP391-session-39",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 39",
+      "text": "Session 39 — Workflow 2: Core Transaction Flow (Exception Path)\nTài liệu: Git client, IDE\nNhiệm vụ sinh viên: Draw transaction flow, code exception path, run tests",
+      "source_label": "Syllabus SWP391 — Session 39"
+    },
+    {
+      "chunk_id": "SWP391-session-40",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 40",
+      "text": "Session 40 — AI-support for Automation Testing\nTài liệu: Test cases, AI tool\nNhiệm vụ sinh viên: Try AI tool for test cases, run scripts, adjust test scripts",
+      "source_label": "Syllabus SWP391 — Session 40"
+    },
+    {
+      "chunk_id": "SWP391-session-41",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 41",
+      "text": "Session 41 — AI-support for Automation Testing\nTài liệu: Test cases, AI tool\nNhiệm vụ sinh viên: Try AI tool for test cases, run scripts, adjust test scripts",
+      "source_label": "Syllabus SWP391 — Session 41"
+    },
+    {
+      "chunk_id": "SWP391-session-42",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 42",
+      "text": "Session 42 — AI-support for Automation Testing\nTài liệu: Test cases, AI tool\nNhiệm vụ sinh viên: Try AI tool for test cases, run scripts, adjust test scripts",
+      "source_label": "Syllabus SWP391 — Session 42"
+    },
+    {
+      "chunk_id": "SWP391-session-43",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 43",
+      "text": "Session 43 — Milestone 2 Review & Evaluation\nTài liệu: Presentation slides, report\nNhiệm vụ sinh viên: Present milestone, receive feedback",
+      "source_label": "Syllabus SWP391 — Session 43"
+    },
+    {
+      "chunk_id": "SWP391-session-44",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 44",
+      "text": "Session 44 — Milestone 2 Review & Evaluation\nTài liệu: Presentation slides, report\nNhiệm vụ sinh viên: Present milestone, receive feedback",
+      "source_label": "Syllabus SWP391 — Session 44"
+    },
+    {
+      "chunk_id": "SWP391-session-45",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 45",
+      "text": "Session 45 — Milestone 2 Review & Evaluation\nTài liệu: Presentation slides, report\nNhiệm vụ sinh viên: Present milestone, receive feedback",
+      "source_label": "Syllabus SWP391 — Session 45"
+    },
+    {
+      "chunk_id": "SWP391-session-46",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 46",
+      "text": "Session 46 — Workflow 3: Dashboard & Reporting\nTài liệu: Dashboard mockup, KPI sheet\nNhiệm vụ sinh viên: Identify KPIs, build charts, present dashboard",
+      "source_label": "Syllabus SWP391 — Session 46"
+    },
+    {
+      "chunk_id": "SWP391-session-47",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 47",
+      "text": "Session 47 — Workflow 3: Dashboard & Reporting\nTài liệu: Dashboard mockup, KPI sheet\nNhiệm vụ sinh viên: Identify KPIs, build charts, present dashboard",
+      "source_label": "Syllabus SWP391 — Session 47"
+    },
+    {
+      "chunk_id": "SWP391-session-48",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 48",
+      "text": "Session 48 — Workflow 3: Dashboard & Reporting\nTài liệu: Dashboard mockup, KPI sheet\nNhiệm vụ sinh viên: Identify KPIs, build charts, present dashboard",
+      "source_label": "Syllabus SWP391 — Session 48"
+    },
+    {
+      "chunk_id": "SWP391-session-49",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 49",
+      "text": "Session 49 — Software Deployment and Data Preparation\nTài liệu: Deployment script\nNhiệm vụ sinh viên: Practice deployment steps, seed sample data, run demo",
+      "source_label": "Syllabus SWP391 — Session 49"
+    },
+    {
+      "chunk_id": "SWP391-session-50",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 50",
+      "text": "Session 50 — Software Deployment and Data Preparation\nTài liệu: Deployment script\nNhiệm vụ sinh viên: Practice deployment steps, seed sample data, run demo",
+      "source_label": "Syllabus SWP391 — Session 50"
+    },
+    {
+      "chunk_id": "SWP391-session-51",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 51",
+      "text": "Session 51 — Software Deployment and Data Preparation\nTài liệu: Deployment script\nNhiệm vụ sinh viên: Practice deployment steps, seed sample data, run demo",
+      "source_label": "Syllabus SWP391 — Session 51"
+    },
+    {
+      "chunk_id": "SWP391-session-52",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 52",
+      "text": "Session 52 — User Acceptance Tesing and Quality Improvement\nTài liệu: UAT report, defect log\nNhiệm vụ sinh viên: Join UAT, fix small defects, re-test improvements",
+      "source_label": "Syllabus SWP391 — Session 52"
+    },
+    {
+      "chunk_id": "SWP391-session-53",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 53",
+      "text": "Session 53 — User Acceptance Tesing and Quality Improvement\nTài liệu: UAT report, defect log\nNhiệm vụ sinh viên: Join UAT, fix small defects, re-test improvements",
+      "source_label": "Syllabus SWP391 — Session 53"
+    },
+    {
+      "chunk_id": "SWP391-session-54",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 54",
+      "text": "Session 54 — User Acceptance Tesing and Quality Improvement\nTài liệu: UAT report, defect log\nNhiệm vụ sinh viên: Join UAT, fix small defects, re-test improvements",
+      "source_label": "Syllabus SWP391 — Session 54"
+    },
+    {
+      "chunk_id": "SWP391-session-55",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 55",
+      "text": "Session 55 — Milestone 3- Final Presentation\nTài liệu: Presentation slides, report\nNhiệm vụ sinh viên: Present milestone, receive feedback",
+      "source_label": "Syllabus SWP391 — Session 55"
+    },
+    {
+      "chunk_id": "SWP391-session-56",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 56",
+      "text": "Session 56 — Milestone 3- Final Presentation\nTài liệu: Presentation slides, report\nNhiệm vụ sinh viên: Present milestone, receive feedback",
+      "source_label": "Syllabus SWP391 — Session 56"
+    },
+    {
+      "chunk_id": "SWP391-session-57",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 57",
+      "text": "Session 57 — Milestone 3- Final Presentation\nTài liệu: Presentation slides, report\nNhiệm vụ sinh viên: Present milestone, receive feedback",
+      "source_label": "Syllabus SWP391 — Session 57"
+    },
+    {
+      "chunk_id": "SWP391-session-58",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 58",
+      "text": "Session 58 — Project Closing and Retrospective\nTài liệu: Retrospective notes, repo archive\nNhiệm vụ sinh viên: Join retrospective, clean up repo, share lessons learned",
+      "source_label": "Syllabus SWP391 — Session 58"
+    },
+    {
+      "chunk_id": "SWP391-session-59",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 59",
+      "text": "Session 59 — Project Closing and Retrospective\nTài liệu: Retrospective notes, repo archive\nNhiệm vụ sinh viên: Join retrospective, clean up repo, share lessons learned",
+      "source_label": "Syllabus SWP391 — Session 59"
+    },
+    {
+      "chunk_id": "SWP391-session-60",
+      "subject_code": "SWP391",
+      "subject_name": "Software development project_Dự án phát triển phần mềm",
+      "section": "Session 60",
+      "text": "Session 60 — Project Closing and Retrospective\nTài liệu: Retrospective notes, repo archive\nNhiệm vụ sinh viên: Join retrospective, clean up repo, share lessons learned",
+      "source_label": "Syllabus SWP391 — Session 60"
+    }
+  ]
+}

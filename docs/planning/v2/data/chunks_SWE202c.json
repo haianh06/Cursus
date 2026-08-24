@@ -1,0 +1,166 @@
+{
+  "subject_code": "SWE202c",
+  "subject_name": "Introduction to Software Engineering_Nhập môn kỹ thuật phần mềm",
+  "meta": {
+    "Syllabus ID": "13769",
+    "Syllabus Name": "Introduction to Software Engineering_Nhập môn kỹ thuật phần mềm",
+    "Course Name English": "Introduction to Software Engineering",
+    "Subject Code": "SWE202c",
+    "Learning-Teaching Method": "Online, Active learning, Inquiry-based Teaching",
+    "NoCredit": "3",
+    "Degree Level": "Bachelor",
+    "Time Allocation": "Study hour (150h) =82h online + 3h offline + 1h TE + 2h PE + 62 h self-study",
+    "Pre-Requisite": "PRO192",
+    "Description": "The course includes two parts:\nThe first part introduces the use of Generative AI (GenAI) and Large Language Models (LLMs) in modern software development. Students will learn how AI-powered tools can accelerate the software engineering process, from analyzing requirements to generating code, writing tests, debugging, and producing technical documentation.\nThe second part provides a comprehensive introduction to modern software engineering principles, methods, and practices. The course equips students with the foundational and advanced skills needed to design, develop, test, deploy, and maintain reliable software systems. Learners explore the full software development lifecycle (SDLC), including requirements engineering, architectural and object-oriented design, software construction, quality assurance, and DevOps practices. Emphasis is placed on practical, industry-relevant techniques such as version control, automated testing, API development, and iterative development using Agile. Through a combination of theoretical concepts, hands-on exercises, and real-world case studies, the course prepares students to work effectively in software engineering teams and build scalable, maintainable, and high-quality software products.",
+    "StudentTasks": "Student must get the certification of Software Engineering Specialization and Generative AI in Software Development course from Coursera to be accepted to the final examination",
+    "Tools": "",
+    "Scoring Scale": "10",
+    "DecisionNo MM/dd/yyyy": "1318/QĐ-ĐHFPT dated 11/27/2025",
+    "IsApproved": "True",
+    "Note": "1. Complete the online courses to be allowed to take Final Exam\n2. Final Exam is included of Final Theory Exam (TE) & Final Practical Exam (PE): 100%\n3. Students who complete all MOOCs before the course deadline will receive 1 bonus point; otherwise, no bonus point will be awarded.\n4. Completion Criteria: Final TE Score >=4 & Final PE Score >=4 & FR >= 5\nFR = min[10, (Final TE Score * weight of Final TE) + (Final PE Score * weight of Final PE) + bonus]",
+    "Is Scored": "True",
+    "MinAvgMarkToPass": "5",
+    "IsActive": "True",
+    "ApprovedDate": "11/27/2025"
+  },
+  "clo_count": 4,
+  "session_count": 12,
+  "chunks": [
+    {
+      "chunk_id": "SWE202c-overview",
+      "subject_code": "SWE202c",
+      "subject_name": "Introduction to Software Engineering_Nhập môn kỹ thuật phần mềm",
+      "section": "Overview & Grading Policy",
+      "text": "Description: The course includes two parts:\nThe first part introduces the use of Generative AI (GenAI) and Large Language Models (LLMs) in modern software development. Students will learn how AI-powered tools can accelerate the software engineering process, from analyzing requirements to generating code, writing tests, debugging, and producing technical documentation.\nThe second part provides a comprehensive introduction to modern software engineering principles, methods, and practices. The course equips students with the foundational and advanced skills needed to design, develop, test, deploy, and maintain reliable software systems. Learners explore the full software development lifecycle (SDLC), including requirements engineering, architectural and object-oriented design, software construction, quality assurance, and DevOps practices. Emphasis is placed on practical, industry-relevant techniques such as version control, automated testing, API development, and iterative development using Agile. Through a combination of theoretical concepts, hands-on exercises, and real-world case studies, the course prepares students to work effectively in software engineering teams and build scalable, maintainable, and high-quality software products.\nNoCredit: 3\nPre-Requisite: PRO192\nTime Allocation: Study hour (150h) =82h online + 3h offline + 1h TE + 2h PE + 62 h self-study\nStudentTasks: Student must get the certification of Software Engineering Specialization and Generative AI in Software Development course from Coursera to be accepted to the final examination\nNote: 1. Complete the online courses to be allowed to take Final Exam\n2. Final Exam is included of Final Theory Exam (TE) & Final Practical Exam (PE): 100%\n3. Students who complete all MOOCs before the course deadline will receive 1 bonus point; otherwise, no bonus point will be awarded.\n4. Completion Criteria: Final TE Score >=4 & Final PE Score >=4 & FR >= 5\nFR = min[10, (Final TE Score * weight of Final TE) + (Final PE Score * weight of Final PE) + bonus]\nMinAvgMarkToPass: 5",
+      "source_label": "Syllabus SWE202c — Overview & Grading Policy"
+    },
+    {
+      "chunk_id": "SWE202c-CLO1",
+      "subject_code": "SWE202c",
+      "subject_name": "Introduction to Software Engineering_Nhập môn kỹ thuật phần mềm",
+      "section": "Learning Outcome CLO1",
+      "text": "CLO1: Understand and apply Generative AI models across the software development lifecycle—including code generation, testing, debugging, and documentation—while evaluating output quality, integrating GenAI into development workflows, and ensuring ethical, security, and intellectual-property compliance in real-world projects.",
+      "source_label": "Syllabus SWE202c — CLO1"
+    },
+    {
+      "chunk_id": "SWE202c-CLO2",
+      "subject_code": "SWE202c",
+      "subject_name": "Introduction to Software Engineering_Nhập môn kỹ thuật phần mềm",
+      "section": "Learning Outcome CLO2",
+      "text": "CLO2: understand software modeling principles and apply UML techniques to analyze requirements, design system structure and behavior, create and interpret UML diagrams, and evaluate models for accuracy, completeness, and consistency in real-world software projects.",
+      "source_label": "Syllabus SWE202c — CLO2"
+    },
+    {
+      "chunk_id": "SWE202c-CLO3",
+      "subject_code": "SWE202c",
+      "subject_name": "Introduction to Software Engineering_Nhập môn kỹ thuật phần mềm",
+      "section": "Learning Outcome CLO3",
+      "text": "CLO3: implement software components following industry coding standards, apply testing techniques to ensure software correctness and reliability, and evaluate code quality through systematic debugging, verification, and validation activities in real-world software projects.",
+      "source_label": "Syllabus SWE202c — CLO3"
+    },
+    {
+      "chunk_id": "SWE202c-CLO4",
+      "subject_code": "SWE202c",
+      "subject_name": "Introduction to Software Engineering_Nhập môn kỹ thuật phần mềm",
+      "section": "Learning Outcome CLO4",
+      "text": "CLO4: design software systems using appropriate design principles and patterns, plan and manage software projects effectively, coordinate team activities, monitor progress, and ensure project deliverables meet quality, schedule, and resource requirements in real-world settings",
+      "source_label": "Syllabus SWE202c — CLO4"
+    },
+    {
+      "chunk_id": "SWE202c-session-1",
+      "subject_code": "SWE202c",
+      "subject_name": "Introduction to Software Engineering_Nhập môn kỹ thuật phần mềm",
+      "section": "Session 1",
+      "text": "Session 1 — Offline 1:\nIntroduction to the online course SWE202c.\nMOOC 1: Generative AI in Software Development\nModule 1: AI and building software\nTài liệu: Course: Generative AI in Software Development\nhttps://www.coursera.org/learn/generative-ai-in-software-development\nNhiệm vụ sinh viên: - See the syllabus of all 4 MOOCs\n- Participate in introduction slot (optional)\n- Watch the videos\n- Read the materials\n- Do all the quizzes.\n- Complete and submit all assignments.",
+      "source_label": "Syllabus SWE202c — Session 1"
+    },
+    {
+      "chunk_id": "SWE202c-session-2",
+      "subject_code": "SWE202c",
+      "subject_name": "Introduction to Software Engineering_Nhập môn kỹ thuật phần mềm",
+      "section": "Session 2",
+      "text": "Session 2 — MOOC 1: Generative AI in Software Development\nModule 1: AI and building software (Cont.)\nModule 2: AI and Digital Transformation\nTài liệu: Course: Generative AI in Software Development\nhttps://www.coursera.org/learn/generative-ai-in-software-development\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus SWE202c — Session 2"
+    },
+    {
+      "chunk_id": "SWE202c-session-3",
+      "subject_code": "SWE202c",
+      "subject_name": "Introduction to Software Engineering_Nhập môn kỹ thuật phần mềm",
+      "section": "Session 3",
+      "text": "Session 3 — MOOC 1: Generative AI in Software Development\nModule 3 : Final project and course wrap up\nTài liệu: Course: Generative AI in Software Development\nhttps://www.coursera.org/learn/generative-ai-in-software-development\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus SWE202c — Session 3"
+    },
+    {
+      "chunk_id": "SWE202c-session-4",
+      "subject_code": "SWE202c",
+      "subject_name": "Introduction to Software Engineering_Nhập môn kỹ thuật phần mềm",
+      "section": "Session 4",
+      "text": "Session 4 — MOOC 2: Software Engineering: Modeling Software Systems using UML\nModule 1: Introduction to Software Engineering\nModule 2: Modeling Software Systems Using UML\nModule 3: Types of Relationships in Class Diagram\nTài liệu: Course: Software Engineering: Modeling Software Systems using UML\nhttps://www.coursera.org/learn/software-engineering-modeling-software-systems-using-uml\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus SWE202c — Session 4"
+    },
+    {
+      "chunk_id": "SWE202c-session-5",
+      "subject_code": "SWE202c",
+      "subject_name": "Introduction to Software Engineering_Nhập môn kỹ thuật phần mềm",
+      "section": "Session 5",
+      "text": "Session 5 — MOOC 2: Software Engineering: Modeling Software Systems using UML\nModule 4 : System Requirements Capture and Domain Modeling\nModule 5: Use Case Modeling\nTài liệu: Course: Software Engineering: Modeling Software Systems using UML\nhttps://www.coursera.org/learn/software-engineering-modeling-software-systems-using-uml\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus SWE202c — Session 5"
+    },
+    {
+      "chunk_id": "SWE202c-session-6",
+      "subject_code": "SWE202c",
+      "subject_name": "Introduction to Software Engineering_Nhập môn kỹ thuật phần mềm",
+      "section": "Session 6",
+      "text": "Session 6 — MOOC 2: Software Engineering: Modeling Software Systems using UML\nModule 6: Use Case Specification\nModule 7: Non-Functional Requirements\nTài liệu: Course: Software Engineering: Modeling Software Systems using UML\nhttps://www.coursera.org/learn/software-engineering-modeling-software-systems-using-uml\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus SWE202c — Session 6"
+    },
+    {
+      "chunk_id": "SWE202c-session-7",
+      "subject_code": "SWE202c",
+      "subject_name": "Introduction to Software Engineering_Nhập môn kỹ thuật phần mềm",
+      "section": "Session 7",
+      "text": "Session 7 — MOOC 3: Software Engineering: Implementation and Testing\nModule 1: Introduction to Software Development\nModule 2: Software Development Processes\nModule 3: Implementation and Defensive Programming\nTài liệu: Course: Software Engineering: Implementation and Testing\nhttps://www.coursera.org/learn/software-engineering-implementation-and-testing\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus SWE202c — Session 7"
+    },
+    {
+      "chunk_id": "SWE202c-session-8",
+      "subject_code": "SWE202c",
+      "subject_name": "Introduction to Software Engineering_Nhập môn kỹ thuật phần mềm",
+      "section": "Session 8",
+      "text": "Session 8 — MOOC 3: Software Engineering: Implementation and Testing\nModule 4: Debugging and Configuration Management\nModule 5: White Box Testing\nTài liệu: Course: Software Engineering: Implementation and Testing\nhttps://www.coursera.org/learn/software-engineering-implementation-and-testing\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus SWE202c — Session 8"
+    },
+    {
+      "chunk_id": "SWE202c-session-9",
+      "subject_code": "SWE202c",
+      "subject_name": "Introduction to Software Engineering_Nhập môn kỹ thuật phần mềm",
+      "section": "Session 9",
+      "text": "Session 9 — MOOC 3 :Software Engineering: Implementation and Testing\nModule 6: Black Box Testing\nModule 7: Acceptance Testing\nTài liệu: Course: Software Engineering: Implementation and Testing\nhttps://www.coursera.org/learn/software-engineering-implementation-and-testing\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus SWE202c — Session 9"
+    },
+    {
+      "chunk_id": "SWE202c-session-10",
+      "subject_code": "SWE202c",
+      "subject_name": "Introduction to Software Engineering_Nhập môn kỹ thuật phần mềm",
+      "section": "Session 10",
+      "text": "Session 10 — MOOC 4: Software Engineering: Software Design and Project Management\nModule 1: System Analysis and Design\nModule 2: State Machine Diagram\nTài liệu: Course: Software Engineering: Software Design and Project Management\nhttps://www.coursera.org/learn/software-engineering-software-design-and-project-management\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus SWE202c — Session 10"
+    },
+    {
+      "chunk_id": "SWE202c-session-11",
+      "subject_code": "SWE202c",
+      "subject_name": "Introduction to Software Engineering_Nhập môn kỹ thuật phần mềm",
+      "section": "Session 11",
+      "text": "Session 11 — MOOC 4: Software Engineering: Software Design and Project Management\nModule 3: Design Patterns\nModule 4: More Design Patterns\nTài liệu: Course: Software Engineering: Software Design and Project Management\nhttps://www.coursera.org/learn/software-engineering-software-design-and-project-management\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)",
+      "source_label": "Syllabus SWE202c — Session 11"
+    },
+    {
+      "chunk_id": "SWE202c-session-12",
+      "subject_code": "SWE202c",
+      "subject_name": "Introduction to Software Engineering_Nhập môn kỹ thuật phần mềm",
+      "section": "Session 12",
+      "text": "Session 12 — MOOC 4: Software Engineering: Software Design and Project Management\nModule 5: Software Quality Assurance\nModule 6: Managing Software Development\nTài liệu: Course: Software Engineering: Software Design and Project Management\nhttps://www.coursera.org/learn/software-engineering-software-design-and-project-management\nNhiệm vụ sinh viên: - Watch all videos, read all materials in the MOOC\n- Finish quizzes, self-assessment, assignments and take part in discussion boards (if needed)\nDeadline of Coursera completion: End of Friday of the week.\nAll students should participate in review slot (if any question)",
+      "source_label": "Syllabus SWE202c — Session 12"
+    }
+  ]
+}

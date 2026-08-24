@@ -1,0 +1,11 @@
+# Local system-test defaults. Copy to docker-compose.override.yml (gitignored):
+#   Copy-Item docker-compose.override.example.yml docker-compose.override.yml
+#
+# Demo seed is fast (3 roles). Use SEED_DATASET=full only when you need the
+# 600-user mock_data pipeline.
+
+services:
+  backend:
+    environment:
+      SEED_ON_START: "true"
+      SEED_DATASET: "demo"
