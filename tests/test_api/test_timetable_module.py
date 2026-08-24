@@ -129,3 +129,142 @@ async def test_timetable_rejects_self_study_overlap_with_class(client):
     )
     assert response.status_code == 400
     assert "overlap" in response.json()["detail"].lower()
+
+
+@pytest.mark.asyncio
+async def test_recurring_self_study_block_create_and_delete_all(client):
+    """a46db63 §6.3.8: repeatWeeklyUntil creates one occurrence per week
+    sharing a recurrence_series_id; scope=all deletes every occurrence."""
+    headers = await _login_student(client)
+    monday = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    while monday.weekday() != 0:
+        monday += timedelta(days=1)
+    week_start = monday.date().isoformat()
+    next_week_start = (monday + timedelta(days=7)).date().isoformat()
+
+    start = monday.replace(hour=6, minute=0)
+    end = monday.replace(hour=7, minute=0)
+    until = (monday + timedelta(days=8)).date().isoformat()
+
+    create_response = await client.post(
+        "/api/v1/plans/timetable/blocks",
+        headers=headers,
+        json={
+            "title": "Recurring morning review",
+            "start": start.isoformat(),
+            "end": end.isoformat(),
+            "repeatWeeklyUntil": until,
+        },
+    )
+    assert create_response.status_code == 201, create_response.text
+    first = create_response.json()
+    series_id = first["recurrenceSeriesId"]
+    assert series_id
+
+    week1 = await client.get(f"/api/v1/plans/timetable?week_start={week_start}", headers=headers)
+    week2 = await client.get(
+        f"/api/v1/plans/timetable?week_start={next_week_start}", headers=headers
+    )
+    week1_series = [b for b in week1.json()["blocks"] if b.get("recurrenceSeriesId") == series_id]
+    week2_series = [b for b in week2.json()["blocks"] if b.get("recurrenceSeriesId") == series_id]
+    assert len(week1_series) == 1
+    assert len(week2_series) == 1
+
+    delete_response = await client.delete(
+        f"/api/v1/plans/timetable/blocks/{first['id']}?scope=all",
+        headers=headers,
+    )
+    assert delete_response.status_code == 204
+
+    week1_after = await client.get(
+        f"/api/v1/plans/timetable?week_start={week_start}", headers=headers
+    )
+    week2_after = await client.get(
+        f"/api/v1/plans/timetable?week_start={next_week_start}", headers=headers
+    )
+    assert all(b.get("recurrenceSeriesId") != series_id for b in week1_after.json()["blocks"])
+    assert all(b.get("recurrenceSeriesId") != series_id for b in week2_after.json()["blocks"])
+
+
+@pytest.mark.asyncio
+async def test_timetable_shows_exam_block_and_semester_meta(client):
+    """a46db63 exam-block/semester-meta parity — exam sessions scheduled
+    against the student's active semester's courses render as locked EXAM
+    blocks, and get_week() reports which semester week is being viewed."""
+    import uuid
+
+    from src.db import models
+    from src.db.connection import SessionLocal
+
+    headers = await _login_student(client)
+    monday = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    while monday.weekday() != 0:
+        monday += timedelta(days=1)
+    week_start = monday.date()
+
+    db = SessionLocal()
+    try:
+        student = db.query(models.User).filter_by(email="student.demo@example.test").first()
+        course = db.query(models.Course).first()
+        assert student is not None and course is not None
+
+        db.query(models.SemesterSetup).filter_by(student_id=student.id).update(
+            {"is_active": False}
+        )
+        semester = models.SemesterSetup(
+            id=f"sem_{uuid.uuid4().hex[:10]}",
+            student_id=student.id,
+            name="Test Term",
+            start_date=week_start - timedelta(weeks=1),
+            end_date=week_start + timedelta(weeks=10),
+            is_active=True,
+        )
+        db.add(semester)
+        db.flush()
+        db.add(
+            models.SemesterCourse(
+                id=f"semc_{uuid.uuid4().hex[:10]}",
+                semester_id=semester.id,
+                course_id=course.id,
+            )
+        )
+        term = models.AcademicTerm(
+            id=f"term_{uuid.uuid4().hex[:10]}",
+            organization_id=student.organization_id,
+            name="Test Academic Term",
+            start_date=week_start - timedelta(weeks=1),
+            is_active=True,
+        )
+        db.add(term)
+        db.flush()
+        exam = models.CourseExam(
+            id=f"exam_{uuid.uuid4().hex[:10]}",
+            term_id=term.id,
+            course_id=course.id,
+            kind="FINAL",
+        )
+        db.add(exam)
+        db.flush()
+        db.add(
+            models.CourseExamSession(
+                id=f"exs_{uuid.uuid4().hex[:10]}",
+                exam_id=exam.id,
+                exam_date=week_start + timedelta(days=2),
+                slot_id=1,
+                label="Ca 1",
+            )
+        )
+        db.commit()
+    finally:
+        db.close()
+
+    resp = await client.get(
+        f"/api/v1/plans/timetable?week_start={week_start.isoformat()}", headers=headers
+    )
+    assert resp.status_code == 200, resp.text
+    payload = resp.json()
+    exam_blocks = [b for b in payload["blocks"] if b["kind"] == "EXAM"]
+    assert len(exam_blocks) == 1
+    assert exam_blocks[0]["locked"] is True
+    assert payload["semesterMeta"] is not None
+    assert payload["semesterMeta"]["weekNumber"] == 2
