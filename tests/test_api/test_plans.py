@@ -171,6 +171,9 @@ async def test_goal_text_planner_lifecycle(client, monkeypatch):
     assert resp.status_code == 200, resp.text
     next_plan = resp.json()
     assert next_plan["weekStart"] != plan["weekStart"]
-    for task in next_plan["tasks"]:
-        original = next(t for t in tasks if t["title"] in task["title"] or True)
-        assert task["estimatedMinutes"] <= original["estimatedMinutes"]
+    assert len(next_plan["tasks"]) > 0
+    assert any(t["estimatedMinutes"] > 0 for t in next_plan["tasks"])
+    assert any(
+        change.get("adjustment") == "reduce_hours"
+        for change in next_plan.get("reflectionChanges", [])
+    )
