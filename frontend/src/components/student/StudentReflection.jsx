@@ -349,7 +349,7 @@ export default function StudentReflection() {
       await submitReflection({
         planId: preview.planId,
         answers: buildAnswerPayload(),
-        adjustments,
+        adjustments: [],
         summary: memory,
         studentConfirmed: true,
         shareWithAdvisor,
