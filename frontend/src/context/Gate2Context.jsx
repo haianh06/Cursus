@@ -8,11 +8,12 @@ import React, {
 } from 'react';
 import {
   acceptPlan,
-  fastForwardDemoWeek,
   generatePlan,
   generatePlanFromReflection,
-  getDemoState,
-  resetDemo,
+  getDeferReasons,
+  getReflections,
+  getStudentCourses,
+  getWeeklyPlan,
   saveReflection,
   updatePlanTaskStatus,
 } from '../lib/api';
@@ -20,11 +21,14 @@ import {
 /**
  * The single canonical client-side state for the Gate-2 student slice.
  *
- * Every student screen (Dashboard, Planner, Reflection, Cursus Assistant) reads and
- * writes through this provider, which talks to the real backend — there is
- * deliberately no per-component mock. A task completed on the Dashboard is
- * the same record the Planner and the Reflection evidence summary see,
- * because all three re-read `GET /student/demo/state` after a mutation.
+ * Every student screen (Dashboard, Planner, Reflection, Cursus Assistant)
+ * reads and writes through this provider. There is no single "canonical
+ * state" endpoint on this backend, so `load()` composes the equivalent
+ * shape from the real per-resource endpoints: `/plans/weekly` (current
+ * plan/tasks) + `/student/reflections` (history) + `/student/courses`
+ * (course context) + `/plans/defer-reasons` (fetched once, not part of the
+ * reload cycle). `assignment`/`nextPlan` have no backend equivalent and stay
+ * null — screens already guard on them being falsy.
  */
 const Gate2Context = createContext(null);
 
@@ -50,8 +54,18 @@ export function Gate2Provider({ children }) {
     if (!silent) setLoading(true);
     setError(null);
     try {
-      const data = await getDemoState();
-      setState({ ...EMPTY_STATE, ...data });
+      const [plan, reflections, courses] = await Promise.all([
+        getWeeklyPlan(null).catch(() => null),
+        getReflections().catch(() => []),
+        getStudentCourses().catch(() => []),
+      ]);
+      const data = {
+        course: (courses || []).find((c) => c.code === plan?.subjectCode) || courses?.[0] || null,
+        weekNumber: plan?.weekNumber ?? null,
+        currentPlan: plan,
+        reflections: reflections || [],
+      };
+      setState((prev) => ({ ...prev, ...data }));
       return data;
     } catch (err) {
       setError(err);
@@ -65,6 +79,11 @@ export function Gate2Provider({ children }) {
     load().catch(() => {
       /* error surfaced through `error` */
     });
+    getDeferReasons()
+      .then((data) => setState((prev) => ({ ...prev, deferReasons: data?.reasons || [] })))
+      .catch(() => {
+        /* defer dialog falls back to its own hardcoded reason */
+      });
   }, [load]);
 
   /** Run a mutation, then re-read the canonical state so no screen can drift. */
@@ -98,8 +117,6 @@ export function Gate2Provider({ children }) {
         ),
       submitReflection: (payload) => mutate(() => saveReflection(payload)),
       buildNextWeekPlan: (payload) => mutate(() => generatePlanFromReflection(payload)),
-      resetDemoState: () => mutate(() => resetDemo()),
-      fastForward: () => mutate(() => fastForwardDemoWeek()),
     }),
     [load, mutate],
   );
