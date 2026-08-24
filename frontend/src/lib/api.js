@@ -567,9 +567,11 @@ export function updatePlanTaskStatus(
   });
 }
 
-export function getTimetable(weekStart) {
+export function getTimetable(weekStart, { previewPlanId = null } = {}) {
   const monday = weekStart || toDateInputValue(startOfMonday());
-  return request(`/plans/timetable?week_start=${encodeURIComponent(monday)}`);
+  const params = new URLSearchParams({ week_start: monday });
+  if (previewPlanId) params.set('preview_plan_id', previewPlanId);
+  return request(`/plans/timetable?${params.toString()}`);
 }
 
 export function bootstrapTimetable(weekStart) {
