@@ -275,16 +275,6 @@ def generate_weekly_plan(
     current_user: models.User = Depends(get_current_user_from_token),
     db: Session = Depends(get_db),
 ):
-    Gate2DemoService(db).ensure_student(current_user.id)
-
-    asg = db.query(models.Assignment).filter_by(id=payload.assignment_id).first()
-    # Hide existence of assignments outside the student's enrollments (IDOR).
-    if not asg or not OwnershipRepository(db).student_has_assignment_access(
-        current_user.id,
-        asg.id,
-    ):
-        raise HTTPException(status_code=404, detail="Assignment not found")
-
     availability = (
         [
             {"date": slot.date.isoformat(), "availableMinutes": slot.availableMinutes}
@@ -293,6 +283,35 @@ def generate_weekly_plan(
         if payload.availability
         else None
     )
+
+    if payload.goal_text and payload.subject_code:
+        plan = weekly_plan_engine.generate(
+            db,
+            student_id=current_user.id,
+            goal_text=payload.goal_text,
+            subject_code=payload.subject_code,
+            available_hours=payload.available_hours,
+            preferred_sessions=payload.preferred_sessions,
+            availability=availability,
+            week_start=payload.week_start,
+        )
+        db.commit()
+        return serialize_plan(db, plan)
+
+    if not payload.assignment_id:
+        raise HTTPException(
+            status_code=400,
+            detail="Cần goal_text + subject_code, hoặc assignment_id.",
+        )
+
+    Gate2DemoService(db).ensure_student(current_user.id)
+    asg = db.query(models.Assignment).filter_by(id=payload.assignment_id).first()
+    # Hide existence of assignments outside the student's enrollments (IDOR).
+    if not asg or not OwnershipRepository(db).student_has_assignment_access(
+        current_user.id,
+        asg.id,
+    ):
+        raise HTTPException(status_code=404, detail="Assignment not found")
 
     plan = PlanBuilder(db).generate(
         student_id=current_user.id,
@@ -355,6 +374,27 @@ def generate_plan_from_reflection(
         if metrics.get("planId")
         else None
     )
+    source_kind = (
+        source_plan.goals.get("kind")
+        if source_plan and isinstance(source_plan.goals, dict)
+        else None
+    )
+
+    if source_kind == weekly_plan_engine.PLAN_KIND:
+        try:
+            plan = weekly_plan_engine.regenerate_from_reflection(
+                db, student_id=current_user.id, reflection=reflection
+            )
+        except (LookupError, ValueError) as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        db.commit()
+        payload_out = serialize_plan(db, plan)
+        payload_out["previousPlan"] = (
+            serialize_plan(db, source_plan) if source_plan is not None else None
+        )
+        payload_out["reflectionId"] = reflection.id
+        return payload_out
+
     assignment_id = None
     if source_plan and isinstance(source_plan.goals, dict):
         assignment_id = source_plan.goals.get("assignment_id")
