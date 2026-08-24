@@ -59,10 +59,6 @@ def band_for(completion_rate: float) -> str:
     return BAND_LOW
 
 
-def _adjustment(code: str) -> dict:
-    return {"code": code, "label": SUPPORTED_ADJUSTMENTS[code]}
-
-
 # a46db63 fixed 7-question catalog — same questions every week regardless of
 # completion band (unlike the old band-based single-question set). Order is
 # significant: [accomplishment, time_spent, went_well, went_poorly,
