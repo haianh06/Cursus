@@ -449,69 +449,28 @@ export default function StudentReflection() {
         {step === 'questions' && (
           <section className="card p-5" aria-label={lang === 'vi' ? 'Câu hỏi phản tư' : 'Reflection questions'}>
             <p className="text-[11px] font-bold uppercase tracking-widest mb-3 text-fg-muted">
-              {lang === 'vi' ? 'Câu hỏi theo mức hoàn thành của bạn' : 'Questions for your completion band'}
+              {lang === 'vi' ? '7 câu hỏi cố định mỗi tuần' : 'The same 7 questions every week'}
             </p>
 
             <div className="space-y-6">
-              {preview.questions.map((question) => (
-                <div key={question.id}>
-                  <label
-                    htmlFor={`answer-${question.id}`}
-                    className="block text-[14px] font-semibold mb-2 text-fg"
-                  >
-                    {question.prompt}
-                  </label>
-                  <textarea
-                    id={`answer-${question.id}`}
-                    rows={2}
-                    className="textarea text-[13px] w-full"
-                    placeholder={question.placeholder}
-                    value={answers[question.id] ?? ''}
-                    onChange={(event) =>
-                      setAnswers((prev) => ({ ...prev, [question.id]: event.target.value }))
-                    }
-                  />
+              {preview.questions.map((question) => {
+                const response = responses[question.id] || {};
+                return (
+                  <div key={question.id}>
+                    <p className="block text-[14px] font-semibold mb-2 text-fg">
+                      {question.prompt}
+                    </p>
 
-                  {question.reasonCodes?.length > 0 && (
-                    <div className="mt-2">
-                      <label
-                        htmlFor={`reason-${question.id}`}
-                        className="block text-[11px] font-semibold mb-1 text-fg-muted"
-                      >
-                        {lang === 'vi' ? 'Nguyên nhân chính' : 'Main cause'}
-                      </label>
-                      <select
-                        id={`reason-${question.id}`}
-                        className="input text-[13px] h-10"
-                        value={reasons[question.id] ?? ''}
-                        onChange={(event) =>
-                          setReasons((prev) => ({ ...prev, [question.id]: event.target.value }))
-                        }
-                      >
-                        <option value="">{lang === 'vi' ? '— Chọn —' : '— Select —'}</option>
-                        {question.reasonCodes.map((reason) => (
-                          <option key={reason.code} value={reason.code}>
-                            {reason.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-
-                  {question.adjustments?.length > 0 && (
-                    <div className="mt-3">
-                      <p className="text-[11px] font-semibold mb-1.5 text-fg-muted">
-                        {lang === 'vi' ? 'Điều chỉnh cho tuần sau' : 'Adjustments for next week'}
-                      </p>
+                    {question.type === 'single_choice' && (
                       <div className="flex flex-wrap gap-1.5">
-                        {question.adjustments.map((adjustment) => {
-                          const active = adjustments.includes(adjustment.code);
+                        {question.choices.map((choice) => {
+                          const active = response.selectedCodes?.[0] === choice.code;
                           return (
                             <button
-                              key={adjustment.code}
+                              key={choice.code}
                               type="button"
                               aria-pressed={active}
-                              onClick={() => toggleAdjustment(adjustment.code)}
+                              onClick={() => setResponse(question.id, { selectedCodes: [choice.code] })}
                               className={`text-[12px] px-3.5 min-h-10 inline-flex items-center rounded-full border cursor-pointer transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-accent ${
                                 active
                                   ? 'border-accent bg-accent-soft text-accent-text-safe'
@@ -519,15 +478,126 @@ export default function StudentReflection() {
                               }`}
                             >
                               {active && <CheckCircle2 size={11} className="inline mr-1 -mt-0.5" />}
-                              {adjustment.label}
+                              {choice.label}
                             </button>
                           );
                         })}
                       </div>
-                    </div>
-                  )}
-                </div>
-              ))}
+                    )}
+
+                    {question.type === 'grouped_multi_choice' &&
+                      question.groups.map((group) => (
+                        <div key={group.label} className="mb-2">
+                          {group.label && (
+                            <p className="text-[11px] font-semibold mb-1.5 text-fg-muted">
+                              {group.label}
+                            </p>
+                          )}
+                          <div className="flex flex-wrap gap-1.5">
+                            {group.choices.map((choice) => {
+                              const active = (response.selectedCodes || []).includes(choice.code);
+                              return (
+                                <button
+                                  key={choice.code}
+                                  type="button"
+                                  aria-pressed={active}
+                                  onClick={() => toggleSelectedCode(question.id, choice.code)}
+                                  className={`text-[12px] px-3.5 min-h-10 inline-flex items-center rounded-full border cursor-pointer transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+                                    active
+                                      ? 'border-accent bg-accent-soft text-accent-text-safe'
+                                      : 'border-line bg-surface-elevated text-fg-secondary hover:border-accent hover:text-accent-text-safe'
+                                  }`}
+                                >
+                                  {active && <CheckCircle2 size={11} className="inline mr-1 -mt-0.5" />}
+                                  {choice.label}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      ))}
+
+                    {question.type === 'insight' && (
+                      question.breakdown?.length > 0 ? (
+                        <ul className="space-y-1.5">
+                          {question.breakdown.map((row) => (
+                            <li key={row.taskId} className="text-[12px] text-fg-secondary">
+                              {row.title}: {row.estimatedMinutes}
+                              {lang === 'vi' ? ' phút ước tính' : 'm estimated'} →{' '}
+                              <strong>
+                                {row.actualMinutes}
+                                {lang === 'vi' ? ' phút thực tế' : 'm actual'}
+                              </strong>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-[12px] text-fg-muted">
+                          {lang === 'vi'
+                            ? 'Chưa có dữ liệu thời gian tuần này.'
+                            : 'No time-tracking data for this week yet.'}
+                        </p>
+                      )
+                    )}
+
+                    {question.type === 'outcome_list' && (
+                      <div className="space-y-2">
+                        {Array.from({ length: question.maxItems || 3 }).map((_, index) => (
+                          <input
+                            key={index}
+                            type="text"
+                            maxLength={200}
+                            className="input text-[13px] w-full h-10"
+                            placeholder={question.placeholder}
+                            value={response.items?.[index] ?? ''}
+                            onChange={(event) => {
+                              const items = [...(response.items || [])];
+                              items[index] = event.target.value;
+                              setResponse(question.id, { items });
+                            }}
+                          />
+                        ))}
+                      </div>
+                    )}
+
+                    {question.type === 'text' && (
+                      <>
+                        <textarea
+                          id={`answer-${question.id}`}
+                          rows={2}
+                          className="textarea text-[13px] w-full"
+                          placeholder={question.placeholder}
+                          value={response.answer ?? ''}
+                          onChange={(event) => setResponse(question.id, { answer: event.target.value })}
+                        />
+                        {question.allowReason && (
+                          <div className="mt-2">
+                            <label
+                              htmlFor={`reason-${question.id}`}
+                              className="block text-[11px] font-semibold mb-1 text-fg-muted"
+                            >
+                              {lang === 'vi' ? 'Nguyên nhân chính' : 'Main cause'}
+                            </label>
+                            <select
+                              id={`reason-${question.id}`}
+                              className="input text-[13px] h-10"
+                              value={response.reasonCode ?? ''}
+                              onChange={(event) => setResponse(question.id, { reasonCode: event.target.value })}
+                            >
+                              <option value="">{lang === 'vi' ? '— Chọn —' : '— Select —'}</option>
+                              {question.reasonCodes.map((reason) => (
+                                <option key={reason.code} value={reason.code}>
+                                  {reason.label}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                );
+              })}
             </div>
 
             <div className="flex items-center justify-between gap-3 mt-6 flex-wrap">
