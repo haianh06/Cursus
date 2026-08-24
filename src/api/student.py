@@ -401,6 +401,10 @@ class ReflectionAnswer(BaseModel):
     questionId: str  # noqa: N815
     answer: str | None = Field(default=None, max_length=2000)
     reasonCode: str | None = None  # noqa: N815
+    # single_choice / grouped_multi_choice questions (e.g. stop_start_continue).
+    selectedCodes: list[str] = Field(default_factory=list)  # noqa: N815
+    # outcome_list questions (e.g. next_week_outcomes) — up to `maxItems` lines.
+    items: list[str] = Field(default_factory=list)
 
 
 class SaveReflectionRequest(BaseModel):
