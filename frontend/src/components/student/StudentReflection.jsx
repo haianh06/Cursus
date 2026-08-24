@@ -643,23 +643,20 @@ export default function StudentReflection() {
               aria-label={lang === 'vi' ? 'Nội dung ghi nhớ' : 'Memory content'}
             />
 
-            {adjustments.length > 0 && (
+            {stopStartContinueLabels().length > 0 && (
               <div className="mt-3">
                 <p className="text-[11px] font-bold uppercase tracking-widest mb-1.5 text-fg-muted">
                   {lang === 'vi' ? 'Điều chỉnh sẽ đi vào kế hoạch sau' : 'Adjustments that will shape next week'}
                 </p>
                 <div className="flex flex-wrap gap-1.5">
-                  {adjustments.map((code) => {
-                    const item = preview.adjustmentCatalog.find((entry) => entry.code === code);
-                    return (
-                      <span
-                        key={code}
-                        className="text-[12px] px-2.5 py-1 rounded-full bg-accent-soft text-accent-text-safe"
-                      >
-                        {item?.label ?? code}
-                      </span>
-                    );
-                  })}
+                  {stopStartContinueLabels().map((label) => (
+                    <span
+                      key={label}
+                      className="text-[12px] px-2.5 py-1 rounded-full bg-accent-soft text-accent-text-safe"
+                    >
+                      {label}
+                    </span>
+                  ))}
                 </div>
               </div>
             )}
