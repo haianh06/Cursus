@@ -17,6 +17,7 @@ import {
 import Skeleton, { SkeletonRows } from '../shared/Skeleton';
 import ErrorState from '../shared/ErrorState';
 import ProvenanceBadge from '../shared/ProvenanceBadge';
+import Timetable from './Timetable';
 import { useGate2 } from '../../context/Gate2Context';
 import { useLanguage } from '../../context/LanguageContext';
 import { getReflectionPreview, previewReflectionSummary } from '../../lib/api';
