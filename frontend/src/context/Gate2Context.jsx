@@ -118,6 +118,9 @@ export function Gate2Provider({ children }) {
         ),
       submitReflection: (payload) => mutate(() => saveReflection(payload)),
       buildNextWeekPlan: (payload) => mutate(() => generatePlanFromReflection(payload)),
+      // Sandbox-trial only (gated on user.isDemo at the call site) — not part
+      // of a46db63, a genuine unrelated feature for prospective institutions.
+      fastForward: () => mutate(() => fastForwardDemoWeek()),
     }),
     [load, mutate],
   );

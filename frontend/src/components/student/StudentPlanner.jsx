@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   AlertTriangle,
@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useGate2 } from '../../context/Gate2Context';
 import { useLanguage } from '../../context/LanguageContext';
+import { getStudentCourses } from '../../lib/api';
 import Skeleton, { SkeletonRows } from '../shared/Skeleton';
 import EmptyState from '../shared/EmptyState';
 import ErrorState from '../shared/ErrorState';
