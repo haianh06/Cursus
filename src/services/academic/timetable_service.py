@@ -602,6 +602,8 @@ class TimetableService:
                 task_status=(
                     task.status if task else (existing.task_status if existing else None)
                 ),
+                recurrence_series_id=block.recurrence_series_id,
+                is_draft=is_draft_plan,
             )
         return list(blocks.values())
 

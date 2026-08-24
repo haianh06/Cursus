@@ -101,13 +101,16 @@ class UpdateTimetableBlockRequest(BaseModel):
 @router.get("/timetable")
 def get_timetable(
     week_start: date | None = Query(default=None),
+    preview_plan_id: str | None = Query(default=None),
     current_user: models.User = Depends(get_current_user_from_token),
     db: Session = Depends(get_db),
 ):
     StudentMockDataService(db).ensure_if_missing(current_user.id)
     service = TimetableService(db)
     target = monday_of(week_start or date.today())
-    return service.get_week(student_id=current_user.id, week_start=target)
+    return service.get_week(
+        student_id=current_user.id, week_start=target, preview_plan_id=preview_plan_id
+    )
 
 
 @router.post("/timetable/bootstrap")
