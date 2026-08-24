@@ -29,6 +29,7 @@ from sqlalchemy.orm import Session
 from src.db import models
 from src.schemas.reflection import LlmReflectionSummaryPayload
 from src.services.ai.plan_builder import SUPPORTED_ADJUSTMENTS
+from src.services.ai.weekly_plan_engine import PLAN_KIND as WEEKLY_GOAL_PLAN_KIND
 from src.services.core import provenance as prov
 from src.services.core.llm import get_llm, has_configured_llm
 
@@ -384,7 +385,9 @@ class ReflectionEngine:
 
     def preview(self, plan: models.WeeklyPlan) -> dict:
         facts = self.facts_for_plan(plan)
-        questionnaire = self.questionnaire(facts)
+        goals = plan.goals if isinstance(plan.goals, dict) else {}
+        fixed_catalog = goals.get("kind") == WEEKLY_GOAL_PLAN_KIND
+        questionnaire = self.questionnaire(facts, fixed_catalog=fixed_catalog)
         return {
             "planId": plan.id,
             "weekNumber": plan.week_number,
