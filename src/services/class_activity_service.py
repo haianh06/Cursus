@@ -35,12 +35,13 @@ class ClassActivityService:
         *,
         user_id: str,
         role: str,
+        organization_id: str | None,
         start: date | None = None,
         end: date | None = None,
     ) -> list[dict[str, Any]]:
-        course_ids = self._allowed_course_ids(user_id, role)
+        course_ids = self._allowed_course_ids(user_id, role, organization_id)
         rows = self._repo.list_for_courses(course_ids, start=start, end=end)
-        courses = {course.id: course for course in self._terms.list_courses()}
+        courses = {course.id: course for course in self._terms.list_courses(organization_id)}
         return [self._serialize(row, courses.get(row.course_id)) for row in rows]
 
     def create(
@@ -48,6 +49,7 @@ class ClassActivityService:
         *,
         user_id: str,
         role: str,
+        organization_id: str | None,
         course_id: str,
         activity_date: date,
         kind: str,
@@ -60,13 +62,13 @@ class ClassActivityService:
             raise ValueError("Activity kind must be ASSIGNMENT, PROGRESS_TEST, LAB, or OTHER")
         if kind == "OTHER" and not title.strip():
             raise ValueError("Title is required for Other activities")
-        allowed = set(self._allowed_course_ids(user_id, role))
+        allowed = set(self._allowed_course_ids(user_id, role, organization_id))
         if course_id not in allowed:
             raise PermissionError("You can only add activities for courses you teach")
-        course = self._terms.get_course(course_id)
+        course = self._terms.get_course(course_id, organization_id)
         if course is None:
             raise LookupError("Course not found")
-        self._validate_date(activity_date)
+        self._validate_date(activity_date, organization_id)
         existing = self._repo.get_on_day(course_id, activity_date)
         if existing is not None:
             raise ValueError("This course already has an in-class activity on that date")
@@ -90,6 +92,7 @@ class ClassActivityService:
         *,
         user_id: str,
         role: str,
+        organization_id: str | None,
         activity_id: str,
         kind: str | None = None,
         title: str | None = None,
@@ -97,7 +100,7 @@ class ClassActivityService:
         opens_at: datetime | None = None,
         closes_at: datetime | None = None,
     ) -> dict[str, Any]:
-        row = self._require_owned(activity_id, user_id, role)
+        row = self._require_owned(activity_id, user_id, role, organization_id)
         if kind is not None:
             kind = kind.upper()
             if kind not in ACTIVITY_KINDS:
@@ -106,7 +109,7 @@ class ClassActivityService:
         if title is not None:
             row.title = title.strip()
         if activity_date is not None:
-            self._validate_date(activity_date)
+            self._validate_date(activity_date, organization_id)
             clash = self._repo.get_on_day(row.course_id, activity_date)
             if clash is not None and clash.id != row.id:
                 raise ValueError("This course already has an in-class activity on that date")
@@ -122,35 +125,37 @@ class ClassActivityService:
         if not row.title:
             row.title = KIND_LABELS.get(row.kind, row.kind)
         self._repo.commit()
-        course = self._terms.get_course(row.course_id)
+        course = self._terms.get_course(row.course_id, organization_id)
         return self._serialize(row, course)
 
-    def delete(self, *, user_id: str, role: str, activity_id: str) -> None:
-        row = self._require_owned(activity_id, user_id, role)
+    def delete(self, *, user_id: str, role: str, organization_id: str | None, activity_id: str) -> None:
+        row = self._require_owned(activity_id, user_id, role, organization_id)
         self._repo.delete(row)
         self._repo.commit()
 
-    def _allowed_course_ids(self, user_id: str, role: str) -> list[str]:
+    def _allowed_course_ids(self, user_id: str, role: str, organization_id: str | None) -> list[str]:
         value = str(getattr(role, "value", role)).upper()
         if value == "ADMIN":
-            return [course.id for course in self._terms.list_courses()]
+            return [course.id for course in self._terms.list_courses(organization_id)]
         if value == "STUDENT":
             return self._repo.student_course_ids(user_id)
         return self._repo.instructor_course_ids(user_id)
 
-    def _require_owned(self, activity_id: str, user_id: str, role: str) -> ClassActivity:
+    def _require_owned(
+        self, activity_id: str, user_id: str, role: str, organization_id: str | None
+    ) -> ClassActivity:
         row = self._repo.get(activity_id)
         if row is None:
             raise LookupError("Class activity not found")
-        allowed = set(self._allowed_course_ids(user_id, role))
+        allowed = set(self._allowed_course_ids(user_id, role, organization_id))
         if row.course_id not in allowed:
             raise PermissionError("You can only edit activities for courses you teach")
         return row
 
-    def _validate_date(self, activity_date: date) -> None:
+    def _validate_date(self, activity_date: date, organization_id: str | None) -> None:
         if activity_date.weekday() > 4:
             raise ValueError("In-class activities are only allowed Monday–Friday")
-        term = self._terms.get_active()
+        term = self._terms.get_active(organization_id)
         if term is None:
             return
         start, _end = term_bounds(term.start_date, term.study_weeks, term.exam_weeks)
@@ -176,8 +181,8 @@ class ClassActivityService:
             raise ValueError("The open time must be earlier than the close time")
         return resolved_opens, resolved_closes
 
-    def get_scheduling_window(self) -> dict[str, Any] | None:
-        term = self._terms.get_active()
+    def get_scheduling_window(self, organization_id: str | None = None) -> dict[str, Any] | None:
+        term = self._terms.get_active(organization_id)
         if term is None:
             return None
         start, end = term_bounds(term.start_date, term.study_weeks, term.exam_weeks)

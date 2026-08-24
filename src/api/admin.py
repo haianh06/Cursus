@@ -1,7 +1,7 @@
 import hashlib
 from datetime import date, datetime
 
-from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, UploadFile, status
 from pydantic import BaseModel, Field
 from sqlalchemy import func
 from sqlalchemy.orm import Session
@@ -490,12 +490,20 @@ async def upload_admin_course_document(
     code: str,
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
+    doc_type: str = Form(default=models.DocType.SYLLABUS.value),
     current_user: User = Depends(get_current_user_from_token),
     db: Session = Depends(get_db),
 ):
     course = _ensure_visible_course(db, code)
     content = await file.read(MAX_UPLOAD_BYTES + 1)
     filename = file.filename or "document.txt"
+    normalized_doc_type = (doc_type or "").strip().upper()
+    allowed_doc_types = {item.value for item in models.DocType}
+    if normalized_doc_type not in allowed_doc_types:
+        raise HTTPException(
+            status_code=400,
+            detail=f"doc_type must be one of {sorted(allowed_doc_types)}",
+        )
     try:
         validate_admin_document(filename, content)
     except ValueError as exc:
@@ -512,6 +520,7 @@ async def upload_admin_course_document(
             "filename": filename,
             "content": content,
             "actor_user_id": current_user.id,
+            "doc_type": normalized_doc_type,
         },
     )
     return {"success": True, "data": {"job_id": job.id, "status": "processing"}}

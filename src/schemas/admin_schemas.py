@@ -198,8 +198,10 @@ class AdminDocument(BaseModel):
     course_code: str | None = None
     title: str
     filename: str | None = None
+    doc_type: str
     version: str
     chunk_count: int = Field(ge=0)
+    content_flagged: bool
 
 
 class AdminDocumentsData(BaseModel):

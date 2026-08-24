@@ -57,8 +57,13 @@ function applyCsrfHeader(headers, method) {
 const REQUEST_TIMEOUT_MS = 15000;
 
 async function rawFetch(path, { method = 'GET', body, headers } = {}) {
+  const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
   const finalHeaders = new Headers(headers || {});
-  if (body !== undefined && !finalHeaders.has('Content-Type')) {
+  // FormData bodies must NOT get a hand-set Content-Type -- the browser
+  // generates one itself with the multipart boundary, and setting our own
+  // (or JSON-stringifying the FormData object, which produces "[object
+  // FormData]") breaks the upload silently on the server side.
+  if (body !== undefined && !isFormData && !finalHeaders.has('Content-Type')) {
     finalHeaders.set('Content-Type', 'application/json');
   }
   applyCsrfHeader(finalHeaders, method);
@@ -70,7 +75,7 @@ async function rawFetch(path, { method = 'GET', body, headers } = {}) {
       method,
       headers: finalHeaders,
       credentials: 'include',
-      body: body !== undefined ? JSON.stringify(body) : undefined,
+      body: body === undefined ? undefined : isFormData ? body : JSON.stringify(body),
       signal: controller.signal,
     });
   } finally {
@@ -675,6 +680,9 @@ export function getInstructorDashboard(courseId = null) {
 
 /** Priority queue, already sorted by severity × time-open. */
 export function getInstructorAlerts(courseId = null) {
+  // /instructor/alerts was retired; GET /instructor/risks is its
+  // replacement (bare array, camelCase fields -- see _serialize_risk_row
+  // in src/api/instructor.py).
   const query = courseId && courseId !== 'ALL' ? `?course_id=${encodeURIComponent(courseId)}` : '';
   return request(`/instructor/risks${query}`);
 }
@@ -738,6 +746,25 @@ export function deleteAdminCourse(code) {
 
 export function getAdminCourseDocuments(courseCode) {
   return request(`/admin/courses/${encodeURIComponent(courseCode)}/documents`);
+}
+
+export function uploadAdminCourseDocument(courseCode, file, docType = 'SYLLABUS') {
+  const form = new FormData();
+  form.append('file', file);
+  form.append('doc_type', docType);
+  return request(`/admin/courses/${encodeURIComponent(courseCode)}/documents`, {
+    method: 'POST',
+    body: form,
+  });
+}
+
+export function replaceAdminCourseDocument(courseCode, documentId, file) {
+  const form = new FormData();
+  form.append('file', file);
+  return request(`/admin/courses/${encodeURIComponent(courseCode)}/documents/${encodeURIComponent(documentId)}`, {
+    method: 'PUT',
+    body: form,
+  });
 }
 
 export function deleteAdminCourseDocument(courseCode, documentId) {
@@ -1177,17 +1204,20 @@ export async function exportInstructorReport(courseId = null) {
   return { blob, filename };
 }
 
-export function getInstructorAnnouncements() {
-  return request('/instructor/announcements');
+export async function getInstructorAnnouncements() {
+  const data = await request('/instructor/announcements');
+  return data.announcements;
 }
 
-export function getInstructorKudos(courseId = null) {
+export async function getInstructorKudos(courseId = null) {
   const query = courseId && courseId !== 'ALL' ? `?course_id=${encodeURIComponent(courseId)}` : '';
-  return request(`/instructor/kudos${query}`);
+  const data = await request(`/instructor/kudos${query}`);
+  return data.kudos;
 }
 
-export function getClassComparison() {
-  return request('/instructor/classes/compare').then((res) => res.classes);
+export async function getClassComparison() {
+  const data = await request('/instructor/classes/compare');
+  return data.classes;
 }
 
 /* ── Instructor: digest ────────────────────────────────────────────────── */
@@ -1206,8 +1236,9 @@ export function getStudentProfile(studentId) {
   return request(`/instructor/students/${encodeURIComponent(studentId)}/profile`);
 }
 
-export function listStudentNotes(studentId) {
-  return request(`/instructor/students/${encodeURIComponent(studentId)}/notes`);
+export async function listStudentNotes(studentId) {
+  const data = await request(`/instructor/students/${encodeURIComponent(studentId)}/notes`);
+  return data.notes;
 }
 
 export function createStudentNote(studentId, content) {
@@ -1225,9 +1256,10 @@ export function deleteStudentNote(studentId, noteId) {
 
 /* ── Instructor: assignment submissions roster ────────────────────────── */
 
-export function listInstructorAssignments(courseId = null) {
+export async function listInstructorAssignments(courseId = null) {
   const query = courseId && courseId !== 'ALL' ? `?course_id=${encodeURIComponent(courseId)}` : '';
-  return request(`/instructor/assignments${query}`);
+  const data = await request(`/instructor/assignments${query}`);
+  return data.assignments;
 }
 
 export function getAssignmentSubmissions(assignmentId) {

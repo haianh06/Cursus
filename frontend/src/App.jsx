@@ -4,7 +4,7 @@ import {
   BookOpen, RotateCcw, BarChart2,
   LogOut, Sun, Moon, Globe, Menu, X, Bell, Search, ChevronDown,
   Sparkles, GraduationCap, LayoutDashboard, CheckSquare, FlaskConical, Target,
-  MessageCircle, CalendarRange, NotebookPen, ExternalLink, CalendarClock, FileCheck2, ShieldAlert, Mail, ClipboardCheck
+  MessageCircle, CalendarRange, NotebookPen, ExternalLink, CalendarClock, FileCheck2, ShieldAlert, Mail, ClipboardCheck, ShieldQuestion
 } from 'lucide-react';
 import { useTheme } from './context/ThemeContext';
 import { useLanguage } from './context/LanguageContext';
@@ -56,6 +56,7 @@ const InstructorQuizManager = lazy(() => import('./components/instructor/Instruc
 const InstructorClassActivityPanel = lazy(() => import('./components/instructor/InstructorClassActivityPanel'));
 const InstructorDigestPage = lazy(() => import('./components/instructor/InstructorDigestPage'));
 const AssignmentSubmissionsPanel = lazy(() => import('./components/instructor/AssignmentSubmissionsPanel'));
+const GuardrailReviewQueue = lazy(() => import('./components/GuardrailReviewQueue'));
 
 import AdminNavigation from './components/admin/AdminNavigation';
 
@@ -238,17 +239,10 @@ function Sidebar({ user, onLogout, open, setOpen, activeSection }) {
 
               {/* Companion chat has no sidebar entry in a46db63 — it's the
                   floating CompanionChatBubble on every student page, not a
-                  standalone route. */}
-
-              {/* 6. Quizzes assigned by instructors */}
-              <button
-                aria-current={location.pathname === '/student/quizzes' ? 'page' : undefined}
-                className={`nav-item w-full text-left ${location.pathname === '/student/quizzes' ? 'active' : ''}`}
-                onClick={() => handleItemClick('/student/quizzes')}
-              >
-                <ClipboardCheck size={15} />
-                <span>{t('nav.quizzes')}</span>
-              </button>
+                  standalone route. Quizzes (post-a46db63 feature) also has no
+                  sidebar entry, per explicit request to match a46db63's exact
+                  5-item sidebar — the /student/quizzes route still works via
+                  deep link, only the nav button is removed. */}
             </>
           )}
 
@@ -295,6 +289,13 @@ function Sidebar({ user, onLogout, open, setOpen, activeSection }) {
               >
                 <Mail size={15} />
                 <span>Digest</span>
+              </button>
+              <button
+                className={`nav-item w-full text-left ${location.pathname === '/instructor/guardrail-reviews' ? 'active' : ''}`}
+                onClick={() => handleItemClick('/instructor/guardrail-reviews')}
+              >
+                <ShieldQuestion size={15} />
+                <span>Xét duyệt Guardrail</span>
               </button>
             </>
           )}
@@ -504,6 +505,7 @@ function InstructorRoutes({ user }) {
       <Route path="activities" element={<InstructorClassActivityPanel />} />
       <Route path="quizzes" element={<InstructorQuizManager />} />
       <Route path="submissions" element={<AssignmentSubmissionsPanel />} />
+      <Route path="guardrail-reviews" element={<GuardrailReviewQueue />} />
       <Route path="*" element={<NotFoundPage/>}/>
     </Routes>
   );

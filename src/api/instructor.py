@@ -217,6 +217,10 @@ def _serialize_risk_row(db: Session, r: models.RiskSignal) -> dict:
         "riskLevel": r.risk_level,
         "riskType": r.risk_type,
         "status": "INTERVENTION_APPROVED" if r.resolved_at else "INTERVENTION_PENDING",
+        # `status` above only distinguishes resolved-vs-not; it can't tell
+        # APPROVE apart from REJECT (both set resolved_at). resolutionType
+        # is what the UI needs to render "Intervened" vs "Dismissed".
+        "resolutionType": r.resolution_type,
         "evidence": r.evidence,
         "recommendedIntervention": r.recommended_action,
         "instructorNote": r.instructor_note,
@@ -1060,10 +1064,11 @@ def list_class_activities(
         "activities": service.list_mine(
             user_id=current_user.id,
             role=str(current_user.role),
+            organization_id=current_user.organization_id,
             start=start,
             end=end,
         ),
-        "window": service.get_scheduling_window(),
+        "window": service.get_scheduling_window(current_user.organization_id),
     }
 
 
@@ -1077,6 +1082,7 @@ def create_class_activity(
         return service.create(
             user_id=current_user.id,
             role=str(current_user.role),
+            organization_id=current_user.organization_id,
             course_id=payload.course_id,
             activity_date=payload.activity_date,
             kind=payload.kind,
@@ -1103,6 +1109,7 @@ def update_class_activity(
         return service.update(
             user_id=current_user.id,
             role=str(current_user.role),
+            organization_id=current_user.organization_id,
             activity_id=activity_id,
             kind=payload.kind,
             title=payload.title,
@@ -1125,7 +1132,12 @@ def delete_class_activity(
     service: ClassActivityService = Depends(get_class_activity_service),
 ):
     try:
-        service.delete(user_id=current_user.id, role=str(current_user.role), activity_id=activity_id)
+        service.delete(
+            user_id=current_user.id,
+            role=str(current_user.role),
+            organization_id=current_user.organization_id,
+            activity_id=activity_id,
+        )
     except PermissionError as exc:
         raise HTTPException(status_code=403, detail=str(exc)) from exc
     except LookupError as exc:

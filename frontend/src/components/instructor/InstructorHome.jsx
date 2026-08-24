@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Users, AlertTriangle, BarChart3, Lock, RefreshCw, Info, Award, Download,
+  Users, AlertTriangle, BarChart3, Lock, RefreshCw, Award, Download,
   Bell, Megaphone, UserCircle2, ChevronRight,
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
@@ -22,14 +22,11 @@ export default function InstructorHome() {
   const [kudos, setKudos] = useState([]);
   const [weeklyRates, setWeeklyRates] = useState([]);
   const [classSize, setClassSize] = useState(0);
-  const [primaryCourse, setPrimaryCourse] = useState(null);
   const [courses, setCourses] = useState([]);
   const [selectedCourseId, setSelectedCourseId] = useState('ALL');
   const [highRiskCount, setHighRiskCount] = useState(null);
   const [openAlertCount, setOpenAlertCount] = useState(null);
   const [overdueCount, setOverdueCount] = useState(null);
-  const [isWeeklyFallback, setIsWeeklyFallback] = useState(false);
-  const [isClassSizeFallback, setIsClassSizeFallback] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
   const [isExporting, setIsExporting] = useState(false);
@@ -70,8 +67,6 @@ export default function InstructorHome() {
         getInstructorAnnouncements().catch(() => []),
       ]);
       setClassSize(dashboard.classSize);
-      setIsClassSizeFallback(Boolean(dashboard.isClassSizeFallback));
-      setPrimaryCourse(dashboard.courses?.[0] ?? null);
       setCourses(dashboard.courses);
       setKudos(kudosData);
       setHighRiskCount(dashboard.highRiskCount);
@@ -83,12 +78,13 @@ export default function InstructorHome() {
           rate: Math.round(rate * 100)
         }))
       );
-      setIsWeeklyFallback(Boolean(dashboard.isWeeklyFallback));
 
       // Thong bao "van de cua SV": chua xu ly, uu tien qua han > rui ro cao >
       // moi nhat, chi lay vai dong dau de dashboard khong dai — xem het thi
-      // qua trang Risk rieng.
-      const unresolved = (Array.isArray(alertData) ? alertData : []).filter((item) => item.status !== 'INTERVENTION_APPROVED');
+      // qua trang Risk rieng. alertData is a bare array from GET
+      // /instructor/risks (_serialize_risk_row shape) -- not the retired
+      // /instructor/alerts endpoint's {alerts: [...]} wrapper.
+      const unresolved = (alertData || []).filter((item) => item.status === 'INTERVENTION_PENDING');
       const sorted = [...unresolved].sort((a, b) => {
         if (Boolean(b.isOverdue) !== Boolean(a.isOverdue)) return Boolean(b.isOverdue) - Boolean(a.isOverdue);
         const rank = { HIGH: 2, MEDIUM: 1, LOW: 0 };
@@ -109,6 +105,10 @@ export default function InstructorHome() {
   }, [selectedCourseId]);
 
   const viewState = isLoading ? 'loading' : loadError ? 'error' : 'success';
+  // Backend has no notion of a single "primary" course -- derive it here:
+  // the selected course when one is picked, otherwise the first course
+  // this instructor teaches (courses is already ordered by the backend).
+  const primaryCourse = courses.find((c) => c.id === selectedCourseId) || courses[0] || null;
 
   if (viewState === 'loading') {
     return (
@@ -146,37 +146,32 @@ export default function InstructorHome() {
 
       {/* HEADER CLASS SUMMARY — mã lớp và tên môn lấy từ /instructor/dashboard
           (mảng courses), không còn hardcode "SE1801"/"SSA101" như trước. */}
-      <div className="cursus-hero-banner rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 text-white">
+      <div className="bg-surface-elevated border border-line rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="space-y-1 min-w-0">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 border border-white/20 rounded-full text-xs font-extrabold text-accent backdrop-blur-md font-mono-code">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-surface border border-line rounded-full text-xs font-extrabold text-accent font-mono-code">
             <Users className="w-3.5 h-3.5 text-accent" />
             <span>
-              {primaryCourse?.code ? (
-                <>
-                  {`${t('instructor.classLabel')} ${primaryCourse.code} — ${classSize} ${t('instructor.studentsUnit')}`}
-                  {isClassSizeFallback && ` (${t('instructor.seedTag')})`}
-                </>
-              ) : (
-                t('instructor.noCourseAssigned')
-              )}
+              {primaryCourse?.code
+                ? `${t('instructor.classLabel')} ${primaryCourse.code} — ${classSize} ${t('instructor.studentsUnit')}`
+                : t('instructor.noCourseAssigned')}
             </span>
           </div>
-          <h1 className="text-2xl font-black text-white font-serif-heading">{t('instructor.pageTitle')}</h1>
+          <h1 className="text-2xl font-black text-fg font-serif-heading">{t('instructor.pageTitle')}</h1>
           {primaryCourse?.name && (
-            <p className="text-xs text-teal-200 font-bold truncate max-w-md">{primaryCourse.name}</p>
+            <p className="text-xs text-accent font-bold truncate max-w-md">{primaryCourse.name}</p>
           )}
-          <p className="text-xs text-slate-200 font-medium">
+          <p className="text-xs text-fg-muted font-medium">
             {t('instructor.pageSubtitle')}
           </p>
         </div>
 
         {courses.length > 1 && (
-          <label className="flex items-center gap-2 text-xs font-bold text-white shrink-0">
+          <label className="flex items-center gap-2 text-xs font-bold text-fg shrink-0">
             <span className="sr-only">{t('instructor.filterLabel')}</span>
             <select
               value={selectedCourseId}
               onChange={(event) => setSelectedCourseId(event.target.value)}
-              className="bg-white/10 border border-white/20 rounded-xl px-3 py-1.5 text-xs font-bold text-white backdrop-blur-md cursor-pointer [&>option]:text-[#15181C]"
+              className="bg-surface border border-line rounded-xl px-3 py-1.5 text-xs font-bold text-fg cursor-pointer"
             >
               <option value="ALL">{t('instructor.allCourses')}</option>
               {courses.map((course) => (
@@ -344,27 +339,6 @@ export default function InstructorHome() {
               : '—'}
           </span>
         </div>
-
-        {(isClassSizeFallback || isWeeklyFallback) && (
-          <div className="p-2.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/60 rounded-xl space-y-1.5">
-            {isClassSizeFallback && (
-              <div className="flex items-start gap-2">
-                <Info className="w-3.5 h-3.5 text-amber-700 dark:text-amber-400 shrink-0 mt-px" />
-                <span className="text-[11px] font-bold text-amber-900 dark:text-amber-200">
-                  {t('instructor.fallbackClassSizeNotice')}
-                </span>
-              </div>
-            )}
-            {isWeeklyFallback && (
-              <div className="flex items-start gap-2">
-                <Info className="w-3.5 h-3.5 text-amber-700 dark:text-amber-400 shrink-0 mt-px" />
-                <span className="text-[11px] font-bold text-amber-900 dark:text-amber-200">
-                  {t('instructor.fallbackChartNotice')}
-                </span>
-              </div>
-            )}
-          </div>
-        )}
 
         {weeklyRates.length === 0 ? (
           <div className="p-6 text-center text-xs text-slate-500 dark:text-slate-400 bg-surface-elevated border border-line rounded-xl font-medium">

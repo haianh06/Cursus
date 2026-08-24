@@ -316,6 +316,58 @@ async def test_document_replace_forces_revalidation(client):
 
 
 @pytest.mark.asyncio
+async def test_upload_accepts_doc_type_and_enables_quiz_generation(client):
+    """doc_type used to be hardcoded to SYLLABUS on every upload -- nothing
+    in the whole codebase could ever produce a LECTURE-tagged document, so
+    AI quiz generation (which filters strictly on doc_type == "LECTURE")
+    was structurally unreachable, in every environment, always. Covers the
+    fix end-to-end: upload with doc_type=LECTURE -> generate_with_ai."""
+    headers = await admin_headers(client)
+    await client.post(
+        "/api/v1/admin/courses",
+        json={"subject_code": COURSE_CODE, "subject_name": "CRUD Course", "semester": "9"},
+        headers=headers,
+    )
+    uploaded = await client.post(
+        f"/api/v1/admin/courses/{COURSE_CODE}/documents",
+        files={"file": ("week1.md", b"# Week 1\n\nPhotosynthesis converts light energy into chemical energy.", "text/markdown")},
+        data={"doc_type": "LECTURE"},
+        headers=headers,
+    )
+    assert uploaded.status_code == 202, uploaded.text
+
+    db = SessionLocal()
+    try:
+        document = db.query(Document).filter_by(course_id=COURSE_CODE).first()
+        assert document is not None
+        assert document.doc_type == "LECTURE"
+    finally:
+        db.close()
+
+    documents = await client.get(f"/api/v1/admin/courses/{COURSE_CODE}/documents", headers=headers)
+    assert documents.json()["data"]["documents"][0]["doc_type"] == "LECTURE"
+
+
+@pytest.mark.asyncio
+async def test_upload_rejects_unknown_doc_type(client):
+    headers = await admin_headers(client)
+    await client.post(
+        "/api/v1/admin/courses",
+        json={"subject_code": COURSE_CODE, "subject_name": "CRUD Course", "semester": "9"},
+        headers=headers,
+    )
+
+    response = await client.post(
+        f"/api/v1/admin/courses/{COURSE_CODE}/documents",
+        files={"file": ("week.md", b"# Week\n\nContent", "text/markdown")},
+        data={"doc_type": "NOT_A_REAL_TYPE"},
+        headers=headers,
+    )
+
+    assert response.status_code == 400
+
+
+@pytest.mark.asyncio
 async def test_student_cannot_manage_admin_courses_or_documents(client):
     headers = await _headers(client, "student.demo@example.test", "password123")
 

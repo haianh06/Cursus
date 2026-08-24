@@ -41,6 +41,8 @@ export default function InstructorRiskPage() {
         getInstructorAlerts(selectedCourseId),
       ]);
       setCourses(dashboard.courses);
+      // Bare array from GET /instructor/risks (_serialize_risk_row shape),
+      // not the retired /instructor/alerts endpoint's {alerts: [...]}.
       setAlerts(Array.isArray(alertData) ? alertData : []);
     } catch (err) {
       if (silent) setActionError(err.message);
@@ -58,7 +60,7 @@ export default function InstructorRiskPage() {
   const viewState = isLoading ? 'loading' : loadError ? 'error' : 'success';
 
   const pendingAlertCount = alerts.filter(
-    item => item.status !== 'INTERVENTION_APPROVED' && !sessionDecisions[item.id]
+    item => item.status === 'INTERVENTION_PENDING' && !sessionDecisions[item.id]
   ).length;
 
   const anyDecisionPending = Boolean(pendingAction);
@@ -140,18 +142,18 @@ export default function InstructorRiskPage() {
 
   return (
     <div className="space-y-6 pb-12">
-      <div className="cursus-hero-banner rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 text-white">
+      <div className="bg-surface-elevated border border-line rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="space-y-1 min-w-0">
-          <h1 className="text-2xl font-black text-white font-serif-heading">{t('instructor.atRiskStudents')}</h1>
-          <p className="text-xs text-slate-200 font-medium">{t('instructor.pageSubtitle')}</p>
+          <h1 className="text-2xl font-black text-fg font-serif-heading">{t('instructor.atRiskStudents')}</h1>
+          <p className="text-xs text-fg-muted font-medium">{t('instructor.pageSubtitle')}</p>
         </div>
         {courses.length > 1 && (
-          <label className="flex items-center gap-2 text-xs font-bold text-white shrink-0">
+          <label className="flex items-center gap-2 text-xs font-bold text-fg shrink-0">
             <span className="sr-only">{t('instructor.filterLabel')}</span>
             <select
               value={selectedCourseId}
               onChange={(event) => { setSelectedCourseId(event.target.value); setOpenRiskId(null); }}
-              className="bg-white/10 border border-white/20 rounded-xl px-3 py-1.5 text-xs font-bold text-white backdrop-blur-md cursor-pointer [&>option]:text-[#15181C]"
+              className="bg-surface border border-line rounded-xl px-3 py-1.5 text-xs font-bold text-fg cursor-pointer"
             >
               <option value="ALL">{t('instructor.allCourses')}</option>
               {courses.map((course) => (
@@ -238,8 +240,17 @@ export default function InstructorRiskPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 max-h-[36rem] overflow-y-auto pr-1 content-start">
               {alerts.map(alertItem => {
                 const riskId = alertItem.id;
-                const decision = sessionDecisions[riskId];
-                const resolved = alertItem.status === 'INTERVENTION_APPROVED' || Boolean(decision);
+                // `status` only distinguishes resolved-vs-pending (both
+                // APPROVE and REJECT set it to INTERVENTION_APPROVED) --
+                // resolutionType is what tells the two apart. Prefer a
+                // same-session decision (just clicked) over the backend's
+                // resolutionType so the badge updates instantly.
+                const backendDecision =
+                  alertItem.resolutionType === 'INSTRUCTOR_REJECTED' ? 'REJECT'
+                  : (alertItem.resolutionType === 'INSTRUCTOR_APPROVE' || alertItem.resolutionType === 'INSTRUCTOR_EDIT') ? 'APPROVE'
+                  : null;
+                const decision = sessionDecisions[riskId] || backendDecision;
+                const resolved = alertItem.status !== 'INTERVENTION_PENDING' || Boolean(decision);
                 const busyDecision = pendingAction?.riskId === riskId ? pendingAction.decision : null;
                 const decisionError = decisionErrors[riskId];
                 const isHigh = isHighRisk(alertItem.riskLevel);

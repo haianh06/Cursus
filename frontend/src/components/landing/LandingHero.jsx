@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, FileText, ShieldCheck, UserCheck, Play, Pause, ChevronDown, CalendarClock, BookOpen } from 'lucide-react';
+import { ArrowRight, FileText, ShieldCheck, UserCheck, Play, Pause, ChevronDown, CalendarClock, BookOpen, ExternalLink, FileX, Eye } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useTheme } from '../../context/ThemeContext';
 import usePrefersReducedMotion from '../../hooks/usePrefersReducedMotion';
@@ -218,53 +218,69 @@ export default function LandingHero() {
       />
 
       {/* Hero Content - Left Aligned over negative space */}
-      <div className="relative z-20 w-full max-w-[1440px] mx-auto flex flex-col items-start text-left mt-6 md:mt-8">
+      <div className="relative z-20 w-full max-w-[1440px] mx-auto flex flex-col items-start text-left mt-6 md:mt-8" style={{ fontFamily: '"Be Vietnam Pro", Inter, system-ui, sans-serif' }}>
         <div className="w-full max-w-[660px] animate-in fade-in slide-in-from-bottom-8 duration-1000 fill-mode-both">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-1 sm:mb-3 drop-shadow-md">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-4 sm:mb-6 drop-shadow-md">
             <span className="w-2 h-2 rounded-full bg-landing-accent animate-pulse" />
-            <p className="text-[13px] font-semibold uppercase tracking-[0.08em] text-white/90">
+            <p className="text-[12px] uppercase tracking-[0.06em] leading-[1.4] text-white/90">
               {t('landing.heroEyebrow')}
             </p>
           </div>
-          <h1 className="landing-hero-heading font-display mb-1 sm:mb-3 drop-shadow-2xl">
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/80 pb-2">{t('landing.heroTitleLine1')}</span>
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-landing-accent to-indigo-300">{t('landing.heroTitleLine2')}</span>
+          <h1 className="text-[clamp(2rem,5.2vw,4.25rem)] font-bold leading-[1.12] tracking-[-0.02em] max-w-[24ch] text-balance mb-5 sm:mb-6 drop-shadow-2xl">
+            <span className="block text-white pb-1">{t('landing.heroTitleLine1')}<br /></span>
+            <span className="block text-landing-accent">{t('landing.heroTitleLine2')}</span>
           </h1>
-          <p className="body-text hero-desc-compact text-white/85 mb-3 sm:mb-6 drop-shadow-lg font-light leading-relaxed max-w-[90%]">
-            {t('landing.heroDesc')}
+          <p className="text-[clamp(1rem,1.15vw,1.125rem)] leading-[1.65] max-w-[56ch] tracking-normal text-white font-medium mb-6 sm:mb-8 drop-shadow-xl">
+            {t('landing.heroDesc')} {t('landing.heroSource')}
+            <a
+              href="https://psycnet.apa.org/record/2000-13629-002"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Zimmerman 2002, Becoming a Self-Regulated Learner (mở tab mới)"
+              className="text-[#60A5FA] italic underline underline-offset-4 decoration-2 hover:text-[#93C5FD] transition-colors inline-flex items-baseline gap-1 ml-1"
+            >
+              <span className="whitespace-nowrap">Barry J. Zimmerman</span>
+              <ExternalLink className="translate-y-0.5" size={14} aria-hidden="true" />
+            </a>
+            .
           </p>
           
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-start gap-2 sm:gap-4 w-full sm:w-auto animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 fill-mode-both">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-start gap-4 w-full sm:w-auto animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 fill-mode-both">
             <button
               onClick={() => navigate('/demo/select-role')}
-              // The shadow's rgba(36,104,201,…) is --brand-blue's own RGB at a
-              // stronger alpha than --brand-blue-glow provides (0.4/0.55 vs
-              // 0.16) — a deliberately more intense glow for this specific
-              // large hero CTA, kept literal rather than a fragile
-              // Tailwind-arbitrary-value color-mix() expression.
-              className="group relative h-[48px] sm:h-[60px] min-w-[220px] sm:min-w-[240px] px-8 bg-landing-cta text-landing-cta-fg hover:bg-landing-cta-hover text-base font-semibold rounded-2xl transition-all duration-300 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-landing-accent focus-visible:ring-offset-2 flex items-center justify-center gap-3 shadow-[0_0_40px_rgba(36,104,201,0.4)] hover:shadow-[0_0_60px_rgba(36,104,201,0.55)] overflow-hidden"
+              className="group relative py-[14px] px-[28px] w-full sm:w-auto bg-landing-cta text-landing-cta-fg hover:bg-landing-cta-hover text-base font-semibold rounded-xl transition-all duration-300 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-landing-accent focus-visible:ring-offset-2 flex items-center justify-center gap-3 shadow-[0_0_40px_rgba(36,104,201,0.4)] hover:shadow-[0_0_60px_rgba(36,104,201,0.55)] overflow-hidden"
             >
               <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
-              <span className="relative z-10">{t('landing.heroCtaPrimary')}</span>
+              <span className="relative z-10 whitespace-nowrap">{t('landing.heroCtaPrimary')}</span>
               <ArrowRight size={18} className="relative z-10 transition-transform duration-[var(--motion-fast)] group-hover:translate-x-1.5" />
             </button>
             <a
               href="#how-it-works"
-              className="h-[48px] sm:h-[60px] min-w-[180px] sm:min-w-[200px] px-8 border border-white/20 hover:border-white/40 bg-white/5 hover:bg-white/15 backdrop-blur-lg text-white text-base font-medium rounded-2xl transition-all duration-300 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white flex items-center justify-center shadow-lg"
+              className="py-[14px] px-[28px] w-full sm:w-auto border border-white/20 hover:border-white/40 bg-white/5 hover:bg-white/15 backdrop-blur-lg text-white text-base font-medium rounded-xl transition-all duration-300 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white flex items-center justify-center shadow-lg whitespace-nowrap"
             >
               {t('landing.heroCtaSecondary')}
             </a>
           </div>
 
-          <ul className="mt-3 sm:mt-6 flex flex-wrap sm:flex-nowrap justify-start items-center gap-x-4 sm:gap-x-5 gap-y-1 animate-in fade-in duration-1000 delay-500 fill-mode-both">
-            {PROOF_ITEMS.map(({ icon: Icon, key, verified }) => (
-              <li key={key} className="flex items-center gap-2 text-xs sm:text-sm font-medium text-white/70 drop-shadow-sm whitespace-nowrap">
-                <div className={`shrink-0 p-1 rounded-full ${verified ? 'bg-landing-accent-soft text-landing-accent' : 'bg-white/10 text-white/70'} backdrop-blur-sm`}>
-                  <Icon size={14} aria-hidden="true" />
-                </div>
-                {t(`landing.${key}`)}
-              </li>
-            ))}
+          <ul className="mt-7 sm:mt-10 flex flex-col sm:flex-row flex-wrap sm:flex-nowrap justify-start items-start sm:items-center gap-y-3 sm:gap-y-1 gap-x-4 sm:gap-x-5 animate-in fade-in duration-1000 delay-500 fill-mode-both">
+            <li className="flex items-center gap-2 text-[13px] sm:text-[14px] leading-[1.5] font-medium text-white/70 drop-shadow-sm whitespace-nowrap">
+              <div className="shrink-0 p-1 rounded-full bg-landing-accent-soft text-landing-accent backdrop-blur-sm">
+                <ShieldCheck size={14} aria-hidden="true" />
+              </div>
+              {t('landing.heroProofItem1')}
+            </li>
+            <li className="flex items-center gap-2 text-[13px] sm:text-[14px] leading-[1.5] font-medium text-white/70 drop-shadow-sm whitespace-nowrap">
+              <div className="shrink-0 p-1 rounded-full bg-white/10 text-white/70 backdrop-blur-sm">
+                <FileX size={14} aria-hidden="true" />
+              </div>
+              {t('landing.heroProofItem2')}
+            </li>
+            <li className="flex items-center gap-2 text-[13px] sm:text-[14px] leading-[1.5] font-medium text-white/70 drop-shadow-sm whitespace-nowrap">
+              <div className="shrink-0 p-1 rounded-full bg-white/10 text-white/70 backdrop-blur-sm">
+                <Eye size={14} aria-hidden="true" />
+              </div>
+              {t('landing.heroProofItem3')}
+            </li>
           </ul>
 
           {/* Mobile-only product preview — the hero video/poster is cropped

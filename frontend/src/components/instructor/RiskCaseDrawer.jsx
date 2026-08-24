@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { X, AlertTriangle, CheckCircle, FileText, Clock, Lock, RefreshCw, MessageSquare, Info } from 'lucide-react';
+import { X, AlertTriangle, CheckCircle, ShieldOff, FileText, Clock, Lock, RefreshCw, Info } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
-import { getAlertDetail } from '../../lib/api';
+import { getAlertDetail, getInterventionHistory } from '../../lib/api';
+import { riskLevelLabel, riskTypeLabel, formatDetectedAt } from '../../lib/riskLabels';
 
 /** Thời gian trượt ra/vào — khớp với duration-200 bên dưới. */
 const SLIDE_MS = 220;
@@ -22,13 +23,6 @@ function riskLevelBadgeClass(level) {
   return 'badge-success';
 }
 
-function riskLevelLabel(t, level) {
-  const normalized = (level || '').toUpperCase();
-  if (normalized === 'HIGH') return t('instructor.riskHigh');
-  if (normalized === 'MEDIUM') return t('instructor.riskMedium');
-  return t('instructor.riskLow');
-}
-
 function Row({ label, children }) {
   return (
     <div className="space-y-1">
@@ -39,28 +33,36 @@ function Row({ label, children }) {
 }
 
 /**
- * Risk Case Detail — bảng trượt từ phải, đúng mục 6.4: "bấm vào xem chi tiết
- * (biểu đồ tiến độ riêng, lịch sử gần đây)".
+ * Risk Case Detail — bảng trượt từ phải, đúng mục 6.4: "bấm vào xem chi tiết".
  *
- * Nguồn dữ liệu: GET /instructor/risks/{id} (`getAlertDetail`), đã có
- * `require_instructor_risk_owner` ở backend nên GV không đọc được case của
- * lớp mình không dạy (src/security/ownership.py).
+ * Nguồn dữ liệu: GET /instructor/risks/{id} (`getAlertDetail`) cho thông tin
+ * case, GET /instructor/risks/{id}/interventions (`getInterventionHistory`)
+ * cho lịch sử can thiệp — cả hai đều đã có `require_instructor_risk_owner`
+ * ở backend nên GV không đọc được case của lớp mình không dạy
+ * (src/security/ownership.py).
  *
- * Riêng tư: endpoint không trả nội dung chat/reflection thô — `sharedNote`
- * chỉ xuất hiện khi chính sinh viên đã bật `shareWithAdvisor`. Nếu sau này
- * backend thêm trường mới, kiểm tra lại nguyên tắc này trước khi render.
+ * Quyết định (Can thiệp/Bỏ qua) đi qua `onDecision` do component cha truyền
+ * vào (InstructorRiskPage.jsx / InstructorStudentProfile.jsx) — dùng đúng
+ * 1 đường ghi quyết định cho cả list và drawer, không tách riêng logic.
  */
-export default function RiskCaseDrawer({ riskId, open, onClose, onIntervene }) {
+export default function RiskCaseDrawer({
+  riskId,
+  open,
+  onClose,
+  decision,
+  onDecision,
+  anyDecisionPending,
+  busyDecision,
+  decisionError,
+}) {
   const { t, lang } = useLanguage();
 
   const [detail, setDetail] = useState(null);
+  const [history, setHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [loadError, setLoadError] = useState(null);
   const [reloadToken, setReloadToken] = useState(0);
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState(null);
-  const [justIntervened, setJustIntervened] = useState(false);
+  const [noteDraft, setNoteDraft] = useState('');
 
   const [shouldRender, setShouldRender] = useState(open);
   const [slidIn, setSlidIn] = useState(false);
@@ -82,17 +84,18 @@ export default function RiskCaseDrawer({ riskId, open, onClose, onIntervene }) {
   }, [open]);
 
   /**
-   * Nạp chi tiết. Xoá sạch dữ liệu case cũ NGAY khi riskId đổi, và bỏ qua
-   * response về muộn — nếu không, mở nhanh hai case liên tiếp có thể khiến
-   * dữ liệu của case trước loé lên trong bảng của case sau (lộ chéo).
+   * Nạp chi tiết + lịch sử can thiệp. Xoá sạch dữ liệu case cũ NGAY khi
+   * riskId đổi, và bỏ qua response về muộn — nếu không, mở nhanh hai case
+   * liên tiếp có thể khiến dữ liệu của case trước loé lên trong bảng của
+   * case sau (lộ chéo).
    */
   useEffect(() => {
     if (!shouldRender) {
       setDetail(null);
+      setHistory([]);
       setLoadError(null);
       setIsLoading(false);
-      setJustIntervened(false);
-      setSubmitError(null);
+      setNoteDraft('');
       return undefined;
     }
 
@@ -102,16 +105,19 @@ export default function RiskCaseDrawer({ riskId, open, onClose, onIntervene }) {
     }
 
     setDetail(null);
+    setHistory([]);
     setLoadError(null);
-    setJustIntervened(false);
-    setSubmitError(null);
+    setNoteDraft('');
 
     let cancelled = false;
     setIsLoading(true);
 
-    getAlertDetail(riskId)
-      .then((data) => {
-        if (!cancelled) setDetail(data);
+    Promise.all([getAlertDetail(riskId), getInterventionHistory(riskId).catch(() => [])])
+      .then(([detailData, historyData]) => {
+        if (!cancelled) {
+          setDetail(detailData);
+          setHistory(historyData || []);
+        }
       })
       .catch((err) => {
         if (!cancelled) setLoadError(err.message);
@@ -188,17 +194,15 @@ export default function RiskCaseDrawer({ riskId, open, onClose, onIntervene }) {
 
   if (!shouldRender) return null;
 
-  const resolved = detail ? detail.status === 'INTERVENTION_APPROVED' || justIntervened : justIntervened;
-
-  const handleIntervene = () => {
-    if (!detail || isSubmitting) return;
-    setIsSubmitting(true);
-    setSubmitError(null);
-    onIntervene(detail.id)
-      .then(() => setJustIntervened(true))
-      .catch((err) => setSubmitError(err.message))
-      .finally(() => setIsSubmitting(false));
-  };
+  // `status` chỉ phân biệt đã-xử-lý/chưa, không phân biệt được Can thiệp
+  // hay Bỏ qua (cả hai đều set resolved_at) — resolutionType mới cho biết
+  // chính xác. Ưu tiên quyết định trong phiên này (vừa bấm) hơn dữ liệu cũ.
+  const backendDecision =
+    detail?.resolutionType === 'INSTRUCTOR_REJECTED' ? 'REJECT'
+    : (detail?.resolutionType === 'INSTRUCTOR_APPROVE' || detail?.resolutionType === 'INSTRUCTOR_EDIT') ? 'APPROVE'
+    : null;
+  const effectiveDecision = decision || backendDecision;
+  const resolved = detail ? detail.status !== 'INTERVENTION_PENDING' || Boolean(effectiveDecision) : false;
 
   const dateFormatter = new Intl.DateTimeFormat(lang === 'vi' ? 'vi-VN' : 'en-US', {
     day: '2-digit',
@@ -206,11 +210,6 @@ export default function RiskCaseDrawer({ riskId, open, onClose, onIntervene }) {
     hour: '2-digit',
     minute: '2-digit',
   });
-
-  const timeline = Array.isArray(detail?.timeline) ? detail.timeline : [];
-  const completedCount = timeline.filter((task) => task.status === 'COMPLETED').length;
-  const progressRatio = timeline.length > 0 ? completedCount / timeline.length : null;
-  const interventions = Array.isArray(detail?.interventions) ? detail.interventions : [];
 
   return (
     <div className="fixed inset-0 z-50">
@@ -298,7 +297,7 @@ export default function RiskCaseDrawer({ riskId, open, onClose, onIntervene }) {
               {detail.courseId && <Row label={t('instructor.courseLabel')}>{detail.courseId}</Row>}
 
               <Row label={t('instructor.reasonLabel')}>
-                {detail.reasons?.[0] || detail.recommendedIntervention}
+                {riskTypeLabel(t, detail.riskType, lang)}
               </Row>
 
               <Row label={t('instructor.actionLabel')}>{detail.recommendedIntervention}</Row>
@@ -313,67 +312,43 @@ export default function RiskCaseDrawer({ riskId, open, onClose, onIntervene }) {
 
               <Row label={t('instructor.detectedAtLabel')}>
                 <span className="flex items-center gap-1.5 mono">
-                  <Clock className="w-3 h-3 shrink-0" /> {dateFormatter.format(new Date(detail.generatedAt))}
+                  <Clock className="w-3 h-3 shrink-0" /> {formatDetectedAt(detail.generatedAt, lang)}
                 </span>
               </Row>
 
-              {/* Biểu đồ tiến độ riêng — mục 6.4 */}
-              <div className="space-y-2">
-                <p className="text-[10px] font-black uppercase tracking-wider text-fg-muted">
-                  {t('instructor.progressTitle')}
+              {!resolved && detail.isOverdue && (
+                <p className="text-[11px] font-black uppercase text-danger flex items-center gap-1.5">
+                  <AlertTriangle className="w-3 h-3 shrink-0" />
+                  {t('instructor.overdueBadge', { days: detail.daysOpen })}
                 </p>
-                {timeline.length === 0 ? (
-                  <p className="text-[11px] text-fg-muted">{t('instructor.noProgressData')}</p>
-                ) : (
-                  <>
-                    <div className="h-2 rounded-full bg-surface-elevated overflow-hidden">
-                      <div
-                        className="h-full rounded-full"
-                        style={{
-                          width: `${Math.round((progressRatio ?? 0) * 100)}%`,
-                          background: (progressRatio ?? 0) < 0.5 ? 'var(--danger)' : (progressRatio ?? 0) < 0.75 ? 'var(--warning)' : 'var(--success)',
-                        }}
-                      />
-                    </div>
-                    <p className="text-[10px] text-fg-muted mono">
-                      {completedCount}/{timeline.length}
-                    </p>
-                    <ul className="space-y-1.5 max-h-40 overflow-y-auto">
-                      {timeline.slice(-8).reverse().map((task) => (
-                        <li key={task.taskId} className="flex items-center justify-between gap-2 text-[11px]">
-                          <span className="truncate text-fg-secondary">{task.title}</span>
-                          <span
-                            className={`shrink-0 font-bold ${
-                              task.status === 'COMPLETED' ? 'text-success' : task.overdue ? 'text-danger' : 'text-fg-muted'
-                            }`}
-                          >
-                            {task.status === 'COMPLETED' ? '✓' : task.overdue ? t('instructor.taskOverdueTag') : task.status}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-              </div>
+              )}
 
-              {/* Lịch sử gần đây (can thiệp) — mục 6.4 */}
+              {detail.instructorNote && (
+                <Row label={t('instructor.notesTitle')}>
+                  <span className="italic">"{detail.instructorNote}"</span>
+                </Row>
+              )}
+
+              {/* Lịch sử can thiệp — mục 6.4 (F10) */}
               <div className="space-y-2">
                 <p className="text-[10px] font-black uppercase tracking-wider text-fg-muted">
                   {t('instructor.interventionsTitle')}
                 </p>
-                {interventions.length === 0 ? (
+                {history.length === 0 ? (
                   <p className="text-[11px] text-fg-muted">{t('instructor.noInterventionsYet')}</p>
                 ) : (
                   <ul className="space-y-2">
-                    {interventions.map((item) => (
+                    {history.map((item) => (
                       <li key={item.id} className="p-2.5 rounded-lg bg-surface-elevated text-[11px] space-y-0.5">
                         <div className="flex items-center justify-between gap-2">
-                          <span className="font-bold text-fg">{item.actionLabel || item.action}</span>
+                          <span className="font-bold text-fg">
+                            {item.decision === 'REJECT' ? t('instructor.dismissedBadge') : t('instructor.intervenedBadge')}
+                          </span>
                           <span className="text-fg-muted mono text-[10px]">
                             {dateFormatter.format(new Date(item.createdAt))}
                           </span>
                         </div>
-                        <p className="text-fg-muted">{item.advisorName}</p>
+                        <p className="text-fg-muted">{item.instructorName}</p>
                         {item.note && <p className="text-fg-secondary italic">"{item.note}"</p>}
                       </li>
                     ))}
@@ -381,21 +356,10 @@ export default function RiskCaseDrawer({ riskId, open, onClose, onIntervene }) {
                 )}
               </div>
 
-              {detail.sharedNote && (
-                <div className="p-3 rounded-xl bg-accent-soft border border-accent/20 space-y-1">
-                  <p className="text-[10px] font-black uppercase tracking-wider text-accent flex items-center gap-1.5">
-                    <MessageSquare className="w-3 h-3" /> {t('instructor.sharedNoteTitle')}
-                  </p>
-                  <p className="text-[11px] text-fg-secondary italic">"{detail.sharedNote.summary}"</p>
-                </div>
-              )}
-
-              {detail.privacyNote && (
-                <p className="text-[11px] text-fg-muted font-medium flex items-start gap-1.5">
-                  <Lock className="w-3 h-3 shrink-0 mt-0.5" />
-                  <span>{detail.privacyNote}</span>
-                </p>
-              )}
+              <p className="text-[11px] text-fg-muted font-medium flex items-start gap-1.5">
+                <Lock className="w-3 h-3 shrink-0 mt-0.5" />
+                <span>{t('instructor.noNotificationNote')}</span>
+              </p>
             </>
           )}
         </div>
@@ -403,24 +367,44 @@ export default function RiskCaseDrawer({ riskId, open, onClose, onIntervene }) {
         {/* FOOTER */}
         {!isLoading && !loadError && detail && (
           <div className="px-5 py-4 border-t shrink-0 space-y-2" style={{ borderColor: 'var(--border-ui)' }}>
-            {submitError && (
+            {decisionError && (
               <div role="alert" className="p-2.5 bg-danger-soft border border-danger/30 rounded-xl">
-                <span className="text-[11px] font-bold text-danger break-words">{submitError}</span>
+                <span className="text-[11px] font-bold text-danger break-words">{decisionError}</span>
               </div>
             )}
             {resolved ? (
               <div className="px-3 py-2 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 badge-success">
-                <CheckCircle className="w-3.5 h-3.5" /> {t('instructor.intervenedState')}
+                {effectiveDecision === 'REJECT' ? <ShieldOff className="w-3.5 h-3.5" /> : <CheckCircle className="w-3.5 h-3.5" />}
+                {effectiveDecision === 'REJECT' ? t('instructor.dismissedBadge') : t('instructor.intervenedState')}
               </div>
             ) : (
-              <button
-                type="button"
-                onClick={handleIntervene}
-                disabled={isSubmitting}
-                className="btn btn-accent w-full py-2 rounded-xl text-xs font-black cursor-pointer disabled:opacity-60 disabled:cursor-wait"
-              >
-                {isSubmitting ? t('instructor.sendingState') : t('instructor.interveneBtn')}
-              </button>
+              <>
+                <textarea
+                  className="input text-xs w-full min-h-[52px]"
+                  placeholder={t('instructor.notePlaceholder')}
+                  value={noteDraft}
+                  onChange={(event) => setNoteDraft(event.target.value)}
+                  disabled={anyDecisionPending}
+                />
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => onDecision(detail.id, 'APPROVE', noteDraft || undefined)}
+                    disabled={anyDecisionPending}
+                    className="btn btn-accent flex-1 py-2 rounded-xl text-xs font-black cursor-pointer disabled:opacity-60 disabled:cursor-wait"
+                  >
+                    {busyDecision === 'APPROVE' ? t('instructor.sendingState') : t('instructor.interveneBtn')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onDecision(detail.id, 'REJECT', noteDraft || undefined)}
+                    disabled={anyDecisionPending}
+                    className="btn btn-outline flex-1 py-2 rounded-xl text-xs font-black cursor-pointer disabled:opacity-60 disabled:cursor-wait"
+                  >
+                    {busyDecision === 'REJECT' ? t('instructor.sendingState') : t('instructor.dismissBtn')}
+                  </button>
+                </div>
+              </>
             )}
           </div>
         )}

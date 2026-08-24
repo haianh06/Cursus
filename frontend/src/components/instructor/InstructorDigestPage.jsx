@@ -81,21 +81,21 @@ export default function InstructorDigestPage() {
 
   return (
     <div className="space-y-6 pb-12">
-      <div className="cursus-hero-banner rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 text-white">
+      <div className="bg-surface-elevated border border-line rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="space-y-1 min-w-0">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 border border-white/20 rounded-full text-xs font-extrabold text-accent backdrop-blur-md font-mono-code">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-surface border border-line rounded-full text-xs font-extrabold text-accent font-mono-code">
             <Mail className="w-3.5 h-3.5 text-accent" />
             <span>{t('instructor.digestSince', { date: digest.sinceDate })}</span>
           </div>
-          <h1 className="text-2xl font-black text-white font-serif-heading">{t('instructor.digestTitle')}</h1>
-          <p className="text-xs text-slate-200 font-medium">{t('instructor.digestSubtitle')}</p>
+          <h1 className="text-2xl font-black text-fg font-serif-heading">{t('instructor.digestTitle')}</h1>
+          <p className="text-xs text-fg-muted font-medium">{t('instructor.digestSubtitle')}</p>
         </div>
 
         <div className="flex items-center gap-2">
           <select
             value={days}
             onChange={(event) => setDays(Number(event.target.value))}
-            className="bg-white/10 border border-white/20 rounded-xl px-3 py-1.5 text-xs font-bold text-white backdrop-blur-md cursor-pointer [&>option]:text-[#15181C]"
+            className="bg-surface border border-line rounded-xl px-3 py-1.5 text-xs font-bold text-fg cursor-pointer"
           >
             {DAY_OPTIONS.map((d) => (
               <option key={d} value={d}>{t('instructor.digestDaysOption', { days: d })}</option>

@@ -20,6 +20,12 @@ DEFAULT_UPLOADS_ROOT = ROOT / "data" / "admin_uploads"
 ALLOWED_EXTENSIONS = frozenset({".md", ".txt"})
 MAX_UPLOAD_BYTES = 2 * 1024 * 1024
 MAX_CHUNKS = 80
+# SYLLABUS was the only value this pipeline ever wrote, unconditionally --
+# LECTURE (and the rest of DocType) were reachable in the enum but no upload
+# path ever produced them, which silently starved AI quiz generation
+# (src/repositories/quiz_repository.py filters strictly on doc_type ==
+# "LECTURE") of any material to work from, in every environment, always.
+_ALLOWED_DOC_TYPES = frozenset(item.value for item in models.DocType)
 
 
 @dataclass(frozen=True)
@@ -75,7 +81,10 @@ class AdminDocumentIngestService:
         filename: str,
         content: bytes,
         actor_user_id: str | None,
+        doc_type: str = models.DocType.SYLLABUS.value,
     ) -> dict:
+        if doc_type not in _ALLOWED_DOC_TYPES:
+            raise ValueError(f"doc_type must be one of {sorted(_ALLOWED_DOC_TYPES)}")
         course = self._course(course_code)
         validated = validate_admin_document(filename, content)
         paragraphs = _validated_paragraphs(validated.text)
@@ -90,7 +99,7 @@ class AdminDocumentIngestService:
                 course_id=course.id,
                 title=validated.title,
                 file_path=self._stored_path(path),
-                doc_type=models.DocType.SYLLABUS.value,
+                doc_type=doc_type,
                 version="1",
                 version_group=document_id,
                 checksum=checksum,
@@ -248,6 +257,7 @@ class AdminDocumentIngestService:
             "course_code": meta.get("course_code"),
             "title": document.title,
             "filename": meta.get("original_filename"),
+            "doc_type": document.doc_type,
             "version": document.version,
             "chunk_count": self._db.query(models.DocumentChunk).filter_by(document_id=document.id).count(),
             "content_flagged": bool(meta.get("content_flagged")),

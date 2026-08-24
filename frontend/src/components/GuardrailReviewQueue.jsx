@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {
-  ShieldAlert, ShieldCheck, ShieldOff, AlertTriangle, RefreshCw, Info, Clock, Lock,
+  ShieldAlert, ShieldCheck, ShieldOff, AlertTriangle, RefreshCw, Clock, Lock,
   Eye, EyeOff
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { getGuardrailReviews, reviewGuardrailCase } from '../lib/api';
+import { getGuardrailReviewQueue, resolveGuardrailReview } from '../lib/api';
 import { formatDetectedAt } from '../lib/riskLabels';
 
 /** Lý do chặn đã biết từ src/services/guardrail_service.py. */
@@ -30,7 +30,6 @@ export default function GuardrailReviewQueue() {
   const { t, lang } = useLanguage();
 
   const [reviews, setReviews] = useState([]);
-  const [isFallback, setIsFallback] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
   /** Quyết định đang gửi: { caseId, decision } — giữ cả decision để nhãn
@@ -47,9 +46,8 @@ export default function GuardrailReviewQueue() {
     setIsLoading(true);
     setLoadError(null);
     try {
-      const data = await getGuardrailReviews();
-      setReviews(data.reviews);
-      setIsFallback(Boolean(data.is_fallback));
+      const data = await getGuardrailReviewQueue();
+      setReviews(data);
     } catch (err) {
       setLoadError(err.message);
     } finally {
@@ -78,7 +76,7 @@ export default function GuardrailReviewQueue() {
     });
     setPendingAction({ caseId, decision });
     try {
-      await reviewGuardrailCase(caseId, decision);
+      await resolveGuardrailReview(caseId, decision);
       setDecisions(prev => ({ ...prev, [caseId]: decision }));
     } catch (err) {
       setUnsaved(prev => ({ ...prev, [caseId]: err.message }));
@@ -133,31 +131,21 @@ export default function GuardrailReviewQueue() {
   return (
     <div className="space-y-6 pb-12">
 
-      <div className="cursus-hero-banner rounded-lg p-6 flex flex-col md:flex-row items-center justify-between gap-4 text-white">
+      <div className="bg-surface-elevated border border-line rounded-lg p-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="space-y-1 min-w-0">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 border border-white/20 rounded-full text-xs font-extrabold text-amber-300 backdrop-blur-md font-mono-code">
-            <ShieldAlert className="w-3.5 h-3.5 text-amber-300" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-surface border border-line rounded-full text-xs font-extrabold text-accent font-mono-code">
+            <ShieldAlert className="w-3.5 h-3.5 text-accent" />
             <span>{t('guardrail.pending', { count: pendingCount })}</span>
           </div>
-          <h1 className="text-2xl font-black text-white font-serif-heading">{t('guardrail.pageTitle')}</h1>
-          <p className="text-xs text-slate-200 font-medium">{t('guardrail.pageSubtitle')}</p>
+          <h1 className="text-2xl font-black text-fg font-serif-heading">{t('guardrail.pageTitle')}</h1>
+          <p className="text-xs text-fg-muted font-medium">{t('guardrail.pageSubtitle')}</p>
         </div>
 
-        <div className="p-3 bg-white/10 border border-white/20 rounded-2xl flex items-start gap-2 text-xs text-slate-200 max-w-xs backdrop-blur-md font-medium">
+        <div className="p-3 bg-surface border border-line rounded-2xl flex items-start gap-2 text-xs text-fg-muted max-w-xs font-medium">
           <Lock className="w-4 h-4 text-[#A7D4B0] shrink-0 mt-px" />
           <span>{t('guardrail.privacyNote')}</span>
         </div>
       </div>
-
-      {/* 4.3 — dữ liệu mẫu phải nói rõ, không im lặng bày ra như hàng đợi thật */}
-      {isFallback && (
-        <div className="p-3 bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/60 rounded-xl flex items-start gap-2">
-          <Info className="w-4 h-4 text-amber-700 dark:text-amber-400 shrink-0 mt-px" />
-          <span className="text-[11px] font-bold text-amber-900 dark:text-amber-200">
-            {t('guardrail.fallbackNotice')}
-          </span>
-        </div>
-      )}
 
       <div className="cursus-card rounded-3xl p-6 shadow-sm space-y-4">
         <div className="flex items-center justify-between border-b border-[#E6E2D8] dark:border-[#3A352C] pb-3">

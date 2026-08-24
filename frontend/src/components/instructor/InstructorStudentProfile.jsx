@@ -140,10 +140,10 @@ export default function InstructorStudentProfile() {
       </button>
 
       {/* HEADER */}
-      <div className="cursus-hero-banner rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 text-white">
+      <div className="bg-surface-elevated border border-line rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="space-y-1 min-w-0">
-          <h1 className="text-2xl font-black text-white font-serif-heading truncate">{profile.displayName}</h1>
-          <p className="text-xs text-slate-200 font-medium flex items-center gap-1.5">
+          <h1 className="text-2xl font-black text-fg font-serif-heading truncate">{profile.displayName}</h1>
+          <p className="text-xs text-fg-muted font-medium flex items-center gap-1.5">
             <Mail className="w-3.5 h-3.5" /> {profile.email}
           </p>
         </div>
@@ -151,13 +151,13 @@ export default function InstructorStudentProfile() {
           {profile.courses.map((course) => (
             <span
               key={course.sectionId}
-              className="inline-flex items-center px-3 py-1 bg-white/10 border border-white/20 rounded-full text-xs font-extrabold text-accent backdrop-blur-md font-mono-code"
+              className="inline-flex items-center px-3 py-1 bg-surface border border-line rounded-full text-xs font-extrabold text-accent font-mono-code"
             >
               {course.code}
             </span>
           ))}
           {profile.courses.length === 0 && (
-            <span className="text-xs text-slate-200">{t('instructor.profileNoCourses')}</span>
+            <span className="text-xs text-fg-muted">{t('instructor.profileNoCourses')}</span>
           )}
         </div>
       </div>

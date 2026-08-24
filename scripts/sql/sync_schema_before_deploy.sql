@@ -187,3 +187,14 @@ WHERE NOT EXISTS (SELECT 1 FROM guardrail_policy_versions WHERE version = 'gpv1'
 
 UPDATE guardrail_rules SET current_version = 'gpv1' WHERE current_version IS NULL
     AND EXISTS (SELECT 1 FROM guardrail_policy_versions WHERE version = 'gpv1');
+
+
+-- 20260905_user_onboarding_profile.py -- added to this script 25/08 after a
+-- real 500 on POST /auth/demo-session ("column users.major does not exist"),
+-- confirmed same root cause as everything else in this file: this migration
+-- was committed after the schema diff behind this script was taken, so it
+-- was missing from the sync above.
+ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS major VARCHAR,
+    ADD COLUMN IF NOT EXISTS student_code VARCHAR,
+    ADD COLUMN IF NOT EXISTS preferences JSON;

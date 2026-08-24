@@ -982,10 +982,10 @@ export default function InstructorQuizManager() {
 
   return (
     <div className="space-y-6 pb-12">
-      <div className="cursus-hero-banner rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 text-white">
+      <div className="bg-surface-elevated border border-line rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="space-y-1 min-w-0">
-          <h1 className="text-2xl font-black text-white font-serif-heading">{t('instructor.quizTitle')}</h1>
-          <p className="text-xs text-slate-200 font-medium">{t('instructor.quizHint')}</p>
+          <h1 className="text-2xl font-black text-fg font-serif-heading">{t('instructor.quizTitle')}</h1>
+          <p className="text-xs text-fg-muted font-medium">{t('instructor.quizHint')}</p>
         </div>
       </div>
 

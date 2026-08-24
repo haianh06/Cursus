@@ -62,9 +62,11 @@ Ngoài 2 việc trên, **UI/UX + tính năng + luồng hoạt động coi như �
 
 `pytest tests/` cuối cùng: **444 passed, 7 skipped, 0 failed** (`docs/evidence/test-runs/20260823-0600-sidebar-i18n-fix.xml`), không đổi qua toàn bộ các đợt sửa của ngày 23/08.
 
+**[✅ HOÀN TẤT 24/08, đợt sau — xác nhận lại toàn diện]** Ghi chú ở mục 2 dưới đây ("1/9 xong", trỏ tới `docs/HANDOFF_ANTIGRAVITY_ADMIN_REBUILD.md`) và tuyên bố "9/9 module" ở mục 6.5 bên dưới **đều đã lỗi thời/không khớp code tại thời điểm chúng được viết** — kiểm tra trực tiếp code lúc đó cho thấy claim "9/9" bị phóng đại. Đợt này đã tự audit lại từng phần theo đúng `docs/archive/SPEC_ADMIN_REBUILD_TU_CHUNG_23AUG.md` và làm nốt các khoảng trống thật tìm được: sidebar 2 nhóm route-based (thay tab ngang cũ), Overview + Work Queue, People Explorer, guardrail rule core-lock + lịch sử phiên bản, document lifecycle 6 tiêu chí kiểm định thật, quyền `READ_SENSITIVE` tách riêng cho 12 route đọc dữ liệu gốc Student 360 (trước đó chỉ có role-gate chung chung). Theme màu: cố tình **không** dùng theme riêng của `chung`, giữ token màu thống nhất sẵn có của nhánh này (quyết định của người dùng). `pytest` sau đợt này: **483 passed, 7 skipped, 0 failed**. Từ giờ **không cần đọc `docs/HANDOFF_ANTIGRAVITY_ADMIN_REBUILD.md` nữa** — phần Admin coi như xong, tài liệu đó chỉ còn giá trị lịch sử.
+
 ### 📄 Đọc gì khi mở phiên mới
 1. Đoạn này (đã đủ để bắt đầu).
-2. **Nếu tiếp tục việc code lại Admin (dựa theo nhánh `chung`) — ĐANG LÀM DỞ, 1/9 xong:** đọc `docs/HANDOFF_ANTIGRAVITY_ADMIN_REBUILD.md` TRƯỚC TIÊN (viết riêng cho agent mới, có đủ quy tắc + pattern + việc còn lại theo thứ tự). File đó trỏ tiếp tới `docs/SPEC_ADMIN_REBUILD_TU_CHUNG_23AUG.md` (spec chức năng) và `docs/AUDIT_NHANH_CHUNG_ADMIN_23AUG.md` (vì sao không merge trực tiếp được). Đã xong: Student 360 (`src/api/admin_student360.py`, `frontend/src/components/admin/AdminStudent360.jsx`, commit `a8ee6bb`) — dùng làm khuôn mẫu cho 8 phần còn lại.
+2. ~~Nếu tiếp tục việc code lại Admin...~~ — **đã xong, xem ghi chú "[✅ HOÀN TẤT 24/08, đợt sau]" ngay phía trên.** `docs/HANDOFF_ANTIGRAVITY_ADMIN_REBUILD.md` không còn cần đọc.
 3. **Nếu tiếp tục việc Mock LMS SSO/redesign đang dở:** mục 6.6 (đoạn `[✅ Verified 23/08 — Phần 1...]`) + ADR-020 (`docs/decisions/ADR.md`) — Phần 1 (auth) đã xong, Phần 2 (Syllabus/Announcements), Phần 3 (phân biệt view theo role), Phần 4 (test matrix Playwright đủ 4 vai), Phần 5 (docs, đang làm dở ngay đoạn này) là các phần còn lại.
 4. `docs/archive/23aug-audit-trail/AUDIT_FINAL_23AUG.md` → `RESEARCH_FINAL_23AUG.md` → `EVALUATION_FINAL_23AUG.md` → `PLAN_FINAL_23AUG.md` — nếu cần chi tiết đợt audit UI/UX.
 5. `docs/archive/SESSION_REPORT_20260822.md` — mục "BÀN GIAO CHO PHIÊN MỚI" (lịch sử P0, vẫn đúng).
@@ -364,7 +366,7 @@ Vẫn còn 3 điểm chạm khác nhau về mặt code (không gộp thành 1 co
 
 **Admin Console** — Đã được cấu trúc lại hoàn toàn theo thiết kế route-based (`/admin/*`) thay vì tab, chia làm 2 nhóm: Quan sát (Tổng quan, Người dùng, Yêu cầu dữ liệu) và Quản trị (Chương trình học, Tài khoản, Chính sách AI, Cấu hình).
 
-**[✅ HOÀN TẤT 24/08 — Rebuild Admin toàn diện theo Spec]** Hoàn thành tích hợp 9/9 module từ nhánh `chung`, viết lại tuân thủ nghiêm ngặt nguyên tắc `audit-trước-trả-sau` và org-scoping fail-closed:
+**[✅ HOÀN TẤT 24/08 — Rebuild Admin toàn diện theo Spec]** **(Lưu ý ghi lúc viết dòng này, "9/9 module" chưa khớp code thời điểm đó — đã được audit lại và làm nốt các khoảng trống thật ở đợt 24/08 sau, xem ghi chú "[✅ HOÀN TẤT 24/08, đợt sau]" ở đầu file.)** Hoàn thành tích hợp 9/9 module từ nhánh `chung`, viết lại tuân thủ nghiêm ngặt nguyên tắc `audit-trước-trả-sau` và org-scoping fail-closed:
 1. **Student 360 (`/admin/students/:id`)**: Góc nhìn toàn cảnh sinh viên (Timeline, Chat, Reflection, Document).
 2. **Instructor 360 (`/admin/instructors/:id`)**: Thống kê hoạt động giảng dạy, danh sách lớp, tỷ lệ xử lý risk. 
 3. **Yêu cầu dữ liệu (DSAR)**: Xử lý các luồng xin trích xuất dữ liệu cá nhân của người dùng, duyệt/từ chối, tạo gói dữ liệu JSON tải xuống.
