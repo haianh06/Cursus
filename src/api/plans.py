@@ -462,25 +462,35 @@ def accept_weekly_plan(
 
     goals = dict(plan.goals or {})
     current_monday = monday_of(date.today())
-    stored_week_start = goals.get("week_start")
-    if stored_week_start:
-        try:
-            planned_monday = monday_of(date.fromisoformat(str(stored_week_start)))
-        except ValueError as exc:
+    if goals.get("kind") == weekly_plan_engine.PLAN_KIND:
+        # a46db63 §6.3.5: current week, next week (lets a reflection draft be
+        # pre-accepted before its week starts), or the semester's suggested
+        # week-start.
+        if not weekly_plan_engine.is_plan_acceptable_this_week(plan, date.today()):
             raise HTTPException(
                 status_code=409,
-                detail="Weekly plan has invalid week start",
-            ) from exc
-        if planned_monday != current_monday:
+                detail="Weekly plan is not for an acceptable week",
+            )
+    else:
+        stored_week_start = goals.get("week_start")
+        if stored_week_start:
+            try:
+                planned_monday = monday_of(date.fromisoformat(str(stored_week_start)))
+            except ValueError as exc:
+                raise HTTPException(
+                    status_code=409,
+                    detail="Weekly plan has invalid week start",
+                ) from exc
+            if planned_monday != current_monday:
+                raise HTTPException(
+                    status_code=409,
+                    detail="Weekly plan is not for the current week",
+                )
+        elif plan.week_number != current_monday.isocalendar().week:
             raise HTTPException(
                 status_code=409,
                 detail="Weekly plan is not for the current week",
             )
-    elif plan.week_number != current_monday.isocalendar().week:
-        raise HTTPException(
-            status_code=409,
-            detail="Weekly plan is not for the current week",
-        )
 
     # Schedule first, before committing the approval — if scheduling fails
     # the plan must not be left half-approved (status flip and scheduling
