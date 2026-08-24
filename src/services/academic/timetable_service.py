@@ -9,6 +9,9 @@ from datetime import date, datetime, time, timedelta
 from sqlalchemy.orm import Session
 
 from src.db import models
+from src.repositories.academic_term_repository import AcademicTermRepository
+from src.repositories.semester_repository import SemesterRepository
+from src.services.academic.academic_calendar import monday_of as _semester_monday_of
 from src.services.academic.lecture_plan_service import LECTURE_PLAN_SOURCE
 
 
@@ -18,13 +21,15 @@ class TimetableBlock:
     title: str
     start: datetime
     end: datetime
-    kind: str  # CLASS | SELF_STUDY
+    kind: str  # CLASS | SELF_STUDY | EXAM
     locked: bool
     description: str | None = None
     course_code: str | None = None
     course_name: str | None = None
     task_id: str | None = None
     task_status: str | None = None
+    recurrence_series_id: str | None = None
+    is_draft: bool = False
 
     def to_dict(self) -> dict:
         return {
@@ -39,6 +44,8 @@ class TimetableBlock:
             "courseName": self.course_name,
             "taskId": self.task_id,
             "taskStatus": self.task_status,
+            "recurrenceSeriesId": self.recurrence_series_id,
+            "isDraft": self.is_draft,
         }
 
 
