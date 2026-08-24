@@ -236,15 +236,9 @@ function Sidebar({ user, onLogout, open, setOpen, activeSection }) {
                 <span>{t('nav.practice')}</span>
               </button>
 
-              {/* 5. Companion chat */}
-              <button
-                aria-current={location.pathname === '/student/companion' ? 'page' : undefined}
-                className={`nav-item w-full text-left ${location.pathname === '/student/companion' ? 'active' : ''}`}
-                onClick={() => handleItemClick('/student/companion')}
-              >
-                <MessageCircle size={15} />
-                <span>{t('nav.companion')}</span>
-              </button>
+              {/* Companion chat has no sidebar entry in a46db63 — it's the
+                  floating CompanionChatBubble on every student page, not a
+                  standalone route. */}
 
               {/* 6. Quizzes assigned by instructors */}
               <button
