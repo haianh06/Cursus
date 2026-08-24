@@ -63,61 +63,86 @@ def _adjustment(code: str) -> dict:
     return {"code": code, "label": SUPPORTED_ADJUSTMENTS[code]}
 
 
-QUESTION_SETS: dict[str, list[dict]] = {
-    BAND_HIGH: [
-        {
-            "id": "q_success",
-            "type": "text",
-            "prompt": "Điều gì giúp bạn giữ được nhịp tuần này?",
-            "placeholder": "VD: giữ Chủ nhật làm ngày dự phòng nên không bị dồn.",
-            "adjustments": [
-                _adjustment("keep_buffer_day"),
-                _adjustment("keep_time_slots"),
-                _adjustment("repeat_task_split"),
-            ],
-        }
-    ],
-    BAND_MID: [
-        {
-            "id": "q_variance",
-            "type": "text_with_reason",
-            "prompt": "Việc nào lệch kế hoạch nhất và vì sao?",
-            "placeholder": "VD: sơ đồ use-case mất gấp đôi thời gian dự kiến.",
-            "reasonCodes": [
-                {"code": code, "label": label} for code, label in REASON_CODES
-            ],
-            "adjustments": [
-                _adjustment("increase_diagram_estimate"),
-                _adjustment("split_diagram_tasks"),
-                _adjustment("keep_buffer_day"),
-            ],
-        }
-    ],
-    BAND_LOW: [
-        {
-            "id": "q_obstacle",
-            "type": "text_with_reason",
-            "prompt": "Trở ngại lớn nhất tuần này là gì?",
-            "placeholder": "VD: bị ốm hai ngày nên không mở bài ra được.",
-            "reasonCodes": [
-                {"code": code, "label": label} for code, label in REASON_CODES
-            ],
-            "adjustments": [
-                _adjustment("reduce_load"),
-                _adjustment("single_priority"),
-                _adjustment("request_help"),
-            ],
-        }
-    ],
-}
+# a46db63 fixed 7-question catalog — same questions every week regardless of
+# completion band (unlike the old band-based single-question set). Order is
+# significant: [accomplishment, time_spent, went_well, went_poorly,
+# biggest_lesson, stop_start_continue, next_week_outcomes].
+ACCOMPLISHMENT_CHOICES: tuple[tuple[str, str], ...] = (
+    ("fully", "Hoàn thành đầy đủ"),
+    ("partially", "Hoàn thành một phần"),
+    ("not_at_all", "Chưa hoàn thành"),
+)
 
-UNIVERSAL_QUESTION: dict = {
-    "id": "q_next_priority",
-    "type": "text",
-    "prompt": "Tuần sau bạn muốn ưu tiên điều gì?",
-    "placeholder": "VD: nộp Part 1 sớm một ngày để còn thời gian sửa.",
-    "adjustments": [],
-}
+STOP_START_CONTINUE_CHOICES: tuple[tuple[str, str], ...] = (
+    ("reduce_hours", "Giảm tải: cắt khoảng 20% thời lượng mỗi việc"),
+    ("split_longest_task", "Tách việc dài nhất thành hai phần"),
+)
+
+
+def _question_catalog(facts: dict) -> list[dict]:
+    return [
+        {
+            "id": "accomplishment",
+            "type": "single_choice",
+            "prompt": "Bạn có hoàn thành mục tiêu chính tuần này không?",
+            "choices": [{"code": code, "label": label} for code, label in ACCOMPLISHMENT_CHOICES],
+        },
+        {
+            "id": "time_spent",
+            "type": "insight",
+            "prompt": "Thời gian thực tế bạn đã dùng",
+            "breakdown": [
+                {
+                    "taskId": task["taskId"],
+                    "title": task["title"],
+                    "estimatedMinutes": task["estimatedMinutes"],
+                    "actualMinutes": task["actualMinutes"],
+                }
+                for task in facts.get("overEstimateTasks", [])
+            ] or None,
+        },
+        {
+            "id": "went_well",
+            "type": "text",
+            "prompt": "Điều gì đã diễn ra tốt tuần này?",
+            "placeholder": "VD: giữ Chủ nhật làm ngày dự phòng nên không bị dồn.",
+        },
+        {
+            "id": "went_poorly",
+            "type": "text",
+            "allowReason": True,
+            "prompt": "Điều gì chưa tốt / lệch kế hoạch nhất?",
+            "placeholder": "VD: sơ đồ use-case mất gấp đôi thời gian dự kiến.",
+            "reasonCodes": [{"code": code, "label": label} for code, label in REASON_CODES],
+        },
+        {
+            "id": "biggest_lesson",
+            "type": "text",
+            "prompt": "Bài học lớn nhất tuần này là gì?",
+            "placeholder": "VD: nên bắt đầu sớm hơn với phần cần nhiều thời gian.",
+        },
+        {
+            "id": "stop_start_continue",
+            "type": "grouped_multi_choice",
+            "prompt": "Bạn muốn điều chỉnh gì cho tuần sau?",
+            "groups": [
+                {
+                    "label": "Điều chỉnh kế hoạch",
+                    "choices": [
+                        {"code": code, "label": label}
+                        for code, label in STOP_START_CONTINUE_CHOICES
+                    ],
+                }
+            ],
+        },
+        {
+            "id": "next_week_outcomes",
+            "type": "outcome_list",
+            "prompt": "Tuần sau bạn muốn đạt được những gì?",
+            "placeholder": "VD: nộp Part 1 sớm một ngày để còn thời gian sửa.",
+            "maxItems": 3,
+        },
+    ]
 
 
 class ReflectionEngine:
