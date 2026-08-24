@@ -170,18 +170,26 @@ def run_pipeline(log) -> None:
     touches_backend = any(not p.startswith("frontend/") for p in changed)
 
     if touches_backend:
-        r = subprocess.run(
-            ["render", "deploys", "create", RENDER_SERVICE_ID, "--confirm", "--output", "json"],
-            capture_output=True, text=True,
-        )
-        log("  render deploy: " + ("OK" if r.returncode == 0 else f"LOI: {r.stderr[:300]}"))
+        render_cli = shutil.which("render")
+        if render_cli is None:
+            log("  [x] khong tim thay 'render' CLI trong PATH -- bo qua render deploy.")
+        else:
+            r = subprocess.run(
+                [render_cli, "deploys", "create", RENDER_SERVICE_ID, "--confirm", "--output", "json"],
+                capture_output=True, text=True,
+            )
+            log("  render deploy: " + ("OK" if r.returncode == 0 else f"LOI: {r.stderr[:300]}"))
 
     if touches_frontend:
-        r = subprocess.run(
-            ["vercel", "--prod", "--yes"], cwd=str(DEST / "frontend"),
-            capture_output=True, text=True,
-        )
-        log("  vercel deploy: " + ("OK" if r.returncode == 0 else f"LOI: {r.stderr[:300]}"))
+        vercel_cli = shutil.which("vercel")
+        if vercel_cli is None:
+            log("  [x] khong tim thay 'vercel' CLI trong PATH -- bo qua vercel deploy.")
+        else:
+            r = subprocess.run(
+                [vercel_cli, "--prod", "--yes"], cwd=str(DEST / "frontend"),
+                capture_output=True, text=True,
+            )
+            log("  vercel deploy: " + ("OK" if r.returncode == 0 else f"LOI: {r.stderr[:300]}"))
 
 
 def main() -> None:

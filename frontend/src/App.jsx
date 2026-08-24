@@ -200,26 +200,9 @@ function Sidebar({ user, onLogout, open, setOpen, activeSection }) {
                 <span>{t('nav.weeklyPlan')}</span>
               </button>
 
-              {/* Semester setup + schedule-based plan -- real, working, DB-backed
-                  features that had zero nav entry anywhere (found during the
-                  22/08 UI/UX audit, docs/AUDIT_0_HIENTRANG.md mục 7). */}
-              <button
-                aria-current={location.pathname === '/student/semester-setup' ? 'page' : undefined}
-                className={`nav-item w-full text-left ${location.pathname === '/student/semester-setup' ? 'active' : ''}`}
-                onClick={() => handleItemClick('/student/semester-setup')}
-              >
-                <CalendarRange size={15} />
-                <span>{t('nav.semesterSetup')}</span>
-              </button>
-
-              <button
-                aria-current={location.pathname === '/student/lecture-plan' ? 'page' : undefined}
-                className={`nav-item w-full text-left ${location.pathname === '/student/lecture-plan' ? 'active' : ''}`}
-                onClick={() => handleItemClick('/student/lecture-plan')}
-              >
-                <NotebookPen size={15} />
-                <span>{t('nav.lecturePlan')}</span>
-              </button>
+              {/* Semester setup + lecture plan are reachable via deep link only
+                  (onboarding step 2, LecturePlanPanel's own "Sửa học kỳ" link) —
+                  matches a46db63, which never gave these a sidebar entry. */}
 
               {/* 3. Today's Plan (Do step) — real day view + checklist
                   (src/services/academic/self_study_service.py), not just a
