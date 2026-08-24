@@ -30,3 +30,26 @@ class UserRepository:
         self._db.commit()
         self._db.refresh(user)
         return user
+
+    def update_profile_fields(
+        self,
+        user: User,
+        *,
+        full_name: str,
+        major: str | None,
+        student_code: str | None,
+    ) -> User:
+        user.full_name = full_name
+        user.major = major
+        user.student_code = student_code
+        self._db.commit()
+        self._db.refresh(user)
+        return user
+
+    def update_preferences(self, user: User, patch: dict) -> User:
+        merged = dict(user.preferences or {})
+        merged.update({key: value for key, value in patch.items() if value is not None})
+        user.preferences = merged
+        self._db.commit()
+        self._db.refresh(user)
+        return user

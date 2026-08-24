@@ -313,6 +313,24 @@ export function getMe() {
   return request('/auth/me', { suppressAuthHandler: true });
 }
 
+export function updateProfile({ fullName, major, studentCode }) {
+  return request('/auth/me', {
+    method: 'PATCH',
+    body: { full_name: fullName, major, student_code: studentCode },
+  });
+}
+
+export function updatePreferences(patch) {
+  return request('/auth/me/preferences', {
+    method: 'PUT',
+    body: {
+      theme: patch.theme,
+      language: patch.language,
+      show_mascot: patch.showMascot,
+    },
+  });
+}
+
 export async function logout() {
   try {
     await request('/auth/logout', {

@@ -44,6 +44,8 @@ from src.schemas.auth_schemas import (
     ResendEmailVerificationRequest,
     ResetPasswordRequest,
     SessionResponse,
+    UpdatePreferencesRequest,
+    UpdateProfileRequest,
     UserResponse,
     VerifyEmailRequest,
 )
@@ -248,7 +250,7 @@ async def register(
         ip_address=_request_ip(request),
         user_agent=request.headers.get("user-agent"),
     )
-    return RegisterResponse(user=_serialize_user(user))
+    return RegisterResponse(user=_serialize_user(user, db))
 
 
 @router.get("/invites/{token}", response_model=InviteDetailsResponse)
@@ -328,7 +330,7 @@ async def create_demo_session(
     )
     return LoginResponse(
         token=access_token,
-        user=_serialize_user(user),
+        user=_serialize_user(user, db),
         session=_serialize_session(session_result.session),
     )
 
@@ -338,6 +340,7 @@ async def login(
     payload: LoginRequest,
     request: Request,
     response: Response,
+    db: Session = Depends(get_db),
     auth_service: AuthService = Depends(get_auth_service),
     mfa_service: MfaService = Depends(get_mfa_service),
     audit_service: AuditService = Depends(get_audit_service),
@@ -428,7 +431,7 @@ async def login(
         )
     return LoginResponse(
         token=result.access_token,
-        user=_serialize_user(result.user),
+        user=_serialize_user(result.user, db),
         session=_serialize_session(result.session),
     )
 
@@ -503,7 +506,7 @@ async def google_login(
 
     return LoginResponse(
         token=result.access_token,
-        user=_serialize_user(result.user),
+        user=_serialize_user(result.user, db),
         session=_serialize_session(result.session),
     )
 
@@ -511,8 +514,39 @@ async def google_login(
 @router.get("/me", response_model=UserResponse)
 async def get_me(
     current_user: User = Depends(get_current_user_from_token),
+    db: Session = Depends(get_db),
 ) -> UserResponse:
-    return _serialize_user(current_user)
+    return _serialize_user(current_user, db)
+
+
+@router.patch("/me", response_model=UserResponse)
+async def update_me(
+    payload: UpdateProfileRequest,
+    current_user: User = Depends(get_current_user_from_token),
+    db: Session = Depends(get_db),
+) -> UserResponse:
+    updated = UserRepository(db).update_profile_fields(
+        current_user,
+        full_name=payload.full_name,
+        major=payload.major,
+        student_code=payload.student_code,
+    )
+    return _serialize_user(updated, db)
+
+
+@router.put("/me/preferences", response_model=UserResponse)
+async def update_my_preferences(
+    payload: UpdatePreferencesRequest,
+    current_user: User = Depends(get_current_user_from_token),
+    db: Session = Depends(get_db),
+) -> UserResponse:
+    patch = {
+        "theme": payload.theme,
+        "language": payload.language,
+        "showMascot": payload.show_mascot,
+    }
+    updated = UserRepository(db).update_preferences(current_user, patch)
+    return _serialize_user(updated, db)
 
 
 @router.get("/mfa/status", response_model=MfaStatusResponse)
@@ -1004,7 +1038,9 @@ def _extract_access_token(
     return authorization.split(" ", 1)[1]
 
 
-def _serialize_user(user: User) -> UserResponse:
+def _serialize_user(user: User, db: Session | None = None) -> UserResponse:
+    from src.services.onboarding_status import is_onboarded
+
     org = user.organization
     return UserResponse(
         id=user.id,
@@ -1015,6 +1051,10 @@ def _serialize_user(user: User) -> UserResponse:
         organization_id=org.id if org else None,
         organization_name=org.name if org else None,
         is_demo=bool(org and org.kind == "sandbox"),
+        major=user.major,
+        student_code=user.student_code,
+        onboarded=is_onboarded(db, user) if db is not None else True,
+        preferences=user.preferences or {},
     )
 
 

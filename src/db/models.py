@@ -131,6 +131,11 @@ class User(Base):
     is_email_verified: Mapped[bool] = mapped_column(Boolean, default=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    major: Mapped[str | None] = mapped_column(String, nullable=True)
+    student_code: Mapped[str | None] = mapped_column(String, nullable=True)
+    # Per-account UI preferences (theme/language/showMascot) synced from the
+    # Settings screen — replaces what used to be localStorage-only state.
+    preferences: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
     enrollments: Mapped[list["Enrollment"]] = relationship(back_populates="student")
     weekly_plans: Mapped[list["WeeklyPlan"]] = relationship(back_populates="student")

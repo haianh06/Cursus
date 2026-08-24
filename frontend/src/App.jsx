@@ -716,10 +716,13 @@ export default function App() {
           name: profile.full_name,
           email: profile.email,
           role: profile.role.toLowerCase(), // Ensure lowercase role for client router
-          onboarded: true,
+          onboarded: profile.onboarded,
+          major: profile.major || null,
+          studentCode: profile.student_code || null,
           email_confirmed: profile.is_email_verified,
           isDemo: Boolean(profile.is_demo),
           organizationName: profile.organization_name || null,
+          preferences: profile.preferences || {},
         };
         setUser(nextUser);
         setAuthStatus(nextUser.email_confirmed ? 'authenticated' : 'email_unverified');

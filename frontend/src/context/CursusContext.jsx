@@ -9,6 +9,7 @@ import {
   addAdminCourse,
   deleteAdminCourse,
   getAdminKpi,
+  updatePreferences,
 } from '../lib/api';
 
 /**
@@ -152,6 +153,9 @@ export function CursusProvider({ user, children }) {
 
   // ── Shared UI chrome ──────────────────────────────────────────────────
   const [showMascot, setShowMascot] = useState(() => {
+    if (user?.preferences && typeof user.preferences.showMascot === 'boolean') {
+      return user.preferences.showMascot;
+    }
     return localStorage.getItem('cursus_show_mascot') !== 'false';
   });
 
@@ -159,6 +163,14 @@ export function CursusProvider({ user, children }) {
     setShowMascot((prev) => {
       const next = !prev;
       localStorage.setItem('cursus_show_mascot', String(next));
+      // Synced server-side so the toggle follows the account across devices
+      // (see src/api/auth.py PUT /auth/me/preferences) — skipped for demo
+      // users since demo sessions aren't meant to persist preferences.
+      if (user && !user.isDemo) {
+        updatePreferences({ showMascot: next }).catch(() => {
+          /* best-effort sync — localStorage already has the new value */
+        });
+      }
       return next;
     });
   };

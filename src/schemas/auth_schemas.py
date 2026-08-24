@@ -71,6 +71,22 @@ class UserResponse(BaseModel):
     organization_id: str | None = None
     organization_name: str | None = None
     is_demo: bool = False
+    major: str | None = None
+    student_code: str | None = None
+    onboarded: bool = True
+    preferences: dict = Field(default_factory=dict)
+
+
+class UpdateProfileRequest(BaseModel):
+    full_name: str = Field(..., min_length=1, max_length=255)
+    major: str | None = Field(default=None, max_length=255)
+    student_code: str | None = Field(default=None, max_length=64)
+
+
+class UpdatePreferencesRequest(BaseModel):
+    theme: str | None = None
+    language: str | None = None
+    show_mascot: bool | None = None
 
 
 class SessionResponse(BaseModel):

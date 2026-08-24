@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { User, BookOpen, GraduationCap, Check, ArrowRight, Shield } from 'lucide-react';
 import AuthLayout from './AuthLayout';
 import { supabase } from '../../lib/supabaseClient';
-import { googleLogin } from '../../lib/api';
+import { googleLogin, getMe, updateProfile } from '../../lib/api';
+import SemesterSetupWizard from '../student/SemesterSetupWizard';
 import { useLanguage } from '../../context/LanguageContext';
 
 const MAJORS = [
@@ -18,6 +19,12 @@ export default function OnboardingScreen() {
   const { t, lang } = useLanguage();
 
   const [user, setUser] = useState(null);
+  // Set once we've confirmed a real FastAPI session already exists (password
+  // or invite-based sign-in) — in that case there's no Supabase session to
+  // wait for at all, we go straight to step 1.
+  const [fastApiProfile, setFastApiProfile] = useState(null);
+  const [checkingSession, setCheckingSession] = useState(true);
+  const [step, setStep] = useState('profile'); // 'profile' | 'semester'
   const [name, setName] = useState('');
   const [studentId, setStudentId] = useState('');
   const [major, setMajor] = useState(MAJORS[0].value);
@@ -34,7 +41,33 @@ export default function OnboardingScreen() {
   const [errorMsg, setErrorMsg] = useState('');
   const [mascotState, setMascotState] = useState('idle');
 
+  // A password/invite-based sign-in already has a FastAPI cookie session by
+  // the time this screen mounts — no Supabase involved at all. Only fall
+  // back to listening for a Supabase session (the Google-OAuth-in-progress
+  // case) when there is no FastAPI session yet.
   useEffect(() => {
+    let cancelled = false;
+    getMe()
+      .then((profile) => {
+        if (cancelled) return;
+        setFastApiProfile(profile);
+        setName(profile.full_name || '');
+        setStudentId(profile.student_code || '');
+        if (profile.major) setMajor(profile.major);
+      })
+      .catch(() => {
+        /* no FastAPI session yet — fall through to the Supabase listener below */
+      })
+      .finally(() => {
+        if (!cancelled) setCheckingSession(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (checkingSession || fastApiProfile) return;
     let cancelled = false;
     let syncStarted = false;
 
@@ -107,7 +140,7 @@ export default function OnboardingScreen() {
       cancelled = true;
       authListener?.subscription?.unsubscribe();
     };
-  }, [navigate]);
+  }, [navigate, checkingSession, fastApiProfile]);
 
   const handleOnboarding = async (e) => {
     e.preventDefault();
@@ -118,38 +151,19 @@ export default function OnboardingScreen() {
     setErrorMsg('');
 
     try {
-      const profilePayload = {
-        id: user.id,
-        name: name,
-        role: role
-      };
-
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .upsert(profilePayload);
-
-      if (profileError) throw profileError;
-
-      const { error: authError } = await supabase.auth.updateUser({
-        data: {
-          name: name,
-          role: role,
-          student_id: role === 'student' ? studentId : undefined,
-          major: role === 'student' ? major : undefined,
-          onboarded: true
-        }
+      await updateProfile({
+        fullName: name,
+        major: role === 'student' ? major : undefined,
+        studentCode: role === 'student' ? studentId : undefined,
       });
 
-      if (authError) throw authError;
-
-      setSuccess(true);
       setMascotState('success');
-
-      setTimeout(() => {
-        navigate(`/${role}`, { replace: true });
-        window.location.reload();
-      }, 1000);
-
+      // Completing the profile isn't the same as being onboarded — that only
+      // flips once an active SemesterSetup exists (see
+      // src/services/onboarding_status.py). Move to step 2 instead of
+      // navigating away.
+      setStep('semester');
+      setLoading(false);
     } catch (err) {
       console.error(err);
       setMascotState('error');
@@ -158,11 +172,39 @@ export default function OnboardingScreen() {
     }
   };
 
-  if (!user) {
+  const handleSemesterContinue = () => {
+    setSuccess(true);
+    setTimeout(() => {
+      navigate(`/${role}`, { replace: true });
+      window.location.reload();
+    }, 600);
+  };
+
+  if (checkingSession || (!fastApiProfile && !user)) {
     return (
       <div className="min-h-screen bg-surface flex flex-col items-center justify-center gap-3">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="spin text-brand-blue"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>
         <span className="text-xs text-fg-muted font-semibold font-mono">LOADING ONBOARDING...</span>
+      </div>
+    );
+  }
+
+  if (step === 'semester') {
+    return (
+      <div className="min-h-screen bg-surface">
+        <SemesterSetupWizard />
+        <div className="max-w-3xl mx-auto px-6 pb-10 flex justify-end">
+          <button
+            type="button"
+            className="btn-auth-primary text-sm"
+            onClick={handleSemesterContinue}
+          >
+            <span className="flex items-center gap-2">
+              {lang === 'vi' ? 'Vào Bảng điều khiển' : 'Go to Dashboard'}
+              <ArrowRight size={16} />
+            </span>
+          </button>
+        </div>
       </div>
     );
   }

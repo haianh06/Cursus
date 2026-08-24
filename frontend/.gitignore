@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Vercel project link (machine-specific, not source) -- also excluded from
+# scripts/sync_and_deploy.py's mirror, kept here as a second safety net.
+.vercel
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -22,5 +26,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-.vercel
-.env*
