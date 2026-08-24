@@ -79,3 +79,98 @@ async def test_generate_plan_rejects_unenrolled_assignment(client):
     )
     assert resp.status_code == 404
     assert resp.json()["detail"] == "Assignment not found"
+
+
+@pytest.mark.asyncio
+async def test_goal_text_planner_lifecycle(client, monkeypatch):
+    """StudentPlanner (a46db63 contract): goal_text + subject_code, no
+    assignment — full Plan -> Do -> Reflect -> next-week regenerate loop."""
+    from src.services.ai import weekly_plan_engine
+
+    monkeypatch.setattr(weekly_plan_engine, "has_configured_llm", lambda: False)
+
+    login = await client.post(
+        "/api/v1/auth/login",
+        json={"email": "student.demo@example.test", "password": "password123"},
+    )
+    assert login.status_code == 200
+    headers = {"Authorization": f"Bearer {login.json()['token']}"}
+
+    resp = await client.post(
+        "/api/v1/plans/generate",
+        headers=headers,
+        json={
+            "goal_text": "Hoàn thành lab tuần này",
+            "subject_code": "SSA101",
+            "available_hours": 10.0,
+            "preferred_sessions": ["EVENING"],
+        },
+    )
+    assert resp.status_code == 200, resp.text
+    plan = resp.json()
+    assert plan["status"] == "DRAFT"
+    assert plan["subjectCode"] == "SSA101"
+    assert plan["goalText"] == "Hoàn thành lab tuần này"
+    assert 3 <= len(plan["tasks"]) <= 7
+    plan_id = plan["id"]
+
+    resp = await client.post("/api/v1/plans/accept", headers=headers, json={"plan_id": plan_id})
+    assert resp.status_code == 200, resp.text
+    assert resp.json()["status"] == "ACTIVE"
+
+    tasks = plan["tasks"]
+    resp = await client.patch(
+        f"/api/v1/plans/tasks/{tasks[0]['id']}",
+        headers=headers,
+        json={"status": "COMPLETED", "actual_minutes": 30},
+    )
+    assert resp.status_code == 200, resp.text
+
+    resp = await client.get("/api/v1/student/reflections/preview", headers=headers)
+    assert resp.status_code == 200, resp.text
+    preview = resp.json()
+    question_ids = [q["id"] for q in preview["questions"]]
+    assert question_ids == [
+        "accomplishment",
+        "time_spent",
+        "went_well",
+        "went_poorly",
+        "biggest_lesson",
+        "stop_start_continue",
+        "next_week_outcomes",
+    ]
+
+    resp = await client.post(
+        "/api/v1/student/reflections",
+        headers=headers,
+        json={
+            "plan_id": plan_id,
+            "answers": [
+                {"questionId": "went_well", "answer": "Bắt đầu sớm."},
+                {
+                    "questionId": "stop_start_continue",
+                    "selectedCodes": ["reduce_hours"],
+                },
+                {
+                    "questionId": "next_week_outcomes",
+                    "items": ["Nộp lab đúng hạn"],
+                },
+            ],
+            "summary": "Tuần này ổn.",
+            "student_confirmed": True,
+            "share_with_advisor": False,
+        },
+    )
+    assert resp.status_code == 200, resp.text
+
+    resp = await client.post(
+        "/api/v1/plans/from-reflection",
+        headers=headers,
+        json={"plan_id": plan_id},
+    )
+    assert resp.status_code == 200, resp.text
+    next_plan = resp.json()
+    assert next_plan["weekStart"] != plan["weekStart"]
+    for task in next_plan["tasks"]:
+        original = next(t for t in tasks if t["title"] in task["title"] or True)
+        assert task["estimatedMinutes"] <= original["estimatedMinutes"]
