@@ -273,7 +273,11 @@ export default function StudentReflection() {
       setPreview(data);
       if (data.existing) {
         setMemory(data.existing.summary ?? '');
-        setAdjustments(data.existing.adjustments ?? []);
+        const restored = {};
+        (data.existing.answers ?? []).forEach((item) => {
+          restored[item.questionId] = item;
+        });
+        setResponses(restored);
         if (data.existing.studentConfirmed) setStep('done');
       }
     } catch (err) {
@@ -288,19 +292,40 @@ export default function StudentReflection() {
     loadPreview();
   }, [loadPreview, stateLoading]);
 
-  const toggleAdjustment = (code) =>
-    setAdjustments((prev) =>
-      prev.includes(code) ? prev.filter((item) => item !== code) : [...prev, code],
-    );
+  const setResponse = (questionId, patch) =>
+    setResponses((prev) => ({ ...prev, [questionId]: { ...prev[questionId], ...patch } }));
+
+  const toggleSelectedCode = (questionId, code) =>
+    setResponses((prev) => {
+      const current = prev[questionId]?.selectedCodes || [];
+      const next = current.includes(code)
+        ? current.filter((item) => item !== code)
+        : [...current, code];
+      return { ...prev, [questionId]: { ...prev[questionId], selectedCodes: next } };
+    });
 
   const buildAnswerPayload = () =>
     (preview?.questions ?? [])
-      .map((question) => ({
-        questionId: question.id,
-        answer: answers[question.id] || null,
-        reasonCode: reasons[question.id] || null,
-      }))
-      .filter((item) => item.answer || item.reasonCode);
+      .map((question) => {
+        const response = responses[question.id] || {};
+        return {
+          questionId: question.id,
+          answer: response.answer || null,
+          reasonCode: response.reasonCode || null,
+          selectedCodes: response.selectedCodes || [],
+          items: (response.items || []).map((item) => item.trim()).filter(Boolean),
+        };
+      })
+      .filter(
+        (item) => item.answer || item.reasonCode || item.selectedCodes.length || item.items.length,
+      );
+
+  const stopStartContinueLabels = () => {
+    const question = (preview?.questions ?? []).find((q) => q.id === 'stop_start_continue');
+    const selected = responses.stop_start_continue?.selectedCodes || [];
+    const choices = (question?.groups ?? []).flatMap((group) => group.choices);
+    return selected.map((code) => choices.find((c) => c.code === code)?.label || code);
+  };
 
   const goToMemory = async () => {
     setActionError(null);
@@ -308,7 +333,7 @@ export default function StudentReflection() {
       const draft = await previewReflectionSummary({
         planId: preview.planId,
         answers: buildAnswerPayload(),
-        adjustments,
+        adjustments: [],
       });
       // Do not clobber text the student has already edited by hand.
       if (!memoryEdited) setMemory(draft.summary);
