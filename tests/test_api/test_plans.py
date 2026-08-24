@@ -126,7 +126,9 @@ async def test_goal_text_planner_lifecycle(client, monkeypatch):
     )
     assert resp.status_code == 200, resp.text
 
-    resp = await client.get("/api/v1/student/reflections/preview", headers=headers)
+    resp = await client.get(
+        f"/api/v1/student/reflections/preview?plan_id={plan_id}", headers=headers
+    )
     assert resp.status_code == 200, resp.text
     preview = resp.json()
     question_ids = [q["id"] for q in preview["questions"]]
