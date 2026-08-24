@@ -59,10 +59,77 @@ def band_for(completion_rate: float) -> str:
     return BAND_LOW
 
 
+def _adjustment(code: str) -> dict:
+    return {"code": code, "label": SUPPORTED_ADJUSTMENTS[code]}
+
+
+# Legacy band-based question set — still used for assignment-driven
+# (Gate2/PlanBuilder) plans, whose `apply_adjustments` vocabulary
+# (`split_diagram_tasks` etc.) only makes sense against that fixed demo
+# assignment's task titles. Weekly-goal plans (StudentPlanner, a46db63
+# contract) use the fixed 7-question catalog below instead.
+QUESTION_SETS: dict[str, list[dict]] = {
+    BAND_HIGH: [
+        {
+            "id": "q_success",
+            "type": "text",
+            "prompt": "Điều gì giúp bạn giữ được nhịp tuần này?",
+            "placeholder": "VD: giữ Chủ nhật làm ngày dự phòng nên không bị dồn.",
+            "adjustments": [
+                _adjustment("keep_buffer_day"),
+                _adjustment("keep_time_slots"),
+                _adjustment("repeat_task_split"),
+            ],
+        }
+    ],
+    BAND_MID: [
+        {
+            "id": "q_variance",
+            "type": "text_with_reason",
+            "prompt": "Việc nào lệch kế hoạch nhất và vì sao?",
+            "placeholder": "VD: sơ đồ use-case mất gấp đôi thời gian dự kiến.",
+            "reasonCodes": [
+                {"code": code, "label": label} for code, label in REASON_CODES
+            ],
+            "adjustments": [
+                _adjustment("increase_diagram_estimate"),
+                _adjustment("split_diagram_tasks"),
+                _adjustment("keep_buffer_day"),
+            ],
+        }
+    ],
+    BAND_LOW: [
+        {
+            "id": "q_obstacle",
+            "type": "text_with_reason",
+            "prompt": "Trở ngại lớn nhất tuần này là gì?",
+            "placeholder": "VD: bị ốm hai ngày nên không mở bài ra được.",
+            "reasonCodes": [
+                {"code": code, "label": label} for code, label in REASON_CODES
+            ],
+            "adjustments": [
+                _adjustment("reduce_load"),
+                _adjustment("single_priority"),
+                _adjustment("request_help"),
+            ],
+        }
+    ],
+}
+
+UNIVERSAL_QUESTION: dict = {
+    "id": "q_next_priority",
+    "type": "text",
+    "prompt": "Tuần sau bạn muốn ưu tiên điều gì?",
+    "placeholder": "VD: nộp Part 1 sớm một ngày để còn thời gian sửa.",
+    "adjustments": [],
+}
+
+
 # a46db63 fixed 7-question catalog — same questions every week regardless of
-# completion band (unlike the old band-based single-question set). Order is
-# significant: [accomplishment, time_spent, went_well, went_poorly,
-# biggest_lesson, stop_start_continue, next_week_outcomes].
+# completion band (unlike the old band-based single-question set above). Only
+# used for weekly-goal (StudentPlanner) plans. Order is significant:
+# [accomplishment, time_spent, went_well, went_poorly, biggest_lesson,
+# stop_start_continue, next_week_outcomes].
 ACCOMPLISHMENT_CHOICES: tuple[tuple[str, str], ...] = (
     ("fully", "Hoàn thành đầy đủ"),
     ("partially", "Hoàn thành một phần"),
