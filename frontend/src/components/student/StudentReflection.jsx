@@ -256,9 +256,8 @@ export default function StudentReflection() {
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
-  const [answers, setAnswers] = useState({});
-  const [reasons, setReasons] = useState({});
-  const [adjustments, setAdjustments] = useState([]);
+  // Per-question response: { answer?, reasonCode?, selectedCodes?, items? }
+  const [responses, setResponses] = useState({});
   const [memory, setMemory] = useState('');
   const [memoryEdited, setMemoryEdited] = useState(false);
   const [shareWithAdvisor, setShareWithAdvisor] = useState(false);
