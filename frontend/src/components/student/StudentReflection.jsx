@@ -236,6 +236,12 @@ function BeforeAfterPanel({ nextPlan, previousPlan, changes, lang }) {
           </ul>
         </div>
       </div>
+
+      {nextPlan.weekStart && (
+        <div className="mt-5 -mx-5 -mb-5 border-t border-line">
+          <Timetable initialView="week" initialAnchor={nextPlan.weekStart} previewPlanId={nextPlan.id} />
+        </div>
+      )}
     </section>
   );
 }
