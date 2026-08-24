@@ -656,6 +656,8 @@ def serialize_plan(db: Session, plan: models.WeeklyPlan) -> dict:
         "id": plan.id,
         "studentId": plan.student_id,
         "assignmentId": assignment_id or "",
+        "subjectCode": goals.get("subject_code"),
+        "goalText": goals.get("statement"),
         "weekNumber": plan.week_number,
         "weekStart": goals.get("week_start"),
         "goal": goals.get("statement"),
