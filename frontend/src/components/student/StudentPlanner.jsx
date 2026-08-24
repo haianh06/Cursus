@@ -149,7 +149,6 @@ export default function StudentPlanner() {
   const { lang } = useLanguage();
   const navigate = useNavigate();
   const {
-    assignment,
     currentPlan,
     loading,
     error,
@@ -159,6 +158,9 @@ export default function StudentPlanner() {
     confirmPlan,
   } = useGate2();
 
+  const [courses, setCourses] = useState([]);
+  const [goalText, setGoalText] = useState('');
+  const [subjectCode, setSubjectCode] = useState('');
   const [availability, setAvailability] = useState(DEFAULT_AVAILABILITY);
   const [session, setSession] = useState('EVENING');
   const [generating, setGenerating] = useState(false);
@@ -175,12 +177,48 @@ export default function StudentPlanner() {
   const plan = currentPlan;
   const isDraft = plan?.status === 'DRAFT';
 
+  useEffect(() => {
+    let cancelled = false;
+    getStudentCourses()
+      .then((data) => {
+        if (cancelled) return;
+        const list = data || [];
+        setCourses(list);
+        setSubjectCode((prev) => prev || plan?.subjectCode || list[0]?.code || '');
+      })
+      .catch(() => {
+        /* course select stays empty — generate button disables on !subjectCode */
+      });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Prefill once from the plan — never overwrite what the student is typing.
+  const [prefilled, setPrefilled] = useState(false);
+  useEffect(() => {
+    if (prefilled || !plan) return;
+    setGoalText(plan.goalText || '');
+    if (plan.subjectCode) setSubjectCode(plan.subjectCode);
+    setPrefilled(true);
+  }, [plan, prefilled]);
+
   const handleGenerate = async () => {
     setActionError(null);
+    if (!goalText.trim()) {
+      setActionError({ message: lang === 'vi' ? 'Nhập mục tiêu tuần này để lập kế hoạch.' : 'Enter this week’s goal to generate a plan.' });
+      return;
+    }
+    if (!subjectCode) {
+      setActionError({ message: lang === 'vi' ? 'Chưa chọn môn học để lập kế hoạch.' : 'Choose a course to generate a plan.' });
+      return;
+    }
     setGenerating(true);
     try {
       await createPlan({
-        assignmentId: assignment.id,
+        goalText,
+        subjectCode,
         availableHours: declaredMinutes / 60,
         preferredSessions: [session],
         availability: availability
@@ -245,51 +283,49 @@ export default function StudentPlanner() {
         </p>
       </header>
 
-      {/* Goal — the one assignment that runs through the demo */}
+      {/* Goal — free-text goal + course, the a46db63 contract */}
       <section aria-label={lang === 'vi' ? 'Mục tiêu' : 'Goal'} className="card p-5">
         <div className="flex items-start gap-3">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-accent-soft text-accent">
             <Target size={18} />
           </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-[15px] font-bold text-fg">
-              {assignment?.title ?? (lang === 'vi' ? 'Chưa có assignment' : 'No assignment')}
-            </p>
-            {assignment && (
-              <>
-                <div className="flex flex-wrap items-center gap-2 mt-1.5">
-                  <span className="text-[12px] text-fg-muted">
-                    {lang === 'vi' ? 'Hạn nộp' : 'Due'}:{' '}
-                    {new Date(assignment.dueAt).toLocaleString(lang === 'vi' ? 'vi-VN' : 'en-US', {
-                      weekday: 'long',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      day: '2-digit',
-                      month: '2-digit',
-                    })}
-                  </span>
-                  <ProvenanceBadge provenance={assignment.provenance} lang={lang} size="xs" />
-                </div>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 mt-3">
-                  {assignment.deliverables?.map((item) => (
-                    <li
-                      key={item.id}
-                      className="flex items-center gap-1.5 text-[12px] text-fg-secondary"
-                    >
-                      <CheckCircle2 size={12} className="text-fg-muted" />
-                      {item.title}
-                    </li>
-                  ))}
-                </ul>
-                <p
-                  className="flex items-start gap-1.5 text-[11px] mt-3 rounded-lg p-2.5"
-                  style={{ background: 'var(--gold-soft)', color: 'var(--text-secondary)' }}
-                >
-                  <Info size={12} className="shrink-0 mt-0.5 text-gold" />
-                  <span>{assignment.sourceNote}</span>
-                </p>
-              </>
-            )}
+          <div className="min-w-0 flex-1 space-y-3">
+            <div>
+              <label htmlFor="plan-goal" className="block text-[11px] font-semibold mb-1 text-fg-secondary">
+                {lang === 'vi' ? 'Mục tiêu tuần này' : 'This week’s goal'}
+              </label>
+              <input
+                id="plan-goal"
+                type="text"
+                maxLength={500}
+                className="input text-[13px] w-full h-11"
+                placeholder={
+                  lang === 'vi'
+                    ? 'VD: Hoàn thành phần 1 đồ án SSA101'
+                    : 'e.g. Finish SSA101 project part 1'
+                }
+                value={goalText}
+                onChange={(event) => setGoalText(event.target.value)}
+              />
+            </div>
+            <div>
+              <label htmlFor="plan-subject" className="block text-[11px] font-semibold mb-1 text-fg-secondary">
+                {lang === 'vi' ? 'Môn học' : 'Course'}
+              </label>
+              <select
+                id="plan-subject"
+                className="input text-[13px] h-11 w-full"
+                value={subjectCode}
+                onChange={(event) => setSubjectCode(event.target.value)}
+              >
+                {courses.length === 0 && <option value="">—</option>}
+                {courses.map((course) => (
+                  <option key={course.code} value={course.code}>
+                    {course.code} — {course.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
       </section>
@@ -359,7 +395,7 @@ export default function StudentPlanner() {
             className="btn btn-accent text-[13px] px-4 min-h-11 flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent"
             style={{ minWidth: '210px' }}
             onClick={handleGenerate}
-            disabled={!assignment || generating || mutating}
+            disabled={!goalText.trim() || !subjectCode || generating || mutating}
           >
             <Wand2 size={14} />
             {generating
