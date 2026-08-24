@@ -208,6 +208,13 @@ async def test_timetable_shows_exam_block_and_semester_meta(client):
         course = db.query(models.Course).first()
         assert student is not None and course is not None
 
+        org_id = student.organization_id
+        if org_id is None:
+            org_id = f"org_{uuid.uuid4().hex[:10]}"
+            db.add(models.Organization(id=org_id, name="Test Org", slug=f"test-org-{org_id[-6:]}"))
+            db.flush()
+            student.organization_id = org_id
+
         db.query(models.SemesterSetup).filter_by(student_id=student.id).update(
             {"is_active": False}
         )
@@ -230,7 +237,7 @@ async def test_timetable_shows_exam_block_and_semester_meta(client):
         )
         term = models.AcademicTerm(
             id=f"term_{uuid.uuid4().hex[:10]}",
-            organization_id=student.organization_id,
+            organization_id=org_id,
             name="Test Academic Term",
             start_date=week_start - timedelta(weeks=1),
             is_active=True,
