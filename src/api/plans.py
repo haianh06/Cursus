@@ -14,6 +14,7 @@ from src.security.authorization import require_roles
 from src.security.ownership import require_study_task_owner, require_weekly_plan_owner
 from src.services.academic.lecture_plan_service import LECTURE_PLAN_SOURCE
 from src.services.academic.timetable_service import TimetableService, monday_of
+from src.services.ai import weekly_plan_engine
 from src.services.ai.plan_builder import PlanBuilder, is_study_plan, serialize_plan
 from src.services.ai.reflection_engine import ReflectionEngine
 from src.services.ai.risk_engine import RiskEngine
@@ -54,7 +55,12 @@ class AvailabilitySlot(BaseModel):
 
 
 class GeneratePlanRequest(BaseModel):
-    assignment_id: str
+    # StudentPlanner (a46db63 contract): goal_text + subject_code, no
+    # assignment. assignment_id stays for any other caller still using the
+    # assignment-driven flow (e.g. LecturePlanPanel's own generate call).
+    goal_text: str | None = Field(default=None, min_length=1, max_length=500)
+    subject_code: str | None = Field(default=None, min_length=2, max_length=32)
+    assignment_id: str | None = None
     available_hours: float
     preferred_sessions: list[str]
     availability: list[AvailabilitySlot] | None = None
