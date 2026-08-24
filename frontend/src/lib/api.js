@@ -416,23 +416,28 @@ export function currentIsoWeekNumber(date = new Date()) {
   return Math.ceil((((utc - yearStart) / 86400000) + 1) / 7);
 }
 
-/** Planner — generate a draft plan for an enrolled assignment.
- * `availability` is optional; when given it defines capacity precisely
- * ([{ date: 'YYYY-MM-DD', availableMinutes: 120 }, ...]). */
+/** Planner — generate a draft weekly plan from a free-text goal + course
+ * (a46db63 contract). `availability` is optional; when given it defines
+ * capacity precisely ([{ date: 'YYYY-MM-DD', availableMinutes: 120 }, ...]). */
 export async function generatePlan({
-  assignmentId,
+  goalText,
+  subjectCode,
   availableHours = 12,
   preferredSessions = ['EVENING'],
   availability = null,
   weekStart = null,
 }) {
-  if (!assignmentId) {
-    throw new ApiError('Chưa chọn assignment để lập kế hoạch.', 'NO_ASSIGNMENT', 400);
+  if (!goalText || !goalText.trim()) {
+    throw new ApiError('Nhập mục tiêu tuần này để lập kế hoạch.', 'NO_GOAL', 400);
+  }
+  if (!subjectCode) {
+    throw new ApiError('Chưa chọn môn học để lập kế hoạch.', 'NO_SUBJECT', 400);
   }
   return request('/plans/generate', {
     method: 'POST',
     body: {
-      assignment_id: assignmentId,
+      goal_text: goalText,
+      subject_code: subjectCode,
       available_hours: availableHours,
       preferred_sessions: preferredSessions.map((item) => String(item).toUpperCase()),
       availability: availability || undefined,
