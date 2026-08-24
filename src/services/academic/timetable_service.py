@@ -308,26 +308,82 @@ class TimetableService:
         title: str,
         start: datetime,
         end: datetime,
+        repeat_weekly_until: date | None = None,
     ) -> dict:
         self._validate_range(start, end)
         next_start = start.replace(tzinfo=None)
         next_end = end.replace(tzinfo=None)
-        self._assert_no_class_overlap(
-            student_id=student_id,
-            start=next_start,
-            end=next_end,
-        )
-        daily_plan = self._ensure_daily_plan(student_id=student_id, day=next_start.date())
+        duration = next_end - next_start
+        clean_title = title.strip() or "Self-study"
+
+        # Non-repeating: a single occurrence, conflict is fatal (existing
+        # behavior, unchanged).
+        if repeat_weekly_until is None:
+            self._assert_no_class_overlap(student_id=student_id, start=next_start, end=next_end)
+            block = self._create_block_row(
+                student_id=student_id, title=clean_title, start=next_start, end=next_end
+            )
+            self._db.commit()
+            self._db.refresh(block)
+            return self._block_to_dict(block)
+
+        # Recurring: each week is its own attempt (a46db63 §6.3.8) — a
+        # conflicting occurrence is skipped, not fatal, unless it's the first
+        # (which the caller is directly waiting on a result for).
+        series_id = f"rseries_{uuid.uuid4().hex[:10]}"
+        occurrence_start = next_start
+        occurrence_end = next_end
+        first_block: models.ScheduleBlock | None = None
+        while occurrence_start.date() <= repeat_weekly_until:
+            try:
+                self._assert_no_class_overlap(
+                    student_id=student_id, start=occurrence_start, end=occurrence_end
+                )
+            except ValueError:
+                if first_block is None:
+                    raise
+                occurrence_start += timedelta(days=7)
+                occurrence_end += timedelta(days=7)
+                continue
+            block = self._create_block_row(
+                student_id=student_id,
+                title=clean_title,
+                start=occurrence_start,
+                end=occurrence_end,
+                recurrence_series_id=series_id,
+            )
+            if first_block is None:
+                first_block = block
+            occurrence_start += timedelta(days=7)
+            occurrence_end += timedelta(days=7)
+        self._db.commit()
+        self._db.refresh(first_block)
+        return self._block_to_dict(first_block)
+
+    def _create_block_row(
+        self,
+        *,
+        student_id: str,
+        title: str,
+        start: datetime,
+        end: datetime,
+        recurrence_series_id: str | None = None,
+    ) -> models.ScheduleBlock:
+        daily_plan = self._ensure_daily_plan(student_id=student_id, day=start.date())
         block = models.ScheduleBlock(
             id=f"sb_{uuid.uuid4().hex[:10]}",
             daily_plan_id=daily_plan.id,
-            start_time=next_start,
-            end_time=next_end,
-            activity_description=title.strip() or "Self-study",
+            start_time=start,
+            end_time=end,
+            activity_description=title,
+            recurrence_series_id=recurrence_series_id,
         )
         self._db.add(block)
-        self._db.commit()
-        self._db.refresh(block)
+        self._db.flush()
+        return block
+
+    @staticmethod
+    def _block_to_dict(block: models.ScheduleBlock) -> dict:
         return TimetableBlock(
             id=block.id,
             title=block.activity_description,
@@ -336,6 +392,7 @@ class TimetableService:
             kind="SELF_STUDY",
             locked=False,
             description=None,
+            recurrence_series_id=block.recurrence_series_id,
         ).to_dict()
 
     def update_self_study_block(
