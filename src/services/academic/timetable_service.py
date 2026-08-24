@@ -63,12 +63,21 @@ class TimetableService:
     def __init__(self, db: Session) -> None:
         self._db = db
 
-    def get_week(self, *, student_id: str, week_start: date) -> dict:
+    def get_week(
+        self,
+        *,
+        student_id: str,
+        week_start: date,
+        preview_plan_id: str | None = None,
+    ) -> dict:
         start, end = week_bounds(week_start)
         monday = start.date()
         blocks = [
             *self._class_blocks(student_id=student_id, start=start, end=end),
-            *self._self_study_blocks(student_id=student_id, start=start, end=end),
+            *self._exam_blocks(student_id=student_id, start=start, end=end),
+            *self._self_study_blocks(
+                student_id=student_id, start=start, end=end, preview_plan_id=preview_plan_id
+            ),
         ]
         blocks.sort(key=lambda item: item.start)
         return {
@@ -76,6 +85,7 @@ class TimetableService:
             "weekEnd": (monday + timedelta(days=6)).isoformat(),
             "blocks": [block.to_dict() for block in blocks],
             "isEmpty": len(blocks) == 0,
+            "semesterMeta": self._semester_meta(student_id=student_id, week_start=monday),
         }
 
     def bootstrap_demo_week(self, *, student_id: str, week_start: date) -> dict:
@@ -452,12 +462,92 @@ class TimetableService:
             for event, course in events
         ]
 
+    def _exam_blocks(
+        self,
+        *,
+        student_id: str,
+        start: datetime,
+        end: datetime,
+    ) -> list[TimetableBlock]:
+        """Exam sessions for the student's currently-linked courses, folded
+        in alongside class blocks — locked, non-interactive (a46db63 parity).
+        Reuses the same admin-managed CourseExam/CourseExamSession schedule
+        `lecture_plan_service.py` already folds into its own task generation."""
+        semester = self._semester_repo().get_active(student_id)
+        if semester is None:
+            return []
+        course_ids = [
+            link.course_id
+            for link in self._semester_repo().list_course_links(semester.id)
+        ]
+        if not course_ids:
+            return []
+        courses = {
+            course.id: course
+            for course in self._db.query(models.Course)
+            .filter(models.Course.id.in_(course_ids))
+            .all()
+        }
+        exam_rows = self._academic_term_repo().sessions_in_range_for_courses(
+            course_ids, start.date(), end.date()
+        )
+        blocks: list[TimetableBlock] = []
+        for exam_session, exam in exam_rows:
+            from src.services.academic.academic_calendar import SLOT_TIMES, slot_datetimes
+
+            if exam_session.slot_id not in SLOT_TIMES:
+                continue
+            slot_start, slot_end = slot_datetimes(exam_session.exam_date, exam_session.slot_id)
+            if not (start <= slot_start < end):
+                continue
+            course = courses.get(exam.course_id)
+            course_code = course.code if course else exam.course_id
+            blocks.append(
+                TimetableBlock(
+                    id=exam_session.id,
+                    title=f"{course_code} · {exam_session.label}",
+                    start=slot_start,
+                    end=slot_end,
+                    kind="EXAM",
+                    locked=True,
+                    course_code=course_code,
+                    course_name=course.name if course else None,
+                )
+            )
+        return blocks
+
+    def _semester_meta(self, *, student_id: str, week_start: date) -> dict | None:
+        semester = self._semester_repo().get_active(student_id)
+        if semester is None:
+            return None
+        semester_monday = _semester_monday_of(semester.start_date)
+        week_number = max(1, ((week_start - semester_monday).days // 7) + 1)
+        exceptions = self._semester_repo().list_exceptions(semester.id)
+        is_exception = any(
+            exc.start_date <= week_start <= exc.end_date
+            or (exc.start_date <= week_start + timedelta(days=6) and exc.end_date >= week_start)
+            for exc in exceptions
+        )
+        return {
+            "semesterId": semester.id,
+            "semesterName": semester.name,
+            "weekNumber": week_number,
+            "isException": is_exception,
+        }
+
+    def _semester_repo(self) -> SemesterRepository:
+        return SemesterRepository(self._db)
+
+    def _academic_term_repo(self) -> AcademicTermRepository:
+        return AcademicTermRepository(self._db)
+
     def _self_study_blocks(
         self,
         *,
         student_id: str,
         start: datetime,
         end: datetime,
+        preview_plan_id: str | None = None,
     ) -> list[TimetableBlock]:
         rows = (
             self._db.query(models.ScheduleBlock, models.StudyTask, models.WeeklyPlan)
