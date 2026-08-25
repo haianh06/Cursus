@@ -14,7 +14,10 @@ class PracticeRequest(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
     courseCode: str = Field(..., min_length=2, max_length=32)
-    weekNumber: int = Field(..., ge=1, le=10)
+    # No upper bound here: callers pass raw calendar/ISO week numbers (see
+    # StudentPractice.jsx), and PracticeSetService.request_for_student()
+    # already clamps into the valid study-week range via clamp_study_week().
+    weekNumber: int = Field(..., ge=1)
     language: str = Field(default="vi", max_length=8)
 
 
