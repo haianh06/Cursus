@@ -115,6 +115,8 @@ class CsrfProtectionMiddleware(BaseHTTPMiddleware):
             return False
         if request.headers.get("authorization", "").startswith("Bearer "):
             return False
+        if request.url.path in CSRF_EXEMPT_PATHS:
+            return False
         return any(
             cookie_name in request.cookies
             for cookie_name in (
