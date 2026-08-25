@@ -636,6 +636,7 @@ export default function StudentReflection() {
                 nextPlan={activeNextPlan}
                 previousPlan={activeNextPlan.previousPlan ?? currentPlan}
                 changes={activeNextPlan.reflectionChanges}
+                insight={activeNextPlan.reflectionInsight}
                 lang={lang}
               />
             )}
