@@ -106,6 +106,12 @@ QUESTION_SCALES: tuple[tuple[str, str, tuple[tuple[str, str], ...]], ...] = (
 )
 
 SELF_NOTES_QUESTION_ID = "self_notes"
+_SCALE_CHOICES_BY_ID: dict[str, dict[str, str]] = {
+    question_id: dict(choices) for question_id, _prompt, choices in QUESTION_SCALES
+}
+_SCALE_PROMPTS_BY_ID: dict[str, str] = {
+    question_id: prompt for question_id, prompt, _choices in QUESTION_SCALES
+}
 
 
 def _question_catalog(facts: dict) -> list[dict]:  # noqa: ARG001 - facts kept for signature stability
@@ -233,13 +239,14 @@ class ReflectionEngine:
                 f"Thời gian thực tế {actual} phút so với ước tính {estimated} phút."
             )
         for answer in answers:
+            question_id = answer.get("questionId")
+            codes = answer.get("selectedCodes") or []
+            if question_id in _SCALE_CHOICES_BY_ID and codes:
+                label = _SCALE_CHOICES_BY_ID[question_id].get(codes[0], codes[0])
+                lines.append(f"{_SCALE_PROMPTS_BY_ID[question_id]} {label}.")
             text = (answer.get("answer") or "").strip()
             if text:
                 lines.append(f"Ghi nhận: {text}")
-            reason = answer.get("reasonCode")
-            if reason:
-                label = dict(REASON_CODES).get(reason, reason)
-                lines.append(f"Nguyên nhân đã chọn: {label}.")
         confirmed = [item for item in adjustments if item in SUPPORTED_ADJUSTMENTS]
         if confirmed:
             lines.append(
