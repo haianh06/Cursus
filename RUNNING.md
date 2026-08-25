@@ -232,20 +232,27 @@ uvicorn app.main:app --reload --port 9000
 
 Phạm vi có chủ đích **chưa làm** (không phải thiếu sót — xem mục 6.6): LTI 1.3 launch đầy đủ (stretch goal), 8 môn tổ hợp/elective, nối source-precedence vào citation phía Plan/StudyTask (Checkpoint 4b), deploy Mock LMS lên production.
 
-## 4. Docker (chỉ backend)
+## 4. Docker (full stack: backend + frontend + Postgres + Redis)
 
-`docker-compose.yml` ở root hiện **chỉ build service `backend`** — không có Postgres,
-Redis hay frontend trong đó. Trước khi chạy, `.env` vẫn phải trỏ `DATABASE_URL` tới một
-Postgres có thể kết nối từ bên ngoài (vd. Supabase) vì compose không tự cấp DB.
+`docker-compose.yml` ở root khởi động đủ 4 service: `backend`, `frontend` (Vite dev
+server, có HMR nhờ bind-mount `./frontend`), `db` (Postgres local) và `redis`. `.env`
+đã mặc định trỏ `DATABASE_URL=postgresql://cursus:cursus@db:5432/cursus` và
+`REDIS_URL=redis://redis:6379/0` — không cần sửa gì thêm để chạy offline.
+
+Production vẫn dùng Supabase-managed Postgres (ADR-001) — muốn trỏ `DATABASE_URL`
+sang Supabase thay vì `db` local thì sửa lại `.env` và bỏ service `db`/`redis` nếu
+không cần.
 
 ```powershell
 docker compose up --build -d
 docker compose ps
-docker compose logs -f backend
+docker compose logs -f backend frontend
 ```
 
-- Backend: http://localhost:8000
-- Health: http://localhost:8000/health
+- Backend: http://localhost:8000 (health: http://localhost:8000/health)
+- Frontend: http://localhost:5173
+- Postgres: localhost:5432 (user/pass/db: `cursus`)
+- Redis: localhost:6379
 
 Dừng:
 
@@ -253,7 +260,10 @@ Dừng:
 docker compose down
 ```
 
-Frontend vẫn chạy riêng bằng `npm run dev` (mục 3) — chưa có Dockerfile cho frontend.
+Sửa code frontend khi container đang chạy sẽ tự reload (bind-mount + Vite HMR), không
+cần rebuild. Backend **không** bind-mount source (chỉ `./data`) và chạy `uvicorn` không
+có `--reload` — sửa code backend cần `docker compose up --build -d backend` lại, hoặc
+chạy backend ngoài Docker theo mục 7 khi đang code nhiều.
 
 ## 5. Test & Lint
 

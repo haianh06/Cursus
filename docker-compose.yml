@@ -1,11 +1,10 @@
-version: "3.8"
-
 # Production DB/Auth is Supabase-managed Postgres (ADR-001 in
 # docs/decisions/ADR.md) — DATABASE_URL in .env points at Supabase's pooler
-# by default. `db`/`redis` below are for contributors who don't have Supabase
-# credentials and want `docker-compose up` to work fully offline: point
-# DATABASE_URL at `postgresql://cursus:cursus@db:5432/cursus` and REDIS_URL
-# at `redis://redis:6379/0` in your local .env to use them instead.
+# by default. `db`/`redis` below run by default so `docker-compose up` works
+# fully offline out of the box: point DATABASE_URL at
+# `postgresql://cursus:cursus@db:5432/cursus` and REDIS_URL at
+# `redis://redis:6379/0` in your local .env to use them (already the default
+# in .env.example).
 services:
   backend:
     build:
@@ -17,6 +16,11 @@ services:
       - .env
     volumes:
       - ./data:/app/data
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
@@ -26,7 +30,6 @@ services:
 
   db:
     image: postgres:16-alpine
-    profiles: ["local-db"]
     environment:
       POSTGRES_USER: cursus
       POSTGRES_PASSWORD: cursus
@@ -43,7 +46,6 @@ services:
 
   redis:
     image: redis:7-alpine
-    profiles: ["local-db"]
     ports:
       - "6379:6379"
     healthcheck:
@@ -51,6 +53,22 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: dev
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:8000/api/v1
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    restart: unless-stopped
 
 volumes:
   cursus_db_data:

@@ -120,6 +120,7 @@ def ensure_extra_users(db) -> bool:
     """Create the 4 accounts + mock dataset. Returns True if it seeded anything."""
     from src.db import models
     from src.security.passwords import hash_password
+    from src.services.mock.real_curriculum_service import _sandbox_organization_id
 
     if db.query(models.User).filter_by(email=ACCOUNTS[0]["email"]).first() is not None:
         logger.info("extra_users_already_seeded")
@@ -127,6 +128,7 @@ def ensure_extra_users(db) -> bool:
 
     now = datetime.now(UTC).replace(tzinfo=None)
     password_hash = hash_password(PASSWORD)
+    organization_id = _sandbox_organization_id(db)
 
     for account in ACCOUNTS:
         db.add(
@@ -139,6 +141,7 @@ def ensure_extra_users(db) -> bool:
                 is_email_verified=True,
                 is_active=True,
                 created_at=now,
+                organization_id=organization_id,
             )
         )
     db.flush()
@@ -261,7 +264,7 @@ def ensure_extra_users(db) -> bool:
             generated_at=now - timedelta(days=2),
             resolved_at=None,
             resolution_type=None,
-            policy_version="v1",
+            policy_version=None,
         )
     )
 
