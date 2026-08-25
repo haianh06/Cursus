@@ -32,6 +32,7 @@ from src.db import models
 from src.repositories.chunk_repository import ChunkRepository
 from src.schemas.plan import LlmPlanPayload
 from src.services.academic.timetable_service import monday_of
+from src.services.ai.reflection_suggestion import build_next_week_suggestion
 from src.services.core import provenance as prov
 from src.services.core.llm import get_llm, has_configured_llm
 from src.services.mock import gate2_demo
@@ -438,6 +439,12 @@ class PlanBuilder:
             }
         tasks, changes = apply_adjustments(tasks, adjustments or [])
 
+        reflection_insight: str | None = None
+        if source_reflection_id:
+            tasks, changes, reflection_insight = self._apply_reflection_insight(
+                tasks, changes, source_reflection_id
+            )
+
         capacity_minutes = self._capacity_minutes(availability, available_hours)
         plan_id = f"plan_{uuid.uuid4().hex[:8]}"
         planned_minutes = sum(task.estimated_minutes for task in tasks)
@@ -463,6 +470,7 @@ class PlanBuilder:
                     item for item in (adjustments or []) if item in SUPPORTED_ADJUSTMENTS
                 ],
                 "reflection_changes": changes,
+                "reflection_insight": reflection_insight,
                 "provenance": prov.ai_suggested(PLANNER_VERSION),
                 "task_meta": {},
                 # P0#8 trace (mục 9 ý8, Option B, PENDING_DECISIONS.md #1) —
