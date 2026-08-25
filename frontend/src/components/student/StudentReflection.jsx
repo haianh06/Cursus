@@ -156,7 +156,7 @@ function StepIndicator({ step, lang }) {
 }
 
 /* ── Step 4: before/after proof that reflection changed the plan ───────── */
-function BeforeAfterPanel({ nextPlan, previousPlan, changes, lang }) {
+function BeforeAfterPanel({ nextPlan, previousPlan, changes, insight, lang }) {
   if (!nextPlan) return null;
   return (
     <section
@@ -172,6 +172,18 @@ function BeforeAfterPanel({ nextPlan, previousPlan, changes, lang }) {
           ? 'Chỉ những điều chỉnh bạn đã xác nhận mới được áp dụng.'
           : 'Only the adjustments you confirmed were applied.'}
       </p>
+
+      {insight && (
+        <div className="flex items-start gap-2 rounded-xl p-3 mb-4 bg-accent-soft border border-line">
+          <Sparkles size={14} className="shrink-0 mt-0.5 text-accent-text-safe" />
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-widest mb-1 text-accent-text-safe">
+              {lang === 'vi' ? 'Gợi ý từ Trợ lý Cursus' : "Curi's suggestion"}
+            </p>
+            <p className="text-[13px] leading-relaxed text-fg">{insight}</p>
+          </div>
+        </div>
+      )}
 
       {changes?.length > 0 && (
         <ul className="space-y-2 mb-4">
@@ -529,24 +541,6 @@ export default function StudentReflection() {
               }}
               aria-label={lang === 'vi' ? 'Nội dung ghi nhớ' : 'Memory content'}
             />
-
-            {stopStartContinueLabels().length > 0 && (
-              <div className="mt-3">
-                <p className="text-[11px] font-bold uppercase tracking-widest mb-1.5 text-fg-muted">
-                  {lang === 'vi' ? 'Điều chỉnh sẽ đi vào kế hoạch sau' : 'Adjustments that will shape next week'}
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {stopStartContinueLabels().map((label) => (
-                    <span
-                      key={label}
-                      className="text-[12px] px-2.5 py-1 rounded-full bg-accent-soft text-accent-text-safe"
-                    >
-                      {label}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
 
             <label className="flex items-start gap-2 mt-4 text-[12px] cursor-pointer text-fg-secondary">
               <input
