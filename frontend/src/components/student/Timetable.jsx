@@ -295,7 +295,7 @@ export default function Timetable({ initialView = 'week', initialAnchor = null, 
     const start = block._start;
     const end = block._end;
     dragRef.current = {
-      mode, block, originY: event.clientY, start, end,
+      mode, block, originY: event.clientY, originX: event.clientX, start, end,
       dayIndex: visibleDays.findIndex((d) => toDateInputValue(d) === toDateInputValue(start)),
       moved: false,
     };
@@ -370,7 +370,7 @@ export default function Timetable({ initialView = 'week', initialAnchor = null, 
       const state = dragRef.current;
       dragRef.current = null;
       if (!state) return;
-      if (!state.moved) { openEdit(block); return; }
+      if (!state.moved) { openEdit(block, { x: state.originX, y: state.originY }); return; }
       const startAt = state.previewStart || state.start;
       const endAt = state.previewEnd || state.end;
       if (state.block.recurrenceSeriesId) {
