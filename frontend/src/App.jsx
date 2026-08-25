@@ -520,7 +520,7 @@ function AppShell({ user, onLogout, onUserUpdate }) {
     const mainEl = mainRef.current;
     if (!mainEl || user.role !== 'student') return;
 
-    const sections = ['top', 'weekly-plan-section', 'qa-section'];
+    const sections = ['top', 'weekly-plan-section'];
     
     const observerOptions = {
       root: mainEl,

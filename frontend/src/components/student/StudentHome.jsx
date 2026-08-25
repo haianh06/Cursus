@@ -20,7 +20,6 @@ import ProvenanceBadge from '../shared/ProvenanceBadge';
 import SourceDrawer, { CitationChip } from '../shared/SourceDrawer';
 import DeferTaskDialog from './DeferTaskDialog';
 import CompleteTaskDialog from './CompleteTaskDialog';
-import CuriContextPanel from './CuriContextPanel';
 import WeeklyStudyHoursChart from './WeeklyStudyHoursChart';
 import { useGate2 } from '../../context/Gate2Context';
 import { useLanguage } from '../../context/LanguageContext';
@@ -319,7 +318,6 @@ export default function StudentHome({ user }) {
   const navigate = useNavigate();
   const {
     assignment,
-    course,
     currentPlan,
     deferReasons,
     tasks,
