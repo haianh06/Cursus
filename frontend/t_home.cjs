@@ -11,7 +11,7 @@ const { chromium } = require('playwright');
   await page.waitForTimeout(1500);
   await page.screenshot({ path: 't_01_select_role.png' });
 
-  await page.getByText('Explore as Student', { exact: false }).first().click();
+  await page.getByText('Khám phá vai trò Sinh viên', { exact: false }).first().click();
   await page.waitForTimeout(2500);
   await page.screenshot({ path: 't_02_overview.png', fullPage: true });
   console.log('URL after entering:', page.url());
