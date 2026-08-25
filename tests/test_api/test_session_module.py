@@ -1,9 +1,10 @@
+import uuid
 from datetime import UTC, datetime, timedelta
 
 import pytest
 
 from src.db.connection import SessionLocal
-from src.db.models import AuthSession
+from src.db.models import AuthSession, UserRole
 
 REFRESH_COOKIE_NAME = "refresh_token"
 
@@ -147,7 +148,7 @@ async def test_refresh_failure_clears_stale_auth_cookies(client):
 
     org_id = ensure_org("refresh-lockout-org", "Refresh Lockout Org")
     email = f"refresh.lockout.{uuid.uuid4().hex}@example.test"
-    user_id = ensure_user(email=email, org_id=org_id, role=UserRoleForTest.STUDENT, password=PASSWORD)
+    user_id = ensure_user(email=email, org_id=org_id, role=UserRole.STUDENT, password=PASSWORD)
 
     login_response = await client.post(
         "/api/v1/auth/login", json={"email": email, "password": PASSWORD}
