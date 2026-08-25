@@ -321,7 +321,7 @@ async def create_demo_session(
         user_agent=request.headers.get("user-agent"),
         metadata={"role": payload.role},
     )
-    _set_auth_cookies(
+    csrf_token = _set_auth_cookies(
         response,
         access_token=access_token,
         refresh_token=session_result.refresh_token,
@@ -332,6 +332,7 @@ async def create_demo_session(
         token=access_token,
         user=_serialize_user(user, db),
         session=_serialize_session(session_result.session),
+        csrf_token=csrf_token,
     )
 
 
@@ -416,7 +417,7 @@ async def login(
         ip_address=_request_ip(request),
         user_agent=request.headers.get("user-agent"),
     )
-    _set_auth_cookies(
+    csrf_token = _set_auth_cookies(
         response,
         access_token=result.access_token,
         refresh_token=result.refresh_token,
@@ -433,6 +434,7 @@ async def login(
         token=result.access_token,
         user=_serialize_user(result.user, db),
         session=_serialize_session(result.session),
+        csrf_token=csrf_token,
     )
 
 
@@ -496,7 +498,7 @@ async def google_login(
         metadata={"method": "google"},
     )
 
-    _set_auth_cookies(
+    csrf_token = _set_auth_cookies(
         response,
         access_token=result.access_token,
         refresh_token=result.refresh_token,
@@ -508,15 +510,24 @@ async def google_login(
         token=result.access_token,
         user=_serialize_user(result.user, db),
         session=_serialize_session(result.session),
+        csrf_token=csrf_token,
     )
 
 
 @router.get("/me", response_model=UserResponse)
 async def get_me(
+    request: Request,
     current_user: User = Depends(get_current_user_from_token),
     db: Session = Depends(get_db),
+    settings: Settings = Depends(get_settings),
 ) -> UserResponse:
-    return _serialize_user(current_user, db)
+    payload = _serialize_user(current_user, db)
+    # The csrf_token cookie already arrived with this request (the browser
+    # attaches it same as any other cookie scoped to this API's domain) —
+    # echoing it back here lets the frontend recover it into memory on page
+    # reload without a fresh login, same reasoning as LoginResponse.csrf_token.
+    payload.csrf_token = request.cookies.get(settings.csrf_cookie_name)
+    return payload
 
 
 @router.patch("/me", response_model=UserResponse)
@@ -940,7 +951,7 @@ async def refresh(
             detail="Invalid refresh session",
         ) from exc
 
-    _set_auth_cookies(
+    csrf_token = _set_auth_cookies(
         response,
         access_token=result.access_token,
         refresh_token=result.refresh_token,
@@ -950,6 +961,7 @@ async def refresh(
     return RefreshResponse(
         token=result.access_token,
         session=_serialize_session(result.session),
+        csrf_token=csrf_token,
     )
 
 
@@ -1091,7 +1103,16 @@ def _set_auth_cookies(
     refresh_token: str,
     settings: Settings,
     remember_me: bool,
-) -> None:
+) -> str:
+    """Sets the three auth cookies and returns the fresh CSRF token value.
+
+    The CSRF cookie is JS-readable (httponly=False) by design, but that only
+    lets the frontend recover it when frontend and backend share a
+    registrable domain — a cross-domain deployment (Vercel + Render, etc.)
+    never sees a cookie scoped to the API's own domain from `document.cookie`.
+    Callers must also put this return value in the JSON response body so the
+    frontend can hold it in memory and attach it as X-CSRF-Token itself.
+    """
     response.set_cookie(
         key=settings.access_token_cookie_name,
         value=access_token,
@@ -1112,9 +1133,10 @@ def _set_auth_cookies(
         path=settings.refresh_token_cookie_path,
         max_age=_refresh_cookie_max_age(settings, remember_me),
     )
+    csrf_token = secrets.token_urlsafe(32)
     response.set_cookie(
         key=settings.csrf_cookie_name,
-        value=secrets.token_urlsafe(32),
+        value=csrf_token,
         httponly=False,
         secure=_access_token_cookie_secure(settings),
         samesite=settings.access_token_cookie_samesite,
@@ -1122,6 +1144,7 @@ def _set_auth_cookies(
         path=settings.access_token_cookie_path,
         max_age=_refresh_cookie_max_age(settings, remember_me),
     )
+    return csrf_token
 
 
 def _clear_auth_cookies(response: Response, settings: Settings) -> None:

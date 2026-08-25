@@ -75,6 +75,10 @@ class UserResponse(BaseModel):
     student_code: str | None = None
     onboarded: bool = True
     preferences: dict = Field(default_factory=dict)
+    # Echoed back so the frontend can hold it in memory and attach it as the
+    # X-CSRF-Token header — see LoginResponse.csrf_token for why this can't
+    # just be read off the cookie client-side.
+    csrf_token: str | None = None
 
 
 class UpdateProfileRequest(BaseModel):
@@ -107,6 +111,13 @@ class LoginResponse(BaseModel):
     user: UserResponse | None = None
     session: SessionResponse | None = None
     mfa_required: bool = False
+    # The CSRF cookie is set httponly=False specifically so JS can read it —
+    # but that only works when frontend and backend share a registrable
+    # domain. Cross-domain deployments (e.g. a Vercel frontend calling a
+    # Render backend) can never see a cookie scoped to the API's own domain,
+    # so the same value is also echoed here for the frontend to hold in
+    # memory and attach as the X-CSRF-Token header instead.
+    csrf_token: str | None = None
 
 
 class MfaTotpSetupResponse(BaseModel):
@@ -145,6 +156,7 @@ class RefreshResponse(BaseModel):
     token: str
     token_type: str = "bearer"
     session: SessionResponse
+    csrf_token: str | None = None
 
 
 class LogoutResponse(BaseModel):
