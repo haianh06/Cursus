@@ -597,7 +597,7 @@ export default function Timetable({ initialView = 'week', initialAnchor = null, 
                     data-day-index={dayIndex}
                     className="relative border-l border-line bg-surface"
                     style={{ height: gridHeight }}
-                    onClick={(e) => { if (e.target === e.currentTarget) openCreateAt(day, e.nativeEvent.offsetY); }}
+                    onClick={(e) => { if (e.target === e.currentTarget) openCreateAt(day, e.nativeEvent.offsetY, { x: e.clientX, y: e.clientY }); }}
                   >
                     {hours.map((hour) => (
                       <button
@@ -606,7 +606,7 @@ export default function Timetable({ initialView = 'week', initialAnchor = null, 
                         className="absolute left-0 right-0 border-t border-dashed border-line hover:bg-accent-soft"
                         style={{ top: (hour - hourStart) * PX_PER_HOUR, height: PX_PER_HOUR }}
                         aria-label={`${dayLabels[(day.getDay() + 6) % 7]} ${hour}:00`}
-                        onClick={(event) => { event.stopPropagation(); openCreateAtHour(day, hour); }}
+                        onClick={(event) => { event.stopPropagation(); openCreateAtHour(day, hour, { x: event.clientX, y: event.clientY }); }}
                       />
                     ))}
                     {blocks.map((block) => {
