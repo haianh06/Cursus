@@ -80,4 +80,4 @@ def register_exception_handlers(app: FastAPI, settings: Settings) -> None:
                 "request_id": getattr(request.state, "request_id", None),
             },
         )
-        return response
+        return _apply_cors(response, request, settings)
