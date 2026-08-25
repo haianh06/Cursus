@@ -1,73 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, BookOpen, GraduationCap, Check, ArrowRight, Shield } from 'lucide-react';
+import { Check } from 'lucide-react';
 import AuthLayout from './AuthLayout';
 import { supabase } from '../../lib/supabaseClient';
-import { googleLogin, getMe, updateProfile } from '../../lib/api';
-import SemesterSetupWizard from '../student/SemesterSetupWizard';
+import { googleLogin } from '../../lib/api';
 import { useLanguage } from '../../context/LanguageContext';
 
-const MAJORS = [
-  { value: 'Software Engineering', label: 'Kỹ thuật Phần mềm (Software Engineering)' },
-  { value: 'Artificial Intelligence', label: 'Trí tuệ Nhân tạo (Artificial Intelligence)' },
-  { value: 'Information Assurance', label: 'An toàn Thông tin (Information Assurance)' },
-  { value: 'Information Systems', label: 'Hệ thống Thông tin (Information Systems)' }
-];
-
+/**
+ * Route: `/onboarding`. Despite the name, this is no longer a student
+ * setup flow (profile completion + class-schedule declaration were both
+ * removed — schedules are now assigned by an admin, not declared by the
+ * student). What's left is purely mechanical: finish exchanging a
+ * just-completed Google OAuth redirect for a real FastAPI session, then
+ * bounce straight to the dashboard. A user with an existing session never
+ * lands here at all (see the `user.onboarded` guard in App.jsx, always true
+ * now) — this only ever renders mid Google-sign-in.
+ */
 export default function OnboardingScreen() {
   const navigate = useNavigate();
-  const { t, lang } = useLanguage();
+  const { lang } = useLanguage();
 
-  const [user, setUser] = useState(null);
-  // Set once we've confirmed a real FastAPI session already exists (password
-  // or invite-based sign-in) — in that case there's no Supabase session to
-  // wait for at all, we go straight to step 1.
-  const [fastApiProfile, setFastApiProfile] = useState(null);
-  const [checkingSession, setCheckingSession] = useState(true);
-  const [step, setStep] = useState('profile'); // 'profile' | 'semester'
-  const [name, setName] = useState('');
-  const [studentId, setStudentId] = useState('');
-  const [major, setMajor] = useState(MAJORS[0].value);
-  // Role is never client-settable here; Teacher/Admin access is granted by
-  // an administrator out of band, never through this form. Note: Google
-  // sign-in now only authenticates an already-invited account (backend
-  // rejects unknown emails, see src/api/auth.py google_login) — this
-  // profile-completion step only ever runs for a user who was invited and
-  // already has a role assigned server-side.
-  const role = 'student';
-
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  const [mascotState, setMascotState] = useState('idle');
-
-  // A password/invite-based sign-in already has a FastAPI cookie session by
-  // the time this screen mounts — no Supabase involved at all. Only fall
-  // back to listening for a Supabase session (the Google-OAuth-in-progress
-  // case) when there is no FastAPI session yet.
-  useEffect(() => {
-    let cancelled = false;
-    getMe()
-      .then((profile) => {
-        if (cancelled) return;
-        setFastApiProfile(profile);
-        setName(profile.full_name || '');
-        setStudentId(profile.student_code || '');
-        if (profile.major) setMajor(profile.major);
-      })
-      .catch(() => {
-        /* no FastAPI session yet — fall through to the Supabase listener below */
-      })
-      .finally(() => {
-        if (!cancelled) setCheckingSession(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const [mascotState, setMascotState] = useState('loading');
 
   useEffect(() => {
-    if (checkingSession || fastApiProfile) return;
     let cancelled = false;
     let syncStarted = false;
 
@@ -75,17 +31,13 @@ export default function OnboardingScreen() {
       if (syncStarted) return;
       syncStarted = true;
       try {
-        setLoading(true);
-        setMascotState('loading');
-
         const fullName = authUser.user_metadata?.name || authUser.user_metadata?.full_name || authUser.email.split('@')[0];
         const data = await googleLogin({
           email: authUser.email,
           fullName,
-          googleId: authUser.id
+          googleId: authUser.id,
         });
 
-        setSuccess(true);
         setMascotState('success');
 
         // Clear Supabase session so we only rely on FastAPI httpOnly cookie session
@@ -95,13 +47,11 @@ export default function OnboardingScreen() {
           const role = (data.user?.role || 'student').toLowerCase();
           navigate(`/${role}`, { replace: true });
           window.location.reload();
-        }, 1000);
-
+        }, 800);
       } catch (err) {
         console.error(err);
         setErrorMsg(err.message || 'Google synchronization failed.');
         setMascotState('error');
-        setLoading(false);
       }
     };
 
@@ -140,198 +90,35 @@ export default function OnboardingScreen() {
       cancelled = true;
       authListener?.subscription?.unsubscribe();
     };
-  }, [navigate, checkingSession, fastApiProfile]);
-
-  const handleOnboarding = async (e) => {
-    e.preventDefault();
-    if (!name.trim() || loading) return;
-
-    setLoading(true);
-    setMascotState('loading');
-    setErrorMsg('');
-
-    try {
-      await updateProfile({
-        fullName: name,
-        major: role === 'student' ? major : undefined,
-        studentCode: role === 'student' ? studentId : undefined,
-      });
-
-      setMascotState('success');
-      // Completing the profile isn't the same as being onboarded — that only
-      // flips once an active SemesterSetup exists (see
-      // src/services/onboarding_status.py). Move to step 2 instead of
-      // navigating away.
-      setStep('semester');
-      setLoading(false);
-    } catch (err) {
-      console.error(err);
-      setMascotState('error');
-      setErrorMsg(err.message || (lang === 'vi' ? 'Thiết lập thất bại. Vui lòng thử lại.' : 'Setup failed. Please try again.'));
-      setLoading(false);
-    }
-  };
-
-  const handleSemesterContinue = () => {
-    setSuccess(true);
-    setTimeout(() => {
-      navigate(`/${role}`, { replace: true });
-      window.location.reload();
-    }, 600);
-  };
-
-  if (checkingSession || (!fastApiProfile && !user)) {
-    return (
-      <div className="min-h-screen bg-surface flex flex-col items-center justify-center gap-3">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="spin text-brand-blue"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>
-        <span className="text-xs text-fg-muted font-semibold font-mono">LOADING ONBOARDING...</span>
-      </div>
-    );
-  }
-
-  if (step === 'semester') {
-    return (
-      <div className="min-h-screen bg-surface">
-        <SemesterSetupWizard />
-        <div className="max-w-3xl mx-auto px-6 pb-10 flex justify-end">
-          <button
-            type="button"
-            className="btn-auth-primary text-sm"
-            onClick={handleSemesterContinue}
-          >
-            <span className="flex items-center gap-2">
-              {lang === 'vi' ? 'Vào Bảng điều khiển' : 'Go to Dashboard'}
-              <ArrowRight size={16} />
-            </span>
-          </button>
-        </div>
-      </div>
-    );
-  }
+  }, [navigate]);
 
   return (
     <AuthLayout
-      title={t('auth.onboardingTitle')}
-      subtitle={t('auth.onboardingDesc')}
+      title={lang === 'vi' ? 'Đang đăng nhập…' : 'Signing you in…'}
+      subtitle={lang === 'vi' ? 'Đang hoàn tất đăng nhập bằng Google.' : 'Finishing your Google sign-in.'}
       mascotState={mascotState}
-      cardWidth={480}
+      cardWidth={420}
     >
-      <div className="p-8 rounded-[var(--radius-lg)] border border-line bg-surface-card shadow-elevation-3 relative">
-        <form onSubmit={handleOnboarding} className="space-y-5" noValidate>
-          
-          <h2 className="font-display text-xl font-bold text-fg mb-2">
-            {lang === 'vi' ? 'Thiết lập hồ sơ' : 'Complete Profile'}
-          </h2>
-
-          {errorMsg && (
-            <div role="alert" className="p-3 bg-danger/10 border border-danger/20 text-xs font-semibold text-danger rounded-xl mb-4">
-              {errorMsg}
-            </div>
-          )}
-
-          {/* Full name input */}
-          <div>
-            <label htmlFor="onboard-name" className="block text-sm font-semibold mb-2 text-fg-secondary">
-              {t('auth.regNameLabel')}
-            </label>
-            <div className="relative">
-              <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-fg-muted" />
-              <input
-                id="onboard-name"
-                type="text"
-                required
-                className="w-full h-[52px] bg-surface border border-line rounded-xl pl-11 pr-4 text-sm text-fg placeholder-fg-muted outline-none input-auth-field"
-                placeholder={t('auth.regNamePlaceholder')}
-                value={name}
-                disabled={loading}
-                onFocus={() => setMascotState('typing-email')}
-                onBlur={() => setMascotState('idle')}
-                onChange={e => setName(e.target.value)}
-              />
-            </div>
+      <div className="p-8 rounded-[var(--radius-lg)] border border-line bg-surface-card shadow-elevation-3 flex flex-col items-center gap-3 text-center">
+        {errorMsg ? (
+          <div role="alert" className="p-3 bg-danger/10 border border-danger/20 text-xs font-semibold text-danger rounded-xl">
+            {errorMsg}
           </div>
-
-          {/* Major Selection */}
-          <div>
-            <label htmlFor="onboard-major" className="block text-sm font-semibold mb-2 text-fg-secondary">
-              {t('auth.onboardingMajor')}
-            </label>
-            <div className="relative">
-              <GraduationCap size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-fg-muted" />
-              <select
-                id="onboard-major"
-                className="w-full h-[52px] bg-surface border border-line rounded-xl pl-11 pr-4 text-sm text-fg outline-none cursor-pointer appearance-none"
-                style={{ colorScheme: 'dark' }}
-                value={major}
-                disabled={loading}
-                onChange={e => setMajor(e.target.value)}
-              >
-                {MAJORS.map(m => (
-                  <option key={m.value} value={m.value} className="bg-surface-card text-fg">
-                    {m.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Student ID input */}
-          <div>
-            <label htmlFor="onboard-id" className="block text-sm font-semibold mb-2 text-fg-secondary">
-              {t('auth.onboardingStudentId')}
-            </label>
-            <div className="relative">
-              <BookOpen size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-fg-muted" />
-              <input
-                id="onboard-id"
-                type="text"
-                className="w-full h-[52px] bg-surface border border-line rounded-xl pl-11 pr-4 text-sm text-fg placeholder-fg-muted outline-none input-auth-field"
-                placeholder="e.g. SE180123"
-                value={studentId}
-                disabled={loading}
-                onFocus={() => setMascotState('typing-email')}
-                onBlur={() => setMascotState('idle')}
-                onChange={e => setStudentId(e.target.value.toUpperCase())}
-              />
-            </div>
-          </div>
-
-          {/* Teacher/Admin access is never self-serve — informational only, no
-              form field, no client-settable role. Matches AcceptInviteScreen. */}
-          <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-surface border border-line">
-            <Shield size={14} className="text-fg-muted shrink-0 mt-0.5" />
-            <p className="text-[11px] text-fg-muted leading-relaxed">
-              {lang === 'vi'
-                ? 'Là Giảng viên hoặc Quản trị viên? Quyền truy cập được quản trị viên hệ thống cấp riêng, không qua form này.'
-                : 'Are you a Teacher or Admin? That access is granted separately by a system administrator, not through this form.'}
-            </p>
-          </div>
-
-          <button
-            type="submit"
-            className="btn-auth-primary text-sm mt-4"
-            disabled={loading}
-          >
-            {success ? (
-              <span className="flex items-center gap-2">
-                <Check size={18} className="text-white" />
-                {lang === 'vi' ? 'Thiết lập thành công!' : 'Profile Setup Complete!'}
-              </span>
-            ) : loading ? (
-              <span className="flex items-center gap-2">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="spin">
-                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4" />
-                </svg>
-                {t('auth.loadingText')}
-              </span>
-            ) : (
-              <span className="flex items-center gap-2">
-                {lang === 'vi' ? 'Bắt đầu học tập' : 'Get Started'}
-                <ArrowRight size={16} />
-              </span>
-            )}
-          </button>
-        </form>
+        ) : mascotState === 'success' ? (
+          <span className="flex items-center gap-2 text-sm font-semibold text-fg">
+            <Check size={18} className="text-success" />
+            {lang === 'vi' ? 'Đăng nhập thành công!' : 'Signed in!'}
+          </span>
+        ) : (
+          <>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="spin text-brand-blue">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4" />
+            </svg>
+            <span className="text-xs text-fg-muted font-semibold font-mono">
+              {lang === 'vi' ? 'ĐANG ĐỒNG BỘ...' : 'SYNCING...'}
+            </span>
+          </>
+        )}
       </div>
     </AuthLayout>
   );
