@@ -1,10 +1,14 @@
 from __future__ import annotations
 
+import logging
+
 from src.db.connection import SessionLocal
 from src.repositories.admin_course_repository import AdminCourseRepository
 from src.repositories.audit_repository import AuditRepository
 from src.services.core.audit_service import AuditService
 from src.services.rag.admin_document_ingest_service import AdminDocumentIngestService, _unlink_file
+
+logger = logging.getLogger(__name__)
 
 
 def run_admin_ingest_job(*, job_id: str, operation: str, payload: dict) -> None:
@@ -68,6 +72,11 @@ def run_admin_ingest_job(*, job_id: str, operation: str, payload: dict) -> None:
             db.commit()
         except Exception:
             db.rollback()
+            logger.exception(
+                "admin_ingest_failure_recording_failed job_id=%s operation=%s",
+                job_id,
+                operation,
+            )
     finally:
         db.close()
 
