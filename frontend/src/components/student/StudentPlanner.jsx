@@ -414,134 +414,140 @@ export default function StudentPlanner() {
         </div>
       </section>
 
-      {/* Real class schedule + self-study blocks, side by side with the
-          availability declaration above so the student can see what's
-          already locked in before typing free-time minutes. */}
-      <section aria-label={lang === 'vi' ? 'Thời khoá biểu' : 'Timetable'}>
-        <Timetable initialView="week" />
-      </section>
-
-      {actionError && (
-        <div
-          className="rounded-xl p-3.5 text-[13px] flex items-start gap-2 bg-danger-soft text-danger"
-          role="alert"
-        >
-          <AlertTriangle size={14} className="shrink-0 mt-0.5" />
-          <span>{actionError.message}</span>
+      {/* Timetable (real class schedule + self-study blocks) on the left,
+          the AI draft plan / task list on the right — same 3:2 split as the
+          Overview dashboard, so the calendar and the day-by-day plan it
+          drives read as one screen instead of stacked, disconnected cards. */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
+        <div className="lg:col-span-3">
+          <section aria-label={lang === 'vi' ? 'Thời khoá biểu' : 'Timetable'}>
+            <Timetable initialView="week" />
+          </section>
         </div>
-      )}
 
-      {/* Draft plan */}
-      {generating ? (
-        <section className="card p-5">
-          <Skeleton className="h-5 w-40 rounded mb-4" />
-          <SkeletonRows count={5} rowClassName="h-20 rounded-xl" />
-        </section>
-      ) : !plan ? (
-        <section className="card" aria-label={lang === 'vi' ? 'Chưa có kế hoạch' : 'No plan yet'}>
-          <EmptyState
-            icon={<Sparkles size={28} className="text-fg-muted" />}
-            title={lang === 'vi' ? 'Chưa có kế hoạch cho tuần này' : 'No plan for this week yet'}
-            description={
-              lang === 'vi'
-                ? 'Khai báo lịch rảnh ở trên rồi bấm “Tạo kế hoạch nháp”.'
-                : 'Declare your availability above, then generate a draft.'
-            }
-          />
-        </section>
-      ) : (
-        <section aria-label={lang === 'vi' ? 'Kế hoạch nháp' : 'Draft plan'} className="card p-5">
-          <div className="flex items-center justify-between gap-3 flex-wrap mb-4">
-            <h2 className="text-[15px] font-bold font-display text-fg">
-              {lang === 'vi' ? 'Kế hoạch đề xuất' : 'Proposed plan'}{' '}
-              <span className="font-normal text-[12px] text-fg-muted">
-                · {plan.tasks.length} {lang === 'vi' ? 'việc' : 'tasks'}
-              </span>
-            </h2>
-            <span
-              className="badge text-[10px]"
-              style={{
-                background: isDraft ? 'var(--gold-soft)' : 'var(--success-soft)',
-                color: isDraft ? 'var(--gold)' : 'var(--success)',
-              }}
+        <div className="lg:col-span-2 flex flex-col gap-4 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] overflow-y-auto pr-0.5">
+          {actionError && (
+            <div
+              className="rounded-xl p-3.5 text-[13px] flex items-start gap-2 bg-danger-soft text-danger"
+              role="alert"
             >
-              {isDraft
-                ? lang === 'vi'
-                  ? 'Nháp — chưa xác nhận'
-                  : 'Draft — not confirmed'
-                : lang === 'vi'
-                  ? 'Đã xác nhận'
-                  : 'Confirmed'}
-            </span>
-          </div>
-
-          <div className="mb-4">
-            <CapacityMeter planned={plan.plannedMinutes} capacity={plan.capacityMinutes} lang={lang} />
-          </div>
-
-          <ul className="space-y-2">
-            {plan.tasks.map((task) => (
-              <TaskDraftRow key={task.id} task={task} onOpenCitation={setOpenCitation} lang={lang} />
-            ))}
-          </ul>
-
-          {plan.assumptions?.length > 0 && (
-            <ul className="mt-4 space-y-1">
-              {plan.assumptions.map((item) => (
-                <li key={item} className="text-[11px] flex gap-1.5 text-fg-muted">
-                  <Info size={11} className="shrink-0 mt-0.5" />
-                  {item}
-                </li>
-              ))}
-            </ul>
+              <AlertTriangle size={14} className="shrink-0 mt-0.5" />
+              <span>{actionError.message}</span>
+            </div>
           )}
 
-          <div className="flex flex-wrap items-center justify-between gap-3 mt-5">
-            <p className="text-[12px] text-fg-muted">
-              {lang === 'vi'
-                ? 'Chưa vừa ý? Sửa lịch rảnh phía trên rồi tạo lại.'
-                : 'Not right? Adjust availability above and regenerate.'}
-            </p>
-            {isDraft ? (
-              <button
-                type="button"
-                className="btn btn-accent text-[14px] px-5 min-h-11 flex items-center gap-2 cursor-pointer disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                onClick={handleConfirm}
-                disabled={mutating}
-              >
-                <CheckCircle2 size={15} />
-                {mutating
-                  ? lang === 'vi'
-                    ? 'Đang lưu…'
-                    : 'Saving…'
-                  : lang === 'vi'
-                    ? 'Xác nhận kế hoạch'
-                    : 'Confirm plan'}
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="btn btn-outline text-[14px] px-5 min-h-11 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                onClick={() => navigate('/student')}
-              >
-                {lang === 'vi' ? 'Tới Bảng điều khiển' : 'Go to dashboard'}
-              </button>
-            )}
-          </div>
+          {generating ? (
+            <section className="card p-5">
+              <Skeleton className="h-5 w-40 rounded mb-4" />
+              <SkeletonRows count={5} rowClassName="h-20 rounded-xl" />
+            </section>
+          ) : !plan ? (
+            <section className="card" aria-label={lang === 'vi' ? 'Chưa có kế hoạch' : 'No plan yet'}>
+              <EmptyState
+                icon={<Sparkles size={28} className="text-fg-muted" />}
+                title={lang === 'vi' ? 'Chưa có kế hoạch cho tuần này' : 'No plan for this week yet'}
+                description={
+                  lang === 'vi'
+                    ? 'Khai báo lịch rảnh ở trên rồi bấm “Tạo kế hoạch nháp”.'
+                    : 'Declare your availability above, then generate a draft.'
+                }
+              />
+            </section>
+          ) : (
+            <section aria-label={lang === 'vi' ? 'Kế hoạch nháp' : 'Draft plan'} className="card p-5">
+              <div className="flex items-center justify-between gap-3 flex-wrap mb-4">
+                <h2 className="text-[15px] font-bold font-display text-fg">
+                  {lang === 'vi' ? 'Kế hoạch đề xuất' : 'Proposed plan'}{' '}
+                  <span className="font-normal text-[12px] text-fg-muted">
+                    · {plan.tasks.length} {lang === 'vi' ? 'việc' : 'tasks'}
+                  </span>
+                </h2>
+                <span
+                  className="badge text-[10px]"
+                  style={{
+                    background: isDraft ? 'var(--gold-soft)' : 'var(--success-soft)',
+                    color: isDraft ? 'var(--gold)' : 'var(--success)',
+                  }}
+                >
+                  {isDraft
+                    ? lang === 'vi'
+                      ? 'Nháp — chưa xác nhận'
+                      : 'Draft — not confirmed'
+                    : lang === 'vi'
+                      ? 'Đã xác nhận'
+                      : 'Confirmed'}
+                </span>
+              </div>
 
-          {confirmed && !isDraft && (
-            <p
-              className="mt-3 text-[12px] rounded-lg p-2.5 flex items-center gap-1.5 bg-success-soft text-success"
-              role="status"
-            >
-              <CheckCircle2 size={13} />
-              {lang === 'vi'
-                ? 'Đã xác nhận. Bảng điều khiển đã chuyển sang bước Thực hiện.'
-                : 'Confirmed. Your dashboard has moved to the Do step.'}
-            </p>
+              <div className="mb-4">
+                <CapacityMeter planned={plan.plannedMinutes} capacity={plan.capacityMinutes} lang={lang} />
+              </div>
+
+              <ul className="space-y-2">
+                {plan.tasks.map((task) => (
+                  <TaskDraftRow key={task.id} task={task} onOpenCitation={setOpenCitation} lang={lang} />
+                ))}
+              </ul>
+
+              {plan.assumptions?.length > 0 && (
+                <ul className="mt-4 space-y-1">
+                  {plan.assumptions.map((item) => (
+                    <li key={item} className="text-[11px] flex gap-1.5 text-fg-muted">
+                      <Info size={11} className="shrink-0 mt-0.5" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <div className="flex flex-wrap items-center justify-between gap-3 mt-5">
+                <p className="text-[12px] text-fg-muted">
+                  {lang === 'vi'
+                    ? 'Chưa vừa ý? Sửa lịch rảnh phía trên rồi tạo lại.'
+                    : 'Not right? Adjust availability above and regenerate.'}
+                </p>
+                {isDraft ? (
+                  <button
+                    type="button"
+                    className="btn btn-accent text-[14px] px-5 min-h-11 flex items-center gap-2 cursor-pointer disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                    onClick={handleConfirm}
+                    disabled={mutating}
+                  >
+                    <CheckCircle2 size={15} />
+                    {mutating
+                      ? lang === 'vi'
+                        ? 'Đang lưu…'
+                        : 'Saving…'
+                      : lang === 'vi'
+                        ? 'Xác nhận kế hoạch'
+                        : 'Confirm plan'}
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="btn btn-outline text-[14px] px-5 min-h-11 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                    onClick={() => navigate('/student')}
+                  >
+                    {lang === 'vi' ? 'Tới Bảng điều khiển' : 'Go to dashboard'}
+                  </button>
+                )}
+              </div>
+
+              {confirmed && !isDraft && (
+                <p
+                  className="mt-3 text-[12px] rounded-lg p-2.5 flex items-center gap-1.5 bg-success-soft text-success"
+                  role="status"
+                >
+                  <CheckCircle2 size={13} />
+                  {lang === 'vi'
+                    ? 'Đã xác nhận. Bảng điều khiển đã chuyển sang bước Thực hiện.'
+                    : 'Confirmed. Your dashboard has moved to the Do step.'}
+                </p>
+              )}
+            </section>
           )}
-        </section>
-      )}
+        </div>
+      </div>
 
       <SourceDrawer citation={openCitation} onClose={() => setOpenCitation(null)} lang={lang} />
     </div>
