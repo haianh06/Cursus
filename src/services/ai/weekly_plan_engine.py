@@ -401,11 +401,14 @@ def regenerate_from_reflection(
 ) -> models.WeeklyPlan:
     """Next week's draft from a confirmed reflection — a46db63 §6.3.6.
 
-    If the reflection's `next_week_outcomes` answer has non-empty items, each
-    outcome is planned fresh (RAG-grounded, same as `generate`). Otherwise
-    every task from the previous plan carries forward unchanged. Then
-    `reduce_hours`/`split_longest_task` are applied if present in the
-    `stop_start_continue` answer.
+    If the reflection's `next_week_outcomes` answer has non-empty items
+    (legacy reflections only — that question was retired, see
+    `reflection_engine.py`), each outcome is planned fresh (RAG-grounded,
+    same as `generate`). Otherwise every task from the previous plan carries
+    forward unchanged. An LLM then reads the reflection's stats + 5
+    self-feedback answers (`reflection_suggestion.build_next_week_suggestion`)
+    and may nudge every task's estimate by a bounded +/-30% multiplier —
+    best-effort, a no-op when no LLM is configured or the call fails.
     """
     metrics = reflection.metrics if isinstance(reflection.metrics, dict) else {}
     source_plan = (
