@@ -399,11 +399,14 @@ def get_student_reflections(
 
 class ReflectionAnswer(BaseModel):
     questionId: str  # noqa: N815
+    # `text` questions (self_notes, and the legacy free-text catalog).
     answer: str | None = Field(default=None, max_length=2000)
-    reasonCode: str | None = None  # noqa: N815
-    # single_choice / grouped_multi_choice questions (e.g. stop_start_continue).
+    # `single_choice` questions (the 5 fixed scales) — always a single code.
     selectedCodes: list[str] = Field(default_factory=list)  # noqa: N815
-    # outcome_list questions (e.g. next_week_outcomes) — up to `maxItems` lines.
+    # Unused by the current catalog — kept so a legacy client / stored
+    # reflection row from before the fixed 6-question catalog never breaks
+    # this schema.
+    reasonCode: str | None = None  # noqa: N815
     items: list[str] = Field(default_factory=list)
 
 
