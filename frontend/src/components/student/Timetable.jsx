@@ -75,6 +75,42 @@ function toLocalInputValue(date) {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
+const MODAL_PANEL_WIDTH = 320;
+const MODAL_PANEL_EST_HEIGHT = 420;
+const MODAL_PANEL_MARGIN = 12;
+
+/**
+ * Anchors the create/edit popup next to the calendar cell/block the student
+ * just clicked instead of dead-centering it on the whole page — a modal
+ * taller than the viewport used to center-overflow both above and below
+ * the fold with no way to see or scroll to the clipped part (found via a
+ * live user report). `estimatedHeight` is a best-effort guess (no
+ * measured-DOM pass), so the panel also caps its own max-height + scrolls
+ * internally as a safety net regardless of anchoring.
+ */
+function modalPanelStyle(anchorPos) {
+  const base = {
+    width: MODAL_PANEL_WIDTH,
+    maxHeight: `calc(100vh - ${MODAL_PANEL_MARGIN * 2}px)`,
+  };
+  if (typeof window === 'undefined' || !anchorPos) {
+    return { ...base, left: '50%', top: '50%', transform: 'translate(-50%, -50%)' };
+  }
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const left = Math.min(
+    Math.max(anchorPos.x - MODAL_PANEL_WIDTH / 2, MODAL_PANEL_MARGIN),
+    Math.max(vw - MODAL_PANEL_WIDTH - MODAL_PANEL_MARGIN, MODAL_PANEL_MARGIN),
+  );
+  const spaceBelow = vh - anchorPos.y;
+  const spaceAbove = anchorPos.y;
+  const opensBelow = spaceBelow >= MODAL_PANEL_EST_HEIGHT + MODAL_PANEL_MARGIN || spaceBelow >= spaceAbove;
+  const top = opensBelow
+    ? Math.min(anchorPos.y + MODAL_PANEL_MARGIN, Math.max(vh - MODAL_PANEL_MARGIN, MODAL_PANEL_MARGIN))
+    : Math.max(anchorPos.y - MODAL_PANEL_EST_HEIGHT - MODAL_PANEL_MARGIN, MODAL_PANEL_MARGIN);
+  return { ...base, left, top };
+}
+
 function snapDate(date) {
   const next = new Date(date);
   const snapped = Math.round(next.getMinutes() / SNAP_MINUTES) * SNAP_MINUTES;
@@ -659,8 +695,12 @@ export default function Timetable({ initialView = 'week', initialAnchor = null, 
       )}
 
       {modal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={() => !saving && setModal(null)}>
-          <div className="card w-full max-w-sm p-5 space-y-3" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 bg-black/40" onClick={() => !saving && setModal(null)}>
+          <div
+            className="card p-5 space-y-3 absolute overflow-y-auto"
+            style={modalPanelStyle(modal.anchorPos)}
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between">
               <h4 className="text-[13px] font-bold text-fg">
                 {modal.mode === 'create' ? (lang === 'vi' ? 'Thêm buổi tự học' : 'Add self-study') : (lang === 'vi' ? 'Sửa buổi tự học' : 'Edit self-study')}
