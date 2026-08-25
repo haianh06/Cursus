@@ -448,7 +448,7 @@ def regenerate_from_reflection(
     else:
         task_meta = source_goals.get("task_meta") or {}
         prior_rows = (
-            db.query(models.StudyTask)
+            db.query(models.StudyTask, models.ScheduleBlock, models.DailyPlan)
             .join(models.ScheduleBlock, models.ScheduleBlock.id == models.StudyTask.schedule_block_id)
             .join(models.DailyPlan, models.DailyPlan.id == models.ScheduleBlock.daily_plan_id)
             .filter(models.DailyPlan.weekly_plan_id == source_plan.id)
