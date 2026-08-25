@@ -465,15 +465,6 @@ export default function StudentHome({ user }) {
 
             <WeeklyStudyHoursChart tasks={tasks} lang={lang} />
           </section>
-
-          <div id="qa-section">
-            <CuriContextPanel
-              subjectCode={course?.code ?? 'SSA101'}
-              contextTask={nextBestAction}
-              onOpenCitation={setOpenCitation}
-              lang={lang}
-            />
-          </div>
         </div>
 
         <div className="lg:col-span-2 flex flex-col gap-6">
