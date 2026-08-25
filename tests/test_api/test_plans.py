@@ -133,13 +133,12 @@ async def test_goal_text_planner_lifecycle(client, monkeypatch):
     preview = resp.json()
     question_ids = [q["id"] for q in preview["questions"]]
     assert question_ids == [
-        "accomplishment",
-        "time_spent",
-        "went_well",
-        "went_poorly",
-        "biggest_lesson",
-        "stop_start_continue",
-        "next_week_outcomes",
+        "accomplishment_level",
+        "focus_level",
+        "stress_level",
+        "time_management_level",
+        "motivation_level",
+        "self_notes",
     ]
 
     resp = await client.post(
@@ -148,15 +147,12 @@ async def test_goal_text_planner_lifecycle(client, monkeypatch):
         json={
             "plan_id": plan_id,
             "answers": [
-                {"questionId": "went_well", "answer": "Bắt đầu sớm."},
-                {
-                    "questionId": "stop_start_continue",
-                    "selectedCodes": ["reduce_hours"],
-                },
-                {
-                    "questionId": "next_week_outcomes",
-                    "items": ["Nộp lab đúng hạn"],
-                },
+                {"questionId": "accomplishment_level", "selectedCodes": ["mostly"]},
+                {"questionId": "focus_level", "selectedCodes": ["high"]},
+                {"questionId": "stress_level", "selectedCodes": ["low"]},
+                {"questionId": "time_management_level", "selectedCodes": ["good"]},
+                {"questionId": "motivation_level", "selectedCodes": ["high"]},
+                {"questionId": "self_notes", "answer": "Bắt đầu sớm nên đỡ dồn việc."},
             ],
             "summary": "Tuần này ổn.",
             "student_confirmed": True,
@@ -175,7 +171,9 @@ async def test_goal_text_planner_lifecycle(client, monkeypatch):
     assert next_plan["weekStart"] != plan["weekStart"]
     assert len(next_plan["tasks"]) > 0
     assert any(t["estimatedMinutes"] > 0 for t in next_plan["tasks"])
-    assert any(
-        change.get("adjustment") == "reduce_hours"
-        for change in next_plan.get("reflectionChanges", [])
-    )
+    # The next-week nudge is now a best-effort LLM suggestion (see
+    # reflection_suggestion.py) rather than a rule picked from a fixed
+    # adjustment-code question — whether it fires depends on LLM
+    # availability, so just confirm the field exists and the plan generates
+    # successfully either way.
+    assert "reflectionInsight" in next_plan
