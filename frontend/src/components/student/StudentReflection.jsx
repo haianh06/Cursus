@@ -456,7 +456,7 @@ export default function StudentReflection() {
         {step === 'questions' && (
           <section className="card p-5" aria-label={lang === 'vi' ? 'Câu hỏi phản tư' : 'Reflection questions'}>
             <p className="text-[11px] font-bold uppercase tracking-widest mb-3 text-fg-muted">
-              {lang === 'vi' ? '7 câu hỏi cố định mỗi tuần' : 'The same 7 questions every week'}
+              {lang === 'vi' ? '6 câu hỏi cố định mỗi tuần' : 'The same 6 questions every week'}
             </p>
 
             <div className="space-y-6">
