@@ -15,13 +15,13 @@ import {
   Zap,
 } from 'lucide-react';
 import Skeleton, { SkeletonRows } from '../shared/Skeleton';
-import EmptyState from '../shared/EmptyState';
 import ErrorState from '../shared/ErrorState';
 import ProvenanceBadge from '../shared/ProvenanceBadge';
 import SourceDrawer, { CitationChip } from '../shared/SourceDrawer';
 import DeferTaskDialog from './DeferTaskDialog';
 import CompleteTaskDialog from './CompleteTaskDialog';
 import CuriContextPanel from './CuriContextPanel';
+import WeeklyStudyHoursChart from './WeeklyStudyHoursChart';
 import { useGate2 } from '../../context/Gate2Context';
 import { useLanguage } from '../../context/LanguageContext';
 import { getTimeOfDay } from '../../lib/dates.js';
@@ -34,19 +34,6 @@ function formatMinutes(minutes, lang) {
   if (rest === 0) return `${hours}${lang === 'vi' ? ' giờ' : 'h'}`;
   return `${hours}h${String(rest).padStart(2, '0')}`;
 }
-
-const STATUS_STYLE = {
-  COMPLETED: { key: 'done', bg: 'var(--success-soft)', color: 'var(--success)' },
-  IN_PROGRESS: { key: 'doing', bg: 'var(--accent-soft)', color: 'var(--accent)' },
-  DEFERRED: { key: 'deferred', bg: 'var(--warning-soft)', color: 'var(--warning)' },
-  SKIPPED: { key: 'skipped', bg: 'var(--bg-elevated)', color: 'var(--text-muted)' },
-  TODO: null,
-};
-
-const STATUS_LABEL = {
-  vi: { done: 'Hoàn thành', doing: 'Đang làm', deferred: 'Đã dời', skipped: 'Bỏ qua' },
-  en: { done: 'Completed', doing: 'In progress', deferred: 'Deferred', skipped: 'Skipped' },
-};
 
 /* ── Hero: one next action, not four equal KPIs ───────────────────────── */
 function NextBestAction({ user, task, onStart, onComplete, onDefer, onOpenCitation, busy, lang }) {
@@ -204,107 +191,6 @@ function WeekProgress({ plan, completedCount, totalCount, progressPct, lang }) {
 }
 
 /* ── Task list (the Do surface) ───────────────────────────────────────── */
-function TaskRow({ task, onStart, onComplete, onDefer, onOpenCitation, busy, lang }) {
-  const style = STATUS_STYLE[task.status];
-  const done = task.status === 'COMPLETED';
-
-  return (
-    <li
-      className={`p-3.5 rounded-xl border border-line transition-colors duration-200 hover:border-line-strong ${
-        done ? 'bg-transparent opacity-70' : 'bg-surface-card'
-      }`}
-    >
-      <div className="flex items-start justify-between gap-3 flex-wrap">
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <span
-              className={`text-[14px] font-semibold leading-snug ${
-                done ? 'line-through text-fg-muted' : 'text-fg'
-              }`}
-            >
-              {task.title}
-            </span>
-            {style && (
-              <span
-                className="badge text-[10px]"
-                style={{ background: style.bg, color: style.color }}
-              >
-                {STATUS_LABEL[lang === 'vi' ? 'vi' : 'en'][style.key]}
-              </span>
-            )}
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2 mt-1.5">
-            <span className="flex items-center gap-1 text-[12px] text-fg-muted">
-              <CalendarClock size={11} /> {task.scheduledDate}
-            </span>
-            <span className="flex items-center gap-1 text-[12px] text-fg-muted">
-              <Clock size={11} />
-              {formatMinutes(task.estimatedMinutes, lang)}
-              {task.actualMinutes != null && (
-                <>
-                  {' → '}
-                  <strong
-                    className={
-                      task.actualMinutes > task.estimatedMinutes ? 'text-warning' : 'text-success'
-                    }
-                  >
-                    {formatMinutes(task.actualMinutes, lang)}
-                  </strong>
-                </>
-              )}
-            </span>
-            <ProvenanceBadge provenance={task.estimateProvenance} lang={lang} size="xs" />
-            {task.sourceRefs?.map((ref) => (
-              <CitationChip key={ref.chunkId} citation={ref} onOpen={onOpenCitation} lang={lang} />
-            ))}
-          </div>
-
-          {task.deferReasonLabel && (
-            <p className="text-[11px] mt-1.5 flex items-center gap-1.5 text-warning">
-              <ProvenanceBadge sourceType="user_entered" lang={lang} size="xs" />
-              {lang === 'vi' ? 'Lý do dời' : 'Defer reason'}: {task.deferReasonLabel}
-              {task.deferCount > 1 && ` (×${task.deferCount})`}
-            </p>
-          )}
-        </div>
-
-        {!done && (
-          <div className="flex gap-1.5 shrink-0">
-            {task.status === 'IN_PROGRESS' ? (
-              <button
-                type="button"
-                className="btn btn-accent text-[12px] px-3 min-h-10 cursor-pointer disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                onClick={() => onComplete(task)}
-                disabled={busy}
-              >
-                {lang === 'vi' ? 'Hoàn thành' : 'Complete'}
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="btn btn-outline text-[12px] px-3 min-h-10 cursor-pointer disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                onClick={() => onStart(task)}
-                disabled={busy}
-              >
-                {lang === 'vi' ? 'Bắt đầu' : 'Start'}
-              </button>
-            )}
-            <button
-              type="button"
-              className="btn-ghost text-[12px] px-2.5 min-h-10 rounded-lg cursor-pointer disabled:opacity-50 text-fg-muted hover:text-fg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent"
-              onClick={() => onDefer(task)}
-              disabled={busy}
-            >
-              {lang === 'vi' ? 'Dời' : 'Defer'}
-            </button>
-          </div>
-        )}
-      </div>
-    </li>
-  );
-}
-
 /* ── Plan → Do → Reflect stepper ──────────────────────────────────────── */
 function PdrStepper({ phase, plan, completedCount, totalCount, lang, navigate }) {
   const steps = [
