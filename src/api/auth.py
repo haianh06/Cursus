@@ -1163,20 +1163,37 @@ def _set_auth_cookies(
 
 
 def _clear_auth_cookies(response: Response, settings: Settings) -> None:
+    # Starlette's delete_cookie() defaults to secure=False, samesite="lax".
+    # Per RFC 6265bis's "leave secure cookies alone" rule, a Set-Cookie that
+    # is not itself Secure can never overwrite/delete an existing Secure
+    # cookie of the same (name, domain, path) — browsers silently drop the
+    # attempt. Our real cookies are Secure + SameSite=None in production
+    # (cross-domain: Vercel frontend, Render backend), so deleting them
+    # without matching those exact attributes is a silent no-op there: the
+    # 200 logout response looks successful but the browser keeps the old
+    # cookies, and the very next page load/refresh silently logs the user
+    # right back in. This only ever showed up cross-domain, not on
+    # same-origin local dev, which is why it went unnoticed.
     response.delete_cookie(
         key=settings.access_token_cookie_name,
         domain=settings.access_token_cookie_domain,
         path=settings.access_token_cookie_path,
+        secure=_access_token_cookie_secure(settings),
+        samesite=settings.access_token_cookie_samesite,
     )
     response.delete_cookie(
         key=settings.refresh_token_cookie_name,
         domain=settings.refresh_token_cookie_domain,
         path=settings.refresh_token_cookie_path,
+        secure=_refresh_token_cookie_secure(settings),
+        samesite=settings.refresh_token_cookie_samesite,
     )
     response.delete_cookie(
         key=settings.csrf_cookie_name,
         domain=settings.access_token_cookie_domain,
         path=settings.access_token_cookie_path,
+        secure=_access_token_cookie_secure(settings),
+        samesite=settings.access_token_cookie_samesite,
     )
 
 
