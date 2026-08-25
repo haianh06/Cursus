@@ -516,6 +516,13 @@ class TimetableService:
             # Tự học không được"). Deleting the session explicitly, the same
             # way tasks already are above, sidesteps that ORM cascade
             # ambiguity entirely.
+            session_row = (
+                self._db.query(models.SelfStudySession)
+                .filter_by(schedule_block_id=target.id)
+                .first()
+            )
+            if session_row is not None:
+                self._db.delete(session_row)
             self._db.delete(target)
         self._db.commit()
 
