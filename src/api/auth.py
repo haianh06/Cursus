@@ -940,6 +940,17 @@ async def refresh(
     try:
         result = await auth_service.refresh_access_token(refresh_token)
     except (UnauthorizedError, InactiveUserError) as exc:
+        # A dead/expired refresh token cookie can otherwise sit in the
+        # browser indefinitely (its own Max-Age hasn't elapsed even though
+        # the JWT inside has) -- CsrfProtectionMiddleware sees that cookie
+        # and starts requiring a CSRF header on every mutating request, but
+        # the frontend can never repopulate its in-memory CSRF token because
+        # every refresh keeps failing this same way. That permanently locks
+        # the browser out of login/demo-session/etc. behind a "CSRF
+        # validation failed" 403 until cookies are cleared by hand. Clearing
+        # here (same as the SessionError branch below) is the one place we
+        # still hold a live `response` to fix that.
+        _clear_auth_cookies(response, settings)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid refresh token",
