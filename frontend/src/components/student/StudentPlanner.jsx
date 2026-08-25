@@ -18,6 +18,7 @@ import EmptyState from '../shared/EmptyState';
 import ErrorState from '../shared/ErrorState';
 import ProvenanceBadge from '../shared/ProvenanceBadge';
 import SourceDrawer, { CitationChip } from '../shared/SourceDrawer';
+import Timetable from './Timetable';
 
 const WEEKDAYS_VI = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'];
 const WEEKDAYS_EN = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -411,6 +412,13 @@ export default function StudentPlanner() {
                   : 'Generate draft plan'}
           </button>
         </div>
+      </section>
+
+      {/* Real class schedule + self-study blocks, side by side with the
+          availability declaration above so the student can see what's
+          already locked in before typing free-time minutes. */}
+      <section aria-label={lang === 'vi' ? 'Thời khoá biểu' : 'Timetable'}>
+        <Timetable initialView="week" />
       </section>
 
       {actionError && (
