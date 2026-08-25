@@ -31,7 +31,7 @@ export const en = {
     workspaceLabel: "WORKSPACE",
     searchPlaceholder: "Quick search courses, documents...",
     searchShortcut: "K",
-    semesterInfo: "{name} Semester • Week {week}",
+    semesterInfo: "Week {week} - {name}",
     semesterInfoEmpty: "No semester set up yet",
     userProfile: "Dang Nguyen",
     userSub: "SE · Term 4",

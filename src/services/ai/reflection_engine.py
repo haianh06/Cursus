@@ -52,84 +52,163 @@ def band_for(completion_rate: float) -> str:
 # rule-based "adjustment code" vocabulary that the next-week LLM suggestion
 # in `reflection_suggestion.py` now supersedes). Each *_level question is a
 # 4-point low-to-high scale; `self_notes` is the only free-text field.
-QUESTION_SCALES: tuple[tuple[str, str, tuple[tuple[str, str], ...]], ...] = (
-    (
-        "accomplishment_level",
-        "Mức độ hoàn thành kế hoạch tuần này?",
+#
+# Keyed by lang so the question/choice *text* is bilingual, but the `id`s
+# and choice `code`s below are stable identifiers stored in answers and must
+# stay identical across languages (see `_SCALE_CHOICES_BY_ID`/build_summary).
+QUESTION_SCALES: dict[str, tuple[tuple[str, str, tuple[tuple[str, str], ...]], ...]] = {
+    "vi": (
         (
-            ("none", "Hầu như không hoàn thành gì"),
-            ("partial", "Hoàn thành một phần nhỏ"),
-            ("mostly", "Hoàn thành phần lớn"),
-            ("full", "Hoàn thành đầy đủ, đúng kế hoạch"),
+            "accomplishment_level",
+            "Mức độ hoàn thành kế hoạch tuần này?",
+            (
+                ("none", "Hầu như không hoàn thành gì"),
+                ("partial", "Hoàn thành một phần nhỏ"),
+                ("mostly", "Hoàn thành phần lớn"),
+                ("full", "Hoàn thành đầy đủ, đúng kế hoạch"),
+            ),
+        ),
+        (
+            "focus_level",
+            "Mức độ tập trung khi học tuần này?",
+            (
+                ("very_low", "Rất khó tập trung, hay xao nhãng"),
+                ("low", "Thỉnh thoảng mất tập trung"),
+                ("high", "Khá tập trung phần lớn thời gian"),
+                ("very_high", "Tập trung cao độ, hiếm khi xao nhãng"),
+            ),
+        ),
+        (
+            "stress_level",
+            "Mức độ căng thẳng / áp lực tuần này?",
+            (
+                ("very_high", "Rất căng thẳng, quá tải"),
+                ("high", "Khá căng thẳng"),
+                ("low", "Hơi căng thẳng nhưng vẫn ổn"),
+                ("very_low", "Thoải mái, không áp lực"),
+            ),
+        ),
+        (
+            "time_management_level",
+            "Bạn quản lý thời gian tuần này thế nào?",
+            (
+                ("poor", "Thường xuyên trễ deadline / dồn việc"),
+                ("fair", "Đôi khi bị dồn việc"),
+                ("good", "Quản lý khá tốt, ít bị dồn"),
+                ("excellent", "Đúng giờ, chủ động sắp xếp tốt"),
+            ),
+        ),
+        (
+            "motivation_level",
+            "Động lực / năng lượng học tập tuần này?",
+            (
+                ("very_low", "Rất thiếu động lực, uể oải"),
+                ("low", "Động lực thấp, hay trì hoãn"),
+                ("high", "Động lực khá tốt"),
+                ("very_high", "Rất có động lực, hào hứng học"),
+            ),
         ),
     ),
-    (
-        "focus_level",
-        "Mức độ tập trung khi học tuần này?",
+    "en": (
         (
-            ("very_low", "Rất khó tập trung, hay xao nhãng"),
-            ("low", "Thỉnh thoảng mất tập trung"),
-            ("high", "Khá tập trung phần lớn thời gian"),
-            ("very_high", "Tập trung cao độ, hiếm khi xao nhãng"),
+            "accomplishment_level",
+            "How much of this week's plan did you complete?",
+            (
+                ("none", "Almost nothing completed"),
+                ("partial", "Completed a small part"),
+                ("mostly", "Completed most of it"),
+                ("full", "Completed fully, as planned"),
+            ),
+        ),
+        (
+            "focus_level",
+            "How focused were you while studying this week?",
+            (
+                ("very_low", "Very hard to focus, easily distracted"),
+                ("low", "Occasionally lost focus"),
+                ("high", "Fairly focused most of the time"),
+                ("very_high", "Highly focused, rarely distracted"),
+            ),
+        ),
+        (
+            "stress_level",
+            "How stressed / pressured did you feel this week?",
+            (
+                ("very_high", "Very stressed, overwhelmed"),
+                ("high", "Fairly stressed"),
+                ("low", "A bit stressed but manageable"),
+                ("very_low", "Relaxed, no pressure"),
+            ),
+        ),
+        (
+            "time_management_level",
+            "How did you manage your time this week?",
+            (
+                ("poor", "Frequently missed deadlines / crammed"),
+                ("fair", "Sometimes crammed"),
+                ("good", "Managed fairly well, rarely crammed"),
+                ("excellent", "On time, proactively well organized"),
+            ),
+        ),
+        (
+            "motivation_level",
+            "How was your motivation / energy for studying this week?",
+            (
+                ("very_low", "Very unmotivated, sluggish"),
+                ("low", "Low motivation, tended to procrastinate"),
+                ("high", "Fairly motivated"),
+                ("very_high", "Highly motivated, excited to study"),
+            ),
         ),
     ),
-    (
-        "stress_level",
-        "Mức độ căng thẳng / áp lực tuần này?",
-        (
-            ("very_high", "Rất căng thẳng, quá tải"),
-            ("high", "Khá căng thẳng"),
-            ("low", "Hơi căng thẳng nhưng vẫn ổn"),
-            ("very_low", "Thoải mái, không áp lực"),
-        ),
-    ),
-    (
-        "time_management_level",
-        "Bạn quản lý thời gian tuần này thế nào?",
-        (
-            ("poor", "Thường xuyên trễ deadline / dồn việc"),
-            ("fair", "Đôi khi bị dồn việc"),
-            ("good", "Quản lý khá tốt, ít bị dồn"),
-            ("excellent", "Đúng giờ, chủ động sắp xếp tốt"),
-        ),
-    ),
-    (
-        "motivation_level",
-        "Động lực / năng lượng học tập tuần này?",
-        (
-            ("very_low", "Rất thiếu động lực, uể oải"),
-            ("low", "Động lực thấp, hay trì hoãn"),
-            ("high", "Động lực khá tốt"),
-            ("very_high", "Rất có động lực, hào hứng học"),
-        ),
-    ),
-)
+}
 
 SELF_NOTES_QUESTION_ID = "self_notes"
-_SCALE_CHOICES_BY_ID: dict[str, dict[str, str]] = {
-    question_id: dict(choices) for question_id, _prompt, choices in QUESTION_SCALES
+_SELF_NOTES_TEXT = {
+    "vi": (
+        "Bạn còn nhận xét gì về bản thân trong tuần vừa qua không?",
+        "VD: Tuần này mình hay bị phân tâm bởi điện thoại, cần đặt chế độ tập trung.",
+    ),
+    "en": (
+        "Anything else you'd like to note about yourself this past week?",
+        "E.g.: I kept getting distracted by my phone this week, I should turn on focus mode.",
+    ),
 }
-_SCALE_PROMPTS_BY_ID: dict[str, str] = {
-    question_id: prompt for question_id, prompt, _choices in QUESTION_SCALES
+# build_summary() renders a *saved* answer back as text in whichever
+# language was active when it was drafted/saved (the record is immutable
+# text from that point on, same as every other entry in "Lịch sử phản tư").
+_SCALE_CHOICES_BY_ID: dict[str, dict[str, dict[str, str]]] = {
+    lang: {question_id: dict(choices) for question_id, _prompt, choices in scales}
+    for lang, scales in QUESTION_SCALES.items()
+}
+_SCALE_PROMPTS_BY_ID: dict[str, dict[str, str]] = {
+    lang: {question_id: prompt for question_id, prompt, _choices in scales}
+    for lang, scales in QUESTION_SCALES.items()
 }
 
 
-def _question_catalog(facts: dict) -> list[dict]:  # noqa: ARG001 - facts kept for signature stability
+def _resolve_lang(lang: str | None) -> str:
+    return "en" if (lang or "vi").lower().startswith("en") else "vi"
+
+
+def _question_catalog(facts: dict, lang: str = "vi") -> list[dict]:  # noqa: ARG001 - facts kept for signature stability
+    lang = _resolve_lang(lang)
+    prompt, placeholder = _SELF_NOTES_TEXT[lang]
     questions = [
         {
             "id": question_id,
             "type": "single_choice",
-            "prompt": prompt,
+            "prompt": prompt_text,
             "choices": [{"code": code, "label": label} for code, label in choices],
         }
-        for question_id, prompt, choices in QUESTION_SCALES
+        for question_id, prompt_text, choices in QUESTION_SCALES[lang]
     ]
     questions.append(
         {
             "id": SELF_NOTES_QUESTION_ID,
             "type": "text",
-            "prompt": "Bạn còn nhận xét gì về bản thân trong tuần vừa qua không?",
-            "placeholder": "VD: Tuần này mình hay bị phân tâm bởi điện thoại, cần đặt chế độ tập trung.",
+            "prompt": prompt,
+            "placeholder": placeholder,
         }
     )
     return questions
@@ -203,61 +282,79 @@ class ReflectionEngine:
         }
 
     # ── questionnaire ────────────────────────────────────────────────
-    def questionnaire(self, facts: dict) -> dict:
+    def questionnaire(self, facts: dict, lang: str = "vi") -> dict:
         # `band`/`bandLabel` stay purely descriptive (shown in
         # EvidenceSummary) — the same fixed question catalog is asked every
         # week regardless of completion band or plan kind.
+        lang = _resolve_lang(lang)
         band = band_for(float(facts.get("completionRate") or 0.0))
-        return {
-            "band": band,
-            "bandLabel": {
+        band_label = {
+            "vi": {
                 BAND_HIGH: "Hoàn thành ≥ 80%",
                 BAND_MID: "Hoàn thành 30–79%",
                 BAND_LOW: "Hoàn thành < 30%",
-            }[band],
-            "questions": _question_catalog(facts),
+            },
+            "en": {
+                BAND_HIGH: "Completion ≥ 80%",
+                BAND_MID: "Completion 30–79%",
+                BAND_LOW: "Completion < 30%",
+            },
+        }[lang][band]
+        return {
+            "band": band,
+            "bandLabel": band_label,
+            "questions": _question_catalog(facts, lang),
             "version": REFLECTION_VERSION,
         }
 
     # ── memory preview ───────────────────────────────────────────────
-    def build_summary(self, *, facts: dict, answers: list[dict], adjustments: list[str]) -> str:
+    def build_summary(self, *, facts: dict, answers: list[dict], adjustments: list[str], lang: str = "vi") -> str:
         """Deterministic, template-based summary — no LLM needed.
 
         The student edits this text before it is stored, so it is a draft, not
         a claim made by the system on their behalf.
         """
-        lines = [
-            f"Tuần {facts.get('weekNumber')}: hoàn thành "
-            f"{facts.get('completedTasks')}/{facts.get('totalTasks')} task "
-            f"({round(float(facts.get('completionRate') or 0) * 100)}%), "
-            f"dời {facts.get('deferredTasks')} task.",
-        ]
+        lang = _resolve_lang(lang)
+        choices_by_id = _SCALE_CHOICES_BY_ID[lang]
+        prompts_by_id = _SCALE_PROMPTS_BY_ID[lang]
+        completed = facts.get("completedTasks")
+        total = facts.get("totalTasks")
+        pct = round(float(facts.get("completionRate") or 0) * 100)
+        deferred = facts.get("deferredTasks")
+        week = facts.get("weekNumber")
+        if lang == "en":
+            lines = [f"Week {week}: completed {completed}/{total} tasks ({pct}%), deferred {deferred} tasks."]
+        else:
+            lines = [f"Tuần {week}: hoàn thành {completed}/{total} task ({pct}%), dời {deferred} task."]
         estimated = facts.get("estimatedMinutes") or 0
         actual = facts.get("actualMinutes") or 0
         if actual and estimated:
             lines.append(
-                f"Thời gian thực tế {actual} phút so với ước tính {estimated} phút."
+                f"Actual time {actual} minutes vs. estimated {estimated} minutes."
+                if lang == "en"
+                else f"Thời gian thực tế {actual} phút so với ước tính {estimated} phút."
             )
         for answer in answers:
             question_id = answer.get("questionId")
             codes = answer.get("selectedCodes") or []
-            if question_id in _SCALE_CHOICES_BY_ID and codes:
-                label = _SCALE_CHOICES_BY_ID[question_id].get(codes[0], codes[0])
-                lines.append(f"{_SCALE_PROMPTS_BY_ID[question_id]} {label}.")
+            if question_id in choices_by_id and codes:
+                label = choices_by_id[question_id].get(codes[0], codes[0])
+                lines.append(f"{prompts_by_id[question_id]} {label}.")
             text = (answer.get("answer") or "").strip()
             if text:
-                lines.append(f"Ghi nhận: {text}")
+                lines.append(f"Note: {text}" if lang == "en" else f"Ghi nhận: {text}")
         confirmed = [item for item in adjustments if item in SUPPORTED_ADJUSTMENTS]
         if confirmed:
+            adjustment_text = "; ".join(SUPPORTED_ADJUSTMENTS[item] for item in confirmed)
             lines.append(
-                "Điều chỉnh cho tuần sau: "
-                + "; ".join(SUPPORTED_ADJUSTMENTS[item] for item in confirmed)
-                + "."
+                f"Adjustments for next week: {adjustment_text}."
+                if lang == "en"
+                else f"Điều chỉnh cho tuần sau: {adjustment_text}."
             )
         return " ".join(lines)
 
     def build_summary_llm(
-        self, *, facts: dict, answers: list[dict], adjustments: list[str]
+        self, *, facts: dict, answers: list[dict], adjustments: list[str], lang: str = "vi"
     ) -> tuple[str, dict]:
         """LLM-drafted summary for the *preview* endpoint only — the student
         always reviews/edits this before it is saved. Falls back to the
@@ -274,8 +371,9 @@ class ReflectionEngine:
         kept in the trace shape for consistency across all 3 services rather
         than fabricating meaning for a step that doesn't exist here.
         """
+        lang = _resolve_lang(lang)
         confirmed = [item for item in adjustments if item in SUPPORTED_ADJUSTMENTS]
-        deterministic = self.build_summary(facts=facts, answers=answers, adjustments=confirmed)
+        deterministic = self.build_summary(facts=facts, answers=answers, adjustments=confirmed, lang=lang)
 
         if not has_configured_llm():
             return deterministic, {"llm_attempted": False, "llm_success": False, "retrieval_empty": False}
@@ -283,7 +381,9 @@ class ReflectionEngine:
         try:
             system_prompt = REFLECTION_PROMPT_PATH.read_text(encoding="utf-8")
             adjustment_labels = [SUPPORTED_ADJUSTMENTS[item] for item in confirmed]
+            language_name = "English" if lang == "en" else "Vietnamese"
             user_prompt = (
+                f"Write the summary in {language_name}.\n"
                 f"Facts: {facts}\n"
                 f"Student answers: {answers}\n"
                 f"Confirmed adjustments for next week: {adjustment_labels}\n"
@@ -305,9 +405,9 @@ class ReflectionEngine:
             logger.exception("llm_reflection_summary_failed plan_week=%s", facts.get("weekNumber"))
             return deterministic, {"llm_attempted": True, "llm_success": False, "retrieval_empty": False}
 
-    def preview(self, plan: models.WeeklyPlan) -> dict:
+    def preview(self, plan: models.WeeklyPlan, lang: str = "vi") -> dict:
         facts = self.facts_for_plan(plan)
-        questionnaire = self.questionnaire(facts)
+        questionnaire = self.questionnaire(facts, lang)
         return {
             "planId": plan.id,
             "weekNumber": plan.week_number,
@@ -338,6 +438,7 @@ class ReflectionEngine:
         summary: str | None,
         student_confirmed: bool,
         share_with_advisor: bool,
+        lang: str = "vi",
     ) -> models.WeeklyReflection:
         facts = self.facts_for_plan(plan)
         confirmed_adjustments = [
@@ -345,7 +446,7 @@ class ReflectionEngine:
         ]
         summary_provided = bool((summary or "").strip())
         final_summary = (summary or "").strip() or self.build_summary(
-            facts=facts, answers=answers, adjustments=confirmed_adjustments
+            facts=facts, answers=answers, adjustments=confirmed_adjustments, lang=lang
         )
 
         row = (

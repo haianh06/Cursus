@@ -426,9 +426,9 @@ function Topbar({ user, setSidebarOpen }) {
           Instructor/Admin have no equivalent term source wired up here yet,
           so the indicator simply doesn't render for them. */}
       {user.role === 'student' && (
-        <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" aria-hidden="true" />
-          <span className="text-xs font-semibold text-fg-secondary">
+        <div className="hidden sm:flex items-center gap-2 min-w-0">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" aria-hidden="true" />
+          <span className="text-xs font-semibold text-fg-secondary truncate">
             {activeSemester
               ? t('common.semesterInfo', {
                   name: activeSemester.name,

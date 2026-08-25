@@ -419,6 +419,7 @@ class SaveReflectionRequest(BaseModel):
     summary: str | None = Field(default=None, max_length=4000)
     student_confirmed: bool = False
     share_with_advisor: bool = False
+    language: str = "vi"
 
 
 def _resolve_plan_for_reflection(
@@ -467,6 +468,7 @@ def _resolve_plan_for_reflection(
 def preview_reflection(
     week_number: int | None = Query(default=None),
     plan_id: str | None = Query(default=None),
+    lang: str = Query(default="vi"),
     current_user: models.User = Depends(get_current_user_from_token),
     db: Session = Depends(get_db),
 ):
@@ -474,7 +476,7 @@ def preview_reflection(
     plan = _resolve_plan_for_reflection(
         db, student_id=current_user.id, plan_id=plan_id, week_number=week_number
     )
-    return ReflectionEngine(db).preview(plan)
+    return ReflectionEngine(db).preview(plan, lang)
 
 
 @router.post("/reflections/preview-summary")
@@ -497,6 +499,7 @@ def preview_reflection_summary(
         facts=facts,
         answers=[item.model_dump() for item in payload.answers],
         adjustments=payload.adjustments,
+        lang=payload.language,
     )
     return {
         "planId": plan.id,
@@ -534,6 +537,7 @@ def save_reflection(
         summary=payload.summary,
         student_confirmed=payload.student_confirmed,
         share_with_advisor=payload.share_with_advisor,
+        lang=payload.language,
     )
     result = serialize_reflection(row)
     result["plan"] = serialize_plan(db, plan)

@@ -31,7 +31,7 @@ export const vi = {
     workspaceLabel: "KHÔNG GIAN LÀM VIỆC",
     searchPlaceholder: "Tìm nhanh môn học, tài liệu...",
     searchShortcut: "K",
-    semesterInfo: "Học kỳ {name} • Tuần {week}",
+    semesterInfo: "Tuần {week} - Kỳ {name}",
     semesterInfoEmpty: "Chưa thiết lập học kỳ",
     userProfile: "Đăng Nguyễn",
     userSub: "SE · Kỳ 4",

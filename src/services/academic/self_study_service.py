@@ -24,6 +24,18 @@ from src.services.academic.timetable_service import monday_of, week_bounds
 REMINDER_LEAD = timedelta(minutes=10)
 _TERMINAL = {"COMPLETED", "ABANDONED"}
 
+# ScheduleBlock.start_time/end_time are naive datetimes written by the
+# frontend as local wall-clock time (see Timetable.jsx's toIsoLocal(), which
+# never includes a UTC offset) -- there is no per-user timezone anywhere in
+# this app, only this one fixed Vietnam offset. Comparing them against
+# datetime.utcnow() would shift every window check by 7 hours, so "now" for
+# this service must be computed the same naive-local way.
+_APP_TZ_OFFSET = timedelta(hours=7)
+
+
+def _now() -> datetime:
+    return datetime.utcnow() + _APP_TZ_OFFSET
+
 
 class SelfStudyWindowError(ValueError):
     """The reminder window for this block hasn't opened yet, or has closed."""
@@ -46,7 +58,7 @@ class SelfStudyService:
         self._db = db
 
     def upcoming(self, *, student_id: str, now: datetime | None = None) -> list[dict]:
-        moment = now or datetime.utcnow()
+        moment = now or _now()
         monday = monday_of(moment.date())
         start, end = week_bounds(monday)
         blocks = self._self_study_blocks_in_range(student_id=student_id, start=start, end=end)
@@ -70,7 +82,7 @@ class SelfStudyService:
         return items
 
     def weekly_stats(self, *, student_id: str, week_start: date | None = None, now: datetime | None = None) -> dict:
-        moment = now or datetime.utcnow()
+        moment = now or _now()
         monday = monday_of(week_start or moment.date())
         start, end = week_bounds(monday)
         sessions = (
@@ -102,12 +114,12 @@ class SelfStudyService:
         )
         if not session:
             return None
-        self._finalize_if_due(session, now or datetime.utcnow())
+        self._finalize_if_due(session, now or _now())
         self._db.commit()
-        return self._to_payload(session, now or datetime.utcnow())
+        return self._to_payload(session, now or _now())
 
     def start(self, *, student_id: str, block_id: str, now: datetime | None = None) -> dict:
-        moment = now or datetime.utcnow()
+        moment = now or _now()
         block = self._owned_block(student_id=student_id, block_id=block_id)
 
         existing = self._session_for_block(student_id=student_id, block_id=block_id)
@@ -156,14 +168,14 @@ class SelfStudyService:
         return self._to_payload(session, moment)
 
     def get_session(self, *, student_id: str, session_id: str, now: datetime | None = None) -> dict:
-        moment = now or datetime.utcnow()
+        moment = now or _now()
         session = self._owned_session(student_id=student_id, session_id=session_id)
         self._finalize_if_due(session, moment)
         self._db.commit()
         return self._to_payload(session, moment)
 
     def abandon(self, *, student_id: str, session_id: str, now: datetime | None = None) -> dict:
-        moment = now or datetime.utcnow()
+        moment = now or _now()
         session = self._owned_session(student_id=student_id, session_id=session_id)
         if session.status not in _TERMINAL:
             if moment >= session.scheduled_end_at:

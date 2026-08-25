@@ -512,19 +512,20 @@ export function getDeferReasons() {
 
 /* ── Reflection ─────────────────────────────────────────────────────── */
 
-export function getReflectionPreview({ weekNumber = null, planId = null } = {}) {
+export function getReflectionPreview({ weekNumber = null, planId = null, lang = 'vi' } = {}) {
   const params = new URLSearchParams();
   if (weekNumber != null) params.set('week_number', String(weekNumber));
   if (planId) params.set('plan_id', planId);
+  params.set('lang', lang);
   const query = params.toString();
   return request(`/student/reflections/preview${query ? `?${query}` : ''}`);
 }
 
 /** Draft the memory text WITHOUT storing it, so the student can edit first. */
-export function previewReflectionSummary({ planId, answers = [], adjustments = [] }) {
+export function previewReflectionSummary({ planId, answers = [], adjustments = [], lang = 'vi' }) {
   return request('/student/reflections/preview-summary', {
     method: 'POST',
-    body: { plan_id: planId, answers, adjustments },
+    body: { plan_id: planId, answers, adjustments, language: lang },
   });
 }
 
@@ -535,6 +536,7 @@ export function saveReflection({
   summary = null,
   studentConfirmed = false,
   shareWithAdvisor = false,
+  lang = 'vi',
 }) {
   return request('/student/reflections', {
     method: 'POST',
@@ -545,6 +547,7 @@ export function saveReflection({
       summary,
       student_confirmed: studentConfirmed,
       share_with_advisor: shareWithAdvisor,
+      language: lang,
     },
   });
 }

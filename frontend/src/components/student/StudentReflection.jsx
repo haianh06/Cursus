@@ -288,7 +288,7 @@ export default function StudentReflection() {
     setLoading(true);
     setLoadError(null);
     try {
-      const data = await getReflectionPreview({ planId: currentPlan?.id ?? null });
+      const data = await getReflectionPreview({ planId: currentPlan?.id ?? null, lang });
       setPreview(data);
       if (data.existing) {
         setMemory(data.existing.summary ?? '');
@@ -304,7 +304,7 @@ export default function StudentReflection() {
     } finally {
       setLoading(false);
     }
-  }, [currentPlan?.id]);
+  }, [currentPlan?.id, lang]);
 
   useEffect(() => {
     if (stateLoading) return;
@@ -333,6 +333,7 @@ export default function StudentReflection() {
         planId: preview.planId,
         answers: buildAnswerPayload(),
         adjustments: [],
+        lang,
       });
       // Do not clobber text the student has already edited by hand.
       if (!memoryEdited) setMemory(draft.summary);
@@ -352,6 +353,7 @@ export default function StudentReflection() {
         summary: memory,
         studentConfirmed: true,
         shareWithAdvisor,
+        lang,
       });
       setStep('done');
     } catch (err) {
