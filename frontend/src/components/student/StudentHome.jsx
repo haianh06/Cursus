@@ -545,7 +545,7 @@ export default function StudentHome({ user }) {
           <section aria-label={lang === 'vi' ? 'Kế hoạch tuần' : 'This week'} id="weekly-plan-section">
             <div className="flex items-center justify-between gap-2 flex-wrap mb-3">
               <h2 className="text-[18px] font-bold font-display text-fg">
-                {lang === 'vi' ? 'Kế hoạch tuần này' : 'This week’s plan'}
+                {lang === 'vi' ? 'Giờ học mỗi ngày trong tuần' : 'Daily study hours this week'}
               </h2>
               <div className="flex items-center gap-2">
                 {/* Sandbox-only: lets a prospective institution evaluating the 3-role
@@ -577,36 +577,7 @@ export default function StudentHome({ user }) {
               </div>
             </div>
 
-            {tasks.length === 0 ? (
-              <div className="card">
-                <EmptyState
-                  icon={<Target size={28} className="text-fg-muted" />}
-                  title={lang === 'vi' ? 'Chưa có kế hoạch cho tuần này' : 'No plan for this week yet'}
-                  description={
-                    lang === 'vi'
-                      ? 'Bắt đầu ở bước Plan: chọn mục tiêu và khai báo lịch rảnh.'
-                      : 'Start at Plan: pick a goal and declare your free time.'
-                  }
-                  actionLabel={lang === 'vi' ? 'Lập kế hoạch tuần' : 'Plan my week'}
-                  onAction={() => navigate('/student/planner')}
-                />
-              </div>
-            ) : (
-              <ul className="space-y-2">
-                {tasks.map((task) => (
-                  <TaskRow
-                    key={task.id}
-                    task={task}
-                    onStart={(item) => run(() => startTask(item.id))}
-                    onComplete={handleComplete}
-                    onDefer={setDeferTarget}
-                    onOpenCitation={setOpenCitation}
-                    busy={mutating}
-                    lang={lang}
-                  />
-                ))}
-              </ul>
-            )}
+            <WeeklyStudyHoursChart tasks={tasks} lang={lang} />
           </section>
 
           <div id="qa-section">
