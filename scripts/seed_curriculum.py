@@ -23,7 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src.services.demo_data import CURRICULUM_FILE, DATA_DIR  # noqa: E402
+from src.services.mock.demo_data import CURRICULUM_FILE, DATA_DIR  # noqa: E402
 
 logger = logging.getLogger("seed-curriculum")
 
@@ -150,7 +150,7 @@ def _markdown_docs(code: str) -> list[dict[str, str]]:
 
 
 def _bundled_docs(code: str) -> list[dict[str, str]]:
-    from src.services.student_mock_data_service import COURSE_DOCUMENTS
+    from src.services.mock.student_mock_data_service import COURSE_DOCUMENTS
 
     bundled = COURSE_DOCUMENTS.get(code)
     if not bundled:
@@ -167,7 +167,13 @@ def _bundled_docs(code: str) -> list[dict[str, str]]:
 
 
 def _config_docs(code: str, name: str) -> list[dict[str, str]]:
-    from mock_data.config import COURSES_CONFIG
+    try:
+        from mock_data.config import COURSES_CONFIG
+    except ModuleNotFoundError:
+        # mock_data/ was deleted whole in the Phase 1 cleanup (2026-08-20, see
+        # seed.py's top-of-file TODO) — fall through to _markdown_docs /
+        # _synthetic_docs instead of crashing the whole catalog seed.
+        return []
 
     cfg = COURSES_CONFIG.get(code)
     if not cfg:
@@ -310,6 +316,7 @@ def _load_chunk_file(code: str) -> list[dict[str, Any]]:
 def seed_database(catalog: dict[str, Any]) -> dict[str, int]:
     from src.db.connection import SessionLocal
     from src.db.models import Course, Document, DocumentChunk
+    from src.services.mock.real_curriculum_service import _sandbox_organization_id
 
     db = SessionLocal()
     created_courses = 0
@@ -317,6 +324,7 @@ def seed_database(catalog: dict[str, Any]) -> dict[str, int]:
     documents = 0
     chunks = 0
     try:
+        organization_id = _sandbox_organization_id(db)
         for subject in catalog["subjects"]:
             code = str(subject["Subject Code"]).strip()
             name = str(subject["Subject Name"]).strip()
@@ -332,6 +340,7 @@ def seed_database(catalog: dict[str, Any]) -> dict[str, int]:
                         name=name,
                         description=description,
                         syllabus=syllabus or None,
+                        organization_id=organization_id,
                     )
                 )
                 created_courses += 1

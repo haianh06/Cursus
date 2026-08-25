@@ -208,7 +208,15 @@ def get_student_course_detail(
     if not course:
         raise HTTPException(status_code=404, detail="Course not found")
 
-    sections = db.query(models.CourseSection).filter_by(course_id=course_id).all()
+    sections = (
+        db.query(models.CourseSection)
+        .join(models.Enrollment, models.Enrollment.section_id == models.CourseSection.id)
+        .filter(
+            models.CourseSection.course_id == course_id,
+            models.Enrollment.student_id == current_user.id,
+        )
+        .all()
+    )
 
     # Find modules and lessons
     modules_list = []
