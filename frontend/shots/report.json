@@ -1,0 +1,40 @@
+[
+  {
+    "name": "Onboarding removed: non-setup student lands on dashboard",
+    "ok": true,
+    "detail": "http://localhost:5173/student"
+  },
+  {
+    "name": "Overview loads",
+    "ok": true,
+    "detail": "http://localhost:5173/student"
+  },
+  {
+    "name": "Overview: no console/page errors so far",
+    "ok": false,
+    "detail": "console: Failed to load resource: the server responded with a status of 401 (Unauthorized) | console: Failed to load resource: the server responded with a status of 401 (Unauthorized) | console: Failed to load resource: the server responded with a status of 401 (Unauthorized) | console: Failed to load resource: the server responded with a status of 404 (Not Found) | console: Failed to load resource: the server responded with a status of 404 (Not Found)"
+  },
+  {
+    "name": "Planner: Timetable section present",
+    "ok": true
+  },
+  {
+    "name": "Planner: add self-study block flow completes",
+    "ok": true
+  },
+  {
+    "name": "Today screen loads without crash",
+    "ok": false,
+    "detail": "console: Failed to load resource: the server responded with a status of 404 (Not Found) | console: Failed to load resource: the server responded with a status of 404 (Not Found) | console: Failed to load resource: the server responded with a status of 404 (Not Found)"
+  },
+  {
+    "name": "All routes visited — total console/page errors: 26",
+    "ok": false,
+    "detail": "console: Failed to load resource: the server responded with a status of 401 (Unauthorized) \nconsole: Failed to load resource: the server responded with a status of 401 (Unauthorized) \nconsole: Failed to load resource: the server responded with a status of 401 (Unauthorized) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found) \nconsole: Failed to load resource: the server responded with a status of 404 (Not Found)"
+  },
+  {
+    "name": "5xx responses seen: 0",
+    "ok": true,
+    "detail": ""
+  }
+]
