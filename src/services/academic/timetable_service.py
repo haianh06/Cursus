@@ -314,7 +314,6 @@ class TimetableService:
         self._validate_range(start, end)
         next_start = start.replace(tzinfo=None)
         next_end = end.replace(tzinfo=None)
-        duration = next_end - next_start
         clean_title = title.strip() or "Self-study"
 
         # Non-repeating: a single occurrence, conflict is fatal (existing

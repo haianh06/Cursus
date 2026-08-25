@@ -13,6 +13,7 @@ from src.api.auth import get_current_user_from_token, get_notification_service
 from src.db import models
 from src.db.connection import get_db
 from src.repositories.academic_term_repository import AcademicTermRepository
+from src.repositories.audit_repository import AuditRepository
 from src.repositories.class_activity_repository import ClassActivityRepository
 from src.repositories.ownership_repository import OwnershipRepository
 from src.repositories.quiz_repository import QuizRepository
@@ -25,6 +26,7 @@ from src.security.ownership import (
 )
 from src.security.permissions import Permission, Resource
 from src.services.class_activity_service import ClassActivityService
+from src.services.core.audit_service import AuditService
 from src.services.core.notification_service import NotificationService
 from src.services.quiz_service import QuizService
 from src.services.risk_signal_service import (
@@ -36,8 +38,6 @@ from src.services.risk_signal_service import (
 from src.services.risk_signal_service import (
     student_recent_weekly_rates as _student_recent_weekly_rates,
 )
-from src.services.core.audit_service import AuditService
-from src.repositories.audit_repository import AuditRepository
 
 router = APIRouter(
     prefix="/instructor",

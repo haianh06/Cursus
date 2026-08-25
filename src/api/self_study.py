@@ -23,7 +23,7 @@ router = APIRouter(
 
 
 class StartSelfStudyRequest(BaseModel):
-    blockId: str
+    blockId: str  # noqa: N815
 
 
 def _http_for(exc: Exception) -> HTTPException:

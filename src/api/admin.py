@@ -691,7 +691,7 @@ def publish_admin_course_document(
         raise HTTPException(status_code=400, detail="Only DRAFT or READY_FOR_REVIEW can be published")
     if document.validated_at is None:
         raise HTTPException(status_code=400, detail="Document must pass validation before it can be published")
-        
+
     currently_published = db.query(models.Document).filter(
         models.Document.course_id == document.course_id,
         models.Document.publication_status == "PUBLISHED"
@@ -701,13 +701,13 @@ def publish_admin_course_document(
             doc.publication_status = "ARCHIVED"
             doc.archived_at = datetime.utcnow()
             doc.change_reason = "Auto-archived due to new publication"
-    
+
     document.publication_status = "PUBLISHED"
     document.published_at = datetime.utcnow()
     document.published_by = current_user.id
     document.change_reason = payload.change_reason
     db.commit()
-    
+
     return {"success": True}
 
 
@@ -725,12 +725,12 @@ def archive_admin_course_document(
     document = _owned_document(db, code, document_id)
     if document.publication_status != "PUBLISHED":
         raise HTTPException(status_code=400, detail="Only PUBLISHED documents can be archived")
-    
+
     document.publication_status = "ARCHIVED"
     document.archived_at = datetime.utcnow()
     document.change_reason = payload.change_reason
     db.commit()
-    
+
     return {"success": True}
 
 
@@ -850,10 +850,10 @@ async def update_user_status(
     )
     if target is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-        
+
     old_active = target.is_active
     target.is_active = payload.is_active
-    
+
     # Audit log
     await AuditService(AuditRepository(db)).log_event(
         event_type="UPDATE_USER_STATUS",
@@ -868,7 +868,7 @@ async def update_user_status(
         },
         commit=False
     )
-    
+
     db.commit()
     db.refresh(target)
     return _serialize_user(target)

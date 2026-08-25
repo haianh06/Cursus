@@ -6,11 +6,14 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.api.admin import academic_router as admin_academic_router
 from src.api.admin import router as admin_router
+from src.api.admin_data_requests import router as admin_data_requests_router
+from src.api.admin_instructor360 import router as admin_instructor360_router
 from src.api.admin_mock_lms import router as admin_mock_lms_router
 from src.api.admin_overview import router as admin_overview_router
 from src.api.admin_people import router as admin_people_router
 from src.api.admin_risk_policy import router as admin_risk_policy_router
 from src.api.admin_settings import router as admin_settings_router
+from src.api.admin_student360 import router as admin_student360_router
 from src.api.audit import router as audit_router
 from src.api.auth import router as auth_router
 
@@ -22,13 +25,9 @@ from src.api.demo import router as demo_router
 from src.api.instructor import router as instructor_router
 from src.api.lecture_plan import router as lecture_plan_router
 from src.api.mock_lms_sso import router as mock_lms_sso_router
-from src.api.admin_student360 import router as admin_student360_router
-from src.api.admin_instructor360 import router as admin_instructor360_router
-from src.api.admin_data_requests import router as admin_data_requests_router
 from src.api.plans import router as plans_router
 from src.api.practice import instructor_router as practice_instructor_router
 from src.api.practice import student_router as practice_student_router
-from src.api.student_quizzes import router as student_quizzes_router
 from src.api.public import router as public_router
 from src.api.qa import router as qa_router
 from src.api.routes import router
@@ -36,6 +35,7 @@ from src.api.self_study import router as self_study_router
 from src.api.semester import router as semester_router
 from src.api.student import router as student_router
 from src.api.student_memory import router as student_memory_router
+from src.api.student_quizzes import router as student_quizzes_router
 from src.config import get_settings
 from src.security.exception_handlers import register_exception_handlers
 from src.security.logging import configure_logging

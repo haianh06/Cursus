@@ -55,7 +55,7 @@ class MockLmsSyncService:
     def list_history(self) -> list[models.MockLmsSyncVersion]:
         return self._repo.list_history()
 
-    def _live_assignment_due_dates(self, course_id: str) -> dict[str, "models.Assignment"]:
+    def _live_assignment_due_dates(self, course_id: str) -> dict[str, models.Assignment]:
         """Assignment title (lowercased) -> the live Assignment row, across every
         section of this course. If a course has multiple sections with
         differently-named assignments, each is compared independently; same-named

@@ -40,7 +40,7 @@ def put_consent(
 
 @router.get("")
 def list_entries(
-    subjectCode: str | None = Query(default=None, min_length=2, max_length=32),
+    subjectCode: str | None = Query(default=None, min_length=2, max_length=32),  # noqa: N803
     current_user: models.User = Depends(get_current_user_from_token),
     db: Session = Depends(get_db),
 ):

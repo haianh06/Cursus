@@ -25,8 +25,8 @@ from sqlalchemy.orm import Session
 
 from src.api.auth import _extract_access_token, get_auth_service
 from src.config import Settings, get_settings
-from src.db.connection import get_db
 from src.db import models
+from src.db.connection import get_db
 from src.services.auth.auth_service import AuthService
 from src.services.auth_exceptions import InactiveUserError, UnauthorizedError
 

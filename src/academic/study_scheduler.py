@@ -8,9 +8,9 @@ exists; otherwise the block becomes a review after class.
 from __future__ import annotations
 
 import logging
+from collections.abc import Iterable
 from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta
-from typing import Iterable
 
 from src.academic.slots import CLASS_SLOT_TIMES
 

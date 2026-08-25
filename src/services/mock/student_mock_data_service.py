@@ -29,12 +29,13 @@ from src.services.mock.gate2_demo import (
     CLASS_SECTION_ID as GATE2_CLASS_SECTION_ID,
 )
 from src.services.mock.gate2_demo import (
-    Gate2DemoService,
-)
-from src.services.mock.gate2_demo import (
     SSA101_CODE as GATE2_CLASS_COURSE_CODE,
 )
-from src.services.mock.gate2_demo import ingest_official_chunks, load_official_chunks
+from src.services.mock.gate2_demo import (
+    Gate2DemoService,
+    ingest_official_chunks,
+    load_official_chunks,
+)
 
 logger = logging.getLogger(__name__)
 

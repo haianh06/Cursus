@@ -152,11 +152,11 @@ def _generate_delete_preview(db: Session, requester_id: str) -> dict:
         "reflections": db.query(models.WeeklyReflection).filter_by(student_id=requester_id).count(),
         "risk_signals": db.query(models.RiskSignal).filter_by(student_id=requester_id).count(),
     }
-    
+
     # Stable hash based on counts + student id (in reality, would hash IDs of records)
     hash_input = f"{requester_id}:{json.dumps(counts, sort_keys=True)}"
     preview_hash = hashlib.sha256(hash_input.encode()).hexdigest()
-    
+
     return {"counts": counts, "hash": preview_hash}
 
 
@@ -172,12 +172,12 @@ async def preview_delete_data_request(
         raise HTTPException(status_code=400, detail="Chỉ áp dụng cho yêu cầu xoá đang xử lý")
 
     preview = _generate_delete_preview(db, req.requester_id)
-    
+
     req.preview_summary = preview["counts"]
     req.preview_hash = preview["hash"]
     req.updated_at = datetime.utcnow()
     db.commit()
-    
+
     return {"success": True, "preview": preview["counts"], "hash": preview["hash"]}
 
 
@@ -192,10 +192,10 @@ async def confirm_delete_data_request(
     req = _get_request(db, request_id, current_user.organization_id)
     if req.status != "IN_PROGRESS" or req.request_type != "DELETE":
         raise HTTPException(status_code=400, detail="Chỉ áp dụng cho yêu cầu xoá đang xử lý")
-        
+
     if not req.preview_hash:
         raise HTTPException(status_code=400, detail="Phải chạy xem trước (preview) trước khi xác nhận")
-        
+
     if payload.preview_hash != req.preview_hash:
         raise HTTPException(status_code=400, detail="Mã băm không khớp. Vui lòng thử lại quá trình xem trước.")
 
@@ -217,7 +217,7 @@ async def confirm_delete_data_request(
     req.result_summary = current_preview["counts"]
     req.processed_by = current_user.id
     req.updated_at = datetime.utcnow()
-    
+
     # Audit log (important for deletes)
     audit_event = models.AuditLog(
         id=f"audit_{uuid.uuid4().hex}",
@@ -231,5 +231,5 @@ async def confirm_delete_data_request(
     )
     db.add(audit_event)
     db.commit()
-    
+
     return {"success": True, "deleted": current_preview["counts"]}
