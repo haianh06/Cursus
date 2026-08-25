@@ -209,7 +209,7 @@ async def test_document_publish_requires_passing_validation_first(client):
         json={"subject_code": COURSE_CODE, "subject_name": "CRUD Course", "semester": "9"},
         headers=headers,
     )
-    uploaded = await client.post(
+    await client.post(
         f"/api/v1/admin/courses/{COURSE_CODE}/documents",
         files={"file": ("week.md", b"# Week\n\nContent", "text/markdown")},
         headers=headers,
