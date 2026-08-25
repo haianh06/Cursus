@@ -73,6 +73,44 @@ async def test_csrf_protection_blocks_cookie_authenticated_unsafe_request(app_en
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "path",
+    ["/api/v1/auth/login", "/api/v1/auth/refresh", "/api/v1/auth/demo-session", "/api/v1/auth/google-login"],
+)
+async def test_csrf_exempts_session_bootstrap_endpoints_even_with_a_stale_cookie(path):
+    """A browser with a stale/invalid access or refresh cookie (from a
+    previous, now-dead session) and no CSRF header must still be able to
+    reach these bootstrap endpoints — otherwise there is no way to ever
+    obtain a fresh CSRF token again (it can only come from one of these
+    endpoints' own response body), permanently locking that browser out
+    behind "CSRF validation failed" until it clears cookies by hand. Found
+    via a live user report reproducing exactly this: a stale refresh_token
+    cookie present, no CSRF header yet, POST /auth/refresh -> 403, cascading
+    into demo-session also being unreachable.
+    """
+    app = FastAPI()
+    settings = Settings(
+        jwt_secret_key=TEST_SECRET,
+        app_env="production",
+        csrf_protection_enabled=True,
+    )
+    app.add_middleware(CsrfProtectionMiddleware, settings=settings)
+
+    @app.post(path)
+    async def bootstrap_endpoint():
+        return {"ok": True}
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="https://test") as client:
+        response = await client.post(
+            path,
+            headers={"Cookie": f"{settings.refresh_token_cookie_name}=stale-dead-token"},
+        )
+
+    assert response.status_code == 200
+
+
+@pytest.mark.asyncio
 async def test_rate_limiter_returns_429_after_limit():
     app = FastAPI()
     settings = Settings(
