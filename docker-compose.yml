@@ -16,6 +16,7 @@ services:
       - .env
     volumes:
       - ./data:/app/data
+      - ./src:/app/src
     depends_on:
       db:
         condition: service_healthy
