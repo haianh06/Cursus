@@ -241,23 +241,23 @@ export default function Timetable({ initialView = 'week', initialAnchor = null, 
     return new Date(date.getFullYear(), date.getMonth() + n, 1);
   }
 
-  const openCreateModal = (start) => {
+  const openCreateModal = (start, anchorPos) => {
     const end = new Date(start.getTime() + 60 * 60 * 1000);
-    setModal({ mode: 'create', title: '', start: toLocalInputValue(start), end: toLocalInputValue(end), repeatUntil: '', block: null });
+    setModal({ mode: 'create', title: '', start: toLocalInputValue(start), end: toLocalInputValue(end), repeatUntil: '', block: null, anchorPos });
   };
-  const openCreateAt = (day, offsetY) => openCreateModal(dateFromOffsetY(day, offsetY, hourStart, hourEnd));
-  const openCreateAtHour = (day, hour) => {
+  const openCreateAt = (day, offsetY, anchorPos) => openCreateModal(dateFromOffsetY(day, offsetY, hourStart, hourEnd), anchorPos);
+  const openCreateAtHour = (day, hour, anchorPos) => {
     const start = new Date(day);
     start.setHours(hour, 0, 0, 0);
-    openCreateModal(start);
+    openCreateModal(start, anchorPos);
   };
   const openCreateDefault = () => {
     const start = new Date(visibleDays[0] || anchor);
     start.setHours(19, 0, 0, 0);
     openCreateModal(start);
   };
-  const openEdit = (block) => {
-    setModal({ mode: 'edit', title: block.title || '', start: toLocalInputValue(block._start), end: toLocalInputValue(block._end), repeatUntil: '', block });
+  const openEdit = (block, anchorPos) => {
+    setModal({ mode: 'edit', title: block.title || '', start: toLocalInputValue(block._start), end: toLocalInputValue(block._end), repeatUntil: '', block, anchorPos });
   };
 
   const handleBootstrap = async () => {
