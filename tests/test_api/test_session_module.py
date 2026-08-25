@@ -170,6 +170,54 @@ async def test_refresh_failure_clears_stale_auth_cookies(client):
         assert "Max-Age=0" in cleared
 
 
+@pytest.mark.asyncio
+async def test_clear_auth_cookies_matches_secure_and_samesite_of_the_originals():
+    """Per RFC 6265bis, a Set-Cookie that is not itself Secure can never
+    overwrite/delete an existing Secure cookie of the same (name, domain,
+    path) -- browsers silently drop the attempt even though the response
+    itself arrived over HTTPS. `Response.delete_cookie()` defaults to
+    secure=False, samesite="lax", so calling it without matching the
+    original cookies' actual attributes is a *silent no-op* in any
+    cross-domain production deployment using Secure + SameSite=None cookies
+    (Vercel frontend, Render backend): POST /auth/logout returns 200, but
+    the browser keeps the old cookies, and the next page load/refresh
+    silently logs the user right back in. Reproduced live: production
+    logout returned 200 with the cookies still present afterward, and a
+    plain page reload landed the user back on /student, fully
+    authenticated, with no login step at all.
+
+    This asserts _clear_auth_cookies() emits Set-Cookie headers with the
+    same Secure/SameSite attributes production actually uses (Secure=True,
+    SameSite=None for cross-domain), not just default-attribute headers
+    that happen to include Max-Age=0.
+    """
+    settings = Settings(
+        jwt_secret_key="unit-test-secret-key-at-least-32-characters-long",
+        app_env="production",
+        access_token_cookie_secure=True,
+        access_token_cookie_samesite="none",
+        refresh_token_cookie_secure=True,
+        refresh_token_cookie_samesite="none",
+    )
+
+    app = FastAPI()
+
+    @app.post("/clear")
+    async def clear_endpoint(response: Response):
+        _clear_auth_cookies(response, settings)
+        return {"ok": True}
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="https://test") as client:
+        response = await client.post("/clear")
+
+    for cookie_name in ("access_token", "refresh_token", "csrf_token"):
+        header = _refresh_set_cookie(response, cookie_name)
+        assert header, f"expected a Set-Cookie clearing {cookie_name}"
+        assert "secure" in header.lower(), f"{cookie_name} clear is missing Secure: {header}"
+        assert "samesite=none" in header.lower(), f"{cookie_name} clear is missing SameSite=None: {header}"
+
+
 def _deactivate_user(user_id: str) -> None:
     db = SessionLocal()
     try:
