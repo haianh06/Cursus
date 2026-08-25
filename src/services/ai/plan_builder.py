@@ -551,6 +551,55 @@ class PlanBuilder:
         self._db.flush()
         return plan
 
+    def _apply_reflection_insight(
+        self,
+        tasks: list[GeneratedTask],
+        changes: list[dict],
+        source_reflection_id: str,
+    ) -> tuple[list[GeneratedTask], list[dict], str | None]:
+        """Nudges next week's estimates from the confirmed reflection's stats
+        + 5 self-feedback answers via a real LLM call (see
+        `reflection_suggestion.py`) — best-effort, never raises. On any
+        failure or missing/unconfirmed reflection this is a silent no-op:
+        `generate()` must always produce a usable plan even when the LLM is
+        unavailable."""
+        reflection = (
+            self._db.query(models.WeeklyReflection)
+            .filter_by(id=source_reflection_id)
+            .first()
+        )
+        if reflection is None:
+            return tasks, changes, None
+        metrics = reflection.metrics if isinstance(reflection.metrics, dict) else {}
+        if not metrics.get("studentConfirmed"):
+            return tasks, changes, None
+
+        suggestion, _trace = build_next_week_suggestion(
+            facts=metrics.get("facts") or {},
+            answers=metrics.get("answers") or [],
+        )
+        if suggestion is None:
+            return tasks, changes, None
+
+        multiplier = suggestion.estimated_minutes_multiplier
+        if multiplier != 1.0:
+            for task in tasks:
+                adjusted = int(task.estimated_minutes * multiplier)
+                task.estimated_minutes = max(15, (adjusted // 15) * 15)
+            changes = [
+                *changes,
+                {
+                    "adjustment": "reflection_insight",
+                    "field": "estimatedMinutes",
+                    "before": "Ước tính chưa điều chỉnh",
+                    "after": (
+                        "Tăng nhẹ thời lượng" if multiplier > 1.0 else "Giảm nhẹ thời lượng"
+                    ),
+                    "reason": suggestion.summary,
+                },
+            ]
+        return tasks, changes, suggestion.summary
+
     def _capacity_minutes(
         self, availability: list[dict] | None, available_hours: float
     ) -> int:
@@ -689,6 +738,7 @@ def serialize_plan(db: Session, plan: models.WeeklyPlan) -> dict:
         "createdFromReflectionId": goals.get("created_from_reflection_id"),
         "adjustmentsApplied": goals.get("adjustments_applied") or [],
         "reflectionChanges": goals.get("reflection_changes") or [],
+        "reflectionInsight": goals.get("reflection_insight"),
         "availability": goals.get("availability") or [],
         "preferredSessions": goals.get("preferred_sessions") or [],
         "provenance": goals.get("provenance") or prov.ai_suggested(PLANNER_VERSION),
