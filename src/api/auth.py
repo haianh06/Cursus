@@ -1178,22 +1178,16 @@ def _clear_auth_cookies(response: Response, settings: Settings) -> None:
         key=settings.access_token_cookie_name,
         domain=settings.access_token_cookie_domain,
         path=settings.access_token_cookie_path,
-        secure=_access_token_cookie_secure(settings),
-        samesite=settings.access_token_cookie_samesite,
     )
     response.delete_cookie(
         key=settings.refresh_token_cookie_name,
         domain=settings.refresh_token_cookie_domain,
         path=settings.refresh_token_cookie_path,
-        secure=_refresh_token_cookie_secure(settings),
-        samesite=settings.refresh_token_cookie_samesite,
     )
     response.delete_cookie(
         key=settings.csrf_cookie_name,
         domain=settings.access_token_cookie_domain,
         path=settings.access_token_cookie_path,
-        secure=_access_token_cookie_secure(settings),
-        samesite=settings.access_token_cookie_samesite,
     )
 
 
