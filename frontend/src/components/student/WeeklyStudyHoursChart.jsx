@@ -79,7 +79,7 @@ export default function WeeklyStudyHoursChart({ tasks, lang }) {
         <span className="flex items-center gap-1.5 text-fg-muted">
           <span
             className="inline-block w-3 h-0 border-t-2 border-dashed"
-            style={{ borderColor: 'var(--fg-muted)' }}
+            style={{ borderColor: 'var(--text-muted)' }}
             aria-hidden="true"
           />
           {t.planned}
@@ -110,10 +110,10 @@ export default function WeeklyStudyHoursChart({ tasks, lang }) {
                   x2={WIDTH - PAD_RIGHT}
                   y1={y}
                   y2={y}
-                  stroke="var(--line)"
+                  stroke="var(--border-ui)"
                   strokeWidth="1"
                 />
-                <text x={PAD_LEFT - 6} y={y + 3} textAnchor="end" fontSize="9" fill="var(--fg-muted)">
+                <text x={PAD_LEFT - 6} y={y + 3} textAnchor="end" fontSize="9" fill="var(--text-muted)">
                   {v}
                 </text>
               </g>
@@ -127,17 +127,17 @@ export default function WeeklyStudyHoursChart({ tasks, lang }) {
               y={HEIGHT - 8}
               textAnchor="middle"
               fontSize="10"
-              fill="var(--fg-muted)"
+              fill="var(--text-muted)"
             >
               {point.label}
             </text>
           ))}
 
-          <path d={toPath(plannedPoints)} fill="none" stroke="var(--fg-muted)" strokeWidth="2" strokeDasharray="4 3" strokeLinecap="round" />
+          <path d={toPath(plannedPoints)} fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeDasharray="4 3" strokeLinecap="round" />
           <path d={toPath(actualPoints)} fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 
           {plannedPoints.map((p, i) => (
-            <circle key={`planned-${i}`} cx={p.x} cy={p.y} r="3" fill="var(--bg-card)" stroke="var(--fg-muted)" strokeWidth="1.5" />
+            <circle key={`planned-${i}`} cx={p.x} cy={p.y} r="3" fill="var(--bg-card)" stroke="var(--text-muted)" strokeWidth="1.5" />
           ))}
           {actualPoints.map((p, i) => (
             <circle key={`actual-${i}`} cx={p.x} cy={p.y} r="3.5" fill="var(--accent)" />
