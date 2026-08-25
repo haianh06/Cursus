@@ -23,8 +23,8 @@ if str(ROOT) not in sys.path:
 from src.config import get_settings  # noqa: E402
 from src.db import models  # noqa: E402
 from src.db.connection import SessionLocal  # noqa: E402
-from src.services.mock.student_mock_data_service import StudentMockDataService  # noqa: E402
-from src.services.academic.timetable_service import TimetableService, monday_of  # noqa: E402
+from src.services.student_mock_data_service import StudentMockDataService  # noqa: E402
+from src.services.timetable_service import TimetableService, monday_of  # noqa: E402
 from src.services.weekly_plan_service import WeeklyPlanService  # noqa: E402
 
 
