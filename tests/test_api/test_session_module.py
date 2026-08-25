@@ -129,6 +129,44 @@ async def test_expired_refresh_token_is_rejected(client):
 
 
 @pytest.mark.asyncio
+async def test_refresh_failure_clears_stale_auth_cookies(client):
+    """A refresh token that fails for reasons *other than* a revoked/expired
+    session (e.g. the user got deactivated) must still clear the auth
+    cookies. Otherwise the browser keeps the dead access/refresh cookies
+    forever, CsrfProtectionMiddleware keeps requiring a CSRF header on every
+    mutating request because it sees those cookies, and the frontend can
+    never repopulate its in-memory CSRF token because refresh keeps failing
+    the same way -- a permanent "CSRF validation failed" lockout with no
+    way out except manually clearing cookies (found via a live user report).
+    """
+    login_response = await _login(client)
+    assert login_response.status_code == 200
+    user_id = login_response.json()["user"]["id"]
+    _deactivate_user(user_id)
+
+    refresh_response = await client.post("/api/v1/auth/refresh")
+    assert refresh_response.status_code == 401
+
+    for cookie_name in (REFRESH_COOKIE_NAME, "access_token", "csrf_token"):
+        cleared = _refresh_set_cookie(refresh_response, cookie_name)
+        assert cleared, f"expected a Set-Cookie clearing {cookie_name}"
+        assert "Max-Age=0" in cleared
+
+
+def _deactivate_user(user_id: str) -> None:
+    db = SessionLocal()
+    try:
+        from src.db.models import User
+
+        user = db.query(User).filter_by(id=user_id).first()
+        assert user is not None
+        user.is_active = False
+        db.commit()
+    finally:
+        db.close()
+
+
+@pytest.mark.asyncio
 async def test_remember_me_extends_session_and_cookie_lifetime(client):
     login_response = await _login(client, remember_me=True)
     assert login_response.status_code == 200
@@ -245,8 +283,8 @@ def _shorten_session_expiry(session_id: str) -> datetime:
         db.close()
 
 
-def _refresh_set_cookie(response) -> str:
+def _refresh_set_cookie(response, cookie_name: str = REFRESH_COOKIE_NAME) -> str:
     for value in response.headers.get_list("set-cookie"):
-        if value.startswith(f"{REFRESH_COOKIE_NAME}="):
+        if value.startswith(f"{cookie_name}="):
             return value
     return ""
