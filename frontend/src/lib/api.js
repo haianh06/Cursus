@@ -1,12 +1,21 @@
 /**
  * API client — cookie session + CSRF (no JWT in localStorage).
- * Auth cookies are HttpOnly (set by backend); CSRF uses double-submit header.
+ * Auth cookies are HttpOnly (set by backend).
+ *
+ * CSRF is double-submit, but the token can't be recovered from the cookie
+ * client-side in production: the frontend (vercel.app) and backend
+ * (onrender.com) are different registrable domains, so the csrf_token
+ * cookie — set by a response FROM the API's domain — is stored scoped to
+ * that domain and is invisible to `document.cookie` running on the
+ * frontend's origin, no matter what SameSite says. The backend also echoes
+ * the same value in the JSON body of every session-establishing/-restoring
+ * response (login, demo-session, google-login, refresh, /auth/me); we hold
+ * that in memory here and attach it ourselves instead of reading the cookie.
  */
 
 const API_BASE_URL =
   import.meta.env.VITE_API_URL ?? 'http://localhost:8000/api/v1';
 
-const CSRF_COOKIE = 'csrf_token';
 const CSRF_HEADER = 'X-CSRF-Token';
 const LEGACY_TOKEN_KEY = 'cursus_access_token';
 
@@ -37,11 +46,14 @@ function errorMessageFromPayload(payload, status) {
   return `HTTP ${status}`;
 }
 
-function readCookie(name) {
-  const match = document.cookie.match(
-    new RegExp(`(?:^|; )${name.replace(/[$()*+.?[\\\]^{|}]/g, '\\$&')}=([^;]*)`),
-  );
-  return match ? decodeURIComponent(match[1]) : null;
+let csrfToken = null;
+
+/** Every auth response that (re)issues the CSRF cookie also echoes its
+ * value in the body under this key — capture it whenever we see it. */
+function captureCsrfToken(payload) {
+  if (payload && typeof payload.csrf_token === 'string' && payload.csrf_token) {
+    csrfToken = payload.csrf_token;
+  }
 }
 
 function isUnsafeMethod(method) {
@@ -50,8 +62,7 @@ function isUnsafeMethod(method) {
 
 function applyCsrfHeader(headers, method) {
   if (!isUnsafeMethod(method)) return;
-  const csrf = readCookie(CSRF_COOKIE);
-  if (csrf) headers.set(CSRF_HEADER, csrf);
+  if (csrfToken) headers.set(CSRF_HEADER, csrfToken);
 }
 
 const REQUEST_TIMEOUT_MS = 15000;
@@ -88,7 +99,11 @@ let refreshInFlight = null;
 async function refreshSession() {
   if (!refreshInFlight) {
     refreshInFlight = rawFetch('/auth/refresh', { method: 'POST', body: {} })
-      .then((response) => response.ok)
+      .then(async (response) => {
+        if (!response.ok) return false;
+        captureCsrfToken(await parsePayload(response));
+        return true;
+      })
       .finally(() => {
         refreshInFlight = null;
       });
@@ -136,6 +151,7 @@ async function request(
   }
 
   const payload = await parsePayload(response);
+  if (response.ok) captureCsrfToken(payload);
   if (!response.ok) {
     const message = errorMessageFromPayload(payload, response.status);
     const shouldNotify =
@@ -344,6 +360,7 @@ export async function logout() {
       suppressAuthHandler: true,
     });
   } finally {
+    csrfToken = null;
     try {
       localStorage.removeItem(LEGACY_TOKEN_KEY);
     } catch {
