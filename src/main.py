@@ -65,7 +65,7 @@ app = FastAPI(
 
 settings = get_settings()
 configure_logging(settings)
-register_exception_handlers(app)
+register_exception_handlers(app, settings)
 # Inner middleware first; CORS must be outermost so OPTIONS preflight
 # never falls through to route handlers as 405 Method Not Allowed.
 app.add_middleware(SecurityHeadersMiddleware)
