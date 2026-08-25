@@ -261,9 +261,10 @@ docker compose down
 ```
 
 Sửa code frontend khi container đang chạy sẽ tự reload (bind-mount + Vite HMR), không
-cần rebuild. Backend **không** bind-mount source (chỉ `./data`) và chạy `uvicorn` không
-có `--reload` — sửa code backend cần `docker compose up --build -d backend` lại, hoặc
-chạy backend ngoài Docker theo mục 7 khi đang code nhiều.
+cần rebuild. Backend cũng bind-mount `./src:/app/src` và `docker_entrypoint.py` tự thêm
+`uvicorn --reload --reload-dir /app/src` ở `APP_ENV=development` — sửa file trong `src/`
+tự reload, không cần rebuild. Đổi `requirements.txt`, `scripts/`, hoặc file ngoài `src/`
+thì vẫn cần `docker compose up --build -d backend` lại.
 
 ## 5. Test & Lint
 
