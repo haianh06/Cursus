@@ -4,8 +4,8 @@ import glob
 revs = {}
 for f in glob.glob("migrations/versions/*.py"):
     content = open(f, encoding="utf-8").read()
-    m = re.search(r'^revision\s*:.*=\s*"([^"]+)"', content, re.M)
-    d = re.search(r'^down_revision\s*:.*=\s*"([^"]+)"', content, re.M)
+    m = re.search(r'^revision\s*:.*=\s*[\'"]([^\'"]+)[\'"]', content, re.M)
+    d = re.search(r'^down_revision\s*:.*=\s*[\'"]([^\'"]+)[\'"]', content, re.M)
     if m:
         revs[m.group(1)] = (d.group(1) if d else None, f)
 
