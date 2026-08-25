@@ -5,7 +5,6 @@ dev server -- this suite must pass on any machine/CI)."""
 from datetime import UTC, datetime
 
 import pytest
-
 from fastapi import Depends
 from sqlalchemy.orm import Session
 

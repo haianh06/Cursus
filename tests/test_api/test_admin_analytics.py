@@ -11,7 +11,6 @@ import pytest
 
 from src.db.connection import SessionLocal
 from src.db.models import (
-    Course,
     CourseSection,
     Enrollment,
     EnrollmentStatus,
