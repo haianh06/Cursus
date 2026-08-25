@@ -80,6 +80,7 @@ def _setup_semester_for_student(db, student_id: str, course_codes: list[str]) ->
     from src.db import models
     from src.repositories.semester_repository import SemesterRepository
     from src.services.academic.semester_service import SemesterService
+    from src.services.mock.real_curriculum_service import _sandbox_organization_id
 
     courses = (
         db.query(models.Course)
@@ -111,6 +112,7 @@ def _setup_semester_for_student(db, student_id: str, course_codes: list[str]) ->
             weekly_slots=weekly_slots,
             exceptions=[],
             require_term=False,
+            organization_id=_sandbox_organization_id(db),
         )
     except ValueError:
         logger.exception("semester_setup_failed student_id=%s", student_id)
