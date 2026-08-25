@@ -1,20 +1,16 @@
-"""Adaptive weekly reflection (Blueprint §2.3 and the §2 question table).
+"""Weekly reflection (Blueprint §2.3).
 
 Reflect is not an emoji picker. The flow is:
 
 1. show the student the *real* facts from their task events (no judgement),
-2. pick the question set from the completion band,
-3. let them explain the cause in their own words,
-4. let them pick **structured** adjustments,
-5. build a memory preview they can edit/delete before confirming,
-6. only confirmed adjustments reach next week's plan.
-
-Question sets by band (Blueprint §2 table):
-
-    >= 80%   what kept your rhythm?          keep buffer / keep slots / repeat split
-    30-79%   what drifted most and why?      increase estimate / split / change day
-    <  30%   biggest obstacle this week?     reduce load / one priority / ask for help
-    always   what to prioritise next week?   free-text
+2. ask the same fixed self-feedback questions every week — 5 four-option
+   scales (completion, focus, stress, time management, motivation) plus one
+   optional free-text note,
+3. build a memory preview they can edit/delete before confirming,
+4. only a *confirmed* reflection can feed next week's plan — and when it
+   does, an LLM reads these stats + answers to draft a short suggestion and
+   a bounded duration nudge (see `reflection_suggestion.py`), rather than
+   the student picking fixed rule-based adjustment codes.
 """
 
 from __future__ import annotations
@@ -29,27 +25,17 @@ from sqlalchemy.orm import Session
 from src.db import models
 from src.schemas.reflection import LlmReflectionSummaryPayload
 from src.services.ai.plan_builder import SUPPORTED_ADJUSTMENTS
-from src.services.ai.weekly_plan_engine import PLAN_KIND as WEEKLY_GOAL_PLAN_KIND
 from src.services.core import provenance as prov
 from src.services.core.llm import get_llm, has_configured_llm
 
 logger = logging.getLogger(__name__)
 
-REFLECTION_VERSION = "reflection_v1"
+REFLECTION_VERSION = "reflection_v2"
 REFLECTION_PROMPT_PATH = Path(__file__).resolve().parents[2] / "prompts" / "reflection_v1.md"
 
 BAND_HIGH = "high"        # >= 80%
 BAND_MID = "mid"          # 30-79%
 BAND_LOW = "low"          # < 30%
-
-REASON_CODES: tuple[tuple[str, str], ...] = (
-    ("underestimated_time", "Ước tính thiếu thời gian"),
-    ("unclear_requirements", "Chưa rõ yêu cầu đề bài"),
-    ("blocked_by_group", "Phụ thuộc nhóm/bạn học"),
-    ("competing_deadline", "Bị deadline môn khác chen ngang"),
-    ("low_energy", "Sức khoẻ / năng lượng thấp"),
-    ("procrastination", "Trì hoãn, khó bắt đầu"),
-)
 
 
 def band_for(completion_rate: float) -> str:
@@ -60,153 +46,87 @@ def band_for(completion_rate: float) -> str:
     return BAND_LOW
 
 
-def _adjustment(code: str) -> dict:
-    return {"code": code, "label": SUPPORTED_ADJUSTMENTS[code]}
-
-
-# Legacy band-based question set — still used for assignment-driven
-# (Gate2/PlanBuilder) plans, whose `apply_adjustments` vocabulary
-# (`split_diagram_tasks` etc.) only makes sense against that fixed demo
-# assignment's task titles. Weekly-goal plans (StudentPlanner, a46db63
-# contract) use the fixed 7-question catalog below instead.
-QUESTION_SETS: dict[str, list[dict]] = {
-    BAND_HIGH: [
-        {
-            "id": "q_success",
-            "type": "text",
-            "prompt": "Điều gì giúp bạn giữ được nhịp tuần này?",
-            "placeholder": "VD: giữ Chủ nhật làm ngày dự phòng nên không bị dồn.",
-            "adjustments": [
-                _adjustment("keep_buffer_day"),
-                _adjustment("keep_time_slots"),
-                _adjustment("repeat_task_split"),
-            ],
-        }
-    ],
-    BAND_MID: [
-        {
-            "id": "q_variance",
-            "type": "text_with_reason",
-            "prompt": "Việc nào lệch kế hoạch nhất và vì sao?",
-            "placeholder": "VD: sơ đồ use-case mất gấp đôi thời gian dự kiến.",
-            "reasonCodes": [
-                {"code": code, "label": label} for code, label in REASON_CODES
-            ],
-            "adjustments": [
-                _adjustment("increase_diagram_estimate"),
-                _adjustment("split_diagram_tasks"),
-                _adjustment("keep_buffer_day"),
-            ],
-        }
-    ],
-    BAND_LOW: [
-        {
-            "id": "q_obstacle",
-            "type": "text_with_reason",
-            "prompt": "Trở ngại lớn nhất tuần này là gì?",
-            "placeholder": "VD: bị ốm hai ngày nên không mở bài ra được.",
-            "reasonCodes": [
-                {"code": code, "label": label} for code, label in REASON_CODES
-            ],
-            "adjustments": [
-                _adjustment("reduce_load"),
-                _adjustment("single_priority"),
-                _adjustment("request_help"),
-            ],
-        }
-    ],
-}
-
-UNIVERSAL_QUESTION: dict = {
-    "id": "q_next_priority",
-    "type": "text",
-    "prompt": "Tuần sau bạn muốn ưu tiên điều gì?",
-    "placeholder": "VD: nộp Part 1 sớm một ngày để còn thời gian sửa.",
-    "adjustments": [],
-}
-
-
-# a46db63 fixed 7-question catalog — same questions every week regardless of
-# completion band (unlike the old band-based single-question set above). Only
-# used for weekly-goal (StudentPlanner) plans. Order is significant:
-# [accomplishment, time_spent, went_well, went_poorly, biggest_lesson,
-# stop_start_continue, next_week_outcomes].
-ACCOMPLISHMENT_CHOICES: tuple[tuple[str, str], ...] = (
-    ("fully", "Hoàn thành đầy đủ"),
-    ("partially", "Hoàn thành một phần"),
-    ("not_at_all", "Chưa hoàn thành"),
+# Fixed self-feedback catalog — the same 6 questions every week regardless of
+# completion band or plan kind (replaces the old band-based single-question
+# set and the separate a46db63 7-question catalog, both of which fed a fixed
+# rule-based "adjustment code" vocabulary that the next-week LLM suggestion
+# in `reflection_suggestion.py` now supersedes). Each *_level question is a
+# 4-point low-to-high scale; `self_notes` is the only free-text field.
+QUESTION_SCALES: tuple[tuple[str, str, tuple[tuple[str, str], ...]], ...] = (
+    (
+        "accomplishment_level",
+        "Mức độ hoàn thành kế hoạch tuần này?",
+        (
+            ("none", "Hầu như không hoàn thành gì"),
+            ("partial", "Hoàn thành một phần nhỏ"),
+            ("mostly", "Hoàn thành phần lớn"),
+            ("full", "Hoàn thành đầy đủ, đúng kế hoạch"),
+        ),
+    ),
+    (
+        "focus_level",
+        "Mức độ tập trung khi học tuần này?",
+        (
+            ("very_low", "Rất khó tập trung, hay xao nhãng"),
+            ("low", "Thỉnh thoảng mất tập trung"),
+            ("high", "Khá tập trung phần lớn thời gian"),
+            ("very_high", "Tập trung cao độ, hiếm khi xao nhãng"),
+        ),
+    ),
+    (
+        "stress_level",
+        "Mức độ căng thẳng / áp lực tuần này?",
+        (
+            ("very_high", "Rất căng thẳng, quá tải"),
+            ("high", "Khá căng thẳng"),
+            ("low", "Hơi căng thẳng nhưng vẫn ổn"),
+            ("very_low", "Thoải mái, không áp lực"),
+        ),
+    ),
+    (
+        "time_management_level",
+        "Bạn quản lý thời gian tuần này thế nào?",
+        (
+            ("poor", "Thường xuyên trễ deadline / dồn việc"),
+            ("fair", "Đôi khi bị dồn việc"),
+            ("good", "Quản lý khá tốt, ít bị dồn"),
+            ("excellent", "Đúng giờ, chủ động sắp xếp tốt"),
+        ),
+    ),
+    (
+        "motivation_level",
+        "Động lực / năng lượng học tập tuần này?",
+        (
+            ("very_low", "Rất thiếu động lực, uể oải"),
+            ("low", "Động lực thấp, hay trì hoãn"),
+            ("high", "Động lực khá tốt"),
+            ("very_high", "Rất có động lực, hào hứng học"),
+        ),
+    ),
 )
 
-STOP_START_CONTINUE_CHOICES: tuple[tuple[str, str], ...] = (
-    ("reduce_hours", "Giảm tải: cắt khoảng 20% thời lượng mỗi việc"),
-    ("split_longest_task", "Tách việc dài nhất thành hai phần"),
-)
+SELF_NOTES_QUESTION_ID = "self_notes"
 
 
-def _question_catalog(facts: dict) -> list[dict]:
-    return [
+def _question_catalog(facts: dict) -> list[dict]:  # noqa: ARG001 - facts kept for signature stability
+    questions = [
         {
-            "id": "accomplishment",
+            "id": question_id,
             "type": "single_choice",
-            "prompt": "Bạn có hoàn thành mục tiêu chính tuần này không?",
-            "choices": [{"code": code, "label": label} for code, label in ACCOMPLISHMENT_CHOICES],
-        },
-        {
-            "id": "time_spent",
-            "type": "insight",
-            "prompt": "Thời gian thực tế bạn đã dùng",
-            "breakdown": [
-                {
-                    "taskId": task["taskId"],
-                    "title": task["title"],
-                    "estimatedMinutes": task["estimatedMinutes"],
-                    "actualMinutes": task["actualMinutes"],
-                }
-                for task in facts.get("overEstimateTasks", [])
-            ] or None,
-        },
-        {
-            "id": "went_well",
-            "type": "text",
-            "prompt": "Điều gì đã diễn ra tốt tuần này?",
-            "placeholder": "VD: giữ Chủ nhật làm ngày dự phòng nên không bị dồn.",
-        },
-        {
-            "id": "went_poorly",
-            "type": "text",
-            "allowReason": True,
-            "prompt": "Điều gì chưa tốt / lệch kế hoạch nhất?",
-            "placeholder": "VD: sơ đồ use-case mất gấp đôi thời gian dự kiến.",
-            "reasonCodes": [{"code": code, "label": label} for code, label in REASON_CODES],
-        },
-        {
-            "id": "biggest_lesson",
-            "type": "text",
-            "prompt": "Bài học lớn nhất tuần này là gì?",
-            "placeholder": "VD: nên bắt đầu sớm hơn với phần cần nhiều thời gian.",
-        },
-        {
-            "id": "stop_start_continue",
-            "type": "grouped_multi_choice",
-            "prompt": "Bạn muốn điều chỉnh gì cho tuần sau?",
-            "groups": [
-                {
-                    "label": "Điều chỉnh kế hoạch",
-                    "choices": [
-                        {"code": code, "label": label}
-                        for code, label in STOP_START_CONTINUE_CHOICES
-                    ],
-                }
-            ],
-        },
-        {
-            "id": "next_week_outcomes",
-            "type": "outcome_list",
-            "prompt": "Tuần sau bạn muốn đạt được những gì?",
-            "placeholder": "VD: nộp Part 1 sớm một ngày để còn thời gian sửa.",
-            "maxItems": 3,
-        },
+            "prompt": prompt,
+            "choices": [{"code": code, "label": label} for code, label in choices],
+        }
+        for question_id, prompt, choices in QUESTION_SCALES
     ]
+    questions.append(
+        {
+            "id": SELF_NOTES_QUESTION_ID,
+            "type": "text",
+            "prompt": "Bạn còn nhận xét gì về bản thân trong tuần vừa qua không?",
+            "placeholder": "VD: Tuần này mình hay bị phân tâm bởi điện thoại, cần đặt chế độ tập trung.",
+        }
+    )
+    return questions
 
 
 class ReflectionEngine:
