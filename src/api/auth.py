@@ -9,6 +9,7 @@ from fastapi import (
     Response,
     status,
 )
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from src.config import Settings, get_settings
@@ -923,49 +924,47 @@ async def change_email(
     )
 
 
+def _refresh_unauthorized(request: Request, settings: Settings, detail: str) -> JSONResponse:
+    # A dead/expired refresh-token cookie can otherwise sit in the browser
+    # indefinitely (its own Max-Age hasn't elapsed even though the JWT
+    # inside has) -- CsrfProtectionMiddleware sees that cookie and starts
+    # requiring a CSRF header on every mutating request, but the frontend
+    # can never repopulate its in-memory CSRF token because every refresh
+    # keeps failing this same way. That permanently locks the browser out of
+    # login/demo-session/etc. behind a "CSRF validation failed" 403 until
+    # cookies are cleared by hand, so every failure path here must clear them.
+    #
+    # This returns a JSONResponse directly instead of `raise HTTPException`:
+    # FastAPI's registered HTTPException handler (src/security/
+    # exception_handlers.py) builds a brand-new JSONResponse from the raised
+    # exception and never sees the `response` object injected into this
+    # function, so cookie mutations made on it are silently discarded the
+    # moment this raises instead of returning.
+    error = JSONResponse(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        content={"detail": detail, "request_id": getattr(request.state, "request_id", None)},
+    )
+    _clear_auth_cookies(error, settings)
+    return error
+
+
 @router.post("/refresh", response_model=RefreshResponse)
 async def refresh(
     request: Request,
     response: Response,
     auth_service: AuthService = Depends(get_auth_service),
     settings: Settings = Depends(get_settings),
-) -> RefreshResponse:
+) -> RefreshResponse | JSONResponse:
     refresh_token = _extract_refresh_token(request, settings)
     if not refresh_token:
-        # An access-token cookie with no matching refresh-token cookie is
-        # still enough to make CsrfProtectionMiddleware start requiring a
-        # CSRF header (see the exception handler below) — clear whatever
-        # auth cookies remain so the next request isn't stuck the same way.
-        _clear_auth_cookies(response, settings)
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Missing refresh token",
-        )
+        return _refresh_unauthorized(request, settings, "Missing refresh token")
 
     try:
         result = await auth_service.refresh_access_token(refresh_token)
-    except (UnauthorizedError, InactiveUserError) as exc:
-        # A dead/expired refresh token cookie can otherwise sit in the
-        # browser indefinitely (its own Max-Age hasn't elapsed even though
-        # the JWT inside has) -- CsrfProtectionMiddleware sees that cookie
-        # and starts requiring a CSRF header on every mutating request, but
-        # the frontend can never repopulate its in-memory CSRF token because
-        # every refresh keeps failing this same way. That permanently locks
-        # the browser out of login/demo-session/etc. behind a "CSRF
-        # validation failed" 403 until cookies are cleared by hand. Clearing
-        # here (same as the SessionError branch below) is the one place we
-        # still hold a live `response` to fix that.
-        _clear_auth_cookies(response, settings)
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid refresh token",
-        ) from exc
-    except SessionError as exc:
-        _clear_auth_cookies(response, settings)
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid refresh session",
-        ) from exc
+    except (UnauthorizedError, InactiveUserError):
+        return _refresh_unauthorized(request, settings, "Invalid refresh token")
+    except SessionError:
+        return _refresh_unauthorized(request, settings, "Invalid refresh session")
 
     csrf_token = _set_auth_cookies(
         response,
