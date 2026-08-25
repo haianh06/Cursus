@@ -15,6 +15,23 @@ logger = logging.getLogger(__name__)
 
 SAFE_METHODS = {"GET", "HEAD", "OPTIONS", "TRACE"}
 
+# Session-bootstrap endpoints: a client can legitimately call these with a
+# stale/expired auth cookie still present but no CSRF token yet (that token
+# can only ever be *obtained* from one of these same endpoints' response
+# body — see auth.py's `csrf_token` field). Requiring a CSRF header here is
+# a deadlock, not a defense: forging a cross-site call to one of these only
+# gets an attacker a session *they already control* (login CSRF), not access
+# to the victim's data, since the response is never visible to the attacker
+# page. Real CSRF protection still applies to every other authenticated,
+# state-changing endpoint once a session exists.
+CSRF_EXEMPT_PATHS = {
+    "/api/v1/auth/login",
+    "/api/v1/auth/register",
+    "/api/v1/auth/refresh",
+    "/api/v1/auth/demo-session",
+    "/api/v1/auth/google-login",
+}
+
 
 class RequestContextMiddleware(BaseHTTPMiddleware):
     async def dispatch(
@@ -98,6 +115,8 @@ class CsrfProtectionMiddleware(BaseHTTPMiddleware):
         if request.method in SAFE_METHODS:
             return False
         if request.headers.get("authorization", "").startswith("Bearer "):
+            return False
+        if request.url.path in CSRF_EXEMPT_PATHS:
             return False
         return any(
             cookie_name in request.cookies
