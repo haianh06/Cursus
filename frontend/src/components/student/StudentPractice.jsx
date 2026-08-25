@@ -110,7 +110,10 @@ export default function StudentPractice() {
   const { lang } = useLanguage();
   const [courses, setCourses] = useState([]);
   const [courseCode, setCourseCode] = useState('');
-  const [weekNumber, setWeekNumber] = useState(currentIsoWeekNumber());
+  // Practice weeks only run 1-10 (see the Next-week button below, which
+  // already clamps at 10) — the calendar's raw ISO week is often past that
+  // by the time a student opens this page, so clamp the initial value too.
+  const [weekNumber, setWeekNumber] = useState(() => Math.min(10, currentIsoWeekNumber()));
   const [practiceSet, setPracticeSet] = useState(null);
   const [loading, setLoading] = useState(false);
   const [requesting, setRequesting] = useState(false);
