@@ -138,10 +138,22 @@ async def test_refresh_failure_clears_stale_auth_cookies(client):
     never repopulate its in-memory CSRF token because refresh keeps failing
     the same way -- a permanent "CSRF validation failed" lockout with no
     way out except manually clearing cookies (found via a live user report).
+
+    Uses a throwaway user (not the shared `student.demo@example.test`
+    fixture other tests in this file log in as) since it gets permanently
+    deactivated below.
     """
-    login_response = await _login(client)
+    from tests.support.semester_practice_fixtures import PASSWORD, ensure_org, ensure_user
+
+    org_id = ensure_org("refresh-lockout-org", "Refresh Lockout Org")
+    email = f"refresh.lockout.{uuid.uuid4().hex}@example.test"
+    user_id = ensure_user(email=email, org_id=org_id, role=UserRoleForTest.STUDENT, password=PASSWORD)
+
+    login_response = await client.post(
+        "/api/v1/auth/login", json={"email": email, "password": PASSWORD}
+    )
     assert login_response.status_code == 200
-    user_id = login_response.json()["user"]["id"]
+
     _deactivate_user(user_id)
 
     refresh_response = await client.post("/api/v1/auth/refresh")
