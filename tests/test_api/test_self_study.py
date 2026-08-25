@@ -3,16 +3,23 @@
 from __future__ import annotations
 
 import uuid
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta
 
 import pytest
 
 from src.db.models import UserRole
+from src.services.academic.self_study_service import _now
 from tests.support.semester_practice_fixtures import auth_headers, ensure_org, ensure_user, login
 
 
 def _now_naive() -> datetime:
-    return datetime.now(UTC).replace(tzinfo=None)
+    # ScheduleBlock.start_time/end_time are naive local wall-clock time, not
+    # naive UTC -- see Timetable.jsx's parseLocal()/toIsoLocal(), which both
+    # deliberately round-trip local Y/M/D/H/M components with no timezone
+    # conversion. Building fixtures from true UTC here would silently drift
+    # by the app's fixed +7h offset from whatever self_study_service.py
+    # actually compares against, so this reuses that same helper.
+    return _now()
 
 
 async def _create_self_study_block(client, token, *, start: datetime, end: datetime) -> str:
