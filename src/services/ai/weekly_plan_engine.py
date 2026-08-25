@@ -26,6 +26,7 @@ from src.db import models
 from src.repositories.chunk_repository import ChunkRepository
 from src.schemas.plan import LlmPlanPayload
 from src.services.academic.timetable_service import monday_of
+from src.services.ai.reflection_suggestion import build_next_week_suggestion
 from src.services.core import provenance as prov
 from src.services.core.llm import get_llm, has_configured_llm
 from src.services.rag.retrieval_service import RetrievalService
@@ -390,60 +391,6 @@ def generate(
     plan.goals = goals
     db.flush()
     return plan
-
-
-def _reduce_hours(tasks: list[GeneratedTask]) -> tuple[list[GeneratedTask], dict]:
-    for task in tasks:
-        reduced = int(task.estimated_minutes * 0.8)
-        snapped = max(15, (reduced // 15) * 15)
-        task.estimated_minutes = snapped
-    return tasks, {
-        "adjustment": "reduce_hours",
-        "field": "estimatedMinutes",
-        "reason": "Bạn chọn giảm tải: mỗi việc giảm khoảng 20% thời lượng.",
-    }
-
-
-def _split_longest_task(tasks: list[GeneratedTask]) -> tuple[list[GeneratedTask], dict]:
-    if not tasks:
-        return tasks, {}
-    longest = max(tasks, key=lambda t: t.estimated_minutes)
-    half = max(15, (longest.estimated_minutes // 2 // 15) * 15)
-    result = []
-    for task in tasks:
-        if task is not longest:
-            result.append(task)
-            continue
-        result.append(
-            GeneratedTask(
-                key=f"{task.key}_1",
-                title=f"{task.title} (phần 1)",
-                estimated_minutes=half,
-                weekday=task.weekday,
-                priority=task.priority,
-                source_refs=task.source_refs,
-                source_fact=task.source_fact,
-                suggestion_reason=task.suggestion_reason,
-            )
-        )
-        result.append(
-            GeneratedTask(
-                key=f"{task.key}_2",
-                title=f"{task.title} (phần 2)",
-                estimated_minutes=half,
-                weekday=min(6, task.weekday + 1),
-                priority=task.priority,
-                source_refs=task.source_refs,
-                source_fact=task.source_fact,
-                suggestion_reason=task.suggestion_reason,
-            )
-        )
-    return result, {
-        "adjustment": "split_longest_task",
-        "field": "tasks",
-        "taskKey": longest.key,
-        "reason": "Bạn chọn tách việc dài nhất tuần trước thành hai phần.",
-    }
 
 
 def regenerate_from_reflection(
