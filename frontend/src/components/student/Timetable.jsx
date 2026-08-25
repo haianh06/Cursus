@@ -78,6 +78,11 @@ function toLocalInputValue(date) {
 const MODAL_PANEL_WIDTH = 320;
 const MODAL_PANEL_EST_HEIGHT = 420;
 const MODAL_PANEL_MARGIN = 12;
+// The app's topbar (App.jsx, `h-14`) is a fixed 56px header sitting above
+// this fixed-position popup — clamping the popup's top edge to the same
+// 12px margin used elsewhere let it render partly hidden underneath that
+// header when the clicked block was near the top of the viewport.
+const MODAL_PANEL_TOP_SAFE = 64;
 
 /**
  * Anchors the create/edit popup next to the calendar cell/block the student
@@ -91,7 +96,7 @@ const MODAL_PANEL_MARGIN = 12;
 function modalPanelStyle(anchorPos) {
   const base = {
     width: MODAL_PANEL_WIDTH,
-    maxHeight: `calc(100vh - ${MODAL_PANEL_MARGIN * 2}px)`,
+    maxHeight: `calc(100vh - ${MODAL_PANEL_TOP_SAFE + MODAL_PANEL_MARGIN}px)`,
   };
   if (typeof window === 'undefined' || !anchorPos) {
     return { ...base, left: '50%', top: '50%', transform: 'translate(-50%, -50%)' };
@@ -103,11 +108,11 @@ function modalPanelStyle(anchorPos) {
     Math.max(vw - MODAL_PANEL_WIDTH - MODAL_PANEL_MARGIN, MODAL_PANEL_MARGIN),
   );
   const spaceBelow = vh - anchorPos.y;
-  const spaceAbove = anchorPos.y;
+  const spaceAbove = anchorPos.y - MODAL_PANEL_TOP_SAFE;
   const opensBelow = spaceBelow >= MODAL_PANEL_EST_HEIGHT + MODAL_PANEL_MARGIN || spaceBelow >= spaceAbove;
   const top = opensBelow
-    ? Math.min(anchorPos.y + MODAL_PANEL_MARGIN, Math.max(vh - MODAL_PANEL_MARGIN, MODAL_PANEL_MARGIN))
-    : Math.max(anchorPos.y - MODAL_PANEL_EST_HEIGHT - MODAL_PANEL_MARGIN, MODAL_PANEL_MARGIN);
+    ? Math.min(anchorPos.y + MODAL_PANEL_MARGIN, Math.max(vh - MODAL_PANEL_MARGIN, MODAL_PANEL_TOP_SAFE))
+    : Math.max(anchorPos.y - MODAL_PANEL_EST_HEIGHT - MODAL_PANEL_MARGIN, MODAL_PANEL_TOP_SAFE);
   return { ...base, left, top };
 }
 
