@@ -700,7 +700,15 @@ export default function Timetable({ initialView = 'week', initialAnchor = null, 
         </>
       )}
 
-      {modal && (
+      {modal && createPortal(
+        // Portalled straight onto <body>: this component renders inside an
+        // `animate-fade-up` ancestor (see StudentPlanner.jsx), and *any*
+        // ancestor with a non-`none` transform (even a completed
+        // animation's resting identity matrix) makes `position: fixed`
+        // descendants position relative to that ancestor instead of the
+        // real viewport — the popup was computing/clamping against the
+        // wrong coordinate space entirely, landing far off-screen for any
+        // block below the fold (found via a live user report).
         <div className="fixed inset-0 z-50 bg-black/40" onClick={() => !saving && setModal(null)}>
           <div
             className="card p-5 space-y-3 absolute overflow-y-auto"
@@ -760,7 +768,8 @@ export default function Timetable({ initialView = 'week', initialAnchor = null, 
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
 
       {scopePrompt && (
