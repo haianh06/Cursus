@@ -10,17 +10,18 @@ import {
   deleteAdminCourse,
   getAdminKpi,
   updatePreferences,
+  listSemesters,
 } from '../lib/api';
 
 /**
  * Instructor + Admin data plumbing — talks to the real backend
  * (`src/api/instructor.py`, `src/api/admin.py`) via `lib/api.js`.
  *
- * This provider is mounted for every session (including anonymous / student
- * ones, see App.jsx) because the notification bell + mascot toggle it also
- * hosts are shared UI chrome. Only `user.role === 'instructor' | 'admin'`
- * triggers any network call — a student or logged-out visitor never hits
- * these authenticated, role-gated endpoints.
+ * This provider is mounted for every session (including anonymous ones, see
+ * App.jsx) because the notification bell + mascot toggle it also hosts are
+ * shared UI chrome. Only `user.role === 'instructor' | 'admin' | 'student'`
+ * triggers any network call — a logged-out visitor never hits these
+ * authenticated, role-gated endpoints.
  */
 
 // Local-only UI chrome that has no backend equivalent (no notifications API
@@ -50,6 +51,10 @@ export function CursusProvider({ user, children }) {
   // Admin slice
   const [courses, setCourses] = useState([]);
   const [kpi, setKpi] = useState(null);
+
+  // Student slice — active semester, for the topbar's "Học kỳ ... • Tuần ..."
+  // indicator (previously a hardcoded placeholder string, see App.jsx Topbar).
+  const [activeSemester, setActiveSemester] = useState(null);
 
   // Shared UI chrome (no backend endpoint yet)
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
@@ -98,14 +103,38 @@ export function CursusProvider({ user, children }) {
           });
       }
 
-      // Student / anonymous — this context has nothing to load; make sure
-      // a previous instructor/admin session's data doesn't leak across a
-      // role switch on a shared device.
+      if (role === 'student') {
+        if (!silent) setLoading(true);
+        setLoadError(null);
+        setClassInfo(null);
+        setAlerts([]);
+        setQueue([]);
+        setCourses([]);
+        setKpi(null);
+        return listSemesters()
+          .then((data) => {
+            const semesters = data?.semesters ?? [];
+            const active = semesters.find((s) => s.id === data?.active_id) ?? semesters.find((s) => s.is_active) ?? null;
+            setActiveSemester(active);
+          })
+          .catch((err) => {
+            setLoadError(err);
+            throw err;
+          })
+          .finally(() => {
+            if (!silent) setLoading(false);
+          });
+      }
+
+      // Anonymous — this context has nothing to load; make sure a previous
+      // instructor/admin/student session's data doesn't leak across a role
+      // switch on a shared device.
       setClassInfo(null);
       setAlerts([]);
       setQueue([]);
       setCourses([]);
       setKpi(null);
+      setActiveSemester(null);
       setLoading(false);
       setLoadError(null);
       return Promise.resolve();
@@ -199,6 +228,8 @@ export function CursusProvider({ user, children }) {
         addCourse,
         deleteCourse,
         kpi,
+        // Student
+        activeSemester,
         // Shared
         showMascot,
         toggleMascot,

@@ -428,6 +428,18 @@ export function toDateInputValue(date) {
   return `${year}-${month}-${day}`;
 }
 
+/**
+ * Term-relative week number, mirroring `academic_week_number()` in
+ * `src/services/ai/weekly_plan_engine.py`: weeks since the semester's raw
+ * `start_date`, 1-indexed and floored at 1.
+ */
+export function academicWeekNumber(startDate, today = new Date()) {
+  const start = new Date(`${startDate}T00:00:00`);
+  const monday = startOfMonday(today);
+  const days = Math.round((monday - start) / 86400000);
+  return Math.max(1, Math.floor(days / 7) + 1);
+}
+
 /** ISO week number for the Monday-based week (aligned with backend). */
 export function currentIsoWeekNumber(date = new Date()) {
   const monday = startOfMonday(date);

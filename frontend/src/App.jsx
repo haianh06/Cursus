@@ -12,6 +12,7 @@ import CursusMascot from './components/shared/CursusMascot';
 import { CursusProvider, useCursus } from './context/CursusContext';
 import { ROLE_LABEL, ROLE_DESC, DEFAULT_ROUTE } from './constants/roles';
 import { getMe, logout as apiLogout, setAuthFailureHandler } from './lib/authClient';
+import { academicWeekNumber } from './lib/api';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 
 // Screens — LandingPage stays a static import: it's the public "/" route
@@ -411,20 +412,32 @@ function NotificationsBell({ lang }) {
 function Topbar({ user, setSidebarOpen }) {
   const { theme, toggleTheme } = useTheme();
   const { t, lang, toggleLang } = useLanguage();
+  const { activeSemester } = useCursus();
   const navigate = useNavigate();
+
   return (
     <header className="h-14 flex items-center gap-3 px-4 border-b border-line shrink-0 bg-surface-card">
       <button className="btn-ghost lg:hidden p-1 rounded-md" onClick={() => setSidebarOpen(true)}>
         <Menu size={18} className="text-fg-secondary" />
       </button>
 
-      {/* Semester indicator */}
-      <div className="flex items-center gap-2">
-        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" aria-hidden="true" />
-        <span className="text-xs font-semibold text-fg-secondary">
-          {t('common.semesterInfo')}
-        </span>
-      </div>
+      {/* Semester indicator — student-only: the active semester comes from
+          `/student/semesters` (CursusContext), which only students can call.
+          Instructor/Admin have no equivalent term source wired up here yet,
+          so the indicator simply doesn't render for them. */}
+      {user.role === 'student' && (
+        <div className="flex items-center gap-2">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" aria-hidden="true" />
+          <span className="text-xs font-semibold text-fg-secondary">
+            {activeSemester
+              ? t('common.semesterInfo', {
+                  name: activeSemester.name,
+                  week: academicWeekNumber(activeSemester.start_date),
+                })
+              : t('common.semesterInfoEmpty')}
+          </span>
+        </div>
+      )}
 
       {/* EduSync (hệ thống môn học ngoài, đóng vai Canvas -- mục 6.6, tên nội
           bộ vẫn là "Mock LMS" trong code/docs, không hiện ra UI) — mở tab
