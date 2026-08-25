@@ -63,7 +63,7 @@ def _ensure_recent_academic_term(db) -> None:
     future too (Timetable "this week" empty) unless nudged back like this.
     """
     from src.db import models
-    from src.services.timetable_service import monday_of
+    from src.services.academic.timetable_service import monday_of
 
     term = db.query(models.AcademicTerm).filter_by(is_active=True).first()
     if term is None:
@@ -79,7 +79,7 @@ def _setup_semester_for_student(db, student_id: str, course_codes: list[str]) ->
     """
     from src.db import models
     from src.repositories.semester_repository import SemesterRepository
-    from src.services.semester_service import SemesterService
+    from src.services.academic.semester_service import SemesterService
 
     courses = (
         db.query(models.Course)
