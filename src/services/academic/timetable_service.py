@@ -504,6 +504,25 @@ class TimetableService:
             )
             for task in tasks:
                 self._db.delete(task)
+            # SelfStudySession.schedule_block_id has ON DELETE CASCADE at the
+            # DB level, but ScheduleBlock's `self_study_sessions` relationship
+            # has no `passive_deletes=True` (or explicit delete cascade), so
+            # SQLAlchemy's own unit-of-work loads that collection on flush and
+            # tries to disassociate it (set schedule_block_id = NULL) instead
+            # of just letting Postgres cascade the row away -- and that
+            # column is NOT NULL, so every delete of a block with a session
+            # crashed with a 500 that the browser only ever saw as a CORS-
+            # opaque network failure (found via a live user report: "xoá lịch
+            # Tự học không được"). Deleting the session explicitly, the same
+            # way tasks already are above, sidesteps that ORM cascade
+            # ambiguity entirely.
+            session_row = (
+                self._db.query(models.SelfStudySession)
+                .filter_by(schedule_block_id=target.id)
+                .first()
+            )
+            if session_row is not None:
+                self._db.delete(session_row)
             self._db.delete(target)
         self._db.commit()
 
