@@ -1,0 +1,20 @@
+const { chromium } = require('playwright');
+(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage({ viewport: { width: 1500, height: 950 } });
+  await page.goto('http://localhost:5173/login', { waitUntil: 'load' });
+  await page.waitForTimeout(400);
+  await page.locator('input[type="email"], input[name="email"]').first().fill('studenthaianh@example.com');
+  await page.locator('input[type="password"]').first().fill('test123@');
+  await page.locator('button[type="submit"]').first().click();
+  await page.waitForTimeout(1500);
+  await page.locator('#theme-toggle').click();
+  await page.waitForTimeout(400);
+  await page.goto('http://localhost:5173/student/planner', { waitUntil: 'load' });
+  await page.waitForTimeout(1500);
+  const block = page.locator('.absolute.rounded-md.border', { hasText: 'CSI106 Lecture' }).first();
+  await block.scrollIntoViewIfNeeded();
+  const box = await block.boundingBox();
+  await page.screenshot({ path: 'shots/17_block_zoom.png', clip: { x: box.x - 30, y: box.y - 30, width: box.width + 200, height: box.height + 60 } });
+  await browser.close();
+})();
