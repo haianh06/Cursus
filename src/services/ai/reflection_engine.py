@@ -197,16 +197,11 @@ class ReflectionEngine:
         }
 
     # ── questionnaire ────────────────────────────────────────────────
-    def questionnaire(self, facts: dict, *, fixed_catalog: bool = False) -> dict:
+    def questionnaire(self, facts: dict) -> dict:
+        # `band`/`bandLabel` stay purely descriptive (shown in
+        # EvidenceSummary) — the same fixed question catalog is asked every
+        # week regardless of completion band or plan kind.
         band = band_for(float(facts.get("completionRate") or 0.0))
-        if fixed_catalog:
-            # a46db63 weekly-goal plans: the same 7-question catalog every
-            # week regardless of completion band — `band`/`bandLabel` stay
-            # purely descriptive (shown in EvidenceSummary).
-            questions = _question_catalog(facts)
-        else:
-            questions = [dict(item) for item in QUESTION_SETS[band]]
-            questions.append(dict(UNIVERSAL_QUESTION))
         return {
             "band": band,
             "bandLabel": {
@@ -214,7 +209,7 @@ class ReflectionEngine:
                 BAND_MID: "Hoàn thành 30–79%",
                 BAND_LOW: "Hoàn thành < 30%",
             }[band],
-            "questions": questions,
+            "questions": _question_catalog(facts),
             "version": REFLECTION_VERSION,
         }
 
@@ -305,9 +300,7 @@ class ReflectionEngine:
 
     def preview(self, plan: models.WeeklyPlan) -> dict:
         facts = self.facts_for_plan(plan)
-        goals = plan.goals if isinstance(plan.goals, dict) else {}
-        fixed_catalog = goals.get("kind") == WEEKLY_GOAL_PLAN_KIND
-        questionnaire = self.questionnaire(facts, fixed_catalog=fixed_catalog)
+        questionnaire = self.questionnaire(facts)
         return {
             "planId": plan.id,
             "weekNumber": plan.week_number,
