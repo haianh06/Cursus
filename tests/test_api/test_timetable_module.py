@@ -187,6 +187,49 @@ async def test_recurring_self_study_block_create_and_delete_all(client):
 
 
 @pytest.mark.asyncio
+async def test_delete_self_study_block_with_a_started_session_succeeds(client):
+    """SelfStudySession.schedule_block_id has ON DELETE CASCADE at the DB
+    level, but ScheduleBlock's `self_study_sessions` relationship has no
+    passive_deletes=True, so SQLAlchemy's own unit-of-work loaded that
+    collection on flush and tried to null out schedule_block_id on the
+    child row instead of leaving the cascade to Postgres -- and that column
+    is NOT NULL, so deleting any self-study block that had ever had a
+    Pomodoro session started against it crashed with a 500. The browser
+    only ever saw that as a CORS-opaque network failure (no
+    Access-Control-Allow-Origin on an unhandled-exception response), so it
+    looked to the student like "xoá lịch Tự học không được" for no visible
+    reason at all (found via a live user report). test_timetable_crud_self_study_block
+    above never actually starts a session before deleting, which is exactly
+    why this went unnoticed until now.
+    """
+    headers = await _login_student(client)
+
+    start = datetime.now() + timedelta(minutes=1)
+    end = start + timedelta(minutes=40)
+    create_response = await client.post(
+        "/api/v1/plans/timetable/blocks",
+        headers=headers,
+        json={"title": "Tự học", "start": start.isoformat(), "end": end.isoformat()},
+    )
+    assert create_response.status_code == 201, create_response.text
+    block_id = create_response.json()["id"]
+
+    start_session = await client.post(
+        "/api/v1/student/self-study/sessions",
+        headers=headers,
+        json={"blockId": block_id},
+    )
+    assert start_session.status_code == 200, start_session.text
+    assert start_session.json()["status"] == "IN_PROGRESS"
+
+    delete_response = await client.delete(
+        f"/api/v1/plans/timetable/blocks/{block_id}",
+        headers=headers,
+    )
+    assert delete_response.status_code == 204, delete_response.text
+
+
+@pytest.mark.asyncio
 async def test_timetable_shows_exam_block_and_semester_meta(client):
     """a46db63 exam-block/semester-meta parity — exam sessions scheduled
     against the student's active semester's courses render as locked EXAM
