@@ -2,7 +2,11 @@ import uuid
 from datetime import UTC, datetime, timedelta
 
 import pytest
+from fastapi import FastAPI, Response
+from httpx import ASGITransport, AsyncClient
 
+from src.api.auth import _clear_auth_cookies
+from src.config import Settings
 from src.db.connection import SessionLocal
 from src.db.models import AuthSession, UserRole
 
