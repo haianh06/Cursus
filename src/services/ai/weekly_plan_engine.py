@@ -521,14 +521,31 @@ def regenerate_from_reflection(
             for task, block, _daily in prior_rows
         ]
 
-    stop_start_continue = (answers.get("stop_start_continue") or {}).get("selectedCodes") or []
     changes: list[dict] = []
-    if "reduce_hours" in stop_start_continue:
-        tasks, change = _reduce_hours(tasks)
-        changes.append(change)
-    if "split_longest_task" in stop_start_continue:
-        tasks, change = _split_longest_task(tasks)
-        changes.append(change)
+    reflection_insight: str | None = None
+    if metrics.get("studentConfirmed"):
+        suggestion, _trace = build_next_week_suggestion(
+            facts=metrics.get("facts") or {},
+            answers=metrics.get("answers") or [],
+        )
+        if suggestion is not None:
+            multiplier = suggestion.estimated_minutes_multiplier
+            if multiplier != 1.0:
+                for task in tasks:
+                    adjusted = int(task.estimated_minutes * multiplier)
+                    task.estimated_minutes = max(15, (adjusted // 15) * 15)
+                changes.append(
+                    {
+                        "adjustment": "reflection_insight",
+                        "field": "estimatedMinutes",
+                        "before": "Ước tính chưa điều chỉnh",
+                        "after": (
+                            "Tăng nhẹ thời lượng" if multiplier > 1.0 else "Giảm nhẹ thời lượng"
+                        ),
+                        "reason": suggestion.summary,
+                    }
+                )
+            reflection_insight = suggestion.summary
 
     discard_drafts_for_week(db, student_id, next_monday)
 
@@ -553,6 +570,7 @@ def regenerate_from_reflection(
             "task_meta": {},
             "created_from_reflection_id": reflection.id,
             "reflection_changes": changes,
+            "reflection_insight": reflection_insight,
         },
         study_hours_allocated=round(capacity_minutes / 60.0, 2),
     )
