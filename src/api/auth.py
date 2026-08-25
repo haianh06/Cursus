@@ -932,6 +932,11 @@ async def refresh(
 ) -> RefreshResponse:
     refresh_token = _extract_refresh_token(request, settings)
     if not refresh_token:
+        # An access-token cookie with no matching refresh-token cookie is
+        # still enough to make CsrfProtectionMiddleware start requiring a
+        # CSRF header (see the exception handler below) — clear whatever
+        # auth cookies remain so the next request isn't stuck the same way.
+        _clear_auth_cookies(response, settings)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Missing refresh token",
