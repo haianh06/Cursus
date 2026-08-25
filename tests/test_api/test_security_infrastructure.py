@@ -137,9 +137,10 @@ async def test_rate_limiter_returns_429_after_limit():
 
 @pytest.mark.asyncio
 async def test_global_exception_handler_returns_request_id():
+    settings = Settings(jwt_secret_key=TEST_SECRET, cors_origins="https://cursus-mu.vercel.app")
     app = FastAPI()
     app.add_middleware(RequestContextMiddleware)
-    register_exception_handlers(app)
+    register_exception_handlers(app, settings)
 
     @app.get("/boom")
     async def boom():
@@ -147,13 +148,23 @@ async def test_global_exception_handler_returns_request_id():
 
     transport = ASGITransport(app=app, raise_app_exceptions=False)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.get("/boom", headers={"X-Request-ID": "req-boom"})
+        response = await client.get(
+            "/boom",
+            headers={"X-Request-ID": "req-boom", "Origin": "https://cursus-mu.vercel.app"},
+        )
 
     assert response.status_code == 500
     assert response.json() == {
         "detail": "Internal server error",
         "request_id": "req-boom",
     }
+    # A cross-origin 500 with no Access-Control-Allow-Origin is a hard
+    # network failure to the browser (fetch() rejects with no status/body
+    # ever visible to JS), not a readable error -- see _apply_cors()'s
+    # docstring. Found via a live user report where a real backend 500
+    # showed up in the UI only as "could not connect to server".
+    assert response.headers["access-control-allow-origin"] == "https://cursus-mu.vercel.app"
+    assert response.headers["access-control-allow-credentials"] == "true"
 
 
 @pytest.mark.asyncio
