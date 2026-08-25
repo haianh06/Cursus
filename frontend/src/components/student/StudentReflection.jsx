@@ -302,15 +302,6 @@ export default function StudentReflection() {
   const setResponse = (questionId, patch) =>
     setResponses((prev) => ({ ...prev, [questionId]: { ...prev[questionId], ...patch } }));
 
-  const toggleSelectedCode = (questionId, code) =>
-    setResponses((prev) => {
-      const current = prev[questionId]?.selectedCodes || [];
-      const next = current.includes(code)
-        ? current.filter((item) => item !== code)
-        : [...current, code];
-      return { ...prev, [questionId]: { ...prev[questionId], selectedCodes: next } };
-    });
-
   const buildAnswerPayload = () =>
     (preview?.questions ?? [])
       .map((question) => {
@@ -318,21 +309,10 @@ export default function StudentReflection() {
         return {
           questionId: question.id,
           answer: response.answer || null,
-          reasonCode: response.reasonCode || null,
           selectedCodes: response.selectedCodes || [],
-          items: (response.items || []).map((item) => item.trim()).filter(Boolean),
         };
       })
-      .filter(
-        (item) => item.answer || item.reasonCode || item.selectedCodes.length || item.items.length,
-      );
-
-  const stopStartContinueLabels = () => {
-    const question = (preview?.questions ?? []).find((q) => q.id === 'stop_start_continue');
-    const selected = responses.stop_start_continue?.selectedCodes || [];
-    const choices = (question?.groups ?? []).flatMap((group) => group.choices);
-    return selected.map((code) => choices.find((c) => c.code === code)?.label || code);
-  };
+      .filter((item) => item.answer || item.selectedCodes.length);
 
   const goToMemory = async () => {
     setActionError(null);
@@ -492,115 +472,15 @@ export default function StudentReflection() {
                       </div>
                     )}
 
-                    {question.type === 'grouped_multi_choice' &&
-                      question.groups.map((group) => (
-                        <div key={group.label} className="mb-2">
-                          {group.label && (
-                            <p className="text-[11px] font-semibold mb-1.5 text-fg-muted">
-                              {group.label}
-                            </p>
-                          )}
-                          <div className="flex flex-wrap gap-1.5">
-                            {group.choices.map((choice) => {
-                              const active = (response.selectedCodes || []).includes(choice.code);
-                              return (
-                                <button
-                                  key={choice.code}
-                                  type="button"
-                                  aria-pressed={active}
-                                  onClick={() => toggleSelectedCode(question.id, choice.code)}
-                                  className={`text-[12px] px-3.5 min-h-10 inline-flex items-center rounded-full border cursor-pointer transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-                                    active
-                                      ? 'border-accent bg-accent-soft text-accent-text-safe'
-                                      : 'border-line bg-surface-elevated text-fg-secondary hover:border-accent hover:text-accent-text-safe'
-                                  }`}
-                                >
-                                  {active && <CheckCircle2 size={11} className="inline mr-1 -mt-0.5" />}
-                                  {choice.label}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      ))}
-
-                    {question.type === 'insight' && (
-                      question.breakdown?.length > 0 ? (
-                        <ul className="space-y-1.5">
-                          {question.breakdown.map((row) => (
-                            <li key={row.taskId} className="text-[12px] text-fg-secondary">
-                              {row.title}: {row.estimatedMinutes}
-                              {lang === 'vi' ? ' phút ước tính' : 'm estimated'} →{' '}
-                              <strong>
-                                {row.actualMinutes}
-                                {lang === 'vi' ? ' phút thực tế' : 'm actual'}
-                              </strong>
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="text-[12px] text-fg-muted">
-                          {lang === 'vi'
-                            ? 'Chưa có dữ liệu thời gian tuần này.'
-                            : 'No time-tracking data for this week yet.'}
-                        </p>
-                      )
-                    )}
-
-                    {question.type === 'outcome_list' && (
-                      <div className="space-y-2">
-                        {Array.from({ length: question.maxItems || 3 }).map((_, index) => (
-                          <input
-                            key={index}
-                            type="text"
-                            maxLength={200}
-                            className="input text-[13px] w-full h-10"
-                            placeholder={question.placeholder}
-                            value={response.items?.[index] ?? ''}
-                            onChange={(event) => {
-                              const items = [...(response.items || [])];
-                              items[index] = event.target.value;
-                              setResponse(question.id, { items });
-                            }}
-                          />
-                        ))}
-                      </div>
-                    )}
-
                     {question.type === 'text' && (
-                      <>
-                        <textarea
-                          id={`answer-${question.id}`}
-                          rows={2}
-                          className="textarea text-[13px] w-full"
-                          placeholder={question.placeholder}
-                          value={response.answer ?? ''}
-                          onChange={(event) => setResponse(question.id, { answer: event.target.value })}
-                        />
-                        {question.allowReason && (
-                          <div className="mt-2">
-                            <label
-                              htmlFor={`reason-${question.id}`}
-                              className="block text-[11px] font-semibold mb-1 text-fg-muted"
-                            >
-                              {lang === 'vi' ? 'Nguyên nhân chính' : 'Main cause'}
-                            </label>
-                            <select
-                              id={`reason-${question.id}`}
-                              className="input text-[13px] h-10"
-                              value={response.reasonCode ?? ''}
-                              onChange={(event) => setResponse(question.id, { reasonCode: event.target.value })}
-                            >
-                              <option value="">{lang === 'vi' ? '— Chọn —' : '— Select —'}</option>
-                              {question.reasonCodes.map((reason) => (
-                                <option key={reason.code} value={reason.code}>
-                                  {reason.label}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                        )}
-                      </>
+                      <textarea
+                        id={`answer-${question.id}`}
+                        rows={2}
+                        className="textarea text-[13px] w-full"
+                        placeholder={question.placeholder}
+                        value={response.answer ?? ''}
+                        onChange={(event) => setResponse(question.id, { answer: event.target.value })}
+                      />
                     )}
                   </div>
                 );
