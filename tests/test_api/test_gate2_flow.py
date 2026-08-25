@@ -197,9 +197,10 @@ async def test_plan_do_reflect_next_plan(client, monkeypatch):
     preview = resp.json()
     assert preview["facts"]["completedTasks"] == 1
     assert preview["facts"]["deferredTasks"] == 1
-    # Completion 1/6 -> low band, and the universal question is always present.
+    # Completion 1/6 -> low band; the same fixed 6-question catalog (5
+    # single-choice self-feedback scales + 1 free-text note) is always asked.
     assert preview["band"] == "low"
-    assert preview["questions"][-1]["id"] == "q_next_priority"
+    assert preview["questions"][-1]["id"] == "self_notes"
     assert preview["facts"]["provenance"]["source_type"] == "system_derived"
 
     # Memory preview is drafted without being stored.
