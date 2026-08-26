@@ -18,7 +18,7 @@ if str(ROOT) not in sys.path:
 from src.config import get_settings
 from src.db.connection import SessionLocal
 from src.db.models import Enrollment, User, UserRole
-from src.services.student_mock_data_service import StudentMockDataService
+from src.services.mock.student_mock_data_service import StudentMockDataService
 
 
 def main() -> int:
