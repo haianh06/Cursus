@@ -993,3 +993,63 @@ async def test_reflection_summary_hidden_until_student_consents(client):
         "/api/v1/instructor/students/student_ethan/profile", headers=instructor_headers
     )
     assert resp.json()["reflectionSummary"] == []
+
+
+@pytest.mark.asyncio
+async def test_self_reported_help_note_hidden_until_student_consents(client):
+    """Blocker fix: evidence.note tren risk SELF_REPORTED_HELP_REQUEST la van
+    ban Phan tu SV tu viet — phai bi che (share_reflection_summary=False mac
+    dinh) giong reflectionSummary o test tren, o CA 2 endpoint GV doc risk
+    (list va detail) vi ca 2 dung chung _serialize_risk_row."""
+    from src.services.risk_signal_service import create_self_reported_help_alert
+
+    secret_note = "Em thấy áp lực vì chuyện gia đình, chưa muốn kể chi tiết."
+    db = SessionLocal()
+    try:
+        db.query(models.User).filter_by(id="student_ethan").update(
+            {"share_reflection_summary": False}
+        )
+        db.commit()
+        rows = create_self_reported_help_alert(
+            db, student_id="student_ethan", week_number=41, note=secret_note
+        )
+        db.commit()
+        risk_id = next(r.id for r in rows if r.section_id == "sec_ssa101_demo")
+    finally:
+        db.close()
+
+    instructor_headers = await _login_instructor(client)
+
+    resp = await client.get("/api/v1/instructor/risks", headers=instructor_headers)
+    assert resp.status_code == 200
+    row = next(r for r in resp.json()["risks"] if r["id"] == risk_id)
+    assert row["evidence"]["note"] is None
+    assert row["evidence"]["noteWithheld"] is True
+    assert secret_note not in resp.text
+
+    resp = await client.get(f"/api/v1/instructor/risks/{risk_id}", headers=instructor_headers)
+    assert resp.status_code == 200
+    assert resp.json()["evidence"]["note"] is None
+    assert resp.json()["evidence"]["noteWithheld"] is True
+    assert secret_note not in resp.text
+
+    student_headers = await _login_student(client)
+    resp = await client.patch(
+        "/api/v1/student/privacy-settings",
+        json={"share_reflection_summary": True},
+        headers=student_headers,
+    )
+    assert resp.json()["shareReflectionSummary"] is True
+
+    resp = await client.get("/api/v1/instructor/risks", headers=instructor_headers)
+    row = next(r for r in resp.json()["risks"] if r["id"] == risk_id)
+    assert row["evidence"]["note"] == secret_note
+    assert "noteWithheld" not in row["evidence"]
+
+    # Dep lai trang thai mac dinh cho cac test khac chay sau trong cung phien.
+    resp = await client.patch(
+        "/api/v1/student/privacy-settings",
+        json={"share_reflection_summary": False},
+        headers=student_headers,
+    )
+    assert resp.json()["shareReflectionSummary"] is False
