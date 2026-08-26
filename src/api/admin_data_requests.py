@@ -143,7 +143,15 @@ async def complete_data_request(
 
 
 def _generate_delete_preview(db: Session, requester_id: str) -> dict:
-    """Helper to count records to delete and generate stable hash."""
+    """Helper to count records to delete and generate stable hash.
+
+    Every model below is a direct student-owned table (own `student_id` FK);
+    each one's own children (daily_plans/schedule_blocks/study_tasks under
+    weekly_plans, messages/guardrail_events under conversations,
+    reminder_deliveries under reminders) cascade at the DB level via
+    `ondelete="CASCADE"` on their own FK, so they don't need a separate
+    count/delete line here — only tables missing from this list would be
+    left behind as an incomplete erasure."""
     counts = {
         "enrollments": db.query(models.Enrollment).filter_by(student_id=requester_id).count(),
         "submissions": db.query(models.Submission).filter_by(student_id=requester_id).count(),
@@ -151,6 +159,18 @@ def _generate_delete_preview(db: Session, requester_id: str) -> dict:
         "plans": db.query(models.WeeklyPlan).filter_by(student_id=requester_id).count(),
         "reflections": db.query(models.WeeklyReflection).filter_by(student_id=requester_id).count(),
         "risk_signals": db.query(models.RiskSignal).filter_by(student_id=requester_id).count(),
+        "assignment_overrides": db.query(models.AssignmentOverride).filter_by(student_id=requester_id).count(),
+        "learning_goals": db.query(models.LearningGoal).filter_by(student_id=requester_id).count(),
+        "self_study_sessions": db.query(models.SelfStudySession).filter_by(student_id=requester_id).count(),
+        "replan_proposals": db.query(models.ReplanProposal).filter_by(student_id=requester_id).count(),
+        "progress_events": db.query(models.ProgressEvent).filter_by(student_id=requester_id).count(),
+        "reminders": db.query(models.Reminder).filter_by(student_id=requester_id).count(),
+        "resource_access_events": db.query(models.ResourceAccessEvent).filter_by(student_id=requester_id).count(),
+        "student_memory_entries": db.query(models.StudentMemoryEntry).filter_by(student_id=requester_id).count(),
+        "student_memory_consent": db.query(models.StudentMemoryConsent).filter_by(student_id=requester_id).count(),
+        "semester_setups": db.query(models.SemesterSetup).filter_by(student_id=requester_id).count(),
+        "exam_session_registrations": db.query(models.CourseExamSessionStudent).filter_by(student_id=requester_id).count(),
+        "instructor_notes_about_student": db.query(models.InstructorStudentNote).filter_by(student_id=requester_id).count(),
     }
 
     # Stable hash based on counts + student id (in reality, would hash IDs of records)
@@ -211,6 +231,18 @@ async def confirm_delete_data_request(
     db.query(models.WeeklyPlan).filter_by(student_id=req.requester_id).delete()
     db.query(models.WeeklyReflection).filter_by(student_id=req.requester_id).delete()
     db.query(models.RiskSignal).filter_by(student_id=req.requester_id).delete()
+    db.query(models.AssignmentOverride).filter_by(student_id=req.requester_id).delete()
+    db.query(models.LearningGoal).filter_by(student_id=req.requester_id).delete()
+    db.query(models.SelfStudySession).filter_by(student_id=req.requester_id).delete()
+    db.query(models.ReplanProposal).filter_by(student_id=req.requester_id).delete()
+    db.query(models.ProgressEvent).filter_by(student_id=req.requester_id).delete()
+    db.query(models.Reminder).filter_by(student_id=req.requester_id).delete()
+    db.query(models.ResourceAccessEvent).filter_by(student_id=req.requester_id).delete()
+    db.query(models.StudentMemoryEntry).filter_by(student_id=req.requester_id).delete()
+    db.query(models.StudentMemoryConsent).filter_by(student_id=req.requester_id).delete()
+    db.query(models.SemesterSetup).filter_by(student_id=req.requester_id).delete()
+    db.query(models.CourseExamSessionStudent).filter_by(student_id=req.requester_id).delete()
+    db.query(models.InstructorStudentNote).filter_by(student_id=req.requester_id).delete()
 
     req.status = "COMPLETED"
     req.admin_notes = payload.notes
