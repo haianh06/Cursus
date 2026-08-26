@@ -7,7 +7,7 @@ in-memory.
 from __future__ import annotations
 
 from src.repositories.chunk_repository import ChunkRecord
-from src.services.ai.qa_answer_service import _citation_from_chunk
+from src.services.ai.chat_answer_service import _citation_from_chunk
 from src.services.core import source_precedence as sp
 from src.services.rag.retrieval_service import RetrievedChunk
 
@@ -69,7 +69,7 @@ def _make_retrieved(content_source: str) -> RetrievedChunk:
 
 
 def test_citation_document_reflects_mock_lms_tier():
-    """This is the actual injection point (qa_answer_service.py's shared citation
+    """This is the actual injection point (chat_answer_service.py's shared citation
     builder) -- confirms `document` is no longer a dead field."""
     citation = _citation_from_chunk(_make_retrieved("mock_lms"))
     assert citation.document == sp.label_for(sp.MOCK_LMS)

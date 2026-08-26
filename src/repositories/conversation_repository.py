@@ -46,6 +46,39 @@ class ConversationRepository:
             .count()
         )
 
+    def get_or_create_single(self, *, student_id: str) -> models.Conversation:
+        """The one continuous conversation for a student (chat rebuild: no
+        more per-course thread partitioning — `subject_code` on the row is
+        just "whichever course was last in view", not a partition key;
+        `Message.metadata_info["subjectCode"]` carries the per-message value)."""
+        existing = (
+            self._db.query(models.Conversation)
+            .filter(models.Conversation.student_id == student_id)
+            .order_by(models.Conversation.created_at.asc())
+            .first()
+        )
+        if existing is not None:
+            return existing
+        now = datetime.utcnow()
+        conversation = models.Conversation(
+            id=f"conv_{uuid.uuid4().hex[:16]}",
+            student_id=student_id,
+            subject_code=None,
+            section_id=None,
+            title="Trợ lý Cursus",
+            created_at=now,
+            updated_at=now,
+        )
+        self._db.add(conversation)
+        self._db.flush()
+        return conversation
+
+    def clear_messages(self, *, conversation: models.Conversation) -> None:
+        self._db.query(models.Message).filter(
+            models.Message.conversation_id == conversation.id
+        ).delete()
+        self._db.flush()
+
     def create(self, *, student_id: str, subject_code: str, title: str) -> models.Conversation:
         code = subject_code.strip().upper()
         now = datetime.utcnow()

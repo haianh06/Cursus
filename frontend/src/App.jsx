@@ -238,9 +238,11 @@ function Sidebar({ user, onLogout, open, setOpen, activeSection }) {
                 <span>{t('nav.practice')}</span>
               </button>
 
-              {/* Companion chat has no sidebar entry in a46db63 — it's the
-                  floating CompanionChatBubble on every student page, not a
-                  standalone route. Quizzes (post-a46db63 feature) also has no
+              {/* Companion chat has no sidebar entry in a46db63 — the chatbot
+                  rebuild's floating CuriChatLauncher (ChatPanel) is on every
+                  student page already, so /student/companion is a deep-link
+                  full-page view of the same conversation, not a separate nav
+                  destination. Quizzes (post-a46db63 feature) also has no
                   sidebar entry, per explicit request to match a46db63's exact
                   5-item sidebar — the /student/quizzes route still works via
                   deep link, only the nav button is removed. */}

@@ -7,11 +7,12 @@ import {
   ChevronRight,
   History,
   Layers,
+  Sparkles,
   UserPlus,
   Users,
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
-import { getAdminOverview, userFacingApiError } from '../../lib/api';
+import { getAdminOverview, getLlmQuotaStatus, userFacingApiError } from '../../lib/api';
 import {
   adminAuditDecisionLabel,
   adminCriticalChangeEventLabel,
@@ -135,6 +136,44 @@ function SignalMetric({ icon: Icon, label, metric }) {
           </div>
         </dl>
       </details>
+    </div>
+  );
+}
+
+/** Gemini gives no way to check remaining quota ahead of a call, so this is
+ *  purely reactive: how many real 429s the app has actually hit in the last
+ *  24h, and when the last one landed. No live "exhausted right now" claim —
+ *  just the log, which is what the data can actually support. */
+function LlmQuotaCard({ status, t, lang }) {
+  if (!status) return null;
+  const hasRecentEvents = status.countInWindow > 0;
+  return (
+    <div
+      className={`rounded-lg border p-3 ${hasRecentEvents ? 'border-warning/40 bg-warning-soft' : 'border-line bg-surface'}`}
+    >
+      <div className="flex items-center gap-2">
+        <span
+          className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${hasRecentEvents ? 'border-warning/30 bg-white/40 text-warning' : 'border-accent/20 bg-accent-soft text-accent'}`}
+        >
+          <Sparkles size={15} aria-hidden="true" />
+        </span>
+        <p className="text-sm font-semibold text-fg">{t('admin.llmQuotaTitle')}</p>
+      </div>
+      <p className={`mt-2 text-xs ${hasRecentEvents ? 'text-warning font-semibold' : 'text-fg-secondary'}`}>
+        {hasRecentEvents ? t('admin.llmQuotaExhausted') : t('admin.llmQuotaHealthy')}
+      </p>
+      <dl className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-fg-secondary">
+        <div>
+          <dt className="inline font-semibold">{t('admin.llmQuotaCount24h')}:</dt>{' '}
+          <dd className="mono inline">{status.countInWindow}</dd>
+        </div>
+        <div>
+          <dt className="inline font-semibold">{t('admin.llmQuotaLastExhausted')}:</dt>{' '}
+          <dd className="inline">
+            {status.lastExhaustedAt ? new Date(status.lastExhaustedAt).toLocaleString(lang) : t('admin.llmQuotaNever')}
+          </dd>
+        </div>
+      </dl>
     </div>
   );
 }
@@ -268,6 +307,7 @@ export default function AdminOverview() {
   const [error, setError] = useState(null);
   const [queuePage, setQueuePage] = useState(1);
   const [queueExpanded, setQueueExpanded] = useState(false);
+  const [quotaStatus, setQuotaStatus] = useState(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -283,6 +323,14 @@ export default function AdminOverview() {
   }, [lang]);
 
   useEffect(() => { load(); }, [load]);
+
+  useEffect(() => {
+    let cancelled = false;
+    getLlmQuotaStatus()
+      .then((data) => !cancelled && setQuotaStatus(data))
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
   const pulse = overview?.school_pulse || {};
   const fullQueue = overview?.work_queue?.items || [];
@@ -432,6 +480,9 @@ export default function AdminOverview() {
             <div className="mt-2 flex flex-col gap-2 border-t border-line pt-2">
               <SignalMetric icon={AlertTriangle} label={t('admin.overviewSignalsRisk')} metric={pulse.unresolved_risk} />
               <SignalMetric icon={UserPlus} label={t('admin.overviewSignalsActivation')} metric={pulse.invitation_activation} />
+            </div>
+            <div className="mt-2 border-t border-line pt-2">
+              <LlmQuotaCard status={quotaStatus} t={t} lang={lang} />
             </div>
           </section>
         </div>

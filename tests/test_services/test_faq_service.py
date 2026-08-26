@@ -10,10 +10,7 @@ def test_faq_matches_ssa101_commitment_map():
     )
     assert match is not None
     assert match.entry.id == "ssa101_commitment_map"
-    answer, citations, mode = FaqService().to_response_parts(match)
-    assert mode == "faq"
-    assert "Commitment Map" in answer or "cam kết" in answer.lower()
-    assert citations[0].chunkId.startswith("faq:")
+    assert "Commitment Map" in match.entry.answer or "cam kết" in match.entry.answer.lower()
 
 
 def test_faq_matches_prf192_lab02():

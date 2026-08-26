@@ -16,7 +16,9 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
+from src.config import get_settings
 from src.services.core.llm import get_llm, has_configured_llm
+from src.services.core.llm_quota_service import record_quota_event
 from src.services.core.provider_errors import classify_provider_error
 from src.services.rag.query_normalization import looks_like_accent_stripped_vietnamese
 
@@ -39,7 +41,7 @@ _TEMPLATE_REPLY = (
     "thành các bước nhỏ hơn, dễ thở hơn."
 )
 
-# See qa_answer_service._DIACRITICS_RETRY_NOTE — same weaker-fallback-model
+# See chat_answer_service._DIACRITICS_RETRY_NOTE — same weaker-fallback-model
 # quirk can hit the companion persona too.
 _DIACRITICS_RETRY_NOTE = (
     "\n\nQUAN TRỌNG: câu trả lời trước bị thiếu dấu tiếng Việt. Viết lại đầy đủ "
@@ -60,13 +62,15 @@ class EmpathicReplyService:
         subject_code: str,
         history: list[dict[str, str]] | None = None,
         crisis: bool = False,
-    ) -> tuple[str, str]:
-        """Return (answer, mode). mode is companion | companion_crisis."""
+    ) -> tuple[str, str, str | None]:
+        """Return (answer, mode, degraded_reason). mode is companion |
+        companion_crisis. `degraded_reason` is `"quota"` when the LLM was
+        attempted but rejected for quota/rate-limit (429), else `None`."""
         if crisis:
-            return CRISIS_REPLY, "companion_crisis"
+            return CRISIS_REPLY, "companion_crisis", None
 
         if not has_configured_llm():
-            return _TEMPLATE_REPLY, "companion"
+            return _TEMPLATE_REPLY, "companion", None
 
         try:
             system_prompt = PROMPT_PATH.read_text(encoding="utf-8")
@@ -90,12 +94,16 @@ class EmpathicReplyService:
                 payload = self._retry_for_diacritics(llm, messages, payload)
             answer = payload.answer.strip()
             if payload.needs_professional_help:
-                return f"{answer}\n\n---\n{CRISIS_REPLY}", "companion_crisis"
-            return answer or _TEMPLATE_REPLY, "companion"
+                return f"{answer}\n\n---\n{CRISIS_REPLY}", "companion_crisis", None
+            return answer or _TEMPLATE_REPLY, "companion", None
         except Exception as exc:
             failure = classify_provider_error(exc)
             logger.warning("empathic_reply_failed code=%s: %s", failure.code, failure.message)
-            return _TEMPLATE_REPLY, "companion"
+            degraded_reason = None
+            if failure.code == "LLM_QUOTA":
+                degraded_reason = "quota"
+                record_quota_event(model=get_settings().model_name, source="empathic_reply_service")
+            return _TEMPLATE_REPLY, "companion", degraded_reason
 
     def _retry_for_diacritics(
         self,

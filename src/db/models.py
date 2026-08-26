@@ -693,6 +693,20 @@ class LLMUsageEvent(Base):
     completion_tokens: Mapped[int] = mapped_column(Integer)
     cost: Mapped[float] = mapped_column(Float)
 
+class LLMQuotaEvent(Base):
+    """One row per RESOURCE_EXHAUSTED (429) response from the LLM provider —
+    Gemini's free tier gives no way to query remaining quota ahead of a call,
+    so this is the only signal the app has: recorded reactively, right when
+    a real call actually gets rejected. Admin's quota panel and the chat
+    UI's inline "using fallback" badge both read from this table. Not tied
+    to a Message (unlike LLMUsageEvent) since a quota failure can happen
+    before any assistant Message would otherwise be written."""
+    __tablename__ = "llm_quota_events"
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    occurred_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+    model: Mapped[str] = mapped_column(String)
+    source: Mapped[str] = mapped_column(String)  # which service call site hit the 429
+
 class GuardrailEvent(Base):
     __tablename__ = "guardrail_events"
     id: Mapped[str] = mapped_column(String, primary_key=True)

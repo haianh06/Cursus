@@ -12,6 +12,7 @@ from src.db.connection import get_db
 from src.security.authorization import require_permission, require_roles
 from src.security.permissions import Permission, Resource
 from src.services.core.admin_overview_service import build_overview, build_work_queue
+from src.services.core.llm_quota_service import get_status as get_llm_quota_status
 
 router = APIRouter(
     prefix="/admin",
@@ -37,3 +38,13 @@ def get_admin_work_queue(
     db: Session = Depends(get_db),
 ):
     return {"items": build_work_queue(db, organization_id=current_user.organization_id)}
+
+
+@router.get("/llm-quota-status")
+def get_llm_quota_status_route(
+    db: Session = Depends(get_db),
+):
+    """Gemini gives no way to check remaining quota ahead of a call, so this
+    is purely reactive: how many real 429s the app has actually hit
+    recently, and when the last one was. See `llm_quota_service.py`."""
+    return get_llm_quota_status(db)

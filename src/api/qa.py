@@ -1,4 +1,9 @@
-"""Study Assistant Q&A API (Playbook F3)."""
+"""Source-drawer lookup for a chat citation chip. The Q&A/chat orchestration
+that used to live in this file (`POST /qa`) was replaced by the unified chat
+rebuild — see `src/api/chat.py` and `src/services/ai/chat_orchestrator_service.py`.
+This route is unrelated to that orchestration (it's a pure per-chunk lookup)
+and every citation chip, old or new, points at the same chunk ids, so it
+stays put unchanged."""
 
 from __future__ import annotations
 
@@ -8,36 +13,13 @@ from sqlalchemy.orm import Session
 from src.api.auth import get_current_user_from_token
 from src.db import models
 from src.db.connection import get_db
-from src.schemas.qa import QaRequest
 from src.security.authorization import require_roles
-from src.services.ai.qa_service import QaService
 
 router = APIRouter(
     prefix="/qa",
     tags=["qa"],
     dependencies=[Depends(require_roles(models.UserRole.STUDENT))],
 )
-
-
-@router.post("")
-def ask_question(
-    payload: QaRequest,
-    current_user: models.User = Depends(get_current_user_from_token),
-    db: Session = Depends(get_db),
-):
-    service = QaService(db)
-    try:
-        result = service.ask(
-            student_id=current_user.id,
-            subject_code=payload.subject_code,
-            question=payload.question,
-        )
-    except PermissionError as exc:
-        raise HTTPException(status_code=403, detail=str(exc)) from exc
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-
-    return result.to_api_dict()
 
 
 @router.get("/sources/{chunk_id}")

@@ -20,7 +20,7 @@ from src.api.auth import router as auth_router
 # canvas_router import intentionally disabled — see include_router call below
 # for why (PROJECT_CONTEXT.md mục 6.6/9).
 # from src.api.canvas_routes import router as canvas_router
-from src.api.companion import router as companion_router
+from src.api.chat import router as chat_router
 from src.api.demo import router as demo_router
 from src.api.instructor import router as instructor_router
 from src.api.lecture_plan import router as lecture_plan_router
@@ -116,7 +116,7 @@ app.include_router(student_memory_router, prefix="/api/v1")
 app.include_router(practice_student_router, prefix="/api/v1")
 app.include_router(practice_instructor_router, prefix="/api/v1")
 app.include_router(student_quizzes_router, prefix="/api/v1")
-app.include_router(companion_router, prefix="/api/v1")
+app.include_router(chat_router, prefix="/api/v1")
 app.include_router(lecture_plan_router, prefix="/api/v1")
 
 

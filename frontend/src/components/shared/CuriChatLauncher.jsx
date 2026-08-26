@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { X, Trash2, Shield, ArrowRight, BookOpen, ArrowUp, ShieldAlert } from 'lucide-react';
+import { X, Trash2, Shield, ArrowRight, ArrowUp, BookOpen } from 'lucide-react';
 import CursusMascot from './CursusMascot';
+import ChatPanel from './ChatPanel';
 import { useLanguage } from '../../context/LanguageContext';
 import { useCursus } from '../../context/CursusContext';
-import { askQuestion, getStudentCourses } from '../../lib/api';
+import { onCompanionReminderRequest } from '../../lib/companionChatBus';
 
 export default function CuriChatLauncher() {
   const navigate = useNavigate();
@@ -13,14 +14,13 @@ export default function CuriChatLauncher() {
   const { showMascot, toggleMascot } = useCursus();
 
   // Route Guard: the public marketing/onboarding pages keep the scripted
-  // FAQ (no login yet, nothing to call). `/student/*` is the other branch —
-  // there the widget calls the real `POST /qa` pipeline (same one
-  // `CuriContextPanel` uses on Student Overview) instead of canned copy, so
-  // a student gets one consistent Cursus Assistant wherever they are, not a
-  // fake-chat toy on some pages and the real thing on others. Instructor/
-  // Admin dashboards are still out of scope — Cursus Assistant's Q&A is a
-  // student study tool (mục 1/6.2), there's no "which course" context on
-  // those roles' pages to scope a real answer to.
+  // FAQ (no login yet, nothing to call — this is presales copy, not "the
+  // chatbot"). `/student/*` is the other branch — there the widget renders
+  // the shared `ChatPanel` (same component the full-page /student/companion
+  // uses) against the real unified chat backend, so a student gets one
+  // consistent Cursus Assistant wherever they are. Instructor/Admin
+  // dashboards are still out of scope — Cursus Assistant is a student study
+  // tool (mục 1/6.2).
   const visibleRoutes = ['/', '/login', '/accept-invite', '/request-access', '/demo/select-role', '/forgot-password'];
   const isStudentRoute = location.pathname.startsWith('/student');
   const isVisibleRoute = visibleRoutes.includes(location.pathname) || isStudentRoute;
@@ -53,34 +53,19 @@ export default function CuriChatLauncher() {
   const confirmCancelRef = useRef(null);
   const textInputRef = useRef(null);
 
-  // Real-answer mode (`/student/*` only) — which course an "ask about the
-  // course" question is scoped to. Loaded lazily so public-route visitors
-  // never trigger an authenticated request.
-  const [courses, setCourses] = useState([]);
-  const [subjectCode, setSubjectCode] = useState('');
-  const [coursesLoaded, setCoursesLoaded] = useState(false);
-
-  useEffect(() => {
-    if (!isStudentRoute || coursesLoaded) return;
-    let cancelled = false;
-    getStudentCourses()
-      .then((list) => {
-        if (cancelled) return;
-        // Seed/demo enrollments can list the same course code across more
-        // than one section (pre-existing data artifact, not this widget's
-        // concern to fix) — dedupe by code so the picker doesn't show the
-        // same course twice.
-        const seen = new Set();
-        const deduped = (list || []).filter((c) => (seen.has(c.code) ? false : seen.add(c.code)));
-        setCourses(deduped);
-        if (deduped.length) setSubjectCode((prev) => prev || deduped[0].code);
-      })
-      .catch(() => {})
-      .finally(() => !cancelled && setCoursesLoaded(true));
-    return () => {
-      cancelled = true;
-    };
-  }, [isStudentRoute, coursesLoaded]);
+  // Proactive reminder bridge (e.g. from "Today's plan") — pops the panel
+  // open with a dismissible banner listing real open tasks. Student-only in
+  // practice (nothing on marketing routes triggers it), harmless elsewhere.
+  const [reminder, setReminder] = useState(null);
+  useEffect(
+    () =>
+      onCompanionReminderRequest((payload) => {
+        setReminder(payload);
+        openChat();
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   // The widget instance is mounted once for the whole app (App.jsx), so its
   // message history otherwise survives login — leaving stale scripted-FAQ
@@ -238,21 +223,19 @@ export default function CuriChatLauncher() {
     setUnreadCount(0);
     window.dispatchEvent(new CustomEvent('curi-chat-toggle', { detail: { open: true } }));
     
-    // Initialize welcome message if empty
-    if (messages.length === 0) {
+    // Marketing-route scripted welcome only — `/student/*` renders
+    // `ChatPanel` instead, which fetches its own real history.
+    if (!isStudentRoute && messages.length === 0) {
       setMessages([
         {
           id: 'welcome',
           role: 'assistant',
-          text: isStudentRoute
-            ? (lang === 'vi'
-                ? 'Chào bạn! Hỏi mình về nội dung môn học — mình sẽ trả lời dựa trên tài liệu môn thật, kèm nguồn trích dẫn.'
-                : "Hi! Ask me about your coursework — I'll answer from the real course materials, with citations.")
-            : (lang === 'vi'
-                ? 'Chào bạn! Mình là Trợ lý Cursus. Trước khi đăng nhập, mình có thể hướng dẫn bạn về các tính năng, đăng ký tài khoản hoặc bảo mật thông tin.'
-                : 'Hi! I\'m Cursus Assistant. Before logging in, I can guide you on product features, registration, or privacy information.'),
-          isWelcome: true
-        }
+          text:
+            lang === 'vi'
+              ? 'Chào bạn! Mình là Trợ lý Cursus. Trước khi đăng nhập, mình có thể hướng dẫn bạn về các tính năng, đăng ký tài khoản hoặc bảo mật thông tin.'
+              : 'Hi! I\'m Cursus Assistant. Before logging in, I can guide you on product features, registration, or privacy information.',
+          isWelcome: true,
+        },
       ]);
     }
     
@@ -273,56 +256,18 @@ export default function CuriChatLauncher() {
     }
   };
 
-  const clearChat = () => {
+  const clearScriptedChat = () => {
     setMessages([
       {
         id: 'welcome',
         role: 'assistant',
-        text: isStudentRoute
-          ? (lang === 'vi'
-              ? 'Hỏi mình về nội dung môn học — mình sẽ trả lời dựa trên tài liệu môn thật, kèm nguồn trích dẫn.'
-              : "Ask me about your coursework — I'll answer from the real course materials, with citations.")
-          : (lang === 'vi'
-              ? 'Chào bạn! Tôi là Trợ lý Cursus. Trước khi đăng nhập, tôi có thể hướng dẫn bạn về các tính năng, đăng ký tài khoản hoặc bảo mật thông tin.'
-              : 'Hi! I\'m Cursus Assistant. Before logging in, I can guide you on product features, registration, or privacy information.'),
-        isWelcome: true
-      }
+        text:
+          lang === 'vi'
+            ? 'Chào bạn! Tôi là Trợ lý Cursus. Trước khi đăng nhập, tôi có thể hướng dẫn bạn về các tính năng, đăng ký tài khoản hoặc bảo mật thông tin.'
+            : 'Hi! I\'m Cursus Assistant. Before logging in, I can guide you on product features, registration, or privacy information.',
+        isWelcome: true,
+      },
     ]);
-  };
-
-  // Real-backend path for `/student/*` routes — calls the same `POST /qa`
-  // pipeline as `CuriContextPanel`, pushes both the user message and the
-  // real (possibly blocked/guardrailed) answer. No scripted intent matching
-  // involved here — whatever the backend actually decided is what renders.
-  const sendRealQuestion = async (rawQuestion) => {
-    const question = (rawQuestion ?? '').trim();
-    if (!question || isThinking) return;
-    const id = `u-${Date.now()}`;
-    setMessages((prev) => [...prev, { id, role: 'user', text: question }]);
-    setIsThinking(true);
-    setMascotState('thinking');
-    try {
-      const result = await askQuestion({ subjectCode, question });
-      setMessages((prev) => [...prev, { id: `${id}-a`, role: 'assistant', real: true, ...result }]);
-      setMascotState('answering');
-    } catch {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `${id}-e`,
-          role: 'assistant',
-          real: true,
-          failed: true,
-          answer: lang === 'vi'
-            ? 'Không hỏi được Trợ lý Cursus lúc này. Kiểm tra kết nối rồi thử lại — câu hỏi của bạn vẫn còn ở ô nhập.'
-            : 'Could not reach Cursus Assistant. Check your connection and try again.',
-        },
-      ]);
-      setInputValue(question);
-    } finally {
-      setIsThinking(false);
-      setTimeout(() => setMascotState(isOpen ? 'listening' : 'idle'), 1200);
-    }
   };
 
   // Shared by both the preset chips and free-text input, so a typed
@@ -452,15 +397,12 @@ export default function CuriChatLauncher() {
     respondTo(key);
   };
 
+  // Marketing-route scripted flow only -- `/student/*` uses ChatPanel's own form.
   const handleFreeTextSubmit = (e) => {
     e.preventDefault();
     const text = inputValue.trim();
     if (!text || isThinking) return;
     setInputValue('');
-    if (isStudentRoute) {
-      sendRealQuestion(text);
-      return;
-    }
     setMessages(prev => [...prev, { id: `u-${Date.now()}`, role: 'user', text }]);
     respondTo(matchIntent(text) || 'fallback');
   };
@@ -497,14 +439,6 @@ export default function CuriChatLauncher() {
     { key: 'login', label: lang === 'vi' ? 'Tôi không đăng nhập được' : 'I can\'t log in' },
     { key: 'privacy', label: lang === 'vi' ? 'Bảo mật thông tin thế nào?' : 'How is my data protected?' },
     { key: 'integrity', label: lang === 'vi' ? 'Quy tắc Liêm chính Học thuật' : 'Academic Integrity Charter' }
-  ];
-
-  // Real-mode suggestions — plain example questions (not fixed intents),
-  // sent verbatim to /qa exactly like typing them in.
-  const STUDENT_SUGGESTED_QUESTIONS = [
-    lang === 'vi' ? 'Điều kiện qua môn này là gì?' : 'What are the passing requirements for this course?',
-    lang === 'vi' ? 'Em nên bắt đầu từ đâu?' : 'Where should I start?',
-    lang === 'vi' ? 'Tuần này có tài liệu nào cần đọc?' : 'What should I read this week?',
   ];
 
   if (!isVisibleRoute) return null;
@@ -696,9 +630,7 @@ export default function CuriChatLauncher() {
               <span className="block text-xs font-bold text-fg">{lang === 'vi' ? 'Trợ lý Cursus' : 'Cursus Assistant'}</span>
               <span className="block text-[9px] text-fg-muted font-bold uppercase tracking-wider">
                 {isStudentRoute
-                  ? (subjectCode
-                      ? `${lang === 'vi' ? 'Ngữ cảnh môn' : 'Course context'}: ${subjectCode}`
-                      : (lang === 'vi' ? 'Trả lời có trích dẫn nguồn thật' : 'Answers with real citations'))
+                  ? (lang === 'vi' ? 'Trả lời có trích dẫn nguồn thật' : 'Answers with real citations')
                   : (lang === 'vi' ? 'Trợ lý học tập của Cursus · Dữ liệu minh họa' : "Cursus's learning assistant · Sample data")}
               </span>
             </div>
@@ -716,46 +648,49 @@ export default function CuriChatLauncher() {
               <Shield size={15} />
             </button>
 
-            {/* Clear conversation, with an inline confirm popover */}
-            <div className="relative">
-              <button
-                ref={clearTriggerRef}
-                type="button"
-                onClick={() => setConfirmingClear((v) => !v)}
-                className={`p-1.5 rounded-lg transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-red-500 ${confirmingClear ? 'text-red-500 bg-red-50 dark:bg-red-500/10' : 'text-fg-muted hover:text-red-500 hover:bg-surface-card'}`}
-                title={lang === 'vi' ? 'Xóa cuộc hội thoại' : 'Clear conversation'}
-                aria-label={lang === 'vi' ? 'Xóa cuộc hội thoại' : 'Clear conversation'}
-                aria-expanded={confirmingClear}
-              >
-                <Trash2 size={15} />
-              </button>
+            {/* Clear conversation, with an inline confirm popover -- marketing
+                scripted flow only; ChatPanel (student routes) has its own. */}
+            {!isStudentRoute && (
+              <div className="relative">
+                <button
+                  ref={clearTriggerRef}
+                  type="button"
+                  onClick={() => setConfirmingClear((v) => !v)}
+                  className={`p-1.5 rounded-lg transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-red-500 ${confirmingClear ? 'text-red-500 bg-red-50 dark:bg-red-500/10' : 'text-fg-muted hover:text-red-500 hover:bg-surface-card'}`}
+                  title={lang === 'vi' ? 'Xóa cuộc hội thoại' : 'Clear conversation'}
+                  aria-label={lang === 'vi' ? 'Xóa cuộc hội thoại' : 'Clear conversation'}
+                  aria-expanded={confirmingClear}
+                >
+                  <Trash2 size={15} />
+                </button>
 
-              {confirmingClear && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={closeConfirm} />
-                  <div className="absolute right-0 mt-1 z-50 flex items-center gap-2 px-2.5 py-2 rounded-lg bg-surface-card border border-line shadow-lg animate-scale-in whitespace-nowrap">
-                    <span className="text-[11px] font-bold text-red-600 dark:text-red-400">
-                      {lang === 'vi' ? 'Xóa hẳn?' : 'Clear it?'}
-                    </span>
-                    <button
-                      ref={confirmCancelRef}
-                      type="button"
-                      onClick={closeConfirm}
-                      className="px-2 py-1 rounded-md text-[10px] font-bold text-fg-secondary bg-surface border border-line hover:bg-surface-elevated cursor-pointer outline-none focus-visible:ring-1 focus-visible:ring-accent"
-                    >
-                      {lang === 'vi' ? 'Hủy' : 'Cancel'}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => { clearChat(); closeConfirm(); }}
-                      className="px-2 py-1 rounded-md text-[10px] font-bold text-white bg-danger hover:opacity-90 cursor-pointer outline-none focus-visible:ring-1 focus-visible:ring-danger"
-                    >
-                      {lang === 'vi' ? 'Xóa' : 'Clear'}
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
+                {confirmingClear && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={closeConfirm} />
+                    <div className="absolute right-0 mt-1 z-50 flex items-center gap-2 px-2.5 py-2 rounded-lg bg-surface-card border border-line shadow-lg animate-scale-in whitespace-nowrap">
+                      <span className="text-[11px] font-bold text-red-600 dark:text-red-400">
+                        {lang === 'vi' ? 'Xóa hẳn?' : 'Clear it?'}
+                      </span>
+                      <button
+                        ref={confirmCancelRef}
+                        type="button"
+                        onClick={closeConfirm}
+                        className="px-2 py-1 rounded-md text-[10px] font-bold text-fg-secondary bg-surface border border-line hover:bg-surface-elevated cursor-pointer outline-none focus-visible:ring-1 focus-visible:ring-accent"
+                      >
+                        {lang === 'vi' ? 'Hủy' : 'Cancel'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { clearScriptedChat(); closeConfirm(); }}
+                        className="px-2 py-1 rounded-md text-[10px] font-bold text-white bg-danger hover:opacity-90 cursor-pointer outline-none focus-visible:ring-1 focus-visible:ring-danger"
+                      >
+                        {lang === 'vi' ? 'Xóa' : 'Clear'}
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
 
             {/* Close */}
             <button
@@ -803,50 +738,31 @@ export default function CuriChatLauncher() {
                   {lang === 'vi' ? 'Quay lại trợ giúp' : 'Back to Guide'}
                 </button>
               </div>
+            ) : isStudentRoute ? (
+              <ChatPanel
+                variant="floating"
+                navigate={(path) => { closeChat(); navigate(path); }}
+                reminder={reminder}
+                onDismissReminder={() => setReminder(null)}
+              />
             ) : (
               <>
                 <div className="flex-grow overflow-y-auto p-4 space-y-4 text-left">
                   {messages.map((m) => (
                     <div key={m.id} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}>
-                      {m.real && m.blocked && (
-                        <span className="self-start mb-1 inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-warning-soft text-warning">
-                          <ShieldAlert size={9} />
-                          {lang === 'vi' ? 'Hướng dẫn học tập — không làm hộ' : 'Study guidance — not doing it for you'}
-                        </span>
-                      )}
-                      {m.real && !m.blocked && m.block_reason === 'out_of_scope' && (
-                        <span className="self-start mb-1 inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-surface text-fg-muted">
-                          {lang === 'vi' ? 'Ngoài phạm vi tài liệu môn' : 'Outside course sources'}
-                        </span>
-                      )}
                       <div
                         className={`
                           max-w-[85%] p-3.5 text-xs leading-relaxed font-medium rounded-2xl whitespace-pre-wrap
                           ${m.role === 'user'
                             ? 'bg-accent-cta text-white rounded-br-none'
-                            : `bg-surface-card border border-line rounded-bl-none ${m.failed ? 'text-danger' : 'text-fg-secondary'}`}
+                            : 'bg-surface-card border border-line rounded-bl-none text-fg-secondary'}
                         `}
                       >
-                        {m.real ? m.answer : m.text}
-                        {m.real && m.guidance?.concept && (
-                          <p className="mt-2 pt-2 border-t border-line text-[11px] text-fg-muted">
-                            {m.guidance.concept}
-                          </p>
-                        )}
+                        {m.text}
                         {m.citation && (
                           <div className="mt-2.5 pt-2 border-t border-line flex items-center gap-1.5 text-[10px] text-accent-text-safe font-bold">
                             <BookOpen size={11} />
                             <span>{m.citation}</span>
-                          </div>
-                        )}
-                        {m.real && m.citations?.length > 0 && (
-                          <div className="mt-2.5 pt-2 border-t border-line flex flex-wrap gap-x-3 gap-y-1">
-                            {m.citations.map((c) => (
-                              <div key={c.chunkId ?? c.sourceLabel} className="flex items-center gap-1 text-[10px] text-accent-text-safe font-bold">
-                                <BookOpen size={11} />
-                                <span>{c.sourceLabel ?? c.source_label}</span>
-                              </div>
-                            ))}
                           </div>
                         )}
                       </div>
@@ -875,48 +791,21 @@ export default function CuriChatLauncher() {
                 </div>
 
                 <div className="p-3 border-t border-line bg-surface-elevated shrink-0 text-left">
-                  {isStudentRoute && courses.length > 1 && (
-                    <label className="block mb-2">
-                      <span className="sr-only">{lang === 'vi' ? 'Chọn môn học' : 'Select course'}</span>
-                      <select
-                        className="input text-[10px] w-full truncate"
-                        style={{ height: '28px', paddingTop: '2px', paddingBottom: '2px', lineHeight: '1.2' }}
-                        value={subjectCode}
-                        onChange={(e) => setSubjectCode(e.target.value)}
-                      >
-                        {courses.map((c) => (
-                          <option key={c.code} value={c.code}>{c.code} — {c.name}</option>
-                        ))}
-                      </select>
-                    </label>
-                  )}
-
                   <p className="text-[10px] text-fg-muted font-bold mb-2 uppercase tracking-wide">
-                    {isStudentRoute
-                      ? (lang === 'vi' ? 'Gợi ý câu hỏi:' : 'Suggested questions:')
-                      : (lang === 'vi' ? 'Hãy hỏi Trợ lý Cursus về:' : 'Ask Cursus Assistant about:')}
+                    {lang === 'vi' ? 'Hãy hỏi Trợ lý Cursus về:' : 'Ask Cursus Assistant about:'}
                   </p>
                   <div className="flex flex-wrap gap-1.5 max-h-[120px] overflow-y-auto">
-                    {(isStudentRoute
-                      ? STUDENT_SUGGESTED_QUESTIONS.map((q) => ({ key: q, label: q }))
-                      : PRESET_OPTIONS
-                    ).map((opt) => (
+                    {PRESET_OPTIONS.map((opt) => (
                       <button
                         key={opt.key}
                         type="button"
-                        onClick={() => (isStudentRoute ? sendRealQuestion(opt.label) : handlePrompt(opt.key, opt.label))}
-                        disabled={isStudentRoute && (isThinking || !subjectCode)}
+                        onClick={() => handlePrompt(opt.key, opt.label)}
                         className="px-2.5 py-1.5 rounded-lg border border-line bg-surface-card hover:bg-surface text-[10px] font-bold text-fg-secondary transition-all hover:text-fg cursor-pointer text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         {opt.label}
                       </button>
                     ))}
                   </div>
-                  {isStudentRoute && coursesLoaded && !subjectCode && (
-                    <p className="mt-2 text-[10px] text-fg-muted">
-                      {lang === 'vi' ? 'Bạn chưa có môn học nào được ghi danh.' : 'You are not enrolled in any course yet.'}
-                    </p>
-                  )}
 
                   <form onSubmit={handleFreeTextSubmit} className="mt-2.5 flex items-center gap-2">
                     <input
@@ -926,12 +815,12 @@ export default function CuriChatLauncher() {
                       onChange={(e) => setInputValue(e.target.value)}
                       placeholder={lang === 'vi' ? 'Nhập câu hỏi của bạn…' : 'Type your question…'}
                       aria-label={lang === 'vi' ? 'Nhập câu hỏi cho Trợ lý Cursus' : 'Message Cursus Assistant'}
-                      disabled={isThinking || (isStudentRoute && !subjectCode)}
+                      disabled={isThinking}
                       className="flex-1 min-w-0 h-9 px-3 rounded-lg border border-line bg-surface-card text-xs font-medium text-fg placeholder:text-fg-muted placeholder:font-normal outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-60"
                     />
                     <button
                       type="submit"
-                      disabled={!inputValue.trim() || isThinking || (isStudentRoute && !subjectCode)}
+                      disabled={!inputValue.trim() || isThinking}
                       aria-label={lang === 'vi' ? 'Gửi tin nhắn' : 'Send message'}
                       className="shrink-0 w-9 h-9 flex items-center justify-center rounded-lg bg-accent-cta text-white transition-all hover:bg-accent-cta-hover disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                     >

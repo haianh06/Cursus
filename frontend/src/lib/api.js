@@ -369,28 +369,21 @@ export async function logout() {
   }
 }
 
-/** F3 — Study Assistant QA. */
-export async function askQuestion({ subjectCode = 'SSA101', question }) {
-  const data = await request('/qa', {
+/** Unified student chat — one continuous conversation per student, replacing
+ * the old single-shot `/qa` + per-course `/student/companion/threads*`. */
+export function getChatState() {
+  return request('/student/chat');
+}
+
+export function clearChat() {
+  return request('/student/chat', { method: 'DELETE' });
+}
+
+export function sendChatMessage({ subjectCode, message }) {
+  return request('/student/chat/messages', {
     method: 'POST',
-    body: { subjectCode, question },
+    body: { subjectCode, message },
   });
-  const firstCitation = data?.citations?.[0];
-  return {
-    blocked: Boolean(data?.blocked),
-    answer: data?.answer ?? '',
-    source_label: firstCitation?.sourceLabel ?? firstCitation?.source_label ?? null,
-    block_reason: data?.blockReason ?? data?.block_reason ?? null,
-    mode: data?.mode,
-    citations: data?.citations ?? [],
-    intent: data?.intent ?? 'ask_knowledge',
-    guidance: data?.guidance ?? {},
-    alternatives: data?.alternatives ?? [],
-    followUpQuestions: data?.followUpQuestions ?? [],
-    // 'llm' vs 'deterministic' — surfaced in the UI so a rule-based answer is
-    // never presented as if a live model wrote it.
-    engine: data?.engine ?? 'deterministic',
-  };
 }
 
 /** Open the exact syllabus chunk behind a citation chip (source drawer). */
@@ -853,6 +846,12 @@ export function getAdminWorkQueue() {
   return request('/admin/work-queue');
 }
 
+/** Reactive-only: Gemini gives no way to check remaining quota ahead of a
+ * call, so this reflects real 429s the app has actually hit recently. */
+export function getLlmQuotaStatus() {
+  return request('/admin/llm-quota-status');
+}
+
 /** `params`: `{ search, role, page }` — all optional. */
 export function listAdminPeople(params = {}) {
   const query = new URLSearchParams();
@@ -1151,34 +1150,6 @@ export function regeneratePracticeSet(setId) {
   return request(`/instructor/practice/${encodeURIComponent(setId)}/regenerate`, {
     method: 'POST',
     body: {},
-  });
-}
-
-/* ── Student: companion chat (per-course threads) ─────────────────────── */
-
-export function getCompanionThreads(subjectCode) {
-  return request(`/student/companion/threads?subject_code=${encodeURIComponent(subjectCode)}`);
-}
-
-export function createCompanionThread({ subjectCode, title = '' }) {
-  return request('/student/companion/threads', {
-    method: 'POST',
-    body: { subjectCode, title },
-  });
-}
-
-export function getCompanionThread(conversationId) {
-  return request(`/student/companion/threads/${encodeURIComponent(conversationId)}`);
-}
-
-export function deleteCompanionThread(conversationId) {
-  return request(`/student/companion/threads/${encodeURIComponent(conversationId)}`, { method: 'DELETE' });
-}
-
-export function sendCompanionMessage(conversationId, message) {
-  return request(`/student/companion/threads/${encodeURIComponent(conversationId)}/messages`, {
-    method: 'POST',
-    body: { message },
   });
 }
 

@@ -1,6 +1,6 @@
 /**
  * Tiny cross-component signal so a page (e.g. "Today's plan") can ask the
- * globally-mounted `CompanionChatBubble` to open itself with a proactive
+ * globally-mounted `CuriChatLauncher` to open itself with a proactive
  * reminder, without threading chat-open state through props/route context.
  * No persistence, no backend — just an in-memory pub/sub for one session.
  */

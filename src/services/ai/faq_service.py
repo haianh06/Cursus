@@ -1,4 +1,9 @@
-"""Match curated FAQ answers before retrieval/LLM (quota-saving path)."""
+"""Match curated FAQ entries for a course question — NOT returned to the
+student directly (see chat rebuild decision): a match becomes grounding
+context handed to the LLM alongside academic retrieval/state/help context,
+so the LLM still writes the final answer and stays the sole judge of
+relevance, while curated entries reduce hallucination risk on well-known
+questions."""
 
 from __future__ import annotations
 
@@ -7,7 +12,6 @@ import re
 from dataclasses import dataclass
 
 from src.knowledge.faq_bank import FAQ_ENTRIES, FaqEntry
-from src.schemas.qa import QaCitation
 from src.services.rag.query_normalization import fold_accents
 
 logger = logging.getLogger(__name__)
@@ -61,15 +65,3 @@ class FaqService:
             best.score,
         )
         return best
-
-    def to_response_parts(self, match: FaqMatch) -> tuple[str, list[QaCitation], str]:
-        entry = match.entry
-        citation = QaCitation(
-            sourceLabel=entry.source_label,
-            section=None,
-            chunkId=f"faq:{entry.id}",
-            docTitle=entry.source_label,
-            score=round(match.score, 3),
-            isMock=entry.is_mock,
-        )
-        return entry.answer, [citation], "faq"
