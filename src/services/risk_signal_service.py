@@ -121,23 +121,36 @@ def class_weekly_completion(db: Session, student_ids: list[str]) -> list[float]:
 def student_recent_weekly_rates(db: Session, student_id: str, limit: int) -> list[tuple[int, float]]:
     """`limit` cap ty le hoan thanh gan nhat cua 1 SV, moi nhat truoc, chi
     tinh cac tuan THAT SU co task (bo qua tuan rong)."""
+    return _recent_weekly_rates_batch(db, [student_id], limit).get(student_id, [])
+
+
+def _recent_weekly_rates_batch(
+    db: Session, student_ids: list[str], limit: int
+) -> dict[str, list[tuple[int, float]]]:
+    """Ban nhieu-SV cua student_recent_weekly_rates — 2 query cho CA LOP thay
+    vi 2 query CHO MOI SV (goc cua N+1 khi detect_declining_completion_risks
+    goi lai ham don-SV cho tung enrollment)."""
+    if not student_ids:
+        return {}
+
     plans = (
         db.query(models.WeeklyPlan)
-        .filter_by(student_id=student_id)
-        .order_by(models.WeeklyPlan.week_number.desc())
+        .filter(models.WeeklyPlan.student_id.in_(student_ids))
+        .order_by(models.WeeklyPlan.student_id, models.WeeklyPlan.week_number.desc())
         .all()
     )
     completion_by_plan = _weekly_plan_completion_batch(db, [p.id for p in plans])
 
-    rates: list[tuple[int, float]] = []
+    rates_by_student: dict[str, list[tuple[int, float]]] = {sid: [] for sid in student_ids}
     for plan in plans:
+        rates = rates_by_student[plan.student_id]
         if len(rates) >= limit:
-            break
+            continue
         completed, total = completion_by_plan.get(plan.id, (0, 0))
         if total == 0:
             continue
         rates.append((plan.week_number, completed / total))
-    return rates
+    return rates_by_student
 
 
 def detect_declining_completion_risks(db: Session, section_ids: list[str]) -> None:
@@ -164,6 +177,22 @@ def detect_declining_completion_risks(db: Session, section_ids: list[str]) -> No
         )
         .all()
     )
+    if not enrollments:
+        return
+
+    student_ids = [e.student_id for e in enrollments]
+
+    already_open_pairs = {
+        (student_id, section_id)
+        for student_id, section_id in db.query(
+            models.RiskSignal.student_id, models.RiskSignal.section_id
+        ).filter(
+            models.RiskSignal.section_id.in_(section_ids),
+            models.RiskSignal.risk_type == "ACADEMIC_DECLINE",
+            models.RiskSignal.resolved_at.is_(None),
+        )
+    }
+    recent_rates_by_student = _recent_weekly_rates_batch(db, student_ids, DECLINE_TREND_WEEKS)
 
     policy_version: str | None = None
     created_any = False
@@ -171,20 +200,10 @@ def detect_declining_completion_risks(db: Session, section_ids: list[str]) -> No
         student_id = enrollment.student_id
         section_id = enrollment.section_id
 
-        already_open = (
-            db.query(models.RiskSignal.id)
-            .filter(
-                models.RiskSignal.student_id == student_id,
-                models.RiskSignal.section_id == section_id,
-                models.RiskSignal.risk_type == "ACADEMIC_DECLINE",
-                models.RiskSignal.resolved_at.is_(None),
-            )
-            .first()
-        )
-        if already_open:
+        if (student_id, section_id) in already_open_pairs:
             continue
 
-        recent = student_recent_weekly_rates(db, student_id, DECLINE_TREND_WEEKS)
+        recent = recent_rates_by_student.get(student_id, [])
         if len(recent) < DECLINE_TREND_WEEKS:
             continue
 
