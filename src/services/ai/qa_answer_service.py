@@ -21,16 +21,6 @@ logger = logging.getLogger(__name__)
 
 PROMPT_PATH = Path(__file__).resolve().parents[2] / "prompts" / "qa_v1.md"
 
-# mục 14.3 citation contract: a claim without official_document provenance
-# must never be presented as "theo syllabus". Prepended deterministically
-# (not left to the LLM's own wording) whenever any chunk actually used to
-# ground the answer is fabricated (student_mock_data_service.COURSE_DOCUMENTS,
-# content_source == "mock") — see mục 16 data contract.
-MOCK_CONTENT_DISCLAIMER = (
-    "⚠️ Lưu ý: một phần nội dung bên dưới là dữ liệu MÔ PHỎNG cho demo, "
-    "không phải trích từ syllabus chính thức của môn — đừng coi đây là quy định thật."
-)
-
 # A weaker fallback model can occasionally drop every Vietnamese diacritic
 # under structured-JSON output. One retry with an explicit reminder recovers
 # most cases; see looks_like_accent_stripped_vietnamese for the detector.
