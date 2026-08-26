@@ -1022,7 +1022,7 @@ async def test_self_reported_help_note_hidden_until_student_consents(client):
 
     resp = await client.get("/api/v1/instructor/risks", headers=instructor_headers)
     assert resp.status_code == 200
-    row = next(r for r in resp.json()["risks"] if r["id"] == risk_id)
+    row = next(r for r in resp.json() if r["id"] == risk_id)
     assert row["evidence"]["note"] is None
     assert row["evidence"]["noteWithheld"] is True
     assert secret_note not in resp.text
@@ -1042,7 +1042,7 @@ async def test_self_reported_help_note_hidden_until_student_consents(client):
     assert resp.json()["shareReflectionSummary"] is True
 
     resp = await client.get("/api/v1/instructor/risks", headers=instructor_headers)
-    row = next(r for r in resp.json()["risks"] if r["id"] == risk_id)
+    row = next(r for r in resp.json() if r["id"] == risk_id)
     assert row["evidence"]["note"] == secret_note
     assert "noteWithheld" not in row["evidence"]
 
