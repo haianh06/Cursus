@@ -189,8 +189,6 @@ class QaAnswerService:
 
         citations = self._citations_for_ids(cited_ids, retrieved)
         answer = payload.answer.strip()
-        if any(citation.isMock for citation in citations):
-            answer = f"{MOCK_CONTENT_DISCLAIMER}\n\n{answer}"
         return answer, citations, "llm"
 
     def _retry_for_diacritics(
@@ -246,9 +244,6 @@ class QaAnswerService:
             )
 
         citations = _unique_citations([_citation_from_chunk(item) for item in top])
-        if any(citation.isMock for citation in citations):
-            lines.insert(0, MOCK_CONTENT_DISCLAIMER)
-            lines.insert(1, "")
         return "\n".join(lines).strip(), citations, "extractive"
 
     @staticmethod

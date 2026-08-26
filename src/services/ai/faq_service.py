@@ -8,7 +8,6 @@ from dataclasses import dataclass
 
 from src.knowledge.faq_bank import FAQ_ENTRIES, FaqEntry
 from src.schemas.qa import QaCitation
-from src.services.ai.qa_answer_service import MOCK_CONTENT_DISCLAIMER as MOCK_FAQ_DISCLAIMER
 from src.services.rag.query_normalization import fold_accents
 
 logger = logging.getLogger(__name__)
@@ -73,7 +72,4 @@ class FaqService:
             score=round(match.score, 3),
             isMock=entry.is_mock,
         )
-        answer = entry.answer
-        if entry.is_mock:
-            answer = f"{MOCK_FAQ_DISCLAIMER}\n\n{answer}"
-        return answer, [citation], "faq"
+        return entry.answer, [citation], "faq"
