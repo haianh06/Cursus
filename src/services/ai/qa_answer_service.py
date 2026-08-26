@@ -278,7 +278,12 @@ def _excerpt(text: str, *, max_chars: int, question: str = "") -> str:
     "Conditions to pass". So: score the chunk's own lines against the question
     and window the excerpt around the best-matching line.
     """
-    cleaned = " ".join(text.split())
+    # Collapse repeated whitespace WITHIN each line but keep the line breaks
+    # between them -- source chunks are docx-parsed session blobs where each
+    # line is its own field ("Tài liệu: ...", "Nhiệm vụ sinh viên: ..."); a
+    # flat " ".join(text.split()) used to erase every one of those breaks,
+    # running the whole excerpt into one unreadable paragraph.
+    cleaned = "\n".join(" ".join(line.split()) for line in text.splitlines() if line.strip())
     if len(cleaned) <= max_chars:
         return cleaned
 
