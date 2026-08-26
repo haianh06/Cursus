@@ -858,7 +858,8 @@ export default function CuriChatLauncher() {
                     <label className="block mb-2">
                       <span className="sr-only">{lang === 'vi' ? 'Chọn môn học' : 'Select course'}</span>
                       <select
-                        className="input text-[10px] h-7 w-full"
+                        className="input text-[10px] w-full truncate"
+                        style={{ height: '28px', paddingTop: '2px', paddingBottom: '2px', lineHeight: '1.2' }}
                         value={subjectCode}
                         onChange={(e) => setSubjectCode(e.target.value)}
                       >
