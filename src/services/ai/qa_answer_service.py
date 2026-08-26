@@ -49,32 +49,6 @@ _PLACEHOLDER_KEYS = frozenset(
     }
 )
 
-# Only escalate to Gemini when the question needs synthesis / reasoning.
-_COMPLEX_PATTERNS: tuple[re.Pattern[str], ...] = tuple(
-    re.compile(p, re.IGNORECASE)
-    for p in (
-        r"\bso\s*sanh\b",
-        r"\bcompare\b",
-        r"\bcontrast\b",
-        r"\btai\s*sao\b",
-        r"\bwhy\b",
-        r"\bgiai\s*thich\s*(chi\s*tiet|sau|ky|ro)\b",
-        r"\belaborate\b",
-        r"\bphan\s*tich\b",
-        r"\banaly[sz]e\b",
-        r"\blien\s*he\b",
-        r"\brelationship\b",
-        r"\bkhac\s*nhau\s*(giua|the\s*nao)\b",
-        r"\bdifference\s+between\b",
-        r"\bvi\s*du\s*(thuc\s*te|cua\s*ban)\b",
-        r"\bviet\s*lai\b",
-        r"\brewrite\b",
-        r"\bin\s+your\s+own\s+words\b",
-        r"\bsuy\s*luan\b",
-        r"\breason\b",
-    )
-)
-
 
 class QaAnswerService:
     def answer(
