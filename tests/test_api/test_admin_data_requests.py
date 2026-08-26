@@ -44,7 +44,7 @@ def _ensure_admin_user() -> str:
             models.User(
                 id="admin_dsar",
                 email="admin.dsar@example.test",
-                password_hash="$2b$12$K3ItPXwWl0K6qF2fT1o4kOZjV6xrEhOZQ8j6h0F1a1eYWx1s2wZ7O",  # bcrypt("AdminPassword123")
+                password_hash=hash_password("AdminPassword123"),
                 full_name="Admin DSAR",
                 role=models.UserRole.ADMIN.value,
                 organization_id=org_id,
@@ -140,9 +140,9 @@ def _seed_erasure_target(org_id: str) -> str:
                 student_id=student_id,
                 subject_code=None,
                 kind="preference",
-                content={"note": "prefers short answers"},
+                content="prefers short answers",
                 created_at=now,
-                updated_at=now,
+                last_reinforced_at=now,
             )
         )
         db.commit()
