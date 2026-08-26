@@ -54,23 +54,43 @@ def is_risk_overdue(risk: models.RiskSignal, *, now: datetime | None = None) -> 
     return risk_days_open(risk, now=now) >= RISK_SLA_DAYS
 
 
+def _weekly_plan_completion_batch(
+    db: Session, weekly_plan_ids: list[str]
+) -> dict[str, tuple[int, int]]:
+    """(so task hoan thanh, tong so task) cho NHIEU WeeklyPlan cung luc, bang
+    1 query join DailyPlan -> ScheduleBlock -> StudyTask thay vi lap tung
+    plan/daily_plan/block roi query rieng (N+1+1+1 cu — vai chuc query cho
+    1 lop hoc, la nguyen nhan dashboard GV load cham). Plan nao khong co
+    task thi khong xuat hien trong dict tra ve (bo qua, khong tinh 0%)."""
+    if not weekly_plan_ids:
+        return {}
+
+    rows = (
+        db.query(models.DailyPlan.weekly_plan_id, models.StudyTask.status)
+        .join(models.ScheduleBlock, models.ScheduleBlock.daily_plan_id == models.DailyPlan.id)
+        .join(models.StudyTask, models.StudyTask.schedule_block_id == models.ScheduleBlock.id)
+        .filter(models.DailyPlan.weekly_plan_id.in_(weekly_plan_ids))
+        .all()
+    )
+
+    totals: dict[str, int] = {}
+    completed_counts: dict[str, int] = {}
+    for weekly_plan_id, status in rows:
+        totals[weekly_plan_id] = totals.get(weekly_plan_id, 0) + 1
+        if status == "COMPLETED":
+            completed_counts[weekly_plan_id] = completed_counts.get(weekly_plan_id, 0) + 1
+
+    return {
+        weekly_plan_id: (completed_counts.get(weekly_plan_id, 0), total)
+        for weekly_plan_id, total in totals.items()
+    }
+
+
 def weekly_plan_completion(db: Session, weekly_plan_id: str) -> tuple[int, int]:
-    """(so task hoan thanh, tong so task) cua 1 WeeklyPlan, di qua dung cau
-    truc DailyPlan -> ScheduleBlock -> StudyTask. Dung chung boi dashboard
-    (F4), Kudos (F8) va phat hien xu huong giam (A2) de cac con so hoan thanh
-    luon khop nhau khi doi chieu thu cong giua cac man hinh."""
-    total = 0
-    completed = 0
-    daily_plans = db.query(models.DailyPlan).filter_by(weekly_plan_id=weekly_plan_id).all()
-    for dp in daily_plans:
-        blocks = db.query(models.ScheduleBlock).filter_by(daily_plan_id=dp.id).all()
-        for block in blocks:
-            tasks = db.query(models.StudyTask).filter_by(schedule_block_id=block.id).all()
-            for task in tasks:
-                total += 1
-                if task.status == "COMPLETED":
-                    completed += 1
-    return completed, total
+    """(so task hoan thanh, tong so task) cua 1 WeeklyPlan. Giu lai cho code
+    goi tung plan rieng le; cac ham lay theo lop/nhieu tuan ben duoi dung
+    _weekly_plan_completion_batch truc tiep de tranh N+1."""
+    return _weekly_plan_completion_batch(db, [weekly_plan_id]).get(weekly_plan_id, (0, 0))
 
 
 def class_weekly_completion(db: Session, student_ids: list[str]) -> list[float]:
@@ -81,10 +101,11 @@ def class_weekly_completion(db: Session, student_ids: list[str]) -> list[float]:
     plans = db.query(models.WeeklyPlan).filter(
         models.WeeklyPlan.student_id.in_(student_ids)
     ).all()
+    completion_by_plan = _weekly_plan_completion_batch(db, [p.id for p in plans])
 
     rates_by_week: dict[int, list[float]] = {}
     for plan in plans:
-        completed, total = weekly_plan_completion(db, plan.id)
+        completed, total = completion_by_plan.get(plan.id, (0, 0))
         # Khong co task nao thi bo qua tuan do cho SV nay, khong tinh la 0%
         # (0% that va "chua co du lieu" la hai y nghia khac nhau).
         if total == 0:
@@ -106,11 +127,13 @@ def student_recent_weekly_rates(db: Session, student_id: str, limit: int) -> lis
         .order_by(models.WeeklyPlan.week_number.desc())
         .all()
     )
+    completion_by_plan = _weekly_plan_completion_batch(db, [p.id for p in plans])
+
     rates: list[tuple[int, float]] = []
     for plan in plans:
         if len(rates) >= limit:
             break
-        completed, total = weekly_plan_completion(db, plan.id)
+        completed, total = completion_by_plan.get(plan.id, (0, 0))
         if total == 0:
             continue
         rates.append((plan.week_number, completed / total))
