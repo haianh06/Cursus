@@ -224,7 +224,12 @@ async def confirm_delete_data_request(
     if current_preview["hash"] != req.preview_hash:
         raise HTTPException(status_code=409, detail="Dữ liệu đã thay đổi kể từ lúc xem trước. Yêu cầu xem trước lại.")
 
-    # Perform deletion
+    # Perform deletion. ReplanProposal.original_plan_id -> weekly_plans.id has
+    # no ondelete=CASCADE (plain FK), so it must be deleted before WeeklyPlan
+    # or the bulk delete below raises a FK violation; every other table here
+    # is either childless or already ondelete=CASCADE/SET NULL, so order
+    # doesn't matter for them.
+    db.query(models.ReplanProposal).filter_by(student_id=req.requester_id).delete()
     db.query(models.Enrollment).filter_by(student_id=req.requester_id).delete()
     db.query(models.Submission).filter_by(student_id=req.requester_id).delete()
     db.query(models.Conversation).filter_by(student_id=req.requester_id).delete()
@@ -234,7 +239,6 @@ async def confirm_delete_data_request(
     db.query(models.AssignmentOverride).filter_by(student_id=req.requester_id).delete()
     db.query(models.LearningGoal).filter_by(student_id=req.requester_id).delete()
     db.query(models.SelfStudySession).filter_by(student_id=req.requester_id).delete()
-    db.query(models.ReplanProposal).filter_by(student_id=req.requester_id).delete()
     db.query(models.ProgressEvent).filter_by(student_id=req.requester_id).delete()
     db.query(models.Reminder).filter_by(student_id=req.requester_id).delete()
     db.query(models.ResourceAccessEvent).filter_by(student_id=req.requester_id).delete()
