@@ -509,10 +509,19 @@ export default function CuriChatLauncher() {
 
   if (!isVisibleRoute) return null;
 
+  // Scale lives on the launcher button itself, not this wrapper: a
+  // `transform` on an ancestor becomes the containing block for any
+  // `position: fixed` descendant (a CSS spec quirk, not a Tailwind bug) —
+  // with `scale-*` up here, the mobile full-screen chat panel below (also
+  // `fixed`) resolved its `w-full`/`h-[80vh]` against this wrapper's own
+  // tiny (~56px) intrinsic size instead of the viewport, clipping it into a
+  // sliver. This wrapper now only ever toggles opacity/pointer-events.
+  const mascotVisible = showMascot && !(withinHero && !isOpen);
+
   return (
     <div
       className={`fixed z-[85] transition-all duration-300 ease-out ${
-        showMascot && !(withinHero && !isOpen) ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
+        mascotVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}
       style={{
         bottom: isMobile ? 'calc(16px + env(safe-area-inset-bottom))' : '24px',
@@ -584,6 +593,7 @@ export default function CuriChatLauncher() {
           className={`
             group rounded-full flex items-center justify-center relative select-none cursor-pointer outline-none border-none transition-all duration-300 ease-out z-10
             border-0
+            ${mascotVisible ? 'scale-100' : 'scale-90'}
             hover:-translate-y-1.5 hover:scale-[1.18]
             active:scale-[1.08]
             focus-visible:ring-3 focus-visible:ring-offset-2
