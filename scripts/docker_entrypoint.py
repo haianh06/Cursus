@@ -189,6 +189,8 @@ def _ingest_real_curriculum() -> None:
     from src.db.connection import SessionLocal
     from src.services.mock.real_curriculum_service import ingest_all_real_courses
 
+    from src.services.mock.real_curriculum_service import purge_superseded_mock_catalog_docs
+
     db = SessionLocal()
     try:
         results = ingest_all_real_courses(db)
@@ -197,6 +199,9 @@ def _ingest_real_curriculum() -> None:
             len(results),
             sum(results.values()),
         )
+        purged = purge_superseded_mock_catalog_docs(db)
+        if purged:
+            logger.info("purged_superseded_mock_catalog_docs count=%s", len(purged))
     except Exception:  # noqa: BLE001
         logger.exception("real_curriculum_ingest_failed")
     finally:
