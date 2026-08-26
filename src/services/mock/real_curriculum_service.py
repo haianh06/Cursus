@@ -215,6 +215,43 @@ def get_curriculum_detail(code: str) -> dict | None:
     }
 
 
+def purge_superseded_mock_catalog_docs(db: Session) -> list[str]:
+    """Delete the old generic-loader `doc_catalog_<code>_chunks` Document
+    (source="mock") for any course that now ALSO has a real, official
+    Document (this loader's own `doc_real_*`, or gate2_demo/
+    student_mock_data_service's SSA101/CSI106 fixtures) -- these were
+    written before `docker_entrypoint.py` was fixed to only run
+    `seed_curriculum.py --files-only`, and being a straight duplicate under
+    a different document_id, they sit alongside the real content in
+    retrieval forever unless removed: the RAG blended score can still pick
+    the mock chunk as top match, which both mislabels a real citation as
+    simulated (MOCK_CONTENT_DISCLAIMER) and surfaces raw, unedited chunk
+    text instead of the real document's citation. A course whose only
+    content is this mock doc (no real replacement exists, e.g. combo-slot
+    codes like PHE_COM*1) is left untouched -- it's the only source
+    available for that course, disclaimer included.
+
+    DocumentChunk rows cascade via ondelete=CASCADE on document_id, so
+    deleting the Document is enough. Safe to call on every boot: a no-op
+    once the superseded docs are gone."""
+    docs = db.query(models.Document).all()
+    real_codes = {
+        meta["course_code"]
+        for meta in (d.metadata_info or {} for d in docs)
+        if meta.get("source") != "mock" and meta.get("course_code")
+    }
+    superseded = [
+        d
+        for d in docs
+        if (d.metadata_info or {}).get("source") == "mock"
+        and (d.metadata_info or {}).get("course_code") in real_codes
+    ]
+    for doc in superseded:
+        db.delete(doc)
+    db.commit()
+    return [d.id for d in superseded]
+
+
 def ingest_all_real_courses(db: Session) -> dict[str, int]:
     """Ingest every discoverable real course. Commits once at the end so a
     partial failure doesn't leave some courses half-migrated mid-batch."""
