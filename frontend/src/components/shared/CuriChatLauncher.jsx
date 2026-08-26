@@ -821,7 +821,7 @@ export default function CuriChatLauncher() {
                       )}
                       <div
                         className={`
-                          max-w-[85%] p-3.5 text-xs leading-relaxed font-medium rounded-2xl
+                          max-w-[85%] p-3.5 text-xs leading-relaxed font-medium rounded-2xl whitespace-pre-wrap
                           ${m.role === 'user'
                             ? 'bg-accent-cta text-white rounded-br-none'
                             : `bg-surface-card border border-line rounded-bl-none ${m.failed ? 'text-danger' : 'text-fg-secondary'}`}
