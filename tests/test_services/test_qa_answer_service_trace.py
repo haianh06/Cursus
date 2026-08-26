@@ -64,12 +64,32 @@ def test_retrieval_empty_is_logged(monkeypatch):
     _assert_trace(calls, llm_attempted=False, llm_success=False, fallback_used=False, retrieval_empty=True)
 
 
-def test_extractive_only_path_never_attempts_llm(monkeypatch):
+def test_a_simple_question_still_attempts_llm_when_one_is_configured(monkeypatch):
+    """The LLM decides relevance now, not a keyword-pattern gate — even a
+    plain factual question must reach it when retrieval found something and
+    a model is configured, so it can catch a low-scoring, off-topic match
+    extractive excerpting would just quote as if it answered the question."""
     calls = _capture_trace_log(monkeypatch)
+    monkeypatch.setattr(qa_answer_service.QaAnswerService, "_llm_available", lambda self: True)
+    mock_llm = MagicMock()
+    mock_llm.with_structured_output.return_value.invoke.return_value = LlmQaPayload(
+        answer="Điều kiện qua môn là điểm trung bình >= 5.", cited_chunk_ids=["C1"], insufficient_context=False
+    )
+    monkeypatch.setattr(qa_answer_service, "get_llm", lambda: mock_llm)
+
+    service = qa_answer_service.QaAnswerService()
+    retrieved = [RetrievedChunk(chunk=_fake_chunk(), score=0.9)]
+    service.answer(question="Điều kiện qua môn là gì?", subject_code="SSA101", retrieved=retrieved)
+
+    _assert_trace(calls, llm_attempted=True, llm_success=True, fallback_used=False, retrieval_empty=False)
+
+
+def test_extractive_only_path_used_when_no_llm_configured(monkeypatch):
+    calls = _capture_trace_log(monkeypatch)
+    monkeypatch.setattr(qa_answer_service.QaAnswerService, "_llm_available", lambda self: False)
     service = qa_answer_service.QaAnswerService()
     retrieved = [RetrievedChunk(chunk=_fake_chunk(), score=0.9)]
 
-    # A simple factual question -- _needs_llm() returns False for this.
     service.answer(question="Điều kiện qua môn là gì?", subject_code="SSA101", retrieved=retrieved)
 
     _assert_trace(calls, llm_attempted=False, llm_success=False, fallback_used=False, retrieval_empty=False)
