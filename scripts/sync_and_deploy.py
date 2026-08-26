@@ -112,26 +112,22 @@ def sync_once(log) -> list[str]:
             if was_new and rel.startswith("migrations/versions/"):
                 new_migrations.append(rel)
 
-    deleted_dirs: set[Path] = set()
-    for rel in sorted(existing_synced - wanted):
-        dst_path = DEST / rel
-        if dst_path.exists():
-            dst_path.unlink()
-            changed.append(rel)
-            log(f"  delete: {rel}")
-            deleted_dirs.add(dst_path.parent)
-
-    for start_dir in sorted(deleted_dirs, key=lambda p: -len(str(p))):
-        d = start_dir
-        while d != DEST and d.exists():
-            try:
-                next(d.iterdir())
-                break
-            except StopIteration:
-                d.rmdir()
-                d = d.parent
-            except OSError:
-                break
+    # Never auto-delete: a file that exists only in DEST (no match in SOURCE)
+    # is far more often a deploy-repo-only addition someone forgot to add to
+    # DEPLOY_ONLY_PATHS/PREFIXES (e.g. scripts/seed_gap_fill_demo.py, added
+    # 25/08) than something that was actually meant to be removed. Silently
+    # unlink()-ing it here previously meant one accidental edit on the SOURCE
+    # side could wipe a DEST-only file forever, mid-recording, with no
+    # confirmation. Only warn -- an actually-intended deletion has to be done
+    # by hand in DEST once (`git rm`), which also makes it visible in the
+    # commit this script makes right after.
+    orphaned = sorted(existing_synced - wanted)
+    if orphaned:
+        log("  [!] file chi co o Cursus_demo, KHONG co ben Cursus -- khong tu xoa, tu kiem tra:")
+        for rel in orphaned:
+            log(f"      {rel}")
+        log("      (neu day la file chi thuoc rieng deploy repo, them vao DEPLOY_ONLY_PATHS/PREFIXES;")
+        log("       neu that su muon xoa, tu `git rm` no trong Cursus_demo)")
 
     if new_migrations:
         log("  [!] migration moi phat hien -- tu doi chieu/chay tay tren Supabase Dashboard (docs/PROJECT_CONTEXT.md muc 20 y8):")
