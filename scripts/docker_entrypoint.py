@@ -243,6 +243,7 @@ def main() -> None:
     _ensure_academic_term()
     _seed_if_needed()
     _seed_curriculum()
+    _ingest_real_curriculum()
     _seed_extra_users()
     _provision("student.demo@example.test")
 
