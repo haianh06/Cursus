@@ -201,6 +201,22 @@ def compare_instructor_classes(
     return {"classes": rows}
 
 
+def _redact_evidence(evidence: dict | None, *, student) -> dict:
+    """`evidence.note` on a SELF_REPORTED_HELP_REQUEST signal is the
+    student's own free-text reflection answer, verbatim — the same kind of
+    private content `share_reflection_summary` (default OFF) already gates
+    for the instructor's student-profile view. It must be gated the same
+    way here, or an instructor (or anyone else calling this API) reads a
+    student's private words the moment the student ticks "request help",
+    with no way for the student to have declined that. Every other evidence
+    field is anonymized/aggregate and unaffected."""
+    data = dict(evidence or {})
+    if "note" in data and not bool(getattr(student, "share_reflection_summary", False)):
+        data["note"] = None
+        data["noteWithheld"] = True
+    return data
+
+
 def _serialize_risk_row(db: Session, r: models.RiskSignal) -> dict:
     """Dung chung boi GET /risks, GET /risks/{id} va ho so SV (A1), de 3 noi
     nay khong bao gio lech shape voi nhau."""
@@ -221,7 +237,7 @@ def _serialize_risk_row(db: Session, r: models.RiskSignal) -> dict:
         # APPROVE apart from REJECT (both set resolved_at). resolutionType
         # is what the UI needs to render "Intervened" vs "Dismissed".
         "resolutionType": r.resolution_type,
-        "evidence": r.evidence,
+        "evidence": _redact_evidence(r.evidence, student=student),
         "recommendedIntervention": r.recommended_action,
         "instructorNote": r.instructor_note,
         "generatedAt": r.generated_at.isoformat(),
