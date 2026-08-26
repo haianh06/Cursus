@@ -256,12 +256,14 @@ async def test_qa_greeting_uses_chat_mode(client, question):
 
 
 @pytest.mark.asyncio
-async def test_qa_disclaims_answers_grounded_in_mock_content(client):
-    """mục 16 data contract: a course whose retrieval corpus is fabricated
-    demo content (source=mock) must never have its answer presented as
-    "theo syllabus" fact without a visible disclaimer — a judge asking
-    Cursus Assistant about such a course must not receive a confidently
-    fabricated citation with no warning."""
+async def test_qa_still_flags_mock_content_on_citations_without_an_answer_banner(client):
+    """A course whose retrieval corpus is fabricated demo content (source=
+    mock) still carries `isMock=True` on its citations — the frontend can
+    still badge those chips — but the answer text itself no longer gets a
+    disclaimer sentence prepended (removed at the user's explicit request:
+    it kept surfacing on real, non-mock content too because of stale
+    duplicate mock-tagged rows, and reads as noise once the corpus is
+    trustworthy)."""
     _seed_isolated_mock_course_for_ethan()
     headers = await _login_student(client)
 
@@ -279,8 +281,8 @@ async def test_qa_disclaims_answers_grounded_in_mock_content(client):
     assert payload["mode"] in {"extractive", "llm", "faq"}
     assert len(payload["citations"]) >= 1
     assert all(citation["isMock"] for citation in payload["citations"])
-    assert "MÔ PHỎNG" in payload["answer"]
-    assert "syllabus chính thức" in payload["answer"]
+    assert "MÔ PHỎNG" not in payload["answer"]
+    assert "syllabus chính thức" not in payload["answer"]
 
 
 @pytest.mark.asyncio
