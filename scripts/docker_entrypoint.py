@@ -161,14 +161,46 @@ def _seed_extra_users() -> None:
 
 
 def _seed_curriculum() -> None:
+    """Only fills in a placeholder `chunks_<CODE>.json` for catalog subjects
+    that don't have one yet (mostly combo/elective slots with no real
+    syllabus file) — `--files-only` so it never writes to the database.
+    `seed_curriculum.py`'s own DB-writing path tags every chunk it inserts
+    as `source=mock` unconditionally, including for subjects that DO have a
+    real, rich chunk file — which would relabel real syllabus content as
+    simulated. `_ingest_real_curriculum` below is the one place real content
+    actually reaches the database, correctly tagged."""
     script = Path("/app/scripts/seed_curriculum.py")
     if not script.exists():
         script = Path("scripts/seed_curriculum.py")
     if not script.exists():
         logger.warning("seed_curriculum_script_missing")
         return
-    logger.info("seeding_curriculum_catalog")
-    _run([sys.executable, str(script)], check=False)
+    logger.info("seeding_curriculum_chunk_files")
+    _run([sys.executable, str(script), "--files-only"], check=False)
+
+
+def _ingest_real_curriculum() -> None:
+    """Load every course with a real, already-parsed syllabus
+    (`docs/planning/v2/data/chunks_<CODE>.json`) into the database as
+    `official_document`/`curriculum`-sourced content — see
+    `src/services/mock/real_curriculum_service.py`. Safe to call on every
+    boot: each course's chunks are fully replaced from the same source file,
+    so this is idempotent, not additive."""
+    from src.db.connection import SessionLocal
+    from src.services.mock.real_curriculum_service import ingest_all_real_courses
+
+    db = SessionLocal()
+    try:
+        results = ingest_all_real_courses(db)
+        logger.info(
+            "real_curriculum_ingested courses=%s total_chunks=%s",
+            len(results),
+            sum(results.values()),
+        )
+    except Exception:  # noqa: BLE001
+        logger.exception("real_curriculum_ingest_failed")
+    finally:
+        db.close()
 
 
 def _ensure_academic_term() -> None:
