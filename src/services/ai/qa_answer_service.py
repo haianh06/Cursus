@@ -58,7 +58,20 @@ class QaAnswerService:
         subject_code: str,
         retrieved: list[RetrievedChunk],
     ) -> tuple[str, list[QaCitation], str]:
-        """Return (answer, citations, mode). Prefer extractive; LLM only if needed.
+        """Return (answer, citations, mode). The LLM is the judge of relevance.
+
+        Every question that retrieved at least one chunk goes to the LLM
+        (when one is configured) — the model itself decides whether the
+        retrieved context actually answers the question (via
+        `LlmQaPayload.insufficient_context`), rather than a keyword-pattern
+        gate deciding in advance which questions are "worth" an LLM call.
+        That gate used to let a low-scoring, off-topic retrieval hit
+        (e.g. a silly question that happens to share a stray word with a
+        syllabus chunk) fall straight through to `_answer_extractive`, which
+        has no concept of "this doesn't actually answer the question" and
+        will confidently quote the chunk anyway. The extractive path now
+        only runs when there's truly no LLM configured, or the LLM call
+        itself fails.
 
         P0#8 trace (mục 9 ý8, Option B, docs/PENDING_DECISIONS.md #1): this is
         the single shared entry point for BOTH callers (Companion chat via
@@ -82,7 +95,7 @@ class QaAnswerService:
                 [],
                 "no_source",
             )
-        elif self._needs_llm(question) and self._llm_available():
+        elif self._llm_available():
             llm_attempted = True
             try:
                 result = self._answer_with_llm(
@@ -109,19 +122,6 @@ class QaAnswerService:
             retrieval_empty,
         )
         return result
-
-    def _needs_llm(self, question: str) -> bool:
-        """True when the question likely needs synthesis beyond excerpt paste."""
-        folded = fold_accents(question or "").lower()
-        folded = re.sub(r"\s+", " ", folded).strip()
-        if not folded:
-            return False
-        if any(pattern.search(folded) for pattern in _COMPLEX_PATTERNS):
-            return True
-        # Multiple distinct asks in one message.
-        if folded.count("?") >= 2 or folded.count(" va ") >= 2 and len(folded) > 120:
-            return True
-        return False
 
     def _llm_available(self) -> bool:
         settings = get_settings()
