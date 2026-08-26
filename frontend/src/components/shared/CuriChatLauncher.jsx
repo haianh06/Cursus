@@ -659,12 +659,23 @@ export default function CuriChatLauncher() {
         tabIndex="-1"
         inert={!isOpen}
         className={`
-          absolute z-[85] bg-surface-card border border-line shadow-panel overflow-hidden flex flex-col outline-none
+          z-[85] bg-surface-card border border-line shadow-panel overflow-hidden flex flex-col outline-none
           transition-all duration-300 ease-out origin-bottom-right
           ${isOpen ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto' : 'opacity-0 translate-y-3 scale-[0.98] pointer-events-none'}
-          ${isMinimized ? 'sm:h-[56px] sm:w-[300px] bottom-0 right-16 rounded-[var(--radius-md)]' : 'bottom-16 right-0 rounded-[var(--radius-lg)]'}
-          max-sm:fixed max-sm:bottom-0 max-sm:right-0 max-sm:w-full max-sm:h-[80vh] max-sm:rounded-t-[var(--radius-lg)] max-sm:rounded-b-none
-          ${!isMinimized ? 'sm:h-[500px] sm:w-[380px]' : ''}
+          ${
+            /* Position/size branches picked in JS from the already-tracked
+               `isMobile` state, never by competing `max-sm:`/plain Tailwind
+               utilities on the same property — those resolve by generated
+               CSS source order, not viewport, so a plain `absolute`/`w-*`
+               class can silently outrank its `max-sm:` override regardless
+               of screen width (this exact bug: the panel stayed desktop-
+               sized and clipped off-screen on a phone-width viewport). */
+            isMobile
+              ? 'fixed bottom-0 right-0 w-full h-[80vh] rounded-t-[var(--radius-lg)] rounded-b-none'
+              : isMinimized
+                ? 'absolute h-[56px] w-[300px] bottom-0 right-16 rounded-[var(--radius-md)]'
+                : 'absolute h-[500px] w-[380px] bottom-16 right-0 rounded-[var(--radius-lg)]'
+          }
         `}
       >
         {/* Header */}
