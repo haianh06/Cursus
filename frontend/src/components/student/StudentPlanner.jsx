@@ -44,7 +44,7 @@ function CapacityMeter({ planned, capacity, lang }) {
     <div>
       <div className="flex items-baseline justify-between mb-1.5 gap-2 flex-wrap">
         <span className="text-[12px] font-semibold text-fg-secondary">
-          {lang === "vi"
+          {lang === 'vi'
             ? 'Tổng dự kiến so với giờ rảnh lúc tạo kế hoạch này'
             : 'Planned vs. available (at the time this plan was created)'}
         </span>
