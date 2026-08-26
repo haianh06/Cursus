@@ -93,17 +93,16 @@ def get_instructor_dashboard(
     # khong bi anh huong boi course_id dang chon.
     all_sections = db.query(models.CourseSection).filter_by(instructor_id=current_user.id).all()
 
-    courses = []
-    seen_course_ids = set()
-    for s in all_sections:
-        c = db.query(models.Course).filter_by(id=s.course_id).first()
-        if c and c.id not in seen_course_ids:
-            seen_course_ids.add(c.id)
-            courses.append({
-                "id": c.id,
-                "code": c.code,
-                "name": c.name
-            })
+    course_ids_taught = {s.course_id for s in all_sections}
+    course_rows = (
+        db.query(models.Course)
+        .filter(models.Course.id.in_(course_ids_taught))
+        .order_by(models.Course.code)
+        .all()
+        if course_ids_taught
+        else []
+    )
+    courses = [{"id": c.id, "code": c.code, "name": c.name} for c in course_rows]
 
     # Section da loc theo course_id (F9) - moi so lieu ben duoi deu tinh tren
     # tap nay, "ALL"/None nghia la gop het cac lop GV dang day.
