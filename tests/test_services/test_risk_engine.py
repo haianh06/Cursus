@@ -192,6 +192,93 @@ def test_inactive_seven_days_adds_two(db):
     assert result.severity == "needs_support"
 
 
+def _save_reflection(
+    db, student_id: str, *, stress_code: str | None, confirmed: bool, week_number: int
+) -> None:
+    answers = [{"questionId": "stress_level", "selectedCodes": [stress_code]}] if stress_code else []
+    db.add(
+        models.WeeklyReflection(
+            id=f"ref_{uuid.uuid4().hex[:8]}",
+            student_id=student_id,
+            week_number=week_number,
+            content="fixture reflection",
+            generated_at=NOW,
+            metrics={"answers": answers, "studentConfirmed": confirmed},
+        )
+    )
+    db.flush()
+
+
+def test_self_reported_high_stress_adds_two(db):
+    student_id = _make_student(db, "stressed")
+    _build_week(db, student_id, [("done", -1, "COMPLETED")], events=[(-1, "TASK_COMPLETED", "0")])
+    _save_reflection(
+        db, student_id, stress_code="very_high", confirmed=True, week_number=NOW.isocalendar().week
+    )
+    result = RiskEngine(db, now=NOW).assess(student_id=student_id, section_id=SECTION_ID)
+    codes = {signal.code: signal.points for signal in result.signals}
+    assert codes.get("SELF_REPORTED_HIGH_STRESS") == 2
+    assert result.score == 2
+
+
+def test_self_reported_high_stress_ignored_when_reflection_not_confirmed(db):
+    """A draft/preview reflection must never contribute to the score — only
+    a `studentConfirmed` one the student actually chose to save."""
+    student_id = _make_student(db, "draftstress")
+    _build_week(db, student_id, [("done", -1, "COMPLETED")], events=[(-1, "TASK_COMPLETED", "0")])
+    _save_reflection(
+        db, student_id, stress_code="very_high", confirmed=False, week_number=NOW.isocalendar().week
+    )
+    result = RiskEngine(db, now=NOW).assess(student_id=student_id, section_id=SECTION_ID)
+    codes = {signal.code for signal in result.signals}
+    assert "SELF_REPORTED_HIGH_STRESS" not in codes
+    assert result.score == 0
+
+
+def test_self_reported_low_stress_does_not_trigger(db):
+    student_id = _make_student(db, "calm")
+    _build_week(db, student_id, [("done", -1, "COMPLETED")], events=[(-1, "TASK_COMPLETED", "0")])
+    _save_reflection(
+        db, student_id, stress_code="very_low", confirmed=True, week_number=NOW.isocalendar().week
+    )
+    result = RiskEngine(db, now=NOW).assess(student_id=student_id, section_id=SECTION_ID)
+    codes = {signal.code for signal in result.signals}
+    assert "SELF_REPORTED_HIGH_STRESS" not in codes
+    assert result.score == 0
+
+
+def test_self_reported_high_stress_uses_only_the_latest_reflection(db):
+    """An old confirmed "very_high" week must not haunt the score forever
+    once a newer reflection exists — even if the newer one has no stress
+    answer at all."""
+    student_id = _make_student(db, "recovered")
+    _build_week(db, student_id, [("done", -1, "COMPLETED")], events=[(-1, "TASK_COMPLETED", "0")])
+    _save_reflection(
+        db, student_id, stress_code="very_high", confirmed=True, week_number=1
+    )
+    _save_reflection(
+        db, student_id, stress_code=None, confirmed=True, week_number=NOW.isocalendar().week
+    )
+    result = RiskEngine(db, now=NOW).assess(student_id=student_id, section_id=SECTION_ID)
+    codes = {signal.code for signal in result.signals}
+    assert "SELF_REPORTED_HIGH_STRESS" not in codes
+
+
+def test_self_reported_high_stress_also_works_through_preload(db):
+    """`preload()` batch-fetches reflections for the instructor dashboard —
+    must pick the same latest-per-student row as the unpreloaded path."""
+    student_id = _make_student(db, "preloadstress")
+    _build_week(db, student_id, [("done", -1, "COMPLETED")], events=[(-1, "TASK_COMPLETED", "0")])
+    _save_reflection(
+        db, student_id, stress_code="very_high", confirmed=True, week_number=NOW.isocalendar().week
+    )
+    engine = RiskEngine(db, now=NOW)
+    engine.preload([student_id])
+    result = engine.assess(student_id=student_id, section_id=SECTION_ID)
+    codes = {signal.code for signal in result.signals}
+    assert "SELF_REPORTED_HIGH_STRESS" in codes
+
+
 def test_score_is_reproducible_across_runs(db):
     student_id = _make_student(db, "stable")
     _build_week(

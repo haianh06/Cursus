@@ -645,6 +645,7 @@ export const en = {
     signal_TASK_DEFERRED_2_PLUS: "Same task deferred (count ≥ threshold)",
     signal_DUE_WITHIN_48H_NOT_STARTED: "Deadline within N hours, not started",
     signal_INACTIVE_7_DAYS: "No activity in the assessment window",
+    signal_SELF_REPORTED_HIGH_STRESS: "Self-reported \"very stressed, overwhelmed\" in latest reflection",
     policyNoThreshold: "— (fixed window)",
     policyWatchThreshold: "\"Watch\" band starts at score ≥",
     policyNeedsSupportThreshold: "\"Needs support\" band starts at score ≥",

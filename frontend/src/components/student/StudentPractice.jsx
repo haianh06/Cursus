@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FlaskConical, RefreshCw, ChevronLeft, ChevronRight, CheckCircle2, XCircle, RotateCcw } from 'lucide-react';
 import Skeleton from '../shared/Skeleton';
 import EmptyState from '../shared/EmptyState';
-import { getStudentCourses, getPracticeSet, requestPracticeSet, currentIsoWeekNumber } from '../../lib/api';
+import { getStudentCourses, getPracticeSet, requestPracticeSet, academicWeekNumber } from '../../lib/api';
 import { useLanguage } from '../../context/LanguageContext';
+import { useCursus } from '../../context/CursusContext';
 
 /**
  * Practice sets (MCQ + flashcards) for a course + week.
@@ -108,17 +109,27 @@ const STATUS_LABEL = {
 
 export default function StudentPractice() {
   const { lang } = useLanguage();
+  const { activeSemester } = useCursus();
   const [courses, setCourses] = useState([]);
   const [courseCode, setCourseCode] = useState('');
   // Practice weeks only run 1-10 (see the Next-week button below, which
-  // already clamps at 10) — the calendar's raw ISO week is often past that
-  // by the time a student opens this page, so clamp the initial value too.
-  const [weekNumber, setWeekNumber] = useState(() => Math.min(10, currentIsoWeekNumber()));
+  // already clamps at 10). "Current week" is anchored to the student's
+  // semester start date — same source as the topbar/planner — not the raw
+  // calendar week, which drifts past the semester's actual week within
+  // days of the semester starting.
+  const [weekNumber, setWeekNumber] = useState(1);
+  const weekInitialized = useRef(false);
   const [practiceSet, setPracticeSet] = useState(null);
   const [loading, setLoading] = useState(false);
   const [requesting, setRequesting] = useState(false);
   const [loadingCourses, setLoadingCourses] = useState(true);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (weekInitialized.current || !activeSemester?.start_date) return;
+    weekInitialized.current = true;
+    setWeekNumber(Math.min(10, academicWeekNumber(activeSemester.start_date)));
+  }, [activeSemester]);
 
   useEffect(() => {
     let cancelled = false;
@@ -145,7 +156,7 @@ export default function StudentPractice() {
       const data = await getPracticeSet({ courseCode, weekNumber });
       setPracticeSet(data);
     } catch (err) {
-      if (err?.status !== 404) setError(err);
+      setError(err);
       setPracticeSet(null);
     } finally {
       setLoading(false);

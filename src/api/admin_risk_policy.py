@@ -21,6 +21,7 @@ from src.schemas.admin_schemas import (
 )
 from src.security.authorization import require_permission, require_roles
 from src.security.permissions import Permission, Resource
+from src.services.ai.risk_engine import DEFAULT_SIGNAL_THRESHOLDS, DEFAULT_SIGNAL_WEIGHTS
 from src.services.core.audit_service import AuditService
 from src.services.core.risk_policy_service import (
     RiskPolicyService,
@@ -40,11 +41,17 @@ def get_risk_policy_service(db: Session = Depends(get_db)) -> RiskPolicyService:
 
 
 def _serialize(policy: RiskPolicy) -> dict:
+    # A policy published before a new rule existed has no entry for it in
+    # its stored JSON — merge the hardcoded defaults underneath so the
+    # admin edit form always has every current signal code to show/publish,
+    # never missing one until the admin happens to re-save from scratch.
+    weights = {**DEFAULT_SIGNAL_WEIGHTS, **policy.signal_weights}
+    thresholds = {**DEFAULT_SIGNAL_THRESHOLDS, **policy.signal_thresholds}
     return {
         "policyVersion": policy.policy_version,
         "effectiveFrom": policy.effective_from.isoformat(),
-        "signalWeights": policy.signal_weights,
-        "signalThresholds": policy.signal_thresholds,
+        "signalWeights": weights,
+        "signalThresholds": thresholds,
         "severityBands": [list(band) for band in policy.severity_bands],
         "reason": policy.reason,
         "rolledBackFrom": policy.rolled_back_from,

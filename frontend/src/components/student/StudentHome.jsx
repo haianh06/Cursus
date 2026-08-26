@@ -34,6 +34,24 @@ function formatMinutes(minutes, lang) {
   return `${hours}h${String(rest).padStart(2, '0')}`;
 }
 
+/* `plan.planKind` — which of the app's plan-generation engines produced the
+ * current plan (see `plan_kind()` in `src/services/ai/plan_builder.py`).
+ * Shown on the PDR stepper's Plan step so a student doesn't have to guess
+ * which of the several plan surfaces (Planner goal-text, an assignment, the
+ * Lecture Plan screen) this particular plan actually came from. */
+const PLAN_KIND_LABELS = {
+  assignment: { vi: 'theo assignment', en: 'from assignment' },
+  weekly_goal: { vi: 'theo mục tiêu bạn đặt', en: 'from your own goal' },
+  lecture_plan: { vi: 'theo lịch học', en: 'from class schedule' },
+  timetable: { vi: 'khung tự học', en: 'self-study container' },
+  unknown: { vi: 'không rõ nguồn', en: 'unknown source' },
+};
+
+function planKindLabel(plan, lang) {
+  const entry = plan?.planKind && PLAN_KIND_LABELS[plan.planKind];
+  return entry ? entry[lang] || entry.vi : null;
+}
+
 /* ── Hero: one next action, not four equal KPIs ───────────────────────── */
 function NextBestAction({ user, task, onStart, onComplete, onDefer, onOpenCitation, busy, lang }) {
   const greeting =
@@ -199,13 +217,18 @@ function PdrStepper({ phase, plan, completedCount, totalCount, lang, navigate })
       icon: <Target size={17} />,
       color: 'var(--plan)',
       status: plan
-        ? plan.status === 'DRAFT'
-          ? lang === 'vi'
-            ? 'Kế hoạch nháp — chờ bạn xác nhận'
-            : 'Draft — waiting for your confirmation'
-          : lang === 'vi'
-            ? 'Đã xác nhận'
-            : 'Confirmed'
+        ? [
+            plan.status === 'DRAFT'
+              ? lang === 'vi'
+                ? 'Kế hoạch nháp — chờ bạn xác nhận'
+                : 'Draft — waiting for your confirmation'
+              : lang === 'vi'
+                ? 'Đã xác nhận'
+                : 'Confirmed',
+            planKindLabel(plan, lang),
+          ]
+            .filter(Boolean)
+            .join(' · ')
         : lang === 'vi'
           ? 'Chưa có kế hoạch'
           : 'No plan yet',
@@ -413,6 +436,16 @@ export default function StudentHome({ user }) {
         >
           <AlertTriangle size={14} className="shrink-0 mt-0.5" />
           <span>{actionError.message}</span>
+        </div>
+      )}
+
+      {currentPlan?.warnings?.length > 0 && (
+        <div
+          role="status"
+          className="rounded-xl p-3.5 text-[13px] flex items-start gap-2 bg-warning-soft text-warning"
+        >
+          <AlertTriangle size={14} className="shrink-0 mt-0.5" />
+          <span>{currentPlan.warnings.join(' ')}</span>
         </div>
       )}
 

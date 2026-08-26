@@ -645,6 +645,7 @@ export const vi = {
     signal_TASK_DEFERRED_2_PLUS: "Một task bị dời (≥ ngưỡng lần)",
     signal_DUE_WITHIN_48H_NOT_STARTED: "Deadline dưới N giờ, chưa bắt đầu",
     signal_INACTIVE_7_DAYS: "Không hoạt động trong cửa sổ đánh giá",
+    signal_SELF_REPORTED_HIGH_STRESS: "Tự báo \"rất căng thẳng, quá tải\" ở phản tư gần nhất",
     policyNoThreshold: "— (cửa sổ cố định)",
     policyWatchThreshold: "Mức \"Cần theo dõi\" bắt đầu từ điểm ≥",
     policyNeedsSupportThreshold: "Mức \"Nên hỗ trợ\" bắt đầu từ điểm ≥",

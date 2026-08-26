@@ -1,6 +1,4 @@
 # src/api/student.py
-from datetime import date
-
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
@@ -13,19 +11,26 @@ from src.security.ownership import (
     require_student_assignment_access,
     require_student_course_access,
 )
-from src.services.academic.timetable_service import monday_of
-from src.services.ai.plan_builder import is_study_plan, serialize_plan
+from src.services.academic.academic_calendar import current_week_for_student
+from src.services.ai.plan_builder import (
+    is_study_plan,
+    plan_kind,
+    resolve_current_plan,
+    serialize_plan,
+)
 from src.services.ai.reflection_engine import ReflectionEngine, serialize_reflection
 from src.services.mock import gate2_demo
 from src.services.mock.gate2_demo import Gate2DemoService
 from src.services.mock.student_mock_data_service import StudentMockDataService
 from src.services.rag.document_ingest_service import DocumentIngestService
+from src.services.risk_signal_service import create_self_reported_help_alert
 
 router = APIRouter(
     prefix="/student",
     tags=["student"],
     dependencies=[Depends(require_roles(models.UserRole.STUDENT))],
 )
+
 
 class PrivacySettingsUpdateRequest(BaseModel):
     share_reflection_summary: bool
@@ -107,26 +112,28 @@ def get_student_dashboard(
             "grade": sub.grade if sub else None
         })
 
-    # Retrieve Weekly Plans
-    weekly_plans = db.query(models.WeeklyPlan).filter_by(
-        student_id=current_user.id
-    ).order_by(models.WeeklyPlan.week_number.desc()).all()
+    # The one resolver Dashboard/Planner/Reflection all share -- the same
+    # (student, current week) row always wins here, regardless of which of
+    # the three plan-generation engines produced it (see plan_builder.py).
+    current_week = current_week_for_student(db, current_user.id)
+    plan, plan_superseded = resolve_current_plan(
+        db, student_id=current_user.id, week_number=current_week, with_superseded=True
+    )
 
     # Calculate workload and weekly progress
     hours_planned = 0.0
     hours_available = 12.0
     completed_tasks = 0
     total_tasks = 0
-    current_week = 6
+    current_plan_kind = None
 
-    if weekly_plans:
-        latest_plan = weekly_plans[0]
-        current_week = latest_plan.week_number
-        hours_available = latest_plan.study_hours_allocated or 12.0
+    if plan is not None:
+        current_plan_kind = plan_kind(plan)
+        hours_available = plan.study_hours_allocated or 12.0
 
         # Get tasks under this weekly plan
         daily_plans = db.query(models.DailyPlan).filter_by(
-            weekly_plan_id=latest_plan.id
+            weekly_plan_id=plan.id
         ).all()
 
         for dp in daily_plans:
@@ -163,6 +170,8 @@ def get_student_dashboard(
             "referenceLinks": []
         },
         "currentWeek": current_week,
+        "currentPlanKind": current_plan_kind,
+        "otherPlanForThisWeek": plan_superseded,
         "courses": courses_list,
         "upcomingAssignments": upcoming_asg,
         "weeklyProgress": {
@@ -185,9 +194,13 @@ def get_student_courses(
         models.Enrollment.student_id == current_user.id
     ).all()
     courses = []
+    seen_course_ids = set()
     for s in sections:
+        if s.course_id in seen_course_ids:
+            continue
         c = db.query(models.Course).filter_by(id=s.course_id).first()
         if c:
+            seen_course_ids.add(c.id)
             courses.append({
                 "id": c.id,
                 "code": c.code,
@@ -442,7 +455,7 @@ def _resolve_plan_for_reflection(
     target_week = (
         week_number
         if week_number is not None
-        else monday_of(date.today()).isocalendar().week
+        else current_week_for_student(db, student_id)
     )
     plans = [
         plan
@@ -547,6 +560,20 @@ def save_reflection(
         share_with_advisor=payload.share_with_advisor,
         lang=payload.language,
     )
+
+    # PROJECT_CONTEXT.md §13.3: a student choosing "request_help" in a
+    # confirmed reflection must reach the instructor's real HITL queue
+    # (risk_signals), not just sit as an adjustment note on the reflection
+    # row nobody but the student ever reads again.
+    if payload.student_confirmed and "request_help" in payload.adjustments:
+        note = next(
+            (a.answer for a in payload.answers if a.questionId == "self_notes" and a.answer),
+            None,
+        )
+        create_self_reported_help_alert(
+            db, student_id=current_user.id, week_number=plan.week_number, note=note
+        )
+
     result = serialize_reflection(row)
     result["plan"] = serialize_plan(db, plan)
     return result
@@ -612,7 +639,7 @@ def get_demo_state(
         .filter_by(id=gate2_demo.PART1_ASSIGNMENT_ID)
         .first()
     )
-    week_number = monday_of(date.today()).isocalendar().week
+    week_number = current_week_for_student(db, current_user.id)
     plans = [
         plan
         for plan in db.query(models.WeeklyPlan)

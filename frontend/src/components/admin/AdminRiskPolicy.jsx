@@ -10,16 +10,19 @@ import {
   rollbackRiskPolicy,
 } from '../../lib/api';
 
-/** Same 5 signals/order as src/services/ai/risk_engine.py RULE_CATALOG.
- * hasThreshold=false for INACTIVE_7_DAYS — it has no tunable comparison
- * value of its own (tied to the fixed 7-day assessment window), only a
- * weight — see risk_engine.py's DEFAULT_SIGNAL_THRESHOLDS comment. */
+/** Same 6 signals/order as src/services/ai/risk_engine.py RULE_CATALOG.
+ * hasThreshold=false for INACTIVE_7_DAYS and SELF_REPORTED_HIGH_STRESS —
+ * neither has a tunable comparison value of its own (the first is tied to
+ * the fixed 7-day assessment window, the second is a plain equality check
+ * on a fixed reflection answer code), only a weight — see risk_engine.py's
+ * DEFAULT_SIGNAL_THRESHOLDS comment. */
 const SIGNALS = [
   { code: 'OVERDUE_TASKS_2_PLUS', hasThreshold: true, thresholdStep: 1, thresholdMin: 1, thresholdMax: 10 },
   { code: 'COMPLETION_BELOW_40', hasThreshold: true, thresholdStep: 0.05, thresholdMin: 0.05, thresholdMax: 0.95 },
   { code: 'TASK_DEFERRED_2_PLUS', hasThreshold: true, thresholdStep: 1, thresholdMin: 1, thresholdMax: 10 },
   { code: 'DUE_WITHIN_48H_NOT_STARTED', hasThreshold: true, thresholdStep: 1, thresholdMin: 1, thresholdMax: 168 },
   { code: 'INACTIVE_7_DAYS', hasThreshold: false },
+  { code: 'SELF_REPORTED_HIGH_STRESS', hasThreshold: false },
 ];
 
 function toFormState(policy) {

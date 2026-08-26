@@ -15,6 +15,7 @@ import pytest
 
 from src.db.connection import SessionLocal
 from src.db.models import UserRole
+from src.services.academic.academic_calendar import semester_week_number
 from src.services.academic.timetable_service import monday_of
 from src.services.ai.plan_builder import PlanBuilder
 from src.services.mock.gate2_demo import PART1_ASSIGNMENT_ID, Gate2DemoService
@@ -164,7 +165,10 @@ async def test_lecture_plan_never_touches_gate2_plan_data(client):
     monday = await _setup_semester_with_class_slot(
         client, org_id=org_id, token=token, course_id=course_id, weekday=2  # Wednesday
     )
-    week_number = monday.isocalendar().week
+    # This student has an active semester (set up above), so plan generation
+    # now stamps week_number relative to its start date, not the raw ISO
+    # calendar week — see `academic_week_number`.
+    week_number = semester_week_number(monday - timedelta(days=7), monday)
 
     # Build a Gate2 (assignment-driven) plan directly for the exact same
     # student + week_number, mirroring what plan_builder.PlanBuilder.generate

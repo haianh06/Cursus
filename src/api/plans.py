@@ -12,10 +12,10 @@ from src.db.connection import get_db
 from src.repositories.ownership_repository import OwnershipRepository
 from src.security.authorization import require_roles
 from src.security.ownership import require_study_task_owner, require_weekly_plan_owner
-from src.services.academic.lecture_plan_service import LECTURE_PLAN_SOURCE
+from src.services.academic.academic_calendar import current_week_for_student
 from src.services.academic.timetable_service import TimetableService, monday_of
 from src.services.ai import weekly_plan_engine
-from src.services.ai.plan_builder import PlanBuilder, is_study_plan, serialize_plan
+from src.services.ai.plan_builder import PlanBuilder, resolve_current_plan, serialize_plan
 from src.services.ai.reflection_engine import ReflectionEngine
 from src.services.ai.risk_engine import RiskEngine
 from src.services.mock import gate2_demo
@@ -28,20 +28,6 @@ router = APIRouter(
     dependencies=[Depends(require_roles(models.UserRole.STUDENT))],
 )
 
-
-def _current_week_number(day: date | None = None) -> int:
-    """ISO week number of the Monday-based week containing ``day``."""
-    return monday_of(day or date.today()).isocalendar().week
-
-
-def _plan_status(plan: models.WeeklyPlan) -> str:
-    goals = plan.goals if isinstance(plan.goals, dict) else {}
-    status = str(goals.get("status") or "DRAFT").upper()
-    if status in {"APPROVED", "ACTIVE", "IN_PROGRESS"}:
-        return "IN_PROGRESS"
-    if status == "DRAFT":
-        return "DRAFT"
-    return status
 
 class SessionPreference(BaseModel):
     sessions: list[str]
@@ -185,54 +171,6 @@ def delete_timetable_block(
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
-def _resolve_plan(db: Session, *, student_id: str, week_number: int, with_superseded: bool = False):
-    """Pick the plan a student is actually working on for a given week.
-
-    Prefers a confirmed plan over a draft, and an assignment-backed plan over
-    a bare timetable plan, so Dashboard / Planner / Reflection all agree on
-    which plan "the week" means.
-
-    An assignment-backed (Gate 2) plan always outranks a `lecture_plan`-tagged
-    one for the same week (see `LECTURE_PLAN_SOURCE` docstring) -- which was
-    previously a fully silent override: the student had no way to know their
-    lecture-driven plan for the week existed but lost to a Gate 2 plan. When
-    `with_superseded=True`, returns `(plan, superseded: bool)` instead of just
-    `plan`, so a caller can surface that as a warning.
-    """
-    plans = [
-        plan
-        for plan in db.query(models.WeeklyPlan)
-        .filter_by(student_id=student_id, week_number=week_number)
-        .all()
-        if is_study_plan(plan)
-    ]
-    if not plans:
-        return (None, False) if with_superseded else None
-
-    def priority(item: models.WeeklyPlan) -> tuple[int, str]:
-        goals = item.goals if isinstance(item.goals, dict) else {}
-        score = 0
-        if _plan_status(item) == "IN_PROGRESS":
-            score += 10
-        if goals.get("status") == "REFLECTED":
-            score += 8
-        if goals.get("assignment_id"):
-            score += 5
-        return score, item.id
-
-    plans.sort(key=priority, reverse=True)
-    winner = plans[0]
-    if not with_superseded:
-        return winner
-
-    def is_lecture_plan(item: models.WeeklyPlan) -> bool:
-        goals = item.goals if isinstance(item.goals, dict) else {}
-        return goals.get("source") == LECTURE_PLAN_SOURCE
-
-    superseded = not is_lecture_plan(winner) and any(is_lecture_plan(p) for p in plans[1:])
-    return winner, superseded
-
-
 @router.get("/defer-reasons")
 def list_defer_reasons():
     """Fixed vocabulary for the defer dialog — free text is not a reason code."""
@@ -250,8 +188,12 @@ def get_weekly_plan(
     current_user: models.User = Depends(get_current_user_from_token),
     db: Session = Depends(get_db),
 ):
-    target_week = week_number if week_number is not None else _current_week_number()
-    plan, superseded = _resolve_plan(
+    target_week = (
+        week_number
+        if week_number is not None
+        else current_week_for_student(db, current_user.id)
+    )
+    plan, superseded = resolve_current_plan(
         db, student_id=current_user.id, week_number=target_week, with_superseded=True
     )
     if plan is None:
@@ -476,7 +418,9 @@ def accept_weekly_plan(
         # a46db63 §6.3.5: current week, next week (lets a reflection draft be
         # pre-accepted before its week starts), or the semester's suggested
         # week-start.
-        if not weekly_plan_engine.is_plan_acceptable_this_week(plan, date.today()):
+        if not weekly_plan_engine.is_plan_acceptable_this_week(
+            plan, date.today(), current_week_for_student(db, current_user.id)
+        ):
             raise HTTPException(
                 status_code=409,
                 detail="Weekly plan is not for an acceptable week",
@@ -496,7 +440,7 @@ def accept_weekly_plan(
                     status_code=409,
                     detail="Weekly plan is not for the current week",
                 )
-        elif plan.week_number != current_monday.isocalendar().week:
+        elif plan.week_number != current_week_for_student(db, current_user.id):
             raise HTTPException(
                 status_code=409,
                 detail="Weekly plan is not for the current week",
@@ -656,8 +600,12 @@ def reflection_preview(
     db: Session = Depends(get_db),
 ):
     """Evidence + adaptive questions for the Reflect step of a given week."""
-    target_week = week_number if week_number is not None else _current_week_number()
-    plan = _resolve_plan(db, student_id=current_user.id, week_number=target_week)
+    target_week = (
+        week_number
+        if week_number is not None
+        else current_week_for_student(db, current_user.id)
+    )
+    plan = resolve_current_plan(db, student_id=current_user.id, week_number=target_week)
     if plan is None:
         raise HTTPException(status_code=404, detail="Weekly plan not found")
     return ReflectionEngine(db).preview(plan)

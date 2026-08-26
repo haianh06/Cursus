@@ -11,7 +11,11 @@ from src.schemas.qa import LlmQaPayload, QaCitation
 from src.services.academic.course_topic_hints import hint_for_empty_retrieval
 from src.services.core import source_precedence
 from src.services.core.llm import get_llm
-from src.services.rag.query_normalization import expand_bilingual, fold_accents
+from src.services.rag.query_normalization import (
+    expand_bilingual,
+    fold_accents,
+    looks_like_accent_stripped_vietnamese,
+)
 from src.services.rag.retrieval_service import RetrievedChunk
 
 logger = logging.getLogger(__name__)
@@ -26,6 +30,14 @@ PROMPT_PATH = Path(__file__).resolve().parents[2] / "prompts" / "qa_v1.md"
 MOCK_CONTENT_DISCLAIMER = (
     "⚠️ Lưu ý: một phần nội dung bên dưới là dữ liệu MÔ PHỎNG cho demo, "
     "không phải trích từ syllabus chính thức của môn — đừng coi đây là quy định thật."
+)
+
+# A weaker fallback model can occasionally drop every Vietnamese diacritic
+# under structured-JSON output. One retry with an explicit reminder recovers
+# most cases; see looks_like_accent_stripped_vietnamese for the detector.
+_DIACRITICS_RETRY_NOTE = (
+    "\n\nQUAN TRỌNG: câu trả lời trước bị thiếu dấu tiếng Việt. Viết lại đầy đủ "
+    "dấu tiếng Việt (ă, â, đ, ê, ô, ơ, ư và các dấu thanh) cho mọi từ tiếng Việt."
 )
 
 _PLACEHOLDER_KEYS = frozenset(
@@ -180,14 +192,16 @@ class QaAnswerService:
         )
 
         llm = get_llm().with_structured_output(LlmQaPayload)
-        payload = llm.invoke(
-            [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
-            ]
-        )
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ]
+        payload = llm.invoke(messages)
         if not isinstance(payload, LlmQaPayload):
             payload = LlmQaPayload.model_validate(payload)
+
+        if payload.answer and looks_like_accent_stripped_vietnamese(payload.answer):
+            payload = self._retry_for_diacritics(llm, messages, payload)
 
         if payload.insufficient_context or not payload.answer.strip():
             return (
@@ -205,6 +219,32 @@ class QaAnswerService:
         if any(citation.isMock for citation in citations):
             answer = f"{MOCK_CONTENT_DISCLAIMER}\n\n{answer}"
         return answer, citations, "llm"
+
+    def _retry_for_diacritics(
+        self,
+        llm,
+        messages: list[dict[str, str]],
+        payload: LlmQaPayload,
+    ) -> LlmQaPayload:
+        """One retry with an explicit reminder when the model dropped every
+        Vietnamese diacritic. Returns the original payload unchanged if the
+        retry errors or comes back no better — the caller falls back further."""
+        logger.warning("llm_answer_missing_diacritics_retry")
+        retry_messages = [dict(m) for m in messages]
+        retry_messages[0] = {
+            "role": "system",
+            "content": retry_messages[0]["content"] + _DIACRITICS_RETRY_NOTE,
+        }
+        try:
+            retried = llm.invoke(retry_messages)
+            if not isinstance(retried, LlmQaPayload):
+                retried = LlmQaPayload.model_validate(retried)
+        except Exception:
+            logger.exception("llm_diacritics_retry_failed")
+            return payload
+        if retried.answer.strip() and not looks_like_accent_stripped_vietnamese(retried.answer):
+            return retried
+        return payload
 
     def _answer_extractive(
         self,

@@ -104,6 +104,64 @@ def test_llm_success_maps_to_generated_tasks_grounded_in_retrieved_chunks(monkey
     assert trace == {"retrieval_empty": False, "llm_success": True}
 
 
+def test_accent_stripped_titles_trigger_retry_and_recover(monkeypatch):
+    """A weaker fallback model can drop every Vietnamese diacritic under
+    structured-JSON output — one retry with an explicit reminder must be
+    attempted, and the recovered (properly-accented) payload used."""
+    monkeypatch.setattr(plan_builder, "has_configured_llm", lambda: True)
+    monkeypatch.setattr(plan_builder, "_subject_code_for_assignment", lambda db, a: "SSA101")
+    monkeypatch.setattr(
+        plan_builder.RetrievalService,
+        "retrieve",
+        lambda self, **kwargs: [_fake_retrieved_chunk("SSA101-c1")],
+    )
+    monkeypatch.setattr(
+        plan_builder.Path, "read_text", lambda self, encoding=None: "system prompt"
+    )
+
+    broken_payload = LlmPlanPayload(
+        tasks=[
+            LlmPlanTaskPayload(
+                key="review",
+                title="On tap CSI106 - Bieu dien du lieu",
+                estimated_minutes=60,
+                weekday=0,
+                priority="HIGH",
+                suggestion_reason="on tap truoc khi lam bai",
+                source_chunk_ids=["SSA101-c1"],
+            ),
+        ],
+        insufficient_context=False,
+    )
+    fixed_payload = LlmPlanPayload(
+        tasks=[
+            LlmPlanTaskPayload(
+                key="review",
+                title="Ôn tập CSI106 - Biểu diễn dữ liệu",
+                estimated_minutes=60,
+                weekday=0,
+                priority="HIGH",
+                suggestion_reason="Ôn tập trước khi làm bài.",
+                source_chunk_ids=["SSA101-c1"],
+            ),
+        ],
+        insufficient_context=False,
+    )
+    mock_llm = MagicMock()
+    mock_llm.with_structured_output.return_value.invoke.side_effect = [
+        broken_payload,
+        fixed_payload,
+    ]
+    monkeypatch.setattr(plan_builder, "get_llm", lambda: mock_llm)
+
+    tasks, trace = plan_builder._llm_generated_tasks(db=MagicMock(), assignment=_fake_assignment())
+
+    assert tasks is not None
+    assert tasks[0].title == "Ôn tập CSI106 - Biểu diễn dữ liệu"
+    assert trace == {"retrieval_empty": False, "llm_success": True}
+    assert mock_llm.with_structured_output.return_value.invoke.call_count == 2
+
+
 def test_insufficient_context_returns_none(monkeypatch):
     monkeypatch.setattr(plan_builder, "has_configured_llm", lambda: True)
     monkeypatch.setattr(plan_builder, "_subject_code_for_assignment", lambda db, a: "SSA101")

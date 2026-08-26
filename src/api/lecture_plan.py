@@ -68,8 +68,14 @@ def get_latest_lecture_plan(
     db: Session = Depends(get_db),
 ):
     """Most recently generated lecture plan for this student (optionally for
-    a specific ISO week number) — never touches Gate 2's WeeklyPlan rows since
-    it filters strictly on ``goals.source == "lecture_plan"``."""
+    a specific week number) — never touches Gate 2's WeeklyPlan rows since
+    it filters strictly on ``goals.source == "lecture_plan"``.
+
+    Returns `null` (200), not 404, when the student simply hasn't generated
+    one yet — this is the "list the current one, if any" read the Lecture
+    Plan screen polls on every load, not a lookup by id, so an empty result
+    is a normal state rather than an error the caller must catch.
+    """
     query = db.query(models.WeeklyPlan).filter_by(student_id=current_user.id)
     if week_number is not None:
         query = query.filter_by(week_number=week_number)
@@ -78,5 +84,5 @@ def get_latest_lecture_plan(
         if (plan.goals or {}).get("source") == LECTURE_PLAN_SOURCE
     ]
     if not candidates:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Lecture plan not found")
+        return None
     return serialize_plan(db, candidates[0])

@@ -30,7 +30,7 @@ export default function LecturePlanPanel() {
       const data = await getLatestLecturePlan();
       setPlan(data);
     } catch (err) {
-      if (err?.status !== 404) setError(err);
+      setError(err);
       setPlan(null);
     } finally {
       setLoading(false);

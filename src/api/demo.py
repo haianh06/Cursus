@@ -13,7 +13,7 @@ must never be presented on screen as if the student really did the work.
 from __future__ import annotations
 
 import uuid
-from datetime import date, datetime
+from datetime import datetime
 
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
@@ -23,7 +23,7 @@ from src.api.auth import get_current_user_from_token
 from src.db import models
 from src.db.connection import get_db
 from src.security.authorization import require_roles
-from src.services.academic.timetable_service import monday_of
+from src.services.academic.academic_calendar import current_week_for_student
 from src.services.ai.plan_builder import serialize_plan
 from src.services.ai.risk_engine import RULES_VERSION, RiskEngine, current_rule_catalog
 from src.services.mock import gate2_demo
@@ -136,7 +136,7 @@ def fast_forward_week(
 ):
     """Apply the scripted week outcome to the caller's current plan."""
     student_id = _target_student(db, current_user)
-    week_number = monday_of(date.today()).isocalendar().week
+    week_number = current_week_for_student(db, student_id)
     plan = (
         db.query(models.WeeklyPlan)
         .filter_by(student_id=student_id, week_number=week_number)

@@ -44,7 +44,9 @@ function CapacityMeter({ planned, capacity, lang }) {
     <div>
       <div className="flex items-baseline justify-between mb-1.5 gap-2 flex-wrap">
         <span className="text-[12px] font-semibold text-fg-secondary">
-          {lang === 'vi' ? 'Tổng dự kiến so với giờ rảnh' : 'Planned vs. available'}
+          {lang === 'vi'
+            ? 'Tổng dự kiến so với giờ rảnh lúc tạo kế hoạch này'
+            : 'Planned vs. available (at the time this plan was created)'}
         </span>
         <span className="mono text-[12px] font-bold" style={{ color: barColor }}>
           {formatMinutes(planned, lang)} / {formatMinutes(capacity, lang)}
@@ -389,7 +391,12 @@ export default function StudentPlanner() {
             </select>
           </div>
           <p className="mono text-[13px] font-bold text-accent-text-safe">
-            {lang === 'vi' ? 'Tổng rảnh' : 'Total free'}: {formatMinutes(declaredMinutes, lang)}
+            {lang === 'vi' ? 'Tổng rảnh vừa khai báo' : 'Total free just declared'}: {formatMinutes(declaredMinutes, lang)}
+            <span className="block font-normal text-[11px] text-fg-muted mt-0.5">
+              {lang === 'vi'
+                ? 'Chỉ áp dụng khi bạn bấm "Tạo lại kế hoạch" — chưa ảnh hưởng kế hoạch đã xác nhận bên dưới.'
+                : 'Only applies once you click "Regenerate plan" — the confirmed plan below is unaffected until then.'}
+            </span>
           </p>
           <button
             type="button"

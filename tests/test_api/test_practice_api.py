@@ -89,13 +89,15 @@ async def test_student_request_then_instructor_review_flow(client):
     assert body["itemCount"] == 20
     set_id = body["id"]
 
-    # Student cannot see the pending set's content yet.
+    # Student cannot see the pending set's content yet -- a normal "nothing
+    # published yet" empty state (200 + null), not a 404 error.
     pending_get = await client.get(
         "/api/v1/student/practice",
         headers=auth_headers(student_token),
         params={"course_code": ctx["course_code"], "week_number": 1},
     )
-    assert pending_get.status_code == 404
+    assert pending_get.status_code == 200
+    assert pending_get.json() is None
 
     instructor_token = await login(client, ctx["instructor_email"])
     list_resp = await client.get("/api/v1/instructor/practice", headers=auth_headers(instructor_token))

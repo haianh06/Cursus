@@ -20,6 +20,7 @@ REQUIRED_SIGNAL_CODES = frozenset(
         "TASK_DEFERRED_2_PLUS",
         "DUE_WITHIN_48H_NOT_STARTED",
         "INACTIVE_7_DAYS",
+        "SELF_REPORTED_HIGH_STRESS",
     }
 )
 # Signals with a tunable trigger threshold. INACTIVE_7_DAYS has none of its

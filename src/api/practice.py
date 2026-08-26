@@ -45,21 +45,26 @@ def get_service(db: Session = Depends(get_db)) -> PracticeSetService:
 # ── Student surface ─────────────────────────────────────────────────────
 
 
-@student_router.get("", response_model=PracticeSetOut)
+@student_router.get("", response_model=PracticeSetOut | None)
 def get_practice(
     course_code: str,
     week_number: int,
     current_user: models.User = Depends(get_current_user_from_token),
     service: PracticeSetService = Depends(get_service),
-) -> PracticeSetOut:
+) -> PracticeSetOut | None:
+    """Returns `null` (200), not 404, when no published set exists yet for
+    this course+week — that's a normal empty state (the student just hasn't
+    requested one), not an error. `course_code` itself being invalid or not
+    enrolled stays a 403 below.
+    """
     try:
         payload = service.get_for_student(
             student_id=current_user.id, course_code=course_code, week_number=week_number
         )
     except PermissionError as exc:
         raise HTTPException(status_code=403, detail=str(exc)) from exc
-    except LookupError as exc:
-        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except LookupError:
+        return None
     return PracticeSetOut(**payload)
 
 

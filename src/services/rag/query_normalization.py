@@ -127,6 +127,30 @@ def fold_accents(text: str) -> str:
     return "".join(ch for ch in decomposed if unicodedata.category(ch) != "Mn")
 
 
+# Common Vietnamese function words in their bare-ASCII (no dấu) form. Used to
+# tell "Vietnamese that lost every diacritic" apart from "text that's
+# legitimately English/code and therefore accent-free anyway".
+_VN_UNACCENTED_MARKERS = (
+    " khong ", " duoc ", " cua ", " nhung ", " voi ", " minh ", " ban ",
+    " hoc ", " nay ", " mot ", " co the ", " la ", " va ",
+)
+
+
+def looks_like_accent_stripped_vietnamese(text: str) -> bool:
+    """True when `text` reads like Vietnamese that lost every diacritic —
+    e.g. a weaker fallback LLM degrading Vietnamese under structured-JSON
+    output. Requires several common Vietnamese function words in bare ASCII
+    form, not just the absence of accents, to avoid flagging genuinely
+    English/code text."""
+    body = f" {(text or '').lower()} "
+    if not body.strip():
+        return False
+    if fold_accents(body) != body:
+        return False  # has a real accented character somewhere -> fine
+    hits = sum(1 for marker in _VN_UNACCENTED_MARKERS if marker in body)
+    return hits >= 3
+
+
 def strip_formatting(text: str) -> str:
     """Remove markdown/code fencing and decorative wrappers students often paste."""
     value = text or ""

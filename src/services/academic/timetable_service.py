@@ -11,8 +11,12 @@ from sqlalchemy.orm import Session
 from src.db import models
 from src.repositories.academic_term_repository import AcademicTermRepository
 from src.repositories.semester_repository import SemesterRepository
-from src.services.academic.academic_calendar import SLOT_TIMES, slot_datetimes
-from src.services.academic.academic_calendar import monday_of as _semester_monday_of
+from src.services.academic.academic_calendar import (
+    SLOT_TIMES,
+    academic_week_number,
+    semester_week_number,
+    slot_datetimes,
+)
 from src.services.academic.lecture_plan_service import LECTURE_PLAN_SOURCE
 
 
@@ -629,8 +633,7 @@ class TimetableService:
         semester = self._semester_repo().get_active(student_id)
         if semester is None:
             return None
-        semester_monday = _semester_monday_of(semester.start_date)
-        week_number = max(1, ((week_start - semester_monday).days // 7) + 1)
+        week_number = semester_week_number(semester.start_date, week_start)
         exceptions = self._semester_repo().list_exceptions(semester.id)
         is_exception = any(
             exc.start_date <= week_start <= exc.end_date
@@ -724,7 +727,7 @@ class TimetableService:
         weekly_plan_id: str | None = None,
     ) -> models.DailyPlan:
         week_start = monday_of(day)
-        week_number = week_start.isocalendar().week
+        week_number = academic_week_number(self._db, student_id, week_start)
         # When a caller is placing tasks that belong to a specific weekly
         # plan, the day must be created *inside that plan*. Picking the
         # highest-id plan for the week instead (the old behaviour) could

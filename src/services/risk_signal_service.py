@@ -397,6 +397,11 @@ def create_self_reported_help_alert(
     trên vì đây PHẢI xuất hiện trong hàng đợi HITL của giảng viên (`RiskSignal`
     là bảng thật mà `GET /instructor/risks` đọc). Tạo 1 signal cho mỗi lớp SV
     đang theo học để mọi giảng viên phụ trách đều thấy được.
+
+    Idempotent per (student, section): nếu đã có 1 signal loại này còn mở
+    (chưa resolved), cập nhật lại tuần/ghi chú thay vì tạo thêm bản mới —
+    tránh việc sinh viên lưu lại Phản tư nhiều lần trong tuần làm hàng đợi
+    HITL của giảng viên bị spam nhiều cảnh báo trùng nhau.
     """
     sections = (
         db.query(models.CourseSection)
@@ -410,8 +415,36 @@ def create_self_reported_help_alert(
     active_policy = RiskPolicyRepository(db).get_active()
     policy_version = active_policy.policy_version if active_policy else 1
 
-    created: list[models.RiskSignal] = []
+    recommended_action = (
+        f"Sinh viên chủ động chọn 'Yêu cầu hỗ trợ' trong Phản tư tuần {week_number}. "
+        "Xem chi tiết phản tư và cân nhắc liên hệ trực tiếp."
+    )
+    evidence = {
+        "weekNumber": week_number,
+        "note": note,
+        "source": "reflection_adjustment",
+    }
+
+    rows: list[models.RiskSignal] = []
     for section in sections:
+        existing = (
+            db.query(models.RiskSignal)
+            .filter_by(
+                student_id=student_id,
+                section_id=section.id,
+                risk_type="SELF_REPORTED_HELP_REQUEST",
+                resolved_at=None,
+            )
+            .first()
+        )
+        if existing is not None:
+            existing.evidence = evidence
+            existing.recommended_action = recommended_action
+            existing.generated_at = datetime.now(UTC)
+            existing.policy_version = policy_version
+            rows.append(existing)
+            continue
+
         signal = models.RiskSignal(
             id=f"risk_{uuid.uuid4().hex[:8]}",
             student_id=student_id,
@@ -420,23 +453,16 @@ def create_self_reported_help_alert(
             risk_type="SELF_REPORTED_HELP_REQUEST",
             risk_level="HIGH",
             triggered_rules=["student_requested_help_in_reflection"],
-            evidence={
-                "weekNumber": week_number,
-                "note": note,
-                "source": "reflection_adjustment",
-            },
-            recommended_action=(
-                f"Sinh viên chủ động chọn 'Yêu cầu hỗ trợ' trong Phản tư tuần {week_number}. "
-                "Xem chi tiết phản tư và cân nhắc liên hệ trực tiếp."
-            ),
+            evidence=evidence,
+            recommended_action=recommended_action,
             generated_at=datetime.now(UTC),
             resolved_at=None,
             resolution_type=None,
             policy_version=policy_version,
         )
         db.add(signal)
-        created.append(signal)
+        rows.append(signal)
 
-    if created:
+    if rows:
         db.commit()
-    return created
+    return rows

@@ -11,6 +11,7 @@ const RISK_TYPE_LABELS_VI = {
   ACADEMIC_DECLINE: 'Sa sút học tập',
   ABANDONMENT: 'Ngừng hoạt động',
   SELF_REPORTED_HELP_REQUEST: 'Sinh viên tự yêu cầu hỗ trợ',
+  SELF_REPORTED_HIGH_STRESS: 'Tự báo cáo căng thẳng cao trong Phản tư',
 };
 
 const RISK_TYPE_LABELS_EN = {
@@ -19,6 +20,7 @@ const RISK_TYPE_LABELS_EN = {
   ACADEMIC_DECLINE: 'Academic decline',
   ABANDONMENT: 'Inactive / abandoned',
   SELF_REPORTED_HELP_REQUEST: 'Student self-reported',
+  SELF_REPORTED_HIGH_STRESS: 'Self-reported high stress in Reflection',
 };
 
 const BLOCK_REASON_LABELS_VI = {

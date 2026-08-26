@@ -21,6 +21,7 @@ Design rules taken straight from the docs:
 from __future__ import annotations
 
 import logging
+import re
 import uuid
 from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta
@@ -31,17 +32,67 @@ from sqlalchemy.orm import Session
 from src.db import models
 from src.repositories.chunk_repository import ChunkRepository
 from src.schemas.plan import LlmPlanPayload
+from src.services.academic.academic_calendar import academic_week_number
 from src.services.academic.timetable_service import monday_of
 from src.services.ai.reflection_suggestion import build_next_week_suggestion
 from src.services.core import provenance as prov
 from src.services.core.llm import get_llm, has_configured_llm
 from src.services.mock import gate2_demo
+from src.services.rag.query_normalization import fold_accents
 from src.services.rag.retrieval_service import RetrievalService
 
 logger = logging.getLogger(__name__)
 
 PLANNER_VERSION = "curi_planner_v1"
 PLAN_PROMPT_PATH = Path(__file__).resolve().parents[2] / "prompts" / "plan_v1.md"
+
+# See qa_answer_service._DIACRITICS_RETRY_NOTE — a weaker fallback model can
+# drop every Vietnamese diacritic under structured-JSON output; task titles
+# are shown verbatim to the student, so this must be caught here too.
+_DIACRITICS_RETRY_NOTE = (
+    "\n\nQUAN TRỌNG: các task title/deliverable phía trên bị thiếu dấu tiếng "
+    "Việt. Viết lại đầy đủ dấu tiếng Việt (ă, â, đ, ê, ô, ơ, ư và các dấu "
+    "thanh) cho mọi từ tiếng Việt trong response."
+)
+
+
+# `query_normalization.looks_like_accent_stripped_vietnamese` is calibrated
+# for full-sentence QA/companion replies (needs 3+ common FUNCTION words like
+# "khong"/"duoc" in bare form) — a 4-6 word task title built mostly from
+# CONTENT words ("Bieu dien du lieu") rarely contains any of those, so it
+# never fires here. This list adds the short academic-title vocabulary that
+# heuristic doesn't cover, with a lower hit threshold sized for short strings.
+_VN_TITLE_WORD_MARKERS = frozenset(
+    {
+        "bai", "mon", "tap", "bieu", "dien", "lieu", "hoc", "tuan", "gio",
+        "de", "thi", "kiem", "on", "lam", "doc", "viet", "chuan", "bi",
+        "nop", "du", "an", "trinh", "bao", "cao", "nhom", "ke", "hoach",
+        "danh", "gia", "sua", "xem", "lai", "hoan", "thanh", "nhiem", "vu",
+    }
+)
+
+
+def _title_missing_diacritics(text: str) -> bool:
+    """True when a short title/deliverable string reads like Vietnamese that
+    lost every diacritic. See the module note above for why the general
+    `looks_like_accent_stripped_vietnamese` detector doesn't catch this."""
+    stripped = (text or "").strip()
+    if not stripped:
+        return False
+    folded = fold_accents(stripped).lower()
+    if folded != stripped.lower():
+        return False  # has a real accented character somewhere -> fine
+    words = re.findall(r"[a-z]+", folded)
+    hits = sum(1 for word in words if word in _VN_TITLE_WORD_MARKERS)
+    return hits >= 2
+
+
+def _looks_accent_stripped(payload: LlmPlanPayload) -> bool:
+    return any(
+        _title_missing_diacritics(text)
+        for task in payload.tasks
+        for text in (task.title, task.deliverable or "")
+    )
 
 SESSION_CLOCK: dict[str, tuple[int, int]] = {
     "MORNING": (8, 0),
@@ -235,14 +286,29 @@ def _llm_generated_tasks(
             "Syllabus context chunks:\n" + "\n\n".join(context_blocks)
         )
         llm = get_llm().with_structured_output(LlmPlanPayload)
-        payload = llm.invoke(
-            [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
-            ]
-        )
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ]
+        payload = llm.invoke(messages)
         if not isinstance(payload, LlmPlanPayload):
             payload = LlmPlanPayload.model_validate(payload)
+
+        if payload.tasks and _looks_accent_stripped(payload):
+            logger.warning("llm_plan_missing_diacritics_retry assignment_id=%s", assignment.id)
+            retry_messages = [dict(m) for m in messages]
+            retry_messages[0] = {
+                "role": "system",
+                "content": retry_messages[0]["content"] + _DIACRITICS_RETRY_NOTE,
+            }
+            try:
+                retried = llm.invoke(retry_messages)
+                if not isinstance(retried, LlmPlanPayload):
+                    retried = LlmPlanPayload.model_validate(retried)
+                if retried.tasks and not _looks_accent_stripped(retried):
+                    payload = retried
+            except Exception:
+                logger.exception("llm_plan_diacritics_retry_failed assignment_id=%s", assignment.id)
 
         if payload.insufficient_context or not payload.tasks:
             return None, {"retrieval_empty": False, "llm_success": False}
@@ -452,7 +518,7 @@ class PlanBuilder:
         plan = models.WeeklyPlan(
             id=plan_id,
             student_id=student_id,
-            week_number=monday.isocalendar().week,
+            week_number=academic_week_number(self._db, student_id, monday),
             goals={
                 "statement": goal or f"Hoàn thành {assignment.title}",
                 "status": "DRAFT",
@@ -743,6 +809,7 @@ def serialize_plan(db: Session, plan: models.WeeklyPlan) -> dict:
         "preferredSessions": goals.get("preferred_sessions") or [],
         "provenance": goals.get("provenance") or prov.ai_suggested(PLANNER_VERSION),
         "plannerVersion": goals.get("planner_version") or PLANNER_VERSION,
+        "planKind": plan_kind(plan),
     }
 
 
@@ -759,12 +826,90 @@ def is_study_plan(plan: models.WeeklyPlan) -> bool:
     return goals.get("kind") != "timetable"
 
 
+# Which of the app's three independent plan-generation engines produced a
+# given `WeeklyPlan` row — the one place every screen/endpoint asks instead
+# of each re-deriving it from whichever marker that engine happens to write
+# into `goals` (assignment_id / source / kind). Values are plain strings
+# rather than imported constants from `weekly_plan_engine.py` /
+# `lecture_plan_service.py` to avoid a circular import (both of those already
+# import from this module) — each is a literal copy of that module's own
+# constant, so keep them in sync if either ever changes.
+PLAN_KIND_ASSIGNMENT = "assignment"  # this file's generate() — Gate2/assignment-driven
+PLAN_KIND_WEEKLY_GOAL = "weekly_goal"  # weekly_plan_engine.py — student's own goal text
+PLAN_KIND_LECTURE = "lecture_plan"  # lecture_plan_service.py — timetable/class-session-driven
+PLAN_KIND_TIMETABLE = "timetable"  # timetable_service.py — bare self-study container, not a real plan
+PLAN_KIND_UNKNOWN = "unknown"  # legacy/hand-inserted row matching none of the above markers
+
+
+def plan_kind(plan: models.WeeklyPlan) -> str:
+    """Classify a `WeeklyPlan` row by which engine produced it, for display
+    (e.g. a "Kế hoạch theo lịch học" vs "Kế hoạch theo mục tiêu" badge) —
+    never re-derive this ad hoc from a single marker at a call site."""
+    goals = plan.goals if isinstance(plan.goals, dict) else {}
+    if goals.get("kind") == PLAN_KIND_TIMETABLE:
+        return PLAN_KIND_TIMETABLE
+    if goals.get("source") == PLAN_KIND_LECTURE:
+        return PLAN_KIND_LECTURE
+    if goals.get("kind") == PLAN_KIND_WEEKLY_GOAL:
+        return PLAN_KIND_WEEKLY_GOAL
+    if goals.get("assignment_id"):
+        return PLAN_KIND_ASSIGNMENT
+    return PLAN_KIND_UNKNOWN
+
+
 def _plan_status(plan: models.WeeklyPlan) -> str:
     goals = plan.goals if isinstance(plan.goals, dict) else {}
     status = str(goals.get("status") or "DRAFT").upper()
     if status in {"APPROVED", "ACTIVE", "IN_PROGRESS"}:
         return "IN_PROGRESS"
     return status
+
+
+def resolve_current_plan(
+    db: Session, *, student_id: str, week_number: int, with_superseded: bool = False
+):
+    """Pick the plan a student is actually working on for a given week —
+    the one resolver every screen (Dashboard, Planner, Reflection) must call,
+    so they never disagree on which of the app's three plan-generation
+    engines' rows "the week" means.
+
+    Prefers a confirmed plan over a draft, and an assignment-backed (Gate 2)
+    plan over a bare timetable plan or a lecture plan for the same week --
+    which used to be a fully silent override: the student had no way to know
+    their lecture-driven plan for the week existed but lost to a Gate 2 plan.
+    When `with_superseded=True`, returns `(plan, superseded: bool)` instead of
+    just `plan`, so a caller can surface that as a warning.
+    """
+    plans = [
+        plan
+        for plan in db.query(models.WeeklyPlan)
+        .filter_by(student_id=student_id, week_number=week_number)
+        .all()
+        if is_study_plan(plan)
+    ]
+    if not plans:
+        return (None, False) if with_superseded else None
+
+    def priority(item: models.WeeklyPlan) -> tuple[int, str]:
+        goals = item.goals if isinstance(item.goals, dict) else {}
+        score = 0
+        if _plan_status(item) == "IN_PROGRESS":
+            score += 10
+        if goals.get("status") == "REFLECTED":
+            score += 8
+        if goals.get("assignment_id"):
+            score += 5
+        return score, item.id
+
+    plans.sort(key=priority, reverse=True)
+    winner = plans[0]
+    if not with_superseded:
+        return winner
+
+    superseded = plan_kind(winner) != PLAN_KIND_LECTURE and any(
+        plan_kind(p) == PLAN_KIND_LECTURE for p in plans[1:]
+    )
+    return winner, superseded
 
 
 def _sources_by_id(db: Session, chunk_ids: set[str]) -> dict[str, dict]:

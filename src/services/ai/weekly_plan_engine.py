@@ -25,7 +25,9 @@ from sqlalchemy.orm import Session
 from src.db import models
 from src.repositories.chunk_repository import ChunkRepository
 from src.schemas.plan import LlmPlanPayload
+from src.services.academic.academic_calendar import academic_week_number
 from src.services.academic.timetable_service import monday_of
+from src.services.ai.plan_builder import _DIACRITICS_RETRY_NOTE, _looks_accent_stripped
 from src.services.ai.reflection_suggestion import build_next_week_suggestion
 from src.services.core import provenance as prov
 from src.services.core.llm import get_llm, has_configured_llm
@@ -133,14 +135,31 @@ def _llm_generated_tasks(
             "Đoạn tài liệu môn học:\n" + "\n\n".join(context_blocks)
         )
         llm = get_llm().with_structured_output(LlmPlanPayload)
-        payload = llm.invoke(
-            [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
-            ]
-        )
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ]
+        payload = llm.invoke(messages)
         if not isinstance(payload, LlmPlanPayload):
             payload = LlmPlanPayload.model_validate(payload)
+
+        if payload.tasks and _looks_accent_stripped(payload):
+            logger.warning("llm_weekly_goal_plan_missing_diacritics_retry subject_code=%s", subject_code)
+            retry_messages = [dict(m) for m in messages]
+            retry_messages[0] = {
+                "role": "system",
+                "content": retry_messages[0]["content"] + _DIACRITICS_RETRY_NOTE,
+            }
+            try:
+                retried = llm.invoke(retry_messages)
+                if not isinstance(retried, LlmPlanPayload):
+                    retried = LlmPlanPayload.model_validate(retried)
+                if retried.tasks and not _looks_accent_stripped(retried):
+                    payload = retried
+            except Exception:
+                logger.exception(
+                    "llm_weekly_goal_plan_diacritics_retry_failed subject_code=%s", subject_code
+                )
 
         if payload.insufficient_context or not payload.tasks:
             return None, {"retrieval_empty": False, "llm_success": False}
@@ -179,21 +198,6 @@ def _capacity_minutes(availability: list[dict] | None, available_hours: float) -
     return int(round(max(0.0, float(available_hours or 0)) * 60))
 
 
-def academic_week_number(db: Session, student_id: str, week_start: date) -> int:
-    """Week number relative to the student's active semester when one exists,
-    else the plain ISO week — a46db63 always had a semester; this codebase's
-    multi-tenant students may not yet have one at generation time."""
-    monday = monday_of(week_start)
-    semester = (
-        db.query(models.SemesterSetup)
-        .filter_by(student_id=student_id, is_active=True)
-        .first()
-    )
-    if semester is not None:
-        return max(1, ((monday - semester.start_date).days // 7) + 1)
-    return monday.isocalendar().week
-
-
 def discard_drafts_for_week(db: Session, student_id: str, week_start: date) -> None:
     """Hard-delete every DRAFT weekly_goal plan tree for (student, week) before
     generating a new one — a46db63 invariant: only one DRAFT plan per
@@ -201,7 +205,10 @@ def discard_drafts_for_week(db: Session, student_id: str, week_start: date) -> N
     touches lecture-plan-sourced or timetable-container plans."""
     plans = (
         db.query(models.WeeklyPlan)
-        .filter_by(student_id=student_id, week_number=monday_of(week_start).isocalendar().week)
+        .filter_by(
+            student_id=student_id,
+            week_number=academic_week_number(db, student_id, week_start),
+        )
         .all()
     )
     targets = [
@@ -534,14 +541,20 @@ def regenerate_from_reflection(
     return plan
 
 
-def is_plan_acceptable_this_week(plan: models.WeeklyPlan, today: date) -> bool:
+def is_plan_acceptable_this_week(plan: models.WeeklyPlan, today: date, current_week: int) -> bool:
     """a46db63 §6.3.5 — current week, next week, or the semester's suggested
-    week-start (snapped to Monday)."""
+    week-start (snapped to Monday).
+
+    `current_week` is the caller's already-resolved semester-relative week
+    (see `academic_calendar.current_week_for_student`) — this function must
+    not re-derive it from `today.isocalendar()`, which is the real-world
+    calendar week and drifts away from the semester's week.
+    """
     goals = plan.goals if isinstance(plan.goals, dict) else {}
     current_monday = monday_of(today)
     week_start = goals.get("week_start")
     if not week_start:
-        return plan.week_number == current_monday.isocalendar().week
+        return plan.week_number == current_week
     try:
         planned_monday = monday_of(date.fromisoformat(str(week_start)))
     except ValueError:

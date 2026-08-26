@@ -45,7 +45,12 @@ from sqlalchemy.orm import Session
 from src.db import models
 from src.repositories.academic_term_repository import AcademicTermRepository
 from src.repositories.semester_repository import SemesterRepository
-from src.services.academic.academic_calendar import SLOT_TIMES, monday_of, slot_datetimes
+from src.services.academic.academic_calendar import (
+    SLOT_TIMES,
+    monday_of,
+    semester_week_number,
+    slot_datetimes,
+)
 from src.services.core import provenance as prov
 
 LECTURE_PLAN_SOURCE = "lecture_plan"
@@ -98,7 +103,7 @@ class LecturePlanService:
         specs = specs[:MAX_TASKS]
 
         vi = language.lower().startswith("vi")
-        week_number = monday.isocalendar().week
+        week_number = semester_week_number(semester.start_date, monday)
         course_count = len({item["course_code"] for item in sessions})
         statement = (
             f"Ôn và chuẩn bị theo {len(sessions)} buổi học/thi tuần {week_number}"

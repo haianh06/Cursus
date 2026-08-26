@@ -18,6 +18,7 @@ from pydantic import BaseModel
 
 from src.services.core.llm import get_llm, has_configured_llm
 from src.services.core.provider_errors import classify_provider_error
+from src.services.rag.query_normalization import looks_like_accent_stripped_vietnamese
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +37,13 @@ _TEMPLATE_REPLY = (
     "Cảm ơn bạn đã chia sẻ. Nghe có vẻ tuần này khá áp lực — mình ở đây nếu bạn "
     "muốn kể thêm, hoặc mình có thể giúp chia nhỏ việc cần làm cho môn học này "
     "thành các bước nhỏ hơn, dễ thở hơn."
+)
+
+# See qa_answer_service._DIACRITICS_RETRY_NOTE — same weaker-fallback-model
+# quirk can hit the companion persona too.
+_DIACRITICS_RETRY_NOTE = (
+    "\n\nQUAN TRỌNG: câu trả lời trước bị thiếu dấu tiếng Việt. Viết lại đầy đủ "
+    "dấu tiếng Việt (ă, â, đ, ê, ô, ơ, ư và các dấu thanh) cho mọi từ tiếng Việt."
 )
 
 
@@ -78,6 +86,8 @@ class EmpathicReplyService:
             payload = llm.invoke(messages)
             if not isinstance(payload, EmpathicReplyPayload):
                 payload = EmpathicReplyPayload.model_validate(payload)
+            if payload.answer and looks_like_accent_stripped_vietnamese(payload.answer):
+                payload = self._retry_for_diacritics(llm, messages, payload)
             answer = payload.answer.strip()
             if payload.needs_professional_help:
                 return f"{answer}\n\n---\n{CRISIS_REPLY}", "companion_crisis"
@@ -86,3 +96,29 @@ class EmpathicReplyService:
             failure = classify_provider_error(exc)
             logger.warning("empathic_reply_failed code=%s: %s", failure.code, failure.message)
             return _TEMPLATE_REPLY, "companion"
+
+    def _retry_for_diacritics(
+        self,
+        llm,
+        messages: list[dict[str, str]],
+        payload: EmpathicReplyPayload,
+    ) -> EmpathicReplyPayload:
+        """One retry with an explicit reminder when the model dropped every
+        Vietnamese diacritic. Returns the original payload unchanged if the
+        retry errors or comes back no better — the caller falls back further."""
+        logger.warning("empathic_reply_missing_diacritics_retry")
+        retry_messages = [dict(m) for m in messages]
+        retry_messages[0] = {
+            "role": "system",
+            "content": retry_messages[0]["content"] + _DIACRITICS_RETRY_NOTE,
+        }
+        try:
+            retried = llm.invoke(retry_messages)
+            if not isinstance(retried, EmpathicReplyPayload):
+                retried = EmpathicReplyPayload.model_validate(retried)
+        except Exception:
+            logger.exception("empathic_diacritics_retry_failed")
+            return payload
+        if retried.answer.strip() and not looks_like_accent_stripped_vietnamese(retried.answer):
+            return retried
+        return payload

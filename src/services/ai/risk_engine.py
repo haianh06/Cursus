@@ -12,8 +12,18 @@ Rules, evaluated over a 7-day window:
     same task deferred >= 2 times ..... +1   TASK_DEFERRED_2_PLUS
     deadline < 48h and not started .... +1   DUE_WITHIN_48H_NOT_STARTED
     inactive 7 days ................... +2   INACTIVE_7_DAYS
+    self-reported "very stressed" ..... +2   SELF_REPORTED_HIGH_STRESS
 
     0–2 normal · 3–4 watch · >=5 needs support
+
+SELF_REPORTED_HIGH_STRESS reads the `stress_level` answer on the student's
+most recently *confirmed* WeeklyReflection (not a preview/draft) — still a
+plain equality check on a fixed answer code, not an LLM interpreting free
+text. It scores independently of the student's `share_reflection_summary`
+privacy toggle: that toggle only gates whether an instructor can read the
+reflection *summary text*; it has never gated the anonymized signals risk
+scoring already derives from task/event data, and this signal is the same
+kind of derived-and-aggregated number, not the student's own words.
 """
 
 from __future__ import annotations
@@ -48,6 +58,7 @@ RULE_CATALOG: dict[str, tuple[int, str]] = {
     "TASK_DEFERRED_2_PLUS": (1, "Dời cùng một task ít nhất 2 lần"),
     "DUE_WITHIN_48H_NOT_STARTED": (1, "Deadline dưới 48 giờ và chưa bắt đầu"),
     "INACTIVE_7_DAYS": (2, "Không có hoạt động nào trong 7 ngày"),
+    "SELF_REPORTED_HIGH_STRESS": (2, "Tự báo \"rất căng thẳng, quá tải\" ở phản tư gần nhất"),
 }
 
 DEFAULT_SIGNAL_WEIGHTS: dict[str, int] = {
@@ -82,7 +93,14 @@ def _load_active_policy(
     if policy is None:
         return dict(DEFAULT_SIGNAL_WEIGHTS), dict(DEFAULT_SIGNAL_THRESHOLDS), DEFAULT_SEVERITY_BANDS, None
     bands = tuple(tuple(band) for band in policy.severity_bands)
-    return dict(policy.signal_weights), dict(policy.signal_thresholds), bands, policy.policy_version
+    # A policy published before a new rule (e.g. SELF_REPORTED_HIGH_STRESS)
+    # existed has no entry for it in its stored JSON — merge the hardcoded
+    # default in underneath so `assess()`'s `self._weights[code]` lookups
+    # never KeyError on an old policy, and admins publishing a *new* policy
+    # from that stale form don't silently drop the new rule to a 0 weight.
+    weights = {**DEFAULT_SIGNAL_WEIGHTS, **policy.signal_weights}
+    thresholds = {**DEFAULT_SIGNAL_THRESHOLDS, **policy.signal_thresholds}
+    return weights, thresholds, bands, policy.policy_version
 
 
 def current_rule_catalog(db: Session) -> dict[str, tuple[int, str]]:
@@ -193,6 +211,7 @@ class RiskEngine:
         self._events_cache: dict[str, list[models.ProgressEvent]] = {}
         self._deadline_cache: dict[str, tuple[float | None, str | None]] = {}
         self._user_cache: dict[str, models.User | None] = {}
+        self._reflection_cache: dict[str, models.WeeklyReflection | None] = {}
 
     def preload(self, student_ids: list[str]) -> None:
         """Batch-fetch every per-student row `assess()` would otherwise query
@@ -270,6 +289,20 @@ class RiskEngine:
         self._user_cache = {user.id: user for user in users}
         for student_id in ids:
             self._user_cache.setdefault(student_id, None)
+
+        reflection_rows = (
+            self._db.query(models.WeeklyReflection)
+            .filter(models.WeeklyReflection.student_id.in_(ids))
+            .order_by(models.WeeklyReflection.week_number.desc())
+            .all()
+        )
+        for student_id in ids:
+            self._reflection_cache[student_id] = None
+        for row in reflection_rows:
+            # First row seen per student is the highest week_number, thanks
+            # to the order_by above — never overwrite it with an older one.
+            if self._reflection_cache.get(row.student_id) is None:
+                self._reflection_cache[row.student_id] = row
 
         self._preloaded = True
 
@@ -374,6 +407,32 @@ class RiskEngine:
                     detail="Không ghi nhận hoạt động học tập nào trong 7 ngày",
                 )
             )
+
+        # ── self-reported "very stressed, overwhelmed" on the latest
+        # confirmed reflection ── a plain equality check on a fixed answer
+        # code (see module docstring), not free text or an LLM judgment.
+        reflection = self._latest_reflection(student_id)
+        if reflection is not None:
+            metrics = reflection.metrics if isinstance(reflection.metrics, dict) else {}
+            answers = metrics.get("answers") or []
+            stress_answer = next(
+                (a for a in answers if a.get("questionId") == "stress_level"), None
+            )
+            if (
+                metrics.get("studentConfirmed")
+                and stress_answer
+                and "very_high" in (stress_answer.get("selectedCodes") or [])
+            ):
+                signals.append(
+                    Signal(
+                        code="SELF_REPORTED_HIGH_STRESS",
+                        value=1,
+                        points=self._weights["SELF_REPORTED_HIGH_STRESS"],
+                        detail=(
+                            f"Tuần {reflection.week_number}: tự báo \"rất căng thẳng, quá tải\""
+                        ),
+                    )
+                )
 
         score = sum(signal.points for signal in signals)
         severity, level = severity_for(score, self._severity_bands)
@@ -608,11 +667,27 @@ class RiskEngine:
         delta = due - self._now
         return delta.total_seconds() / 3600.0, assignment_id
 
+    def _latest_reflection(self, student_id: str) -> models.WeeklyReflection | None:
+        """The student's most recent `WeeklyReflection` row, confirmed or
+        not — the caller decides what to do with `studentConfirmed`. Only
+        ever the single latest one; never searches further back for an
+        older confirmed row."""
+        if self._preloaded:
+            return self._reflection_cache.get(student_id)
+        return (
+            self._db.query(models.WeeklyReflection)
+            .filter_by(student_id=student_id)
+            .order_by(models.WeeklyReflection.week_number.desc())
+            .first()
+        )
+
 
 def _risk_type(assessment: RiskAssessment) -> str:
     codes = {signal.code for signal in assessment.signals}
     if "INACTIVE_7_DAYS" in codes:
         return "ABANDONMENT"
+    if "SELF_REPORTED_HIGH_STRESS" in codes:
+        return "SELF_REPORTED_HIGH_STRESS"
     if "DUE_WITHIN_48H_NOT_STARTED" in codes:
         return "LATE_SUBMISSION"
     if "COMPLETION_BELOW_40" in codes:
