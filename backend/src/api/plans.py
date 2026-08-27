@@ -481,40 +481,48 @@ _EVENT_FOR_STATUS = {
 }
 
 
-@router.patch("/tasks/{task_id}")
-def update_study_task(
+def apply_task_status_update(
+    db: Session,
+    *,
     task_id: str,
-    payload: UpdateTaskRequest,
-    _: None = Depends(require_study_task_owner),
-    current_user: models.User = Depends(get_current_user_from_token),
-    db: Session = Depends(get_db),
-):
+    current_user: models.User,
+    status: str,
+    actual_minutes: int | None = None,
+    reason_code: str | None = None,
+    reason_note: str | None = None,
+) -> dict:
+    """Body of `PATCH /plans/tasks/{task_id}`, extracted so callers other
+    than the HTTP route (e.g. Cursus Chat's action-proposal confirm) can
+    apply the exact same status-change side effects (ProgressEvent,
+    plan.goals task_meta, risk refresh) without going through FastAPI's
+    dependency injection. Callers must verify task ownership themselves
+    first (the route does it via `require_study_task_owner`)."""
     task = db.query(models.StudyTask).filter_by(id=task_id).first()
     if not task:
         raise HTTPException(status_code=404, detail="Study task not found")
 
-    status = str(payload.status or "").strip().upper()
+    status = str(status or "").strip().upper()
     if status not in _EVENT_FOR_STATUS:
         raise HTTPException(status_code=400, detail=f"Unknown task status: {status}")
 
     valid_reason_codes = {code for code, _ in gate2_demo.DEFER_REASON_CODES}
     if status == "DEFERRED":
-        if not payload.reason_code:
+        if not reason_code:
             raise HTTPException(
                 status_code=400,
                 detail="Dời task cần chọn lý do (reason_code).",
             )
-        if payload.reason_code not in valid_reason_codes:
+        if reason_code not in valid_reason_codes:
             raise HTTPException(
                 status_code=400,
-                detail=f"Lý do không hợp lệ: {payload.reason_code}",
+                detail=f"Lý do không hợp lệ: {reason_code}",
             )
 
     task.status = status
-    if payload.actual_minutes is not None:
-        if payload.actual_minutes < 0:
+    if actual_minutes is not None:
+        if actual_minutes < 0:
             raise HTTPException(status_code=400, detail="actual_minutes phải >= 0")
-        task.actual_minutes = payload.actual_minutes
+        task.actual_minutes = actual_minutes
     if status == "DEFERRED":
         task.rescheduled_count = (task.rescheduled_count or 0) + 1
 
