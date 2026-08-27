@@ -26,8 +26,13 @@ from src.services.ai.plan_builder import resolve_current_plan, serialize_plan
 from src.services.core.ai_service_client import generate_structured
 from src.services.core.audit_service import AuditService
 from src.services.core.crisis_safety_service import evaluate as evaluate_crisis
+from src.services.core.email_provider import build_email_service
 from src.services.core.guardrail_service import GuardrailService
 from src.services.core.llm import has_configured_llm
+from src.services.core.llm_budget_service import check_and_increment_async
+from src.services.core.notification_service import NotificationService
+from src.services.core.rate_limiter import allow as rate_limit_allow
+from src.services.rag.document_content_validator import scan_for_suspicious_patterns
 from src.services.rag.retrieval_service import RetrievalService
 
 logger = logging.getLogger(__name__)
@@ -40,6 +45,24 @@ _BRIEFING_MESSAGE = (
     "Chào bạn! Mình là Cursus — hỏi mình về nội dung môn học, kế hoạch tuần, "
     "hoặc cách dùng app đều được."
 )
+_RATE_LIMIT_WINDOW_SECONDS = 60
+
+
+def _single_event_stream(*, conversation_id: str, text: str) -> StreamingResponse:
+    async def _gen():
+        yield f"event: meta\ndata: {json.dumps({'conversationId': conversation_id})}\n\n"
+        yield f"event: delta\ndata: {json.dumps({'text': text})}\n\n"
+        yield "event: done\ndata: {}\n\n"
+    return StreamingResponse(_gen(), media_type="text/event-stream")
+
+
+def _error_stream(*, code: str, message: str | None = None) -> StreamingResponse:
+    async def _gen():
+        payload = {"code": code}
+        if message:
+            payload["message"] = message
+        yield f"event: error\ndata: {json.dumps(payload)}\n\n"
+    return StreamingResponse(_gen(), media_type="text/event-stream")
 
 
 class ChatRequest(BaseModel):
