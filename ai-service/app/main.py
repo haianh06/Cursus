@@ -4,6 +4,7 @@ import json
 import os
 from collections.abc import AsyncIterator
 
+import openai
 from fastapi import FastAPI, Header, HTTPException
 from fastapi.responses import StreamingResponse
 from openai import AsyncOpenAI
@@ -13,6 +14,21 @@ from app.domains.structured.schemas import StructuredGenerateRequest, Structured
 from app.domains.structured.service import generate_structured
 
 app = FastAPI(title="Cursus AI Service", version="1.0.0")
+
+
+def _error_code_for(exc: Exception) -> str:
+    """Distinguishes the handful of failure modes backend/frontend actually
+    show a different message for (see cursus_chat.py's SSE relay and
+    CursusChat.jsx) from a generic "AI is down" -- rather than collapsing
+    every OpenAI failure into one AI_UNAVAILABLE code."""
+    if isinstance(exc, openai.RateLimitError):
+        code = getattr(exc, "code", None) or (exc.body or {}).get("code") if getattr(exc, "body", None) else None
+        if code == "insufficient_quota":
+            return "QUOTA_EXHAUSTED"
+        return "RATE_LIMITED"
+    if isinstance(exc, openai.APIConnectionError | openai.APITimeoutError):
+        return "AI_UNAVAILABLE"
+    return "AI_UNAVAILABLE"
 
 
 class GenerateRequest(BaseModel):
