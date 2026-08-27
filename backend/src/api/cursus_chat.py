@@ -1,4 +1,6 @@
-"""Student-scoped Cursus Chat gateway. AI generation remains in ai-service."""
+"""Student-scoped Cursus Chat gateway. AI generation lives in-process in
+src.services.core.ai_engine (folded in from the formerly-standalone
+ai-service so a single Render deploy only needs one service)."""
 from __future__ import annotations
 
 import json
@@ -6,7 +8,6 @@ import logging
 from datetime import datetime, timedelta
 from uuid import uuid4
 
-import httpx
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
@@ -23,6 +24,7 @@ from src.repositories.ownership_repository import OwnershipRepository
 from src.security.authorization import require_roles
 from src.services.academic.academic_calendar import current_week_for_student
 from src.services.ai.plan_builder import resolve_current_plan, serialize_plan
+from src.services.core.ai_engine.chat_stream import generate_chat_stream
 from src.services.core.ai_service_client import generate_structured
 from src.services.core.audit_service import AuditService
 from src.services.core.crisis_safety_service import evaluate as evaluate_crisis
@@ -308,38 +310,19 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
             return
 
         try:
-            # ai-service sends "event: X" and "data: Y" as separate lines;
-            # httpx.aiter_lines() yields them one at a time, so the event
-            # name for the *next* data line must be tracked across
-            # iterations -- forwarding a bare "data: ..." line with no
-            # preceding "event: ..." (an earlier version of this loop) left
-            # every relayed delta un-typed and silently dropped by any SSE
-            # consumer that dispatches on event name.
-            current_event = "message"
-            async with httpx.AsyncClient(timeout=60) as client:
-                async with client.stream("POST", f"{settings.ai_service_url.rstrip('/')}/v1/generate/stream", headers={"x-ai-service-key": settings.ai_service_internal_key or ""}, json={"message": payload.message, "intent": intent, "context": sources}) as response:
-                    response.raise_for_status()
-                    async for line in response.aiter_lines():
-                        if line.startswith("event:"):
-                            current_event = line.split(":", 1)[1].strip()
-                            continue
-                        if not line.startswith("data:"):
-                            continue
-                        data_raw = line.split(":", 1)[1].strip()
-                        if current_event == "delta":
-                            data = json.loads(data_raw)
-                            answer += data.get("text", "")
-                            yield f"event: delta\ndata: {data_raw}\n\n"
-                        elif current_event == "error":
-                            # ai-service already classifies its own failure
-                            # (RATE_LIMITED/QUOTA_EXHAUSTED/AI_UNAVAILABLE) --
-                            # forward its code as-is rather than collapsing
-                            # it into one generic message here.
-                            yield f"event: error\ndata: {data_raw}\n\n"
-                            return
-                        # ai-service's own "done" is not forwarded -- this
-                        # relay emits its own "done" below, after citations
-                        # and any action proposal have also been sent.
+            # ai_engine already classifies its own failure
+            # (RATE_LIMITED/QUOTA_EXHAUSTED/AI_UNAVAILABLE/AI_MISCONFIGURED) --
+            # forward its code as-is rather than collapsing it into one
+            # generic message here. "done" from the generator is not
+            # forwarded -- this relay emits its own "done" below, after
+            # citations and any action proposal have also been sent.
+            async for event in generate_chat_stream(settings=settings, message=payload.message, intent=intent, context=sources):
+                if event["type"] == "delta":
+                    answer += event["text"]
+                    yield f"event: delta\ndata: {json.dumps({'text': event['text']})}\n\n"
+                elif event["type"] == "error":
+                    yield f"event: error\ndata: {json.dumps({'code': event['code']})}\n\n"
+                    return
             if sources:
                 yield f"event: citation\ndata: {json.dumps({'items': [{'id': item['id'], 'chunkId': item['id'], 'title': item['title'], 'document': item['title'], 'section': item['section'], 'isMock': item['isMock']} for item in sources]})}\n\n"
             db.add(models.ChatMessage(id=str(uuid4()), conversation_id=conversation.id, role="assistant", content=answer, metadata_info={"citations": sources, "intent": intent}))
@@ -357,13 +340,6 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
                     db.commit()
                     yield f"event: action_proposal\ndata: {json.dumps({'id': proposal.id, 'actionType': action_type, 'payload': action_payload})}\n\n"
             yield "event: done\ndata: {}\n\n"
-        except httpx.HTTPStatusError as exc:
-            db.rollback()
-            code = "RATE_LIMITED" if exc.response.status_code == 429 else "AI_UNAVAILABLE"
-            yield f"event: error\ndata: {json.dumps({'code': code})}\n\n"
-        except httpx.TimeoutException:
-            db.rollback()
-            yield f"event: error\ndata: {json.dumps({'code': 'AI_UNAVAILABLE', 'message': 'ai-service phản hồi quá chậm.'})}\n\n"
         except Exception:
             logger.exception("cursus_chat_relay_failed student_id=%s", current_user.id)
             db.rollback()
@@ -393,6 +369,18 @@ def dismiss_briefing(payload: BriefingDismissRequest, current_user: models.User 
     db.add(models.ChatBriefingImpression(id=str(uuid4()), student_id=current_user.id, briefing_key=payload.briefing_key, shown_at=suppressed_until))
     db.commit()
     return {"ok": True, "suppressedUntil": suppressed_until.isoformat()}
+
+
+@router.get("/ai-health")
+def ai_health(current_user: models.User = Depends(get_current_user_from_token), settings: Settings = Depends(get_settings)):
+    """Lets the chat widget show a "warming up" notice instead of a raw
+    error while a cold Render instance is still booting. Since ai-service was
+    folded into this same process, there's no separate downstream service to
+    probe anymore -- this just confirms the AI subsystem is configured
+    (OPENAI_API_KEY present). The cold-start signal itself comes from how
+    long *this* request takes to even reach the handler: a sleeping Render
+    instance is slow to respond to any request, this one included."""
+    return {"ready": bool((settings.openai_api_key or "").strip())}
 
 
 @router.get("/conversations")

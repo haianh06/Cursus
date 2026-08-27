@@ -46,10 +46,16 @@ class Settings(BaseSettings):
     # than expanding scope mid-eval.
     model_fallbacks: str = "gemini-1.5-flash,gemini-2.0-flash-lite"
     llm_temperature: float = Field(default=0.7, ge=0.0, le=2.0)
-    # Cursus AI is a separate private service. Browser clients never receive
-    # these values; the backend uses them only for server-to-server calls.
-    ai_service_url: str = "http://127.0.0.1:8100"
-    ai_service_internal_key: str | None = None
+    # Cursus Chat's interactive/structured generation (src.services.core.ai_engine,
+    # folded in from the formerly-standalone ai-service so a single Render
+    # deploy only needs one service). OPENAI_API_KEY may be issued by an
+    # OpenAI-compatible gateway (e.g. a LiteLLM-style proxy) rather than
+    # api.openai.com directly -- OPENAI_BASE_URL overrides the SDK's default
+    # for that case. Browser clients never receive any of these values.
+    openai_api_key: str | None = None
+    openai_base_url: str | None = None
+    openai_strong_model: str = "pro/gpt-5.6-terra"
+    openai_light_model: str = "pro/gpt-5.6-luna"
 
     # Web search (used to augment retrieval when local context is insufficient)
     web_search_enabled: bool = True
