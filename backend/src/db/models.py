@@ -695,6 +695,15 @@ class ChatBriefingImpression(Base):
     briefing_key: Mapped[str] = mapped_column(String)
     shown_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
+class ChatActionProposal(Base):
+    __tablename__ = "chat_action_proposals"
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    student_id: Mapped[str] = mapped_column(String, ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    action_type: Mapped[str] = mapped_column(String)
+    payload: Mapped[dict] = mapped_column(JSON, default=dict)
+    status: Mapped[str] = mapped_column(String, default="PENDING")
+    expires_at: Mapped[datetime] = mapped_column(DateTime, index=True)
+
 class ResourceAccessEvent(Base):
     __tablename__ = "resource_access_events"
     id: Mapped[str] = mapped_column(String, primary_key=True)

@@ -29,6 +29,10 @@ class ChatRequest(BaseModel):
     message: str = Field(min_length=1, max_length=5000)
     conversation_id: str | None = None
 
+class ActionProposalRequest(BaseModel):
+    action_type: str = Field(pattern="^(open_reflection|update_task_status)$")
+    payload: dict = Field(default_factory=dict)
+
 
 def _cleanup(db: Session) -> None:
     db.query(models.ChatConversation).filter(models.ChatConversation.expires_at <= datetime.utcnow()).delete(synchronize_session=False)
@@ -124,3 +128,15 @@ def export_history(current_user: models.User = Depends(get_current_user_from_tok
 def delete_history(current_user: models.User = Depends(get_current_user_from_token), db: Session = Depends(get_db)):
     deleted = db.query(models.ChatConversation).filter_by(student_id=current_user.id).delete(synchronize_session=False); db.commit()
     return {"deleted": deleted}
+
+@router.post("/actions")
+def propose_action(payload: ActionProposalRequest, current_user: models.User = Depends(get_current_user_from_token), db: Session = Depends(get_db)):
+    proposal = models.ChatActionProposal(id=str(uuid4()), student_id=current_user.id, action_type=payload.action_type, payload=payload.payload, status="PENDING", expires_at=datetime.utcnow() + timedelta(minutes=15))
+    db.add(proposal); db.commit(); return {"id": proposal.id, "actionType": proposal.action_type, "payload": proposal.payload, "status": proposal.status}
+
+@router.post("/actions/{proposal_id}/confirm")
+def confirm_action(proposal_id: str, current_user: models.User = Depends(get_current_user_from_token), db: Session = Depends(get_db)):
+    proposal = db.query(models.ChatActionProposal).filter_by(id=proposal_id, student_id=current_user.id).first()
+    if proposal is None or proposal.expires_at <= datetime.utcnow(): raise HTTPException(status_code=404, detail="Action proposal not found")
+    if proposal.status != "PENDING": return {"status": proposal.status}
+    proposal.status = "CONFIRMED"; db.commit(); return {"status": proposal.status, "actionType": proposal.action_type, "payload": proposal.payload}

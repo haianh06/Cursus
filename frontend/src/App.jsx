@@ -22,6 +22,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 // they all shipped eagerly alongside the landing page bundle).
 import LandingPage from './components/shared/LandingPage';
 import SelfStudyReminder from './components/student/SelfStudyReminder';
+import CursusChat from './components/student/CursusChat';
 
 const LoginScreen = lazy(() => import('./components/auth/LoginScreen'));
 const AcceptInviteScreen = lazy(() => import('./components/auth/AcceptInviteScreen'));
@@ -963,6 +964,7 @@ export default function App() {
           </Routes>
           </Suspense>
           <ScrollToTop />
+          <CursusChat user={user} />
         </BrowserRouter>
       </CursusProvider>
     </FatalErrorScreen>

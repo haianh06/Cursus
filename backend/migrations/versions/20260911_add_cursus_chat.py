@@ -17,8 +17,10 @@ def upgrade() -> None:
     op.create_index("ix_chat_messages_conversation_id", "chat_messages", ["conversation_id"])
     op.create_table("chat_briefing_impressions", sa.Column("id", sa.String(), primary_key=True), sa.Column("student_id", sa.String(), sa.ForeignKey("users.id", ondelete="CASCADE"), nullable=False), sa.Column("briefing_key", sa.String(), nullable=False), sa.Column("shown_at", sa.DateTime(), nullable=False))
     op.create_index("ix_chat_briefing_impressions_student_id", "chat_briefing_impressions", ["student_id"])
+    op.create_table("chat_action_proposals", sa.Column("id", sa.String(), primary_key=True), sa.Column("student_id", sa.String(), sa.ForeignKey("users.id", ondelete="CASCADE"), nullable=False), sa.Column("action_type", sa.String(), nullable=False), sa.Column("payload", sa.JSON(), nullable=False), sa.Column("status", sa.String(), nullable=False), sa.Column("expires_at", sa.DateTime(), nullable=False))
 
 def downgrade() -> None:
+    op.drop_table("chat_action_proposals")
     op.drop_table("chat_briefing_impressions")
     op.drop_table("chat_messages")
     op.drop_table("chat_conversations")
