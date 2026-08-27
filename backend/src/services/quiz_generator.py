@@ -16,7 +16,6 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from src.config import get_settings
 from src.services.core.ai_service_client import generate_structured
 from src.services.core.llm import has_configured_llm
 
