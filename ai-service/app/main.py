@@ -33,10 +33,18 @@ def _error_code_for(exc: Exception) -> str:
     return "AI_UNAVAILABLE"
 
 
+class ContextItem(BaseModel):
+    id: str
+    title: str
+    section: str = ""
+    text: str
+    isMock: bool = False
+
+
 class GenerateRequest(BaseModel):
     message: str = Field(min_length=1, max_length=5000)
     intent: str
-    context: list[dict[str, str]] = []
+    context: list[ContextItem] = []
     memory: str | None = None
 
 
@@ -68,7 +76,7 @@ async def generate_stream(
     _require_internal_key(x_ai_service_key)
     client = AsyncOpenAI(api_key=os.environ["OPENAI_API_KEY"])
     sources = "\n\n".join(
-        f"[SOURCE {item['id']}] {item['title']} — {item.get('section', '')}\n{item['text']}"
+        f"[SOURCE {item.id}] {item.title} — {item.section}\n{item.text}"
         for item in request.context
     )
     instructions = (
