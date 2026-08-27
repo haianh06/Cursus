@@ -59,7 +59,23 @@ def _wait_for_database(*, attempts: int = 60, delay_s: float = 2.0) -> None:
 
 
 def _alembic_upgrade() -> None:
-    _run([sys.executable, "-m", "alembic", "upgrade", "head"])
+    # Non-fatal on purpose: this DB's alembic_version can (and, 27/08, does)
+    # point at a revision that isn't an ancestor of this branch's migration
+    # chain -- a known, already-documented class of gap (see
+    # docs/PROJECT_CONTEXT.md mục 20 ý 8 / scripts/sql/sync_schema_before_deploy.sql)
+    # that needs a human to reconcile by hand on the Supabase Dashboard, not
+    # something safe to auto-fix here. Before this fix, that error was
+    # `raise`d with check=True, crash-looping the whole container on every
+    # boot and taking prod down for hours (27/08 ~16:00-19:30) even though
+    # the app itself never touches Alembic at runtime -- only for one-time
+    # schema changes. Log loudly and keep booting instead.
+    try:
+        _run([sys.executable, "-m", "alembic", "upgrade", "head"])
+    except RuntimeError:
+        logger.error(
+            "alembic_upgrade_failed_continuing_anyway -- schema may be behind, "
+            "reconcile by hand on Supabase Dashboard, see docs/PROJECT_CONTEXT.md mục 20 y8"
+        )
 
 
 def _users_exist() -> bool:
