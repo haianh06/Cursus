@@ -167,7 +167,7 @@ def _fake_rate_limit_error(code: str | None) -> openai.RateLimitError:
 
     request = httpx2.Request("POST", "https://api.openai.com/v1/responses")
     response = httpx2.Response(status_code=429, request=request)
-    body = {"error": {"code": code}} if code else None
+    body = {"code": code} if code else None
     return openai.RateLimitError("rate limited", response=response, body=body)
 
 

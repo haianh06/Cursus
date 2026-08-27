@@ -22,9 +22,10 @@ def _error_code_for(exc: Exception) -> str:
     CursusChat.jsx) from a generic "AI is down" -- rather than collapsing
     every OpenAI failure into one AI_UNAVAILABLE code."""
     if isinstance(exc, openai.RateLimitError):
-        body = getattr(exc, "body", None) or {}
-        code = getattr(exc, "code", None) or (body.get("code") if isinstance(body, dict) else None)
-        if code == "insufficient_quota":
+        # openai's APIError.__init__ already extracts `.code` from the
+        # response body for us (`insufficient_quota` vs the generic
+        # `rate_limit_exceeded`) -- no need to re-parse `exc.body` here.
+        if getattr(exc, "code", None) == "insufficient_quota":
             return "QUOTA_EXHAUSTED"
         return "RATE_LIMITED"
     if isinstance(exc, openai.APIConnectionError | openai.APITimeoutError):
