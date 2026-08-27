@@ -89,7 +89,7 @@ class _FakeAiClient:
 def _patch_ai_service(monkeypatch, *, reply_text="Đây là câu trả lời từ ai-service."):
     import src.api.cursus_chat as cursus_chat_module
 
-    lines = [f'data: {{"text": "{reply_text}"}}', "data: {}"]
+    lines = ["event: delta", f'data: {{"text": "{reply_text}"}}', "event: done", "data: {}"]
 
     def _fake_async_client(*args, **kwargs):
         return _FakeAiClient(lines)

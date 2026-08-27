@@ -249,6 +249,7 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
                     db.add(proposal)
                     db.commit()
                     yield f"event: action_proposal\ndata: {json.dumps({'id': proposal.id, 'actionType': action_type, 'payload': action_payload})}\n\n"
+            yield "event: done\ndata: {}\n\n"
         except Exception:
             db.rollback()
             yield "event: error\ndata: {\"code\":\"AI_UNAVAILABLE\"}\n\n"
