@@ -1,30 +1,11 @@
-from langchain_google_genai import ChatGoogleGenerativeAI
-
 from src.config import get_settings
-
-_PLACEHOLDER_KEYS = frozenset({"", "test-key", "sk-your-key-here", "changeme"})
-
-
-def get_llm() -> ChatGoogleGenerativeAI:
-    """Create the shared chat model client (Google Gemini)."""
-    settings = get_settings()
-    return ChatGoogleGenerativeAI(
-        model=settings.model_name,
-        google_api_key=settings.google_api_key,
-        temperature=settings.llm_temperature,
-    )
 
 
 def has_configured_llm() -> bool:
-    """True when a real (non-placeholder) Gemini API key is configured.
-
-    Same placeholder set QaAnswerService checks locally — kept here too so
-    other callers (e.g. plan_builder) don't have to duplicate the list.
-    """
+    """True when ai-service is reachable in principle (an internal key is
+    configured) — the actual LLM call now happens in ai-service
+    (`src.services.core.ai_service_client`), not here. Same gate role as
+    before: callers use this to decide whether to attempt an LLM-backed
+    path at all before falling back to a deterministic result."""
     settings = get_settings()
-    key = (settings.google_api_key or "").strip()
-    if key in _PLACEHOLDER_KEYS:
-        return False
-    if key.startswith("AQ.your") or key.startswith("your-"):
-        return False
-    return True
+    return bool((settings.ai_service_internal_key or "").strip())
