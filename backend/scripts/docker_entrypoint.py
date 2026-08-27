@@ -295,9 +295,11 @@ def main() -> None:
         "8000",
     ]
     if os.getenv("APP_ENV", "development").strip().lower() == "development":
-        # ./src is bind-mounted in docker-compose.yml for live editing; scope the
-        # watch to it so unrelated mounts (data/, uploads) don't trigger restarts.
-        cmd += ["--reload", "--reload-dir", "/app/src"]
+        # Scoped to backend/src (not the whole /app/backend tree) so unrelated
+        # mounts (data/, uploads) don't trigger restarts. Only takes effect if
+        # docker-compose.yml actually bind-mounts backend/src for live editing;
+        # harmless (just watches the baked-in copy) if it doesn't.
+        cmd += ["--reload", "--reload-dir", "/app/backend/src"]
 
     raise SystemExit(subprocess.call(cmd))
 
