@@ -704,6 +704,27 @@ class ChatActionProposal(Base):
     status: Mapped[str] = mapped_column(String, default="PENDING")
     expires_at: Mapped[datetime] = mapped_column(DateTime, index=True)
 
+class CrisisEscalation(Base):
+    """A wellbeing-crisis trigger from Cursus Chat (see
+    `src.services.core.crisis_safety_service`) — deliberately its OWN table,
+    not folded into `GuardrailEvent`/the instructor-facing
+    `guardrail_reviews` queue: an instructor is not necessarily trained or
+    positioned to be the right responder to a student-safety signal, so this
+    is visible only to Admin/CTSV (see `src/api/admin_crisis_escalations.py`)
+    and additionally emails an ops address immediately (best-effort,
+    `crisis_safety_service` failures there never block the chat response)."""
+
+    __tablename__ = "crisis_escalations"
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    student_id: Mapped[str] = mapped_column(String, ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    conversation_id: Mapped[str | None] = mapped_column(String, ForeignKey("chat_conversations.id", ondelete="SET NULL"), nullable=True)
+    message_excerpt: Mapped[str] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(String, default="OPEN")  # OPEN, ACKNOWLEDGED, RESOLVED
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+    acknowledged_by: Mapped[str | None] = mapped_column(String, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    acknowledged_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    resolution_note: Mapped[str | None] = mapped_column(Text, nullable=True)
+
 class ResourceAccessEvent(Base):
     __tablename__ = "resource_access_events"
     id: Mapped[str] = mapped_column(String, primary_key=True)
