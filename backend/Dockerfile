@@ -33,11 +33,13 @@ RUN useradd -m appuser
 RUN mkdir -p /app/data && chown appuser:appuser /app/data
 COPY --chown=appuser:appuser backend ./backend
 COPY --chown=appuser:appuser data ./data
-# docs/planning/v2 holds the parsed real-curriculum catalog/chunks that
+# docs/planning/v2/data holds the parsed real-curriculum catalog/chunks that
 # src/services/mock/{real_curriculum_service,gate2_demo,demo_data}.py read
 # at ROOT.parent (repo root) relative to backend/ -- must exist alongside
-# backend/ and data/ inside the image for those lookups to resolve.
-COPY --chown=appuser:appuser docs/planning/v2 ./docs/planning/v2
+# backend/ and data/ inside the image for those lookups to resolve. Only
+# `data/` is whitelisted in .dockerignore (the rest of docs/ is planning/eval
+# docs, not runtime input).
+COPY --chown=appuser:appuser docs/planning/v2/data ./docs/planning/v2/data
 
 USER appuser
 
