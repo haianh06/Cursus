@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Bot, Send, X, History, Download, Trash2, Check, XCircle } from 'lucide-react';
+import { Bot, Send, X, History, Download, Trash2, Check, XCircle, Sparkles } from 'lucide-react';
 import {
   streamCursusChat,
   getCursusBriefing,
@@ -40,21 +40,57 @@ function messageForErrorCode(code) {
   return ERROR_MESSAGES[code] || ERROR_MESSAGES.AI_UNAVAILABLE;
 }
 
-/** Frequency-capped greeting shown once per open panel session — the server
- * (ChatBriefingImpression) decides whether it's actually due; this is just
- * the dismiss/snooze UI on top of that decision. */
-function BriefingBubble({ briefing, onDismiss }) {
-  if (!briefing) return null;
+/** Shared with the launcher button and the panel header so the "brand" gradient
+ * lives in one place — reuses the same tokens as .btn-accent in index.css. */
+const HEADER_GRADIENT = 'linear-gradient(135deg, var(--accent-cta-bg) 0%, var(--accent-cta-bg-hover) 100%)';
+
+const QUICK_REPLIES = [
+  'Hôm nay mình nên học gì trước?',
+  'Tóm tắt syllabus môn này giúp mình',
+  'Kế hoạch học tập của mình đang thế nào?',
+];
+
+function QuickReplies({ onPick, disabled }) {
   return (
-    <div className="rounded-lg border border-accent/30 bg-accent-soft p-3 text-sm text-ink">
-      <p>{briefing.message}</p>
-      <div className="mt-2 flex gap-3 text-xs font-semibold">
-        <button type="button" onClick={() => onDismiss(1)} className="text-accent hover:underline">
-          Đã hiểu
+    <div className="flex flex-wrap gap-2">
+      {QUICK_REPLIES.map((text) => (
+        <button
+          key={text}
+          type="button"
+          disabled={disabled}
+          onClick={() => onPick(text)}
+          className="rounded-full border border-accent/30 bg-accent-soft px-3 py-1.5 text-left text-xs font-medium text-accent hover:bg-accent/10 disabled:opacity-50"
+        >
+          {text}
         </button>
-        <button type="button" onClick={() => onDismiss(7)} className="text-ink-secondary hover:underline">
-          Nhắc lại sau
-        </button>
+      ))}
+    </div>
+  );
+}
+
+/** Welcome card shown before the first message — merges the frequency-capped
+ * server briefing (ChatBriefingImpression) with a generic greeting fallback,
+ * plus quick-reply chips to get a first message out with one tap. */
+function WelcomeCard({ briefing, onDismissBriefing, onPickReply, disabled }) {
+  return (
+    <div className="rounded-2xl border border-border bg-paper p-4 text-sm text-ink shadow-sm">
+      <p>
+        {briefing
+          ? briefing.message
+          : 'Chào bạn! Mình là Cursus. Bạn muốn hỏi gì về môn học, kế hoạch học tập hay cách dùng Cursus?'}
+      </p>
+      {briefing && (
+        <div className="mt-2 flex gap-3 text-xs font-semibold">
+          <button type="button" onClick={() => onDismissBriefing(1)} className="text-accent hover:underline">
+            Đã hiểu
+          </button>
+          <button type="button" onClick={() => onDismissBriefing(7)} className="text-ink-secondary hover:underline">
+            Nhắc lại sau
+          </button>
+        </div>
+      )}
+      <div className="mt-3 flex flex-wrap gap-2 border-t border-border pt-3">
+        <QuickReplies onPick={onPickReply} disabled={disabled} />
       </div>
     </div>
   );
@@ -247,7 +283,11 @@ export default function CursusChat({ user }) {
 
   const send = async (event) => {
     event.preventDefault();
-    const text = value.trim();
+    sendMessage(value);
+  };
+
+  const sendMessage = async (rawText) => {
+    const text = rawText.trim();
     if (!text || loading) return;
     setValue('');
     setMessages((items) => [...items, { role: 'user', text }, { role: 'assistant', text: '', citations: [] }]);
@@ -275,46 +315,56 @@ export default function CursusChat({ user }) {
 
   return (
     <>
-      <button aria-label="Mở Cursus" onClick={() => setOpen(true)} className="fixed bottom-5 right-5 z-[90] flex h-12 items-center gap-2 rounded-lg border border-accent bg-surface px-3 text-sm font-semibold text-fg shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent">
-        <Bot size={18} /> Cursus
-      </button>
+      {!open && (
+        <button
+          aria-label="Mở Cursus"
+          onClick={() => setOpen(true)}
+          style={{ background: HEADER_GRADIENT }}
+          className="fixed bottom-5 right-5 z-[90] flex h-14 w-14 items-center justify-center rounded-full text-white shadow-lg transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+        >
+          <Bot size={24} />
+        </button>
+      )}
       {open && (
-        <aside aria-label="Cursus chat" className="fixed inset-y-0 right-0 z-[100] flex w-full max-w-[440px] flex-col border-l border-border bg-paper shadow-xl">
-          <header className="relative flex items-center justify-between border-b border-border bg-surface px-5 py-4">
-            <div>
-              <h2 className="font-serif text-lg text-ink">Cursus</h2>
-              <p className="text-xs text-ink-secondary">Trợ lý học tập có nguồn</p>
+        <aside
+          aria-label="Cursus chat"
+          className="fixed bottom-5 right-5 z-[100] flex h-[min(640px,80vh)] w-[calc(100vw-2.5rem)] max-w-[400px] flex-col overflow-hidden rounded-2xl border border-border bg-paper shadow-2xl"
+        >
+          <header style={{ background: HEADER_GRADIENT }} className="flex items-center justify-between px-5 py-4 text-white">
+            <div className="flex items-center gap-3">
+              <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/20">
+                <Bot size={20} />
+                <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white bg-emerald-400" />
+              </div>
+              <div>
+                <h2 className="flex items-center gap-1.5 font-serif text-base font-semibold leading-tight">
+                  Cursus <Sparkles size={14} className="text-white/80" />
+                </h2>
+                <p className="text-xs text-white/80">Trợ lý học tập có nguồn</p>
+              </div>
             </div>
             <div className="flex items-center gap-3">
-              <button aria-label="Lịch sử trò chuyện" onClick={openHistory}>
+              <button aria-label="Lịch sử trò chuyện" onClick={openHistory} className="text-white/85 hover:text-white">
                 <History size={18} />
               </button>
-              <button aria-label="Đóng Cursus" onClick={() => setOpen(false)}>
+              <button aria-label="Đóng Cursus" onClick={() => setOpen(false)} className="text-white/85 hover:text-white">
                 <X size={20} />
               </button>
             </div>
-            {historyOpen && (
-              <ChatHistorySidebar
-                conversations={conversations}
-                activeId={conversationId}
-                onSelect={selectConversation}
-                onExport={handleExport}
-                onDeleteAll={() => setConfirmDeleteAll(true)}
-                onClose={() => setHistoryOpen(false)}
-              />
-            )}
           </header>
-          <main className="flex-1 space-y-4 overflow-y-auto p-5">
+          <main className="flex-1 space-y-4 overflow-y-auto bg-surface p-5">
             {messages.length === 0 && (
-              <BriefingBubble briefing={briefing} onDismiss={dismissBriefing} />
-            )}
-            {messages.length === 0 && !briefing && (
-              <p className="rounded-lg border border-border bg-surface p-4 text-sm text-ink-secondary">
-                Bạn muốn biết gì về môn học, kế hoạch hoặc cách dùng Cursus?
-              </p>
+              <WelcomeCard briefing={briefing} onDismissBriefing={dismissBriefing} onPickReply={sendMessage} disabled={loading} />
             )}
             {messages.map((item, index) => (
-              <article key={index} className={item.role === 'user' ? 'ml-8 rounded-lg bg-accent-soft p-3 text-sm text-ink' : 'mr-4 rounded-lg border border-border bg-surface p-3 text-sm text-ink'}>
+              <article
+                key={index}
+                className={
+                  item.role === 'user'
+                    ? 'ml-8 rounded-2xl rounded-br-sm bg-accent-soft p-3 text-sm text-ink'
+                    : 'mr-4 rounded-2xl rounded-bl-sm border border-border bg-paper p-3 text-sm text-ink shadow-sm'
+                }
+              >
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{item.text || 'Đang soạn câu trả lời…'}</ReactMarkdown>
                 {item.citations?.length > 0 && (
                   <div className="mt-2 flex flex-wrap gap-2 border-t border-border pt-2">
@@ -334,17 +384,45 @@ export default function CursusChat({ user }) {
               </article>
             ))}
           </main>
-          <form onSubmit={send} className="border-t border-border bg-surface p-4">
-            <textarea
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              placeholder="Hỏi Cursus…"
-              className="min-h-20 w-full resize-none rounded-md border border-border bg-paper p-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
-            />
-            <button disabled={loading} className="mt-2 inline-flex items-center gap-2 rounded-md bg-accent px-3 py-2 text-sm font-semibold text-white disabled:opacity-50">
-              <Send size={15} /> Gửi
-            </button>
+          <form onSubmit={send} className="border-t border-border bg-paper p-3">
+            <div className="flex items-end gap-2 rounded-full border border-border bg-surface px-4 py-2 focus-within:ring-2 focus-within:ring-accent">
+              <textarea
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage(value);
+                  }
+                }}
+                placeholder="Hỏi Cursus…"
+                rows={1}
+                className="max-h-24 min-h-[24px] flex-1 resize-none border-0 bg-transparent py-1 text-sm text-ink placeholder:text-ink-secondary focus:outline-none focus:ring-0"
+              />
+              <button
+                type="submit"
+                aria-label="Gửi"
+                disabled={loading || !value.trim()}
+                style={{ background: HEADER_GRADIENT }}
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white disabled:opacity-40"
+              >
+                <Send size={14} />
+              </button>
+            </div>
+            <p className="mt-1.5 text-center text-[11px] text-ink-secondary">
+              Cursus có thể nhầm; hãy kiểm tra lại thông tin quan trọng.
+            </p>
           </form>
+          {historyOpen && (
+            <ChatHistorySidebar
+              conversations={conversations}
+              activeId={conversationId}
+              onSelect={selectConversation}
+              onExport={handleExport}
+              onDeleteAll={() => setConfirmDeleteAll(true)}
+              onClose={() => setHistoryOpen(false)}
+            />
+          )}
         </aside>
       )}
       {openCitation && <SourceDrawer citation={openCitation} onClose={() => setOpenCitation(null)} lang="vi" />}
