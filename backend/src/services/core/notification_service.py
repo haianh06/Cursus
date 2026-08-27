@@ -62,6 +62,14 @@ class NotificationService:
             )
         )
 
+    async def send_ops_alert(self, to_email: str, *, subject: str, body_text: str) -> None:
+        """Generic operational alert email (crisis-safety escalation, LLM
+        daily-budget exceeded, etc) — plain text only, no branded HTML
+        template needed for an internal ops mailbox."""
+        await self._email_service.send(
+            EmailMessage(to_email=to_email, subject=subject, body_text=body_text, body_html=None)
+        )
+
     async def send_instructor_digest(
         self, email: str, instructor_name: str, digest: dict
     ) -> None:

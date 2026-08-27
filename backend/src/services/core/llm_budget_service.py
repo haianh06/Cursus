@@ -115,7 +115,7 @@ def _send_ops_alert_best_effort(*, count: int, limit: int, date_str: str) -> Non
     import asyncio
 
     from src.config import get_settings
-    from src.repositories.auth_provider_factory import build_email_service
+    from src.services.core.email_provider import build_email_service
     from src.services.core.notification_service import NotificationService
 
     settings = get_settings()
