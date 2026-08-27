@@ -6,6 +6,8 @@ from __future__ import annotations
 
 import json
 
+import openai
+
 import app.main as main_module
 from tests.conftest import INTERNAL_KEY
 
