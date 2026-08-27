@@ -539,8 +539,8 @@ def apply_task_status_update(
     )
 
     reason_label = None
-    if payload.reason_code:
-        reason_label = dict(gate2_demo.DEFER_REASON_CODES).get(payload.reason_code)
+    if reason_code:
+        reason_label = dict(gate2_demo.DEFER_REASON_CODES).get(reason_code)
 
     # Task events live in their own table so the Reflect summary and the risk
     # engine can both be recomputed from evidence rather than from a snapshot.
@@ -552,10 +552,10 @@ def apply_task_status_update(
             event_type=_EVENT_FOR_STATUS[status],
             payload={
                 "status": status,
-                "actual_minutes": payload.actual_minutes,
-                "reason_code": payload.reason_code,
+                "actual_minutes": actual_minutes,
+                "reason_code": reason_code,
                 "reason_label": reason_label,
-                "reason_note": payload.reason_note,
+                "reason_note": reason_note,
             },
             occurred_at=datetime.now(),
         )
@@ -567,9 +567,9 @@ def apply_task_status_update(
         meta = dict(task_meta.get(task.id) or {})
         if status == "DEFERRED":
             meta["defer_count"] = int(meta.get("defer_count") or 0) + 1
-            meta["defer_reason"] = payload.reason_code
+            meta["defer_reason"] = reason_code
             meta["defer_reason_label"] = reason_label
-            meta["defer_reason_note"] = payload.reason_note
+            meta["defer_reason_note"] = reason_note
             meta["defer_provenance"] = {
                 "source_type": "user_entered",
                 "source_id": "defer_dialog",
