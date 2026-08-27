@@ -296,18 +296,20 @@ export default function CursusChat({ user }) {
   /** Render free tier doesn't tell us "cold-start finishes in X seconds" —
    * these are optimistic estimates, not a real ETA, so we re-check /health
    * at the end of every round instead of trusting the countdown blindly.
-   * 3 rounds (~70s total) covers the typical 30-60s cold start with margin;
-   * past that we stop retrying automatically rather than spinning forever
-   * on something that might be a real outage, not just a cold start. */
+   * Budget is generous (~3 min total) on purpose: docker_entrypoint.py's own
+   * DB-ready wait loop alone can take up to ~120s (60 attempts x 2s) before
+   * the app even starts responding, on top of the container itself waking
+   * up -- a ~70s budget measured too optimistic in practice and gave up
+   * while the instance was still genuinely booting, not actually stuck. */
   const waitForWarmup = async () => {
-    const roundsSeconds = [40, 20, 15];
+    const roundsSeconds = [45, 30, 30, 30, 30];
     for (const roundSeconds of roundsSeconds) {
       for (let s = roundSeconds; s > 0; s -= 1) {
         updateLastMessageText(`🔄 Máy chủ đang khởi động sau thời gian không hoạt động, dự kiến sẵn sàng trong ~${s}s...`);
         await sleep(1000);
       }
       updateLastMessageText('🔄 Đang kiểm tra lại...');
-      if (await pingBackendHealth({ timeoutMs: 6000 })) return true;
+      if (await pingBackendHealth({ timeoutMs: 10000 })) return true;
     }
     return false;
   };

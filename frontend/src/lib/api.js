@@ -392,7 +392,7 @@ export function getSourceChunk(chunkId) {
  * a slow/failed response here means the container itself is still waking
  * up, not that something is actually broken. Short timeout on purpose: we
  * want to know quickly that it's cold, not wait out the cold start here. */
-export async function pingBackendHealth({ timeoutMs = 4000 } = {}) {
+export async function pingBackendHealth({ timeoutMs = 8000 } = {}) {
   const root = API_BASE_URL.replace(/\/api\/v1\/?$/, '');
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
