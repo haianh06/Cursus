@@ -97,6 +97,28 @@ def _patch_ai_service(monkeypatch, *, reply_text="Đây là câu trả lời t�
     monkeypatch.setattr(cursus_chat_module.httpx, "AsyncClient", _fake_async_client)
 
 
+def _seed_task(student_id: str, *, status: str = "TODO") -> str:
+    db = SessionLocal()
+    try:
+        now = datetime.now(UTC).replace(tzinfo=None)
+        suffix = uuid.uuid4().hex[:8]
+        plan = models.WeeklyPlan(id=f"plan_{suffix}", student_id=student_id, week_number=1, goals={}, study_hours_allocated=10.0)
+        db.add(plan)
+        db.flush()
+        daily = models.DailyPlan(id=f"daily_{suffix}", weekly_plan_id=plan.id, date=now, status="TODO")
+        db.add(daily)
+        db.flush()
+        block = models.ScheduleBlock(id=f"block_{suffix}", daily_plan_id=daily.id, start_time=now, end_time=now + timedelta(hours=1), activity_description="Study block")
+        db.add(block)
+        db.flush()
+        task = models.StudyTask(id=f"task_{suffix}", schedule_block_id=block.id, title="Test task", planned_minutes=30, priority="MEDIUM", status=status, difficulty="MEDIUM")
+        db.add(task)
+        db.commit()
+        return task.id
+    finally:
+        db.close()
+
+
 async def _parse_sse(response) -> list[tuple[str, dict]]:
     import json as _json
 
@@ -271,34 +293,17 @@ async def test_briefing_frequency_cap_and_snooze(client):
 async def test_action_confirm_update_task_status_calls_real_plan_service(client):
     """The whole point of this feature: confirming must actually change the
     StudyTask row, not just flip the proposal's own status flag."""
-    from src.services.mock.gate2_demo import Gate2DemoService
-
     org_id = ensure_org(f"cc-act-{uuid.uuid4().hex[:6]}", "cc-act")
     student_email = f"cc.act.{uuid.uuid4().hex}@example.test"
     student_id = ensure_user(email=student_email, org_id=org_id, role=models.UserRole.STUDENT)
-
-    db = SessionLocal()
-    try:
-        Gate2DemoService(db).ensure_student(student_id)
-        task = (
-            db.query(models.StudyTask)
-            .join(models.ScheduleBlock)
-            .join(models.DailyPlan)
-            .join(models.WeeklyPlan)
-            .filter(models.WeeklyPlan.student_id == student_id, models.StudyTask.status != "COMPLETED")
-            .first()
-        )
-        assert task is not None, "gate2 demo must seed at least one open task"
-        task_id = task.id
-    finally:
-        db.close()
+    task_id = _seed_task(student_id)
 
     token = await login(client, student_email)
     headers = auth_headers(token)
 
     propose = await client.post(
         "/api/v1/student/cursus/actions", headers=headers,
-        json={"actionType": "update_task_status", "payload": {"taskId": task_id, "status": "IN_PROGRESS"}},
+        json={"action_type": "update_task_status", "payload": {"taskId": task_id, "status": "IN_PROGRESS"}},
     )
     assert propose.status_code == 200
     proposal_id = propose.json()["id"]
@@ -322,31 +327,18 @@ async def test_action_confirm_update_task_status_calls_real_plan_service(client)
 
 @pytest.mark.asyncio
 async def test_action_confirm_rejects_task_owned_by_another_student(client):
-    from src.services.mock.gate2_demo import Gate2DemoService
-
     org_id = ensure_org(f"cc-actx-{uuid.uuid4().hex[:6]}", "cc-actx")
     owner_email = f"cc.owner.{uuid.uuid4().hex}@example.test"
     owner_id = ensure_user(email=owner_email, org_id=org_id, role=models.UserRole.STUDENT)
     intruder_email = f"cc.intruder.{uuid.uuid4().hex}@example.test"
     ensure_user(email=intruder_email, org_id=org_id, role=models.UserRole.STUDENT)
-
-    db = SessionLocal()
-    try:
-        Gate2DemoService(db).ensure_student(owner_id)
-        task = (
-            db.query(models.StudyTask)
-            .join(models.ScheduleBlock).join(models.DailyPlan).join(models.WeeklyPlan)
-            .filter(models.WeeklyPlan.student_id == owner_id).first()
-        )
-        task_id = task.id
-    finally:
-        db.close()
+    task_id = _seed_task(owner_id)
 
     intruder_token = await login(client, intruder_email)
     intruder_headers = auth_headers(intruder_token)
     propose = await client.post(
         "/api/v1/student/cursus/actions", headers=intruder_headers,
-        json={"actionType": "update_task_status", "payload": {"taskId": task_id, "status": "COMPLETED"}},
+        json={"action_type": "update_task_status", "payload": {"taskId": task_id, "status": "COMPLETED"}},
     )
     proposal_id = propose.json()["id"]
 
