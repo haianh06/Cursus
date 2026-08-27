@@ -57,44 +57,17 @@ def _seed_chunk(course_id: str, course_code: str, *, text: str, source: str = "t
         db.close()
 
 
-class _FakeAiResponse:
-    def __init__(self, lines):
-        self._lines = lines
-
-    def raise_for_status(self):
-        return None
-
-    async def aiter_lines(self):
-        for line in self._lines:
-            yield line
-
-
-class _FakeAiClient:
-    def __init__(self, lines):
-        self._lines = lines
-
-    def stream(self, method, url, headers=None, json=None):
-        @asynccontextmanager
-        async def _cm():
-            yield _FakeAiResponse(self._lines)
-        return _cm()
-
-    async def __aenter__(self):
-        return self
-
-    async def __aexit__(self, *exc):
-        return False
-
-
 def _patch_ai_service(monkeypatch, *, reply_text="Đây là câu trả lời từ ai-service."):
+    """ai_engine.generate_chat_stream (in-process since ai-service was
+    folded into backend) yields plain event dicts -- no more SSE lines to
+    fake, no more httpx.AsyncClient to patch."""
     import src.api.cursus_chat as cursus_chat_module
 
-    lines = ["event: delta", f'data: {{"text": "{reply_text}"}}', "event: done", "data: {}"]
+    async def _fake_generate_chat_stream(**kwargs):
+        yield {"type": "delta", "text": reply_text}
+        yield {"type": "done"}
 
-    def _fake_async_client(*args, **kwargs):
-        return _FakeAiClient(lines)
-
-    monkeypatch.setattr(cursus_chat_module.httpx, "AsyncClient", _fake_async_client)
+    monkeypatch.setattr(cursus_chat_module, "generate_chat_stream", _fake_generate_chat_stream)
 
 
 def _seed_task(student_id: str, *, status: str = "TODO") -> str:
