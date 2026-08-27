@@ -399,6 +399,25 @@ export async function streamCursusChat({ message, conversationId, onEvent }) {
 export function exportCursusHistory() { return request('/student/cursus/export'); }
 export function deleteCursusHistory() { return request('/student/cursus/history', { method: 'DELETE' }); }
 
+/** App-open briefing bubble — server enforces the frequency cap/snooze via
+ * ChatBriefingImpression, this is just the read/dismiss pair. */
+export function getCursusBriefing() { return request('/student/cursus/briefing'); }
+export function dismissCursusBriefing(snoozeDays = 1) {
+  return request('/student/cursus/briefing/dismiss', { method: 'POST', body: { snooze_days: snoozeDays } });
+}
+
+export function getCursusConversations() { return request('/student/cursus/conversations'); }
+export function getCursusConversationMessages(conversationId) {
+  return request(`/student/cursus/conversations/${encodeURIComponent(conversationId)}/messages`);
+}
+
+export function confirmCursusAction(proposalId) {
+  return request(`/student/cursus/actions/${encodeURIComponent(proposalId)}/confirm`, { method: 'POST' });
+}
+export function cancelCursusAction(proposalId) {
+  return request(`/student/cursus/actions/${encodeURIComponent(proposalId)}/cancel`, { method: 'POST' });
+}
+
 /** Student courses (for plan context). */
 export function getStudentCourses() {
   return request('/student/courses');
