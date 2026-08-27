@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.api.admin import academic_router as admin_academic_router
 from src.api.admin import router as admin_router
+from src.api.admin_crisis_escalations import router as admin_crisis_escalations_router
 from src.api.admin_data_requests import router as admin_data_requests_router
 from src.api.admin_instructor360 import router as admin_instructor360_router
 from src.api.admin_mock_lms import router as admin_mock_lms_router
