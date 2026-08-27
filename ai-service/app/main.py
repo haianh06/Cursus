@@ -22,7 +22,8 @@ def _error_code_for(exc: Exception) -> str:
     CursusChat.jsx) from a generic "AI is down" -- rather than collapsing
     every OpenAI failure into one AI_UNAVAILABLE code."""
     if isinstance(exc, openai.RateLimitError):
-        code = getattr(exc, "code", None) or (exc.body or {}).get("code") if getattr(exc, "body", None) else None
+        body = getattr(exc, "body", None) or {}
+        code = getattr(exc, "code", None) or (body.get("code") if isinstance(body, dict) else None)
         if code == "insufficient_quota":
             return "QUOTA_EXHAUSTED"
         return "RATE_LIMITED"
@@ -86,8 +87,8 @@ async def generate_stream(
                 if event.type == "response.output_text.delta":
                     yield f"event: delta\ndata: {json.dumps({'text': event.delta})}\n\n"
             yield "event: done\ndata: {}\n\n"
-        except Exception:
-            yield "event: error\ndata: {\"code\":\"AI_UNAVAILABLE\"}\n\n"
+        except Exception as exc:
+            yield f"event: error\ndata: {json.dumps({'code': _error_code_for(exc)})}\n\n"
 
     return StreamingResponse(events(), media_type="text/event-stream")
 
@@ -103,5 +104,10 @@ async def structured_generate(
     _require_internal_key(x_ai_service_key)
     client = AsyncOpenAI(api_key=os.environ["OPENAI_API_KEY"])
     model = _model_for_route(intent=request.intent, source_count=0, message=request.user_prompt)
-    data = await generate_structured(client, model=model, request=request)
+    try:
+        data = await generate_structured(client, model=model, request=request)
+    except Exception as exc:
+        code = _error_code_for(exc)
+        status_code = 429 if code in ("RATE_LIMITED", "QUOTA_EXHAUSTED") else 503
+        raise HTTPException(status_code=status_code, detail={"code": code}) from exc
     return StructuredGenerateResponse(data=data)
