@@ -26,7 +26,8 @@ from src.db import models
 from src.schemas.reflection import LlmReflectionSummaryPayload
 from src.services.ai.plan_builder import SUPPORTED_ADJUSTMENTS
 from src.services.core import provenance as prov
-from src.services.core.llm import get_llm, has_configured_llm
+from src.services.core.ai_service_client import generate_structured
+from src.services.core.llm import has_configured_llm
 
 logger = logging.getLogger(__name__)
 
@@ -388,15 +389,12 @@ class ReflectionEngine:
                 f"Student answers: {answers}\n"
                 f"Confirmed adjustments for next week: {adjustment_labels}\n"
             )
-            llm = get_llm().with_structured_output(LlmReflectionSummaryPayload)
-            payload = llm.invoke(
-                [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt},
-                ]
+            payload = generate_structured(
+                schema_model=LlmReflectionSummaryPayload,
+                system_prompt=system_prompt,
+                user_prompt=user_prompt,
+                intent="reflection",
             )
-            if not isinstance(payload, LlmReflectionSummaryPayload):
-                payload = LlmReflectionSummaryPayload.model_validate(payload)
             summary = payload.summary.strip()
             if summary:
                 return summary, {"llm_attempted": True, "llm_success": True, "retrieval_empty": False}

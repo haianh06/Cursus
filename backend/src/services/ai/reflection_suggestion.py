@@ -16,7 +16,8 @@ import logging
 from pathlib import Path
 
 from src.schemas.reflection import LlmReflectionSuggestionPayload
-from src.services.core.llm import get_llm, has_configured_llm
+from src.services.core.ai_service_client import generate_structured
+from src.services.core.llm import has_configured_llm
 
 logger = logging.getLogger(__name__)
 
@@ -38,15 +39,12 @@ def build_next_week_suggestion(
     try:
         system_prompt = PROMPT_PATH.read_text(encoding="utf-8")
         user_prompt = f"Facts: {facts}\nStudent answers: {answers}\n"
-        llm = get_llm().with_structured_output(LlmReflectionSuggestionPayload)
-        payload = llm.invoke(
-            [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
-            ]
+        payload = generate_structured(
+            schema_model=LlmReflectionSuggestionPayload,
+            system_prompt=system_prompt,
+            user_prompt=user_prompt,
+            intent="reflection",
         )
-        if not isinstance(payload, LlmReflectionSuggestionPayload):
-            payload = LlmReflectionSuggestionPayload.model_validate(payload)
         if not payload.summary.strip():
             return None, trace
         trace["llm_success"] = True

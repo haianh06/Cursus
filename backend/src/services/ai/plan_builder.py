@@ -36,7 +36,8 @@ from src.services.academic.academic_calendar import academic_week_number
 from src.services.academic.timetable_service import monday_of
 from src.services.ai.reflection_suggestion import build_next_week_suggestion
 from src.services.core import provenance as prov
-from src.services.core.llm import get_llm, has_configured_llm
+from src.services.core.ai_service_client import generate_structured
+from src.services.core.llm import has_configured_llm
 from src.services.mock import gate2_demo
 from src.services.rag.query_normalization import fold_accents
 from src.services.rag.retrieval_service import RetrievalService
@@ -285,26 +286,22 @@ def _llm_generated_tasks(
             f"Due date: {assignment.due_date.isoformat()}\n\n"
             "Syllabus context chunks:\n" + "\n\n".join(context_blocks)
         )
-        llm = get_llm().with_structured_output(LlmPlanPayload)
-        messages = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ]
-        payload = llm.invoke(messages)
-        if not isinstance(payload, LlmPlanPayload):
-            payload = LlmPlanPayload.model_validate(payload)
+        payload = generate_structured(
+            schema_model=LlmPlanPayload,
+            system_prompt=system_prompt,
+            user_prompt=user_prompt,
+            intent="plan_action",
+        )
 
         if payload.tasks and _looks_accent_stripped(payload):
             logger.warning("llm_plan_missing_diacritics_retry assignment_id=%s", assignment.id)
-            retry_messages = [dict(m) for m in messages]
-            retry_messages[0] = {
-                "role": "system",
-                "content": retry_messages[0]["content"] + _DIACRITICS_RETRY_NOTE,
-            }
             try:
-                retried = llm.invoke(retry_messages)
-                if not isinstance(retried, LlmPlanPayload):
-                    retried = LlmPlanPayload.model_validate(retried)
+                retried = generate_structured(
+                    schema_model=LlmPlanPayload,
+                    system_prompt=system_prompt + _DIACRITICS_RETRY_NOTE,
+                    user_prompt=user_prompt,
+                    intent="plan_action",
+                )
                 if retried.tasks and not _looks_accent_stripped(retried):
                     payload = retried
             except Exception:
