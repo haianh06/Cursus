@@ -206,16 +206,33 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
         answer = ""
         yield f"event: meta\ndata: {json.dumps({'conversationId': conversation.id, 'intent': intent})}\n\n"
         try:
+            # ai-service sends "event: X" and "data: Y" as separate lines;
+            # httpx.aiter_lines() yields them one at a time, so the event
+            # name for the *next* data line must be tracked across
+            # iterations -- forwarding a bare "data: ..." line with no
+            # preceding "event: ..." (the previous version of this loop)
+            # left every relayed delta un-typed and silently dropped by any
+            # SSE consumer that dispatches on event name.
+            current_event = "message"
             async with httpx.AsyncClient(timeout=60) as client:
                 async with client.stream("POST", f"{settings.ai_service_url.rstrip('/')}/v1/generate/stream", headers={"x-ai-service-key": settings.ai_service_internal_key or ""}, json={"message": payload.message, "intent": intent, "context": sources}) as response:
                     response.raise_for_status()
                     async for line in response.aiter_lines():
-                        if not line.startswith("data: "):
+                        if line.startswith("event:"):
+                            current_event = line.split(":", 1)[1].strip()
                             continue
-                        data = json.loads(line[6:])
-                        if "text" in data:
-                            answer += data["text"]
-                        yield line + "\n\n"
+                        if not line.startswith("data:"):
+                            continue
+                        data_raw = line.split(":", 1)[1].strip()
+                        if current_event == "delta":
+                            data = json.loads(data_raw)
+                            answer += data.get("text", "")
+                            yield f"event: delta\ndata: {data_raw}\n\n"
+                        elif current_event == "error":
+                            yield f"event: error\ndata: {data_raw}\n\n"
+                        # ai-service's own "done" is not forwarded -- this
+                        # relay emits its own "done" below, after citations
+                        # and any action proposal have also been sent.
             if sources:
                 yield f"event: citation\ndata: {json.dumps({'items': [{'id': item['id'], 'chunkId': item['id'], 'title': item['title'], 'document': item['title'], 'section': item['section'], 'isMock': item['isMock']} for item in sources]})}\n\n"
             db.add(models.ChatMessage(id=str(uuid4()), conversation_id=conversation.id, role="assistant", content=answer, metadata_info={"citations": sources, "intent": intent}))
