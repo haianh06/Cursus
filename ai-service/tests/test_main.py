@@ -27,26 +27,22 @@ class _FakeChatCompletion:
         self.choices = [_FakeChoice(content)]
 
 
-class _FakeChatCompletions:
-    def __init__(self, content: str):
-        self._content = content
-
-    async def create(self, **kwargs):
-        return _FakeChatCompletion(self._content)
+class _FakeStreamDelta:
+    def __init__(self, content: str | None):
+        self.content = content
 
 
-class _FakeChat:
-    def __init__(self, content: str):
-        self.completions = _FakeChatCompletions(content)
+class _FakeStreamChoice:
+    def __init__(self, content: str | None):
+        self.delta = _FakeStreamDelta(content)
 
 
-class _FakeStreamEvent:
-    def __init__(self, event_type: str, delta: str = ""):
-        self.type = event_type
-        self.delta = delta
+class _FakeStreamChunk:
+    def __init__(self, content: str | None):
+        self.choices = [_FakeStreamChoice(content)]
 
 
-class _FakeResponseStream:
+class _FakeChatStream:
     def __init__(self, deltas: list[str]):
         self._deltas = deltas
 
@@ -55,22 +51,28 @@ class _FakeResponseStream:
 
     async def _iter(self):
         for chunk in self._deltas:
-            yield _FakeStreamEvent("response.output_text.delta", chunk)
-        yield _FakeStreamEvent("response.completed")
+            yield _FakeStreamChunk(chunk)
 
 
-class _FakeResponses:
-    def __init__(self, deltas: list[str]):
-        self._deltas = deltas
+class _FakeChatCompletions:
+    def __init__(self, content: str, stream_deltas: list[str]):
+        self._content = content
+        self._stream_deltas = stream_deltas
 
     async def create(self, **kwargs):
-        return _FakeResponseStream(self._deltas)
+        if kwargs.get("stream"):
+            return _FakeChatStream(self._stream_deltas)
+        return _FakeChatCompletion(self._content)
+
+
+class _FakeChat:
+    def __init__(self, content: str, stream_deltas: list[str]):
+        self.completions = _FakeChatCompletions(content, stream_deltas)
 
 
 class _FakeOpenAIClient:
     def __init__(self, chat_content: str = "{}", stream_deltas: list[str] | None = None, **kwargs):
-        self.chat = _FakeChat(chat_content)
-        self.responses = _FakeResponses(stream_deltas or [])
+        self.chat = _FakeChat(chat_content, stream_deltas or [])
 
 
 async def test_health_does_not_require_auth(client):
@@ -145,7 +147,7 @@ async def test_generate_stream_emits_error_event_on_provider_failure(client, mon
             pass
 
         @property
-        def responses(self):
+        def chat(self):
             raise RuntimeError("provider unavailable")
 
     monkeypatch.setattr(main_module, "AsyncOpenAI", lambda **kwargs: _BoomClient())

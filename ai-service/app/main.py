@@ -16,6 +16,14 @@ from app.domains.structured.service import generate_structured
 app = FastAPI(title="Cursus AI Service", version="1.0.0")
 
 
+def _openai_client() -> AsyncOpenAI:
+    # OPENAI_API_KEY here may be issued by an OpenAI-compatible gateway
+    # (e.g. a LiteLLM-style proxy) rather than api.openai.com directly --
+    # OPENAI_BASE_URL lets that gateway's URL override the SDK's default.
+    base_url = os.getenv("OPENAI_BASE_URL") or None
+    return AsyncOpenAI(api_key=os.environ["OPENAI_API_KEY"], base_url=base_url)
+
+
 def _error_code_for(exc: Exception) -> str:
     """Distinguishes the handful of failure modes backend/frontend actually
     show a different message for (see cursus_chat.py's SSE relay and
@@ -55,7 +63,7 @@ class GenerateRequest(BaseModel):
 
 def _model_for_route(*, intent: str, source_count: int, message: str) -> str:
     route = select_model(intent=intent, source_count=source_count, message=message)
-    return os.getenv(route.model_env, "gpt-5.6-terra" if route.model_env == "OPENAI_STRONG_MODEL" else "gpt-5.6-luna")
+    return os.getenv(route.model_env, "pro/gpt-5.6-terra" if route.model_env == "OPENAI_STRONG_MODEL" else "pro/gpt-5.6-luna")
 
 
 def _model_for(request: GenerateRequest) -> str:
@@ -79,7 +87,7 @@ async def generate_stream(
     x_ai_service_key: str | None = Header(default=None),
 ) -> StreamingResponse:
     _require_internal_key(x_ai_service_key)
-    client = AsyncOpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    client = _openai_client()
     sources = "\n\n".join(
         f"[SOURCE {item.id}] {item.title} — {item.section}\n{item.text}"
         for item in request.context
@@ -94,12 +102,22 @@ async def generate_stream(
 
     async def events() -> AsyncIterator[str]:
         try:
-            stream = await client.responses.create(
-                model=_model_for(request), instructions=instructions, input=input_text, stream=True
+            # The configured OPENAI_API_KEY may point at an OpenAI-compatible
+            # gateway that only implements the older Chat Completions API,
+            # not the newer Responses API -- chat.completions is also the
+            # lowest-common-denominator surface real OpenAI still supports.
+            stream = await client.chat.completions.create(
+                model=_model_for(request),
+                messages=[
+                    {"role": "system", "content": instructions},
+                    {"role": "user", "content": input_text},
+                ],
+                stream=True,
             )
-            async for event in stream:
-                if event.type == "response.output_text.delta":
-                    yield f"event: delta\ndata: {json.dumps({'text': event.delta})}\n\n"
+            async for chunk in stream:
+                delta = chunk.choices[0].delta.content if chunk.choices else None
+                if delta:
+                    yield f"event: delta\ndata: {json.dumps({'text': delta})}\n\n"
             yield "event: done\ndata: {}\n\n"
         except Exception as exc:
             yield f"event: error\ndata: {json.dumps({'code': _error_code_for(exc)})}\n\n"
@@ -116,7 +134,7 @@ async def structured_generate(
     backend already built system_prompt/user_prompt from its own DB/retrieval
     context and only needs the LLM round-trip + schema-shaped JSON back."""
     _require_internal_key(x_ai_service_key)
-    client = AsyncOpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    client = _openai_client()
     model = _model_for_route(intent=request.intent, source_count=0, message=request.user_prompt)
     try:
         data = await generate_structured(client, model=model, request=request)
