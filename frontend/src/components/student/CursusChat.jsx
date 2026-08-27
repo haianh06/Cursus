@@ -196,7 +196,7 @@ export default function CursusChat({ user }) {
 
   useEffect(() => {
     let cancelled = false;
-    pingBackendHealth({ timeoutMs: 8000 }).then((ok) => {
+    pingBackendHealth().then((ok) => {
       if (!cancelled) setServerReady(ok);
     });
     return () => {
@@ -212,7 +212,7 @@ export default function CursusChat({ user }) {
     if (serverReady !== false) return;
     let cancelled = false;
     const interval = setInterval(async () => {
-      const ok = await pingBackendHealth({ timeoutMs: 10000 });
+      const ok = await pingBackendHealth();
       if (!cancelled && ok) setServerReady(true);
     }, 15000);
     return () => {
@@ -348,7 +348,7 @@ export default function CursusChat({ user }) {
       await sleep(5000);
       elapsed += 5;
       if (elapsed >= nextCheckAt) {
-        if (await pingBackendHealth({ timeoutMs: 10000 })) return true;
+        if (await pingBackendHealth()) return true;
         nextCheckAt += healthCheckEverySeconds;
       }
     }

@@ -387,22 +387,25 @@ export function getSourceChunk(chunkId) {
   return request(`/qa/sources/${encodeURIComponent(chunkId)}`);
 }
 
-/** Cheap probe used only to detect a Render free-tier cold start before
- * paying for a full chat round-trip — /health has no auth/DB dependency, so
- * a slow/failed response here means the container itself is still waking
- * up, not that something is actually broken. Short timeout on purpose: we
- * want to know quickly that it's cold, not wait out the cold start here. */
-export async function pingBackendHealth({ timeoutMs = 8000 } = {}) {
-  const root = API_BASE_URL.replace(/\/api\/v1\/?$/, '');
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
+/** Probe used to detect a Render free-tier cold start before paying for a
+ * full chat round-trip. Deliberately reuses request()/getMe() — the exact
+ * same authenticated pipeline (credentials, CSRF, timeout/abort handling)
+ * every other successful call in this app already goes through — instead
+ * of a bare unauthenticated fetch to the bare `/health` path outside
+ * `/api/v1`. An earlier version did the latter and was found (27/08, via
+ * server-side logs showing every *other* API call succeeding in the same
+ * session while `/health` silently never arrived) to get quietly dropped
+ * in at least one real browser session — most likely an ad-blocker/privacy
+ * extension pattern-matching the literal word "health" in a bare top-level
+ * path as a tracking beacon, since nothing else about that request was
+ * unusual. Reusing a real, already-proven endpoint sidesteps that class of
+ * problem entirely instead of trying to guess and work around it. */
+export async function pingBackendHealth() {
   try {
-    const response = await fetch(`${root}/health`, { signal: controller.signal });
-    return response.ok;
+    await getMe();
+    return true;
   } catch {
     return false;
-  } finally {
-    clearTimeout(timer);
   }
 }
 
