@@ -257,9 +257,13 @@ export default function CursusChat({ user }) {
           if (type === 'delta') setMessages((items) => items.map((item, i) => (i === items.length - 1 ? { ...item, text: item.text + data.text } : item)));
           if (type === 'citation') setMessages((items) => items.map((item, i) => (i === items.length - 1 ? { ...item, citations: data.items } : item)));
           if (type === 'action_proposal') setMessages((items) => items.map((item, i) => (i === items.length - 1 ? { ...item, actionProposal: { ...data, resolved: false } } : item)));
-          if (type === 'error') setMessages((items) => items.map((item, i) => (i === items.length - 1 ? { ...item, text: 'Cursus đang tạm thời không phản hồi. Hãy thử lại sau.' } : item)));
+          if (type === 'error') setMessages((items) => items.map((item, i) => (i === items.length - 1 ? { ...item, text: messageForErrorCode(data.code) } : item)));
         },
       });
+    } catch {
+      // streamCursusChat itself threw -- the backend was never reached at
+      // all (network down, CORS, DNS), so no 'error' SSE event ever fired.
+      setMessages((items) => items.map((item, i) => (i === items.length - 1 ? { ...item, text: messageForErrorCode('NETWORK_ERROR') } : item)));
     } finally {
       setLoading(false);
     }
