@@ -74,7 +74,7 @@ function QuickReplies({ onPick, disabled }) {
  * plus quick-reply chips to get a first message out with one tap. */
 function WelcomeCard({ briefing, onDismissBriefing, onPickReply, disabled }) {
   return (
-    <div className="rounded-2xl border border-border bg-paper p-4 text-sm text-ink shadow-sm">
+    <div className="rounded-2xl border border-line bg-surface-card p-4 text-sm text-fg shadow-sm">
       <p>
         {briefing
           ? briefing.message
@@ -85,12 +85,12 @@ function WelcomeCard({ briefing, onDismissBriefing, onPickReply, disabled }) {
           <button type="button" onClick={() => onDismissBriefing(1)} className="text-accent hover:underline">
             Đã hiểu
           </button>
-          <button type="button" onClick={() => onDismissBriefing(7)} className="text-ink-secondary hover:underline">
+          <button type="button" onClick={() => onDismissBriefing(7)} className="text-fg-secondary hover:underline">
             Nhắc lại sau
           </button>
         </div>
       )}
-      <div className="mt-3 flex flex-wrap gap-2 border-t border-border pt-3">
+      <div className="mt-3 flex flex-wrap gap-2 border-t border-line pt-3">
         <QuickReplies onPick={onPickReply} disabled={disabled} />
       </div>
     </div>
@@ -99,16 +99,16 @@ function WelcomeCard({ briefing, onDismissBriefing, onPickReply, disabled }) {
 
 function ChatHistorySidebar({ conversations, activeId, onSelect, onExport, onDeleteAll, onClose }) {
   return (
-    <div className="absolute inset-0 z-10 flex flex-col bg-paper">
-      <header className="flex items-center justify-between border-b border-border bg-surface px-5 py-4">
-        <h3 className="font-serif text-base text-ink">Lịch sử trò chuyện</h3>
+    <div className="absolute inset-0 z-10 flex flex-col bg-surface-card">
+      <header className="flex items-center justify-between border-b border-line bg-surface px-5 py-4">
+        <h3 className="font-serif text-base text-fg">Lịch sử trò chuyện</h3>
         <button type="button" aria-label="Đóng lịch sử" onClick={onClose}>
           <X size={18} />
         </button>
       </header>
       <div className="flex-1 overflow-y-auto p-3">
         {conversations.length === 0 ? (
-          <p className="p-2 text-sm text-ink-secondary">Chưa có cuộc trò chuyện nào.</p>
+          <p className="p-2 text-sm text-fg-secondary">Chưa có cuộc trò chuyện nào.</p>
         ) : (
           <ul className="space-y-1">
             {conversations.map((item) => (
@@ -116,7 +116,7 @@ function ChatHistorySidebar({ conversations, activeId, onSelect, onExport, onDel
                 <button
                   type="button"
                   onClick={() => onSelect(item.id)}
-                  className={`w-full rounded-md px-3 py-2 text-left text-sm hover:bg-surface ${item.id === activeId ? 'bg-accent-soft text-accent' : 'text-ink'}`}
+                  className={`w-full rounded-md px-3 py-2 text-left text-sm hover:bg-surface ${item.id === activeId ? 'bg-accent-soft text-accent' : 'text-fg'}`}
                 >
                   {new Date(item.updatedAt).toLocaleString('vi')}
                 </button>
@@ -125,8 +125,8 @@ function ChatHistorySidebar({ conversations, activeId, onSelect, onExport, onDel
           </ul>
         )}
       </div>
-      <footer className="flex gap-2 border-t border-border bg-surface p-3">
-        <button type="button" onClick={onExport} className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1.5 text-xs font-semibold text-ink hover:bg-paper">
+      <footer className="flex gap-2 border-t border-line bg-surface p-3">
+        <button type="button" onClick={onExport} className="inline-flex items-center gap-1 rounded-md border border-line px-2 py-1.5 text-xs font-semibold text-fg hover:bg-surface-card">
           <Download size={14} /> Xuất dữ liệu
         </button>
         <button type="button" onClick={onDeleteAll} className="inline-flex items-center gap-1 rounded-md border border-danger/30 px-2 py-1.5 text-xs font-semibold text-danger hover:bg-danger/10">
@@ -146,7 +146,7 @@ function ActionProposalCard({ proposal, onConfirm, onCancel, busy }) {
         ? 'Mở trang phản tư tuần này?'
         : 'Xác nhận hành động này?';
   return (
-    <div className="mt-2 rounded-lg border border-accent/30 bg-accent-soft p-3 text-sm text-ink">
+    <div className="mt-2 rounded-lg border border-accent/30 bg-accent-soft p-3 text-sm text-fg">
       <p className="font-semibold">{label}</p>
       <div className="mt-2 flex gap-2">
         <button
@@ -161,7 +161,7 @@ function ActionProposalCard({ proposal, onConfirm, onCancel, busy }) {
           type="button"
           disabled={busy}
           onClick={onCancel}
-          className="inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-1.5 text-xs font-semibold text-ink-secondary disabled:opacity-50"
+          className="inline-flex items-center gap-1 rounded-md border border-line px-2.5 py-1.5 text-xs font-semibold text-fg-secondary disabled:opacity-50"
         >
           <XCircle size={13} /> Huỷ
         </button>
@@ -329,7 +329,7 @@ export default function CursusChat({ user }) {
       {open && (
         <aside
           aria-label="Cursus chat"
-          className="fixed bottom-5 right-5 z-[100] flex h-[min(640px,80vh)] w-[calc(100vw-2.5rem)] max-w-[400px] flex-col overflow-hidden rounded-2xl border border-border bg-paper shadow-2xl"
+          className="fixed bottom-5 right-5 z-[100] flex h-[min(640px,80vh)] w-[calc(100vw-2.5rem)] max-w-[400px] flex-col overflow-hidden rounded-2xl border border-line bg-surface-card shadow-2xl"
         >
           <header style={{ background: HEADER_GRADIENT }} className="flex items-center justify-between px-5 py-4 text-white">
             <div className="flex items-center gap-3">
@@ -362,13 +362,13 @@ export default function CursusChat({ user }) {
                 key={index}
                 className={
                   item.role === 'user'
-                    ? 'ml-8 rounded-2xl rounded-br-sm bg-accent-soft p-3 text-sm text-ink'
-                    : 'mr-4 rounded-2xl rounded-bl-sm border border-border bg-paper p-3 text-sm text-ink shadow-sm'
+                    ? 'ml-8 rounded-2xl rounded-br-sm bg-accent-soft p-3 text-sm text-fg'
+                    : 'mr-4 rounded-2xl rounded-bl-sm border border-line bg-surface-card p-3 text-sm text-fg shadow-sm'
                 }
               >
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{item.text || 'Đang soạn câu trả lời…'}</ReactMarkdown>
                 {item.citations?.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-2 border-t border-border pt-2">
+                  <div className="mt-2 flex flex-wrap gap-2 border-t border-line pt-2">
                     {item.citations.map((citation) => (
                       <CitationChip key={citation.id} citation={citation} onOpen={setOpenCitation} lang="vi" />
                     ))}
@@ -385,8 +385,8 @@ export default function CursusChat({ user }) {
               </article>
             ))}
           </main>
-          <form onSubmit={send} className="border-t border-border bg-paper p-3">
-            <div className="flex items-end gap-2 rounded-full border border-border bg-surface px-4 py-2 focus-within:ring-2 focus-within:ring-accent">
+          <form onSubmit={send} className="border-t border-line bg-surface-card p-3">
+            <div className="flex items-end gap-2 rounded-full border border-line bg-surface px-4 py-2 focus-within:ring-2 focus-within:ring-accent">
               <textarea
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
@@ -398,7 +398,7 @@ export default function CursusChat({ user }) {
                 }}
                 placeholder="Hỏi Cursus…"
                 rows={1}
-                className="max-h-24 min-h-[24px] flex-1 resize-none border-0 bg-transparent py-1 text-sm text-ink placeholder:text-ink-secondary focus:outline-none focus:ring-0"
+                className="max-h-24 min-h-[24px] flex-1 resize-none border-0 bg-transparent py-1 text-sm text-fg placeholder:text-fg-secondary focus:outline-none focus:ring-0"
               />
               <button
                 type="submit"
@@ -410,7 +410,7 @@ export default function CursusChat({ user }) {
                 <Send size={14} />
               </button>
             </div>
-            <p className="mt-1.5 text-center text-[11px] text-ink-secondary">
+            <p className="mt-1.5 text-center text-[11px] text-fg-secondary">
               Cursus có thể nhầm; hãy kiểm tra lại thông tin quan trọng.
             </p>
           </form>
