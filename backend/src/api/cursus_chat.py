@@ -3,6 +3,7 @@ src.services.core.ai_engine (folded in from the formerly-standalone
 ai-service so a single Render deploy only needs one service)."""
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 from datetime import datetime, timedelta
@@ -295,7 +296,17 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
         )
 
     try:
-        sources = _context(db, current_user.id, payload.message)
+        # _context() calls Gemini embeddings synchronously (once per
+        # enrolled course) with no timeout of its own -- on a rate-limited
+        # key it can block for tens of seconds retrying before giving up.
+        # This handler is `async def` (it streams), so with Render's
+        # single worker (WEB_CONCURRENCY=1) a blocking call here freezes
+        # the *entire* process for every other request too, /health
+        # included -- looked exactly like a cold start from the outside
+        # (27/08 incident) when the server was actually just stuck on one
+        # slow embedding retry. asyncio.to_thread moves it off the event
+        # loop so the rest of the app keeps responding while it waits.
+        sources = await asyncio.to_thread(_context, db, current_user.id, payload.message)
     except Exception:
         logger.exception("cursus_chat_retrieval_error student_id=%s", current_user.id)
         return _error_stream(code="DB_ERROR", message="Không thể truy xuất tài liệu môn học, vui lòng thử lại sau.")
@@ -329,7 +340,10 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
             conversation.updated_at = datetime.utcnow(); conversation.expires_at = datetime.utcnow() + _TTL; db.commit()
 
             if intent in ("plan_action", "reflection_navigation"):
-                proposed = _propose_action(db, student_id=current_user.id, intent=intent, message=payload.message)
+                # Same blocking-call-inside-async-generator hazard as
+                # _context() above -- generate_structured() is a sync
+                # OpenAI call, offload it too.
+                proposed = await asyncio.to_thread(_propose_action, db, student_id=current_user.id, intent=intent, message=payload.message)
                 if proposed is not None:
                     action_type, action_payload = proposed
                     proposal = models.ChatActionProposal(
