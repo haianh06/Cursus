@@ -101,16 +101,34 @@ def _context(db: Session, student_id: str, question: str) -> list[dict[str, str]
     for code in codes:
         hits.extend(RetrievalService(repo, top_k=3).retrieve(subject_code=code, question=question, student_id=student_id))
     hits.sort(key=lambda hit: hit.score, reverse=True)
-    return [
-        {
-            "id": hit.chunk.chunk_id,
-            "title": hit.chunk.doc_title,
-            "section": hit.chunk.section or "",
-            "text": hit.chunk.text[:4000],
-            "isMock": bool(getattr(hit.chunk, "content_source", None) == "mock"),
-        }
-        for hit in hits[:5]
-    ]
+
+    sources: list[dict[str, str]] = []
+    for hit in hits:
+        # LLM08 defense-in-depth (see document_content_validator.py's own
+        # docstring): that scan already runs at ingest/upload time and flags
+        # (never blocks) a document for admin review, but a flagged document
+        # can still be sitting in the index -- this is the second, retrieval
+        # -time gate that actually keeps a matched chunk's text out of what
+        # gets sent to ai-service, rather than only warning a human later.
+        flags = scan_for_suspicious_patterns(hit.chunk.text)
+        if flags:
+            logger.warning(
+                "cursus_chat_suspicious_chunk_excluded chunk_id=%s patterns=%s",
+                hit.chunk.chunk_id, [f["pattern"] for f in flags],
+            )
+            continue
+        sources.append(
+            {
+                "id": hit.chunk.chunk_id,
+                "title": hit.chunk.doc_title,
+                "section": hit.chunk.section or "",
+                "text": hit.chunk.text[:4000],
+                "isMock": bool(getattr(hit.chunk, "content_source", None) == "mock"),
+            }
+        )
+        if len(sources) >= 5:
+            break
+    return sources
 
 
 def _intent(question: str, sources: list[dict[str, str]]) -> str:
@@ -136,6 +154,44 @@ async def _audit_chat_decision(db: Session, *, event_type: str, decision: str, s
         )
     except Exception:
         logger.exception("cursus_chat_audit_failed event_type=%s", event_type)
+
+
+async def _escalate_crisis(db: Session, *, student: models.User, conversation_id: str, message: str, settings: Settings) -> None:
+    """Persist a CrisisEscalation row (Admin/CTSV-only queue) and send an
+    immediate email best-effort. Must never raise into the caller — a
+    failure here (e.g. no SMTP configured) must not affect the supportive
+    in-chat answer the student already received."""
+    try:
+        escalation = models.CrisisEscalation(
+            id=str(uuid4()), student_id=student.id, conversation_id=conversation_id,
+            message_excerpt=message[:2000], status="OPEN", created_at=datetime.utcnow(),
+        )
+        db.add(escalation)
+        db.commit()
+    except Exception:
+        logger.exception("crisis_escalation_persist_failed student_id=%s", student.id)
+        db.rollback()
+        return
+
+    to_email = settings.crisis_escalation_email or settings.ops_alert_email
+    if not to_email:
+        logger.warning("crisis_escalation_no_email_configured student_id=%s escalation_id=%s", student.id, escalation.id)
+        return
+    try:
+        notification_service = NotificationService(settings, build_email_service(settings))
+        await notification_service.send_ops_alert(
+            to_email,
+            subject="[Cursus] Cảnh báo an toàn sinh viên — cần xử lý ngay",
+            body_text=(
+                f"Sinh viên: {student.full_name} ({student.email})\n"
+                f"Thời điểm: {escalation.created_at.isoformat()}\n"
+                f"Trích đoạn tin nhắn: {escalation.message_excerpt}\n\n"
+                "Vui lòng liên hệ sinh viên hoặc phối hợp phòng Công tác Sinh viên "
+                "sớm nhất có thể. Xem chi tiết trong Admin Console > Crisis Escalations."
+            ),
+        )
+    except Exception:
+        logger.exception("crisis_escalation_email_failed student_id=%s escalation_id=%s", student.id, escalation.id)
 
 
 class _TaskActionExtraction(BaseModel):
