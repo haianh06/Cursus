@@ -1,0 +1,39 @@
+# Core
+fastapi>=0.115.0
+uvicorn[standard]>=0.34.0
+pydantic>=2.10.0
+pydantic-settings>=2.7.0
+python-dotenv>=1.0.0
+python-multipart>=0.0.9
+argon2-cffi>=25.1.0
+pyjwt>=2.9.0
+cryptography>=49.0.0
+redis>=8.0.1
+
+# AI / LangChain
+langchain>=0.3.0
+langchain-google-genai>=2.0.0
+langgraph>=0.2.0
+
+# Database
+sqlalchemy>=2.0.0
+alembic>=1.14.0
+psycopg2-binary>=2.9.0
+
+# zoneinfo (src/academic/slots.py campus_now(): Asia/Ho_Chi_Minh) has no IANA
+# tz database to draw on unless the OS provides one -- Linux/macOS usually do,
+# Windows never does, so every campus_now() call raises ZoneInfoNotFoundError
+# on a fresh Windows checkout until this is installed.
+tzdata>=2024.1
+
+# Document ingestion (docs/planning/v2/scripts/flm_parser.py: docx syllabus -> RAG chunks)
+python-docx>=1.1.0
+
+# Dev tools
+ruff>=0.8.0
+pytest>=8.0.0
+pytest-asyncio>=0.24.0
+httpx>=0.28.0
+
+# Load testing (not needed for the app itself — see loadtest/README.md)
+locust>=2.46.0
