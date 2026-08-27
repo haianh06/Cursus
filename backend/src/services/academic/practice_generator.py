@@ -6,8 +6,8 @@ against THIS branch's DB-backed `ChunkRepository`/`RetrievalService`
 `src.services.rag` module — that module has no course/org concept and isn't
 wired to the tenant-scoped chunk store this branch actually uses.
 
-Follows `qa_answer_service.py`'s LLM-call convention: `get_llm()
-.with_structured_output(...)`, a broad try/except around the provider call,
+Follows the shared `ai_service_client.generate_structured()` convention
+(LLM call delegated to ai-service), a broad try/except around the call,
 and a deterministic fallback (never a hard failure) when no real key is
 configured or the call/parse fails.
 """
