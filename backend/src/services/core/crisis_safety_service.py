@@ -31,33 +31,41 @@ from dataclasses import dataclass
 
 from src.services.rag.query_normalization import fold_accents
 
-# Written once in (mostly) accented Vietnamese; matched against BOTH the raw
-# message and its accent-folded form (see `evaluate()`), so a single pattern
-# catches "tự tử" and "tu tu"/"tư tử" typing variants without hand-duplicating
-# every accent-stripped spelling. Organized by theme for maintainability —
-# add new phrasing here as real (redacted) examples surface, don't rely on
-# this list being exhaustive.
+# Written once in (mostly) accented Vietnamese, compiled twice: once as-is
+# and once with `fold_accents()` applied to the pattern source (regex
+# metacharacters like \b/(/)/| have no diacritics, so folding them is a
+# no-op) -- `evaluate()` then matches the folded set against the folded
+# message, so a single source pattern catches both "tự tử" and the
+# accent-stripped "tu tu" a student types without hand-duplicating every
+# spelling. (`đ` does not decompose under Unicode NFD, so fold_accents
+# leaves it as-is -- a known, pre-existing limitation shared with every
+# other fold_accents() consumer in this codebase, e.g. guardrail_rules.py.)
+# Organized by theme for maintainability — add new phrasing here as real
+# (redacted) examples surface, don't rely on this list being exhaustive.
+_VI_PATTERN_SOURCES: tuple[str, ...] = (
+    # Direct suicide/self-harm intent or method
+    r"\btự tử\b", r"\btự sát\b", r"\btự vẫn\b",
+    r"\btự làm hại( bản thân)?\b", r"\btự hại( bản thân)?\b",
+    r"\bcắt (tay|cổ tay)\b", r"\brạch tay\b",
+    r"\buống thuốc (quá liều|cho chết)\b", r"\bnhảy lầu\b", r"\btreo cổ\b",
+    # Hopelessness / wish to die or disappear
+    r"\bmuốn chết\b", r"\bkhông muốn sống\b", r"\bchán sống\b",
+    r"\bmuốn biến mất( mãi mãi)?\b", r"\bmuốn kết thúc (tất cả|cuộc đời|mọi thứ)\b",
+    r"\bmuốn giải thoát\b", r"\bkhông còn (lý do|ý nghĩa) (gì )?để sống\b",
+    r"\bsống (không|chẳng) có ý nghĩa( gì)?\b", r"\bthà chết còn hơn\b",
+    # Burden / worthlessness framing common in real crisis language
+    r"\bkhông ai (cần|quan tâm|yêu thương)\b.{0,20}\b(tôi|em|mình)\b",
+    r"\b(tôi|em|mình) là (gánh nặng|vô dụng|thừa thãi)\b",
+    r"\bmọi người sẽ (tốt hơn|nhẹ nhõm hơn) nếu (không có|thiếu) (tôi|em|mình)\b",
+    # Explicit plan/goodbye language
+    r"\bđây là lời (tạm biệt|chào tạm biệt) cuối cùng\b",
+    r"\bkhông cần (lo|quan tâm) cho (tôi|em|mình) nữa\b",
+)
 _VI_PATTERNS: tuple[re.Pattern[str], ...] = tuple(
-    re.compile(pattern, re.IGNORECASE)
-    for pattern in (
-        # Direct suicide/self-harm intent or method
-        r"\btự tử\b", r"\btự sát\b", r"\btự vẫn\b",
-        r"\btự làm hại( bản thân)?\b", r"\btự hại( bản thân)?\b",
-        r"\bcắt (tay|cổ tay)\b", r"\brạch tay\b",
-        r"\buống thuốc (quá liều|cho chết)\b", r"\bnhảy lầu\b", r"\btreo cổ\b",
-        # Hopelessness / wish to die or disappear
-        r"\bmuốn chết\b", r"\bkhông muốn sống\b", r"\bchán sống\b",
-        r"\bmuốn biến mất( mãi mãi)?\b", r"\bmuốn kết thúc (tất cả|cuộc đời|mọi thứ)\b",
-        r"\bmuốn giải thoát\b", r"\bkhông còn (lý do|ý nghĩa) (gì )?để sống\b",
-        r"\bsống (không|chẳng) có ý nghĩa( gì)?\b", r"\bthà chết còn hơn\b",
-        # Burden / worthlessness framing common in real crisis language
-        r"\bkhông ai (cần|quan tâm|yêu thương)\b.{0,20}\b(tôi|em|mình)\b",
-        r"\b(tôi|em|mình) là (gánh nặng|vô dụng|thừa thãi)\b",
-        r"\bmọi người sẽ (tốt hơn|nhẹ nhõm hơn) nếu (không có|thiếu) (tôi|em|mình)\b",
-        # Explicit plan/goodbye language
-        r"\bđây là lời (tạm biệt|chào tạm biệt) cuối cùng\b",
-        r"\bkhông cần (lo|quan tâm) cho (tôi|em|mình) nữa\b",
-    )
+    re.compile(pattern, re.IGNORECASE) for pattern in _VI_PATTERN_SOURCES
+)
+_VI_PATTERNS_FOLDED: tuple[re.Pattern[str], ...] = tuple(
+    re.compile(fold_accents(pattern), re.IGNORECASE) for pattern in _VI_PATTERN_SOURCES
 )
 
 _EN_PATTERNS: tuple[re.Pattern[str], ...] = tuple(
