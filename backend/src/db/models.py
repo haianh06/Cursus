@@ -671,6 +671,30 @@ class ReminderDelivery(Base):
     delivered_at: Mapped[datetime] = mapped_column(DateTime)
     action_taken_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
+class ChatConversation(Base):
+    __tablename__ = "chat_conversations"
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    student_id: Mapped[str] = mapped_column(String, ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    expires_at: Mapped[datetime] = mapped_column(DateTime, index=True)
+
+class ChatMessage(Base):
+    __tablename__ = "chat_messages"
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    conversation_id: Mapped[str] = mapped_column(String, ForeignKey("chat_conversations.id", ondelete="CASCADE"), index=True)
+    role: Mapped[str] = mapped_column(String)
+    content: Mapped[str] = mapped_column(Text)
+    metadata_info: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+class ChatBriefingImpression(Base):
+    __tablename__ = "chat_briefing_impressions"
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    student_id: Mapped[str] = mapped_column(String, ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    briefing_key: Mapped[str] = mapped_column(String)
+    shown_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
 class ResourceAccessEvent(Base):
     __tablename__ = "resource_access_events"
     id: Mapped[str] = mapped_column(String, primary_key=True)

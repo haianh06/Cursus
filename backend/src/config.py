@@ -46,6 +46,10 @@ class Settings(BaseSettings):
     # than expanding scope mid-eval.
     model_fallbacks: str = "gemini-1.5-flash,gemini-2.0-flash-lite"
     llm_temperature: float = Field(default=0.7, ge=0.0, le=2.0)
+    # Cursus AI is a separate private service. Browser clients never receive
+    # these values; the backend uses them only for server-to-server calls.
+    ai_service_url: str = "http://127.0.0.1:8100"
+    ai_service_internal_key: str | None = None
 
     # Web search (used to augment retrieval when local context is insufficient)
     web_search_enabled: bool = True
