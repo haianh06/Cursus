@@ -185,6 +185,41 @@ export default function CursusChat({ user }) {
   const [confirmDeleteAll, setConfirmDeleteAll] = useState(false);
   const [actioningId, setActioningId] = useState(null);
   const briefingCheckedRef = useRef(false);
+  /** null = not checked yet, true/false = last known result. Pinged once as
+   * soon as this component mounts (i.e. as soon as the student's page
+   * loads) rather than waiting for them to open the panel and send a
+   * message — a cold Render instance then has the whole time the student
+   * spends reading the page / typing their first message to wake up, so
+   * the warm-up wait is very often already over by the time they hit send
+   * instead of starting fresh at that point. */
+  const [serverReady, setServerReady] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    pingBackendHealth({ timeoutMs: 8000 }).then((ok) => {
+      if (!cancelled) setServerReady(ok);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  /** Once we know the server is cold, keep checking quietly in the
+   * background (no UI change beyond the header dot) so it flips back to
+   * "ready" on its own the moment the instance finishes booting, instead
+   * of only ever re-checking when the student happens to send a message. */
+  useEffect(() => {
+    if (serverReady !== false) return;
+    let cancelled = false;
+    const interval = setInterval(async () => {
+      const ok = await pingBackendHealth({ timeoutMs: 10000 });
+      if (!cancelled && ok) setServerReady(true);
+    }, 15000);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [serverReady]);
 
   useEffect(() => {
     if (!open || briefingCheckedRef.current) return;
@@ -293,23 +328,29 @@ export default function CursusChat({ user }) {
 
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  /** Render free tier doesn't tell us "cold-start finishes in X seconds" —
-   * these are optimistic estimates, not a real ETA, so we re-check /health
-   * at the end of every round instead of trusting the countdown blindly.
-   * Budget is generous (~3 min total) on purpose: docker_entrypoint.py's own
-   * DB-ready wait loop alone can take up to ~120s (60 attempts x 2s) before
-   * the app even starts responding, on top of the container itself waking
-   * up -- a ~70s budget measured too optimistic in practice and gave up
-   * while the instance was still genuinely booting, not actually stuck. */
+  /** Render free tier doesn't tell us "cold-start finishes in X seconds",
+   * so this counts up elapsed wait instead of counting down to a made-up
+   * ETA — an honest "đã chờ Xs" beats a countdown that's often wrong.
+   * Updates the message every 5s (not every 1s, like an earlier version
+   * did) so it doesn't read as a ticking countdown timer; only actually
+   * pings /health every ~20s so we're not hammering a booting instance
+   * with health checks it can't answer yet anyway. Budget is generous
+   * (~3 min) on purpose: docker_entrypoint.py's own DB-ready wait loop
+   * alone can take up to ~120s before the app starts responding at all,
+   * on top of the container itself waking up. */
   const waitForWarmup = async () => {
-    const roundsSeconds = [45, 30, 30, 30, 30];
-    for (const roundSeconds of roundsSeconds) {
-      for (let s = roundSeconds; s > 0; s -= 1) {
-        updateLastMessageText(`🔄 Máy chủ đang khởi động sau thời gian không hoạt động, dự kiến sẵn sàng trong ~${s}s...`);
-        await sleep(1000);
+    const maxSeconds = 150;
+    const healthCheckEverySeconds = 20;
+    let elapsed = 0;
+    let nextCheckAt = healthCheckEverySeconds;
+    while (elapsed < maxSeconds) {
+      updateLastMessageText(`🔄 Máy chủ đang khởi động sau thời gian không hoạt động — đã chờ ${elapsed}s, mình sẽ tự gửi tin nhắn ngay khi xong...`);
+      await sleep(5000);
+      elapsed += 5;
+      if (elapsed >= nextCheckAt) {
+        if (await pingBackendHealth({ timeoutMs: 10000 })) return true;
+        nextCheckAt += healthCheckEverySeconds;
       }
-      updateLastMessageText('🔄 Đang kiểm tra lại...');
-      if (await pingBackendHealth({ timeoutMs: 10000 })) return true;
     }
     return false;
   };
@@ -321,7 +362,10 @@ export default function CursusChat({ user }) {
     setMessages((items) => [...items, { role: 'user', text }, { role: 'assistant', text: '', citations: [] }]);
     setLoading(true);
     try {
-      if (!(await pingBackendHealth())) {
+      // Skip the extra round-trip when the background ping from mount (or
+      // an earlier message) already confirmed the server is warm.
+      const alreadyKnownReady = serverReady === true;
+      if (!alreadyKnownReady && !(await pingBackendHealth())) {
         const ready = await waitForWarmup();
         if (!ready) {
           updateLastMessageText('Máy chủ vẫn chưa sẵn sàng sau vài lần thử. Vui lòng gửi lại tin nhắn sau ít phút.');
@@ -329,6 +373,7 @@ export default function CursusChat({ user }) {
         }
         updateLastMessageText('');
       }
+      setServerReady(true);
       await streamCursusChat({
         message: text,
         conversationId,
@@ -370,13 +415,20 @@ export default function CursusChat({ user }) {
             <div className="flex items-center gap-3">
               <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/20">
                 <CursusMascot size={36} state={loading ? 'thinking' : 'idle'} />
-                <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white bg-emerald-400" />
+                <span
+                  className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white ${
+                    serverReady === false ? 'bg-amber-400 animate-pulse' : 'bg-emerald-400'
+                  }`}
+                  title={serverReady === false ? 'Đang khởi động máy chủ...' : undefined}
+                />
               </div>
               <div>
                 <h2 className="flex items-center gap-1.5 font-serif text-base font-semibold leading-tight">
                   Cursus <Sparkles size={14} className="text-white/80" />
                 </h2>
-                <p className="text-xs text-white/80">Trợ lý học tập có nguồn</p>
+                <p className="text-xs text-white/80">
+                  {serverReady === false ? 'Đang khởi động máy chủ...' : 'Trợ lý học tập có nguồn'}
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-3">
