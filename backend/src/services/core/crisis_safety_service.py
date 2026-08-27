@@ -113,7 +113,7 @@ def evaluate(message: str) -> CrisisDecision:
     folded = fold_accents(text)
     if any(pattern.search(text) for pattern in _VI_PATTERNS):
         return CrisisDecision(triggered=True, answer=_ANSWER_VI)
-    if any(pattern.search(folded) for pattern in _VI_PATTERNS):
+    if any(pattern.search(folded) for pattern in _VI_PATTERNS_FOLDED):
         return CrisisDecision(triggered=True, answer=_ANSWER_VI)
     if any(pattern.search(text) for pattern in _EN_PATTERNS):
         return CrisisDecision(triggered=True, answer=_ANSWER_VI)
