@@ -39,7 +39,12 @@ SOURCE_TAG = "clean_corpus"
 
 
 def subject_code(path: Path) -> str:
-    for part in path.parts:
+    """Course code from a `<N>.<CODE>` directory segment (e.g. `1.CEA201`).
+    Scans directory parts only (`path.parts[:-1]`) -- the filename itself
+    almost always contains a dot too (its extension, or an embedded one like
+    "ASP.NET"), and scanning it produced false-positive "codes" like "pptx"
+    or "docx" whenever the part before the LAST dot happened to be alnum."""
+    for part in path.parts[:-1]:
         if "." in part and part.split(".", 1)[-1].upper().isalnum():
             return part.split(".", 1)[-1]
     return path.parent.name
