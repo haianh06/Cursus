@@ -63,18 +63,21 @@ def generate_questions(
     return _fallback_questions(chunks, count)
 
 
+class _QuizPayload(BaseModel):
+    questions: list[dict[str, Any]] = []
+
+
 def _from_llm(chunks: list[tuple[Any, Any]], count: int) -> list[dict[str, Any]]:
     excerpts = "\n\n".join(
         f"[Nguồn: {doc.title}]\n{chunk.text}" for chunk, doc in chunks[:CHUNK_WINDOW]
     )
-    response = get_llm().invoke(
-        [
-            ("system", SYSTEM_PROMPT.format(count=count)),
-            ("human", f"TÀI LIỆU BÀI GIẢNG:\n{excerpts}"),
-        ]
+    result = generate_structured(
+        schema_model=_QuizPayload,
+        system_prompt=SYSTEM_PROMPT.format(count=count),
+        user_prompt=f"TÀI LIỆU BÀI GIẢNG:\n{excerpts}",
+        intent="quiz_generation",
     )
-    payload = _parse_json_object(str(response.content))
-    questions = _normalize_payload(payload, count)
+    questions = _normalize_payload(result.model_dump(), count)
     if len(questions) < 1:
         raise ValueError("LLM returned no usable questions")
     return questions
@@ -189,18 +192,3 @@ def _clip(text: str, limit: int) -> str:
     return cleaned[: limit - 1].rstrip() + "…"
 
 
-def _parse_json_object(content: str) -> dict[str, Any]:
-    match = re.search(r"\{.*\}", content, re.DOTALL)
-    if not match:
-        raise ValueError("No JSON found in LLM output")
-    parsed = json.loads(match.group(0))
-    if not isinstance(parsed, dict):
-        raise ValueError("LLM JSON is not an object")
-    return parsed
-
-
-def _has_real_google_key(settings: Settings) -> bool:
-    key = (settings.google_api_key or "").strip()
-    if not key or key.startswith("your-"):
-        return False
-    return key not in {"test-key", "changeme", "sk-test"}
