@@ -1,6 +1,7 @@
 import logging
 from contextlib import asynccontextmanager
 
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -37,6 +38,7 @@ from src.api.semester import router as semester_router
 from src.api.student import router as student_router
 from src.api.student_quizzes import router as student_quizzes_router
 from src.config import get_settings
+from src.db.connection import SessionLocal
 from src.security.exception_handlers import register_exception_handlers
 from src.security.logging import configure_logging
 from src.security.middleware import (
@@ -45,14 +47,35 @@ from src.security.middleware import (
     RequestContextMiddleware,
     SecurityHeadersMiddleware,
 )
+from src.services.core.retention_service import run_retention
 
 logger = logging.getLogger(__name__)
+
+
+def _run_retention_job() -> None:
+    db = SessionLocal()
+    try:
+        result = run_retention(db)
+        logger.info("retention_job_completed %s", result)
+    except Exception:
+        logger.exception("retention_job_failed")
+        db.rollback()
+    finally:
+        db.close()
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("application_starting")
+    # Cursus Chat's ChatConversation/ChatActionProposal/ChatBriefingImpression
+    # rows are only swept lazily on request today (cursus_chat.py::_cleanup);
+    # a student who never comes back would otherwise leave rows forever.
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(_run_retention_job, "interval", hours=1, id="cursus_chat_retention", next_run_time=None)
+    scheduler.start()
+    app.state.scheduler = scheduler
     yield
+    scheduler.shutdown(wait=False)
     logger.info("application_stopping")
 
 
