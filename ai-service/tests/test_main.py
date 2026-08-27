@@ -158,3 +158,26 @@ async def test_generate_stream_emits_error_event_on_provider_failure(client, mon
             body += chunk
 
     assert "event: error" in body.decode("utf-8")
+
+
+def _fake_rate_limit_error(code: str | None) -> openai.RateLimitError:
+    import httpx2
+
+    request = httpx2.Request("POST", "https://api.openai.com/v1/responses")
+    response = httpx2.Response(status_code=429, request=request)
+    body = {"error": {"code": code}} if code else None
+    return openai.RateLimitError("rate limited", response=response, body=body)
+
+
+def test_error_code_for_classifies_insufficient_quota_as_quota_exhausted():
+    exc = _fake_rate_limit_error("insufficient_quota")
+    assert main_module._error_code_for(exc) == "QUOTA_EXHAUSTED"
+
+
+def test_error_code_for_classifies_plain_rate_limit_as_rate_limited():
+    exc = _fake_rate_limit_error("rate_limit_exceeded")
+    assert main_module._error_code_for(exc) == "RATE_LIMITED"
+
+
+def test_error_code_for_classifies_unknown_exception_as_ai_unavailable():
+    assert main_module._error_code_for(RuntimeError("boom")) == "AI_UNAVAILABLE"
