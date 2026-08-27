@@ -17,6 +17,7 @@ from src.api.admin_settings import router as admin_settings_router
 from src.api.admin_student360 import router as admin_student360_router
 from src.api.audit import router as audit_router
 from src.api.auth import router as auth_router
+from src.api.cursus_chat import router as cursus_chat_router
 
 # canvas_router import intentionally disabled — see include_router call below
 # for why (PROJECT_CONTEXT.md mục 6.6/9).
@@ -83,6 +84,7 @@ app.include_router(router, prefix="/api/v1")
 app.include_router(audit_router, prefix="/api/v1")
 app.include_router(auth_router, prefix="/api/v1")
 app.include_router(student_router, prefix="/api/v1")
+app.include_router(cursus_chat_router, prefix="/api/v1")
 app.include_router(plans_router, prefix="/api/v1")
 app.include_router(qa_router, prefix="/api/v1")
 app.include_router(instructor_router, prefix="/api/v1")
