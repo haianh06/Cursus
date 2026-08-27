@@ -6,10 +6,11 @@ from __future__ import annotations
 
 import glob
 import json
+from pathlib import Path
 
 from src.services.rag.document_content_validator import scan_for_suspicious_patterns
 
-CHUNKS_DIR = "docs/planning/v2/data"
+CHUNKS_DIR = Path(__file__).resolve().parents[3] / "docs" / "planning" / "v2" / "data"
 
 
 def test_clean_text_is_not_flagged():
