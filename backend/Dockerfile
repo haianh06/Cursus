@@ -15,10 +15,14 @@ FROM python:3.11-slim AS runtime
 WORKDIR /app
 
 # LibreOffice headless: converts legacy .ppt -> .pptx for the clean-corpus
-# ingest pipeline (backend/scripts/ingest_clean_corpus.py). --no-install-recommends
-# keeps this from pulling in the full desktop suite (fonts/help/etc still add
-# real size to the image, but that's accepted for ingest to work in-container).
-RUN apt-get update && apt-get install -y --no-install-recommends libreoffice \
+# ingest pipeline (backend/scripts/ingest_clean_corpus.py). `libreoffice-impress`
+# (not the full `libreoffice` metapackage) + --no-install-recommends is enough
+# for headless --convert-to and installs far faster/smaller. DEBIAN_FRONTEND
+# must be noninteractive -- one of its transitive deps (tzdata) otherwise
+# blocks on a debconf prompt that never comes in a non-interactive build,
+# hanging forever instead of failing.
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y --no-install-recommends libreoffice-impress \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy installed packages from builder
