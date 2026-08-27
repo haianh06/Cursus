@@ -30,7 +30,8 @@ from src.services.academic.timetable_service import monday_of
 from src.services.ai.plan_builder import _DIACRITICS_RETRY_NOTE, _looks_accent_stripped
 from src.services.ai.reflection_suggestion import build_next_week_suggestion
 from src.services.core import provenance as prov
-from src.services.core.llm import get_llm, has_configured_llm
+from src.services.core.ai_service_client import generate_structured
+from src.services.core.llm import has_configured_llm
 from src.services.rag.retrieval_service import RetrievalService
 
 logger = logging.getLogger(__name__)

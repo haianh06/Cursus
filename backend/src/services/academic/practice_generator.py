@@ -23,7 +23,8 @@ from sqlalchemy.orm import Session
 
 from src.repositories.chunk_repository import ChunkRecord, ChunkRepository
 from src.services.academic.academic_calendar import clamp_study_week, slide_key_for_week, slot_number
-from src.services.core.llm import get_llm, has_configured_llm
+from src.services.core.ai_service_client import generate_structured
+from src.services.core.llm import has_configured_llm
 from src.services.rag.retrieval_service import RetrievalService
 
 logger = logging.getLogger(__name__)
@@ -132,15 +133,12 @@ def _chunks_for_week(
 def _from_llm(chunks: list[ChunkRecord], language: str) -> list[dict[str, Any]]:
     excerpts = "\n\n".join(f"[Nguon: {chunk.source_label}]\n{chunk.text}" for chunk in chunks[:12])
     lang_line = "Viet tieng Viet." if language.lower().startswith("vi") else "Write in English."
-    llm = get_llm().with_structured_output(_PracticePackPayload)
-    payload = llm.invoke(
-        [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": f"{lang_line}\n\nTAI LIEU:\n{excerpts}"},
-        ]
+    payload = generate_structured(
+        schema_model=_PracticePackPayload,
+        system_prompt=SYSTEM_PROMPT,
+        user_prompt=f"{lang_line}\n\nTAI LIEU:\n{excerpts}",
+        intent="practice",
     )
-    if not isinstance(payload, _PracticePackPayload):
-        payload = _PracticePackPayload.model_validate(payload)
 
     allowed = {chunk.source_label for chunk in chunks if chunk.source_label}
     default_label = chunks[0].source_label or ""
