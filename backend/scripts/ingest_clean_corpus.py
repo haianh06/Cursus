@@ -111,13 +111,17 @@ def write_db(*, rel_path: str, checksum: str, subject: str, title: str, sections
     `ingest_subject_data.py::write_db`'s convention."""
     from src.db import models
     from src.db.connection import SessionLocal
+    from src.services.mock.real_curriculum_service import _sandbox_organization_id
 
     document_id = _slugify_document_id(rel_path)
     db = SessionLocal()
     try:
         course = db.query(models.Course).filter_by(code=subject).first()
         if course is None:
-            course = models.Course(id=subject, code=subject, name=subject, description=subject)
+            course = models.Course(
+                id=subject, code=subject, name=subject, description=subject,
+                organization_id=_sandbox_organization_id(db),
+            )
             db.add(course)
             db.flush()
 
