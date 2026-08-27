@@ -15,8 +15,17 @@ import httpx
 from pydantic import BaseModel
 
 from src.config import get_settings
+from src.services.core.llm_budget_service import check_and_increment_sync
 
 ModelT = TypeVar("ModelT", bound=BaseModel)
+
+
+class LlmBudgetExceededError(RuntimeError):
+    """Raised instead of calling ai-service once the daily request budget
+    (Settings.llm_daily_request_limit) is used up. Every existing caller
+    already wraps this call in a broad try/except + deterministic fallback
+    (the same shape used when no LLM key was configured at all), so this
+    degrades the same way rather than needing new handling per call site."""
 
 
 def generate_structured(
@@ -28,9 +37,12 @@ def generate_structured(
     schema_name: str | None = None,
     timeout: float = 60.0,
 ) -> ModelT:
-    """Raises on any failure (network, non-2xx, schema mismatch) — callers
-    already wrap this in their own try/except + `has_configured_llm()`-style
-    fallback, exactly as they did around the old direct `get_llm()` call."""
+    """Raises on any failure (network, non-2xx, schema mismatch, daily
+    budget exceeded) — callers already wrap this in their own try/except +
+    `has_configured_llm()`-style fallback, exactly as they did around the
+    old direct `get_llm()` call."""
+    if not check_and_increment_sync():
+        raise LlmBudgetExceededError("Daily ai-service request budget exceeded")
     settings = get_settings()
     response = httpx.post(
         f"{settings.ai_service_url.rstrip('/')}/v1/structured/generate",
