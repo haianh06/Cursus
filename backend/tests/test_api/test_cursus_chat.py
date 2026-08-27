@@ -356,7 +356,7 @@ async def test_action_cancel_marks_cancelled_and_confirm_is_then_a_noop(client):
 
     propose = await client.post(
         "/api/v1/student/cursus/actions", headers=headers,
-        json={"actionType": "open_reflection", "payload": {"weekNumber": 3}},
+        json={"action_type": "open_reflection", "payload": {"weekNumber": 3}},
     )
     proposal_id = propose.json()["id"]
 
@@ -379,7 +379,7 @@ async def test_action_confirm_open_reflection_returns_navigate_to(client):
 
     propose = await client.post(
         "/api/v1/student/cursus/actions", headers=headers,
-        json={"actionType": "open_reflection", "payload": {"weekNumber": 4}},
+        json={"action_type": "open_reflection", "payload": {"weekNumber": 4}},
     )
     proposal_id = propose.json()["id"]
     confirm = await client.post(f"/api/v1/student/cursus/actions/{proposal_id}/confirm", headers=headers)
