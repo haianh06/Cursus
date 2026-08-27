@@ -2,7 +2,7 @@ services:
   - type: web
     name: cursus-backend
     runtime: docker
-    dockerfilePath: ./Dockerfile
+    dockerfilePath: ./backend/Dockerfile
     dockerContext: .
     plan: free
     region: singapore
@@ -37,6 +37,19 @@ services:
         value: "true"
       - key: MODEL_NAME
         value: gemini-2.5-flash
+      # Cursus Chat / ai-service wiring — cursus-ai-service is a Private
+      # Service in this same Render project, so it's reachable from
+      # cursus-backend at http://<service-name>:<port> without a public URL.
+      - key: AI_SERVICE_URL
+        value: http://cursus-ai-service:8100
+      - key: CURSUS_CHAT_RATE_LIMIT_PER_MINUTE
+        value: "10"
+      - key: LLM_DAILY_REQUEST_LIMIT
+        value: "2000"
+      - key: CHAT_ACTION_PROPOSAL_RETENTION_DAYS
+        value: "30"
+      - key: CHAT_BRIEFING_IMPRESSION_RETENTION_DAYS
+        value: "90"
       # Secrets and per-deploy values — set in Render dashboard, not committed here.
       - key: DATABASE_URL
         sync: false
@@ -63,4 +76,40 @@ services:
       - key: EMAIL_VERIFICATION_URL_BASE
         sync: false
       - key: PASSWORD_RESET_URL_BASE
+        sync: false
+      # Must be the EXACT same value as AI_SERVICE_INTERNAL_KEY on
+      # cursus-ai-service below — it's the shared secret the two services use
+      # to authenticate calls to each other, not a per-user credential.
+      - key: AI_SERVICE_INTERNAL_KEY
+        sync: false
+      # Crisis-safety escalation: if left unset, a crisis signal is only
+      # logged, nobody is emailed. Must be set to a real, monitored inbox
+      # before this feature is shown to anyone other than the demo accounts.
+      - key: CRISIS_ESCALATION_EMAIL
+        sync: false
+      - key: OPS_ALERT_EMAIL
+        sync: false
+
+  - type: pserv
+    name: cursus-ai-service
+    runtime: docker
+    dockerfilePath: ./ai-service/Dockerfile
+    dockerContext: ./ai-service
+    plan: free
+    region: singapore
+    autoDeploy: false
+    envVars:
+      - key: OPENAI_LIGHT_MODEL
+        value: pro/gpt-5.6-luna
+      - key: OPENAI_STRONG_MODEL
+        value: pro/gpt-5.6-terra
+      # Same value as cursus-backend's AI_SERVICE_INTERNAL_KEY above.
+      - key: AI_SERVICE_INTERNAL_KEY
+        sync: false
+      # OpenAI-compatible gateway key (currently apilit.dev) — NOT a real
+      # OpenAI key. Rotate immediately if this value is ever exposed outside
+      # the Render dashboard.
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_BASE_URL
         sync: false
