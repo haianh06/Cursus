@@ -594,11 +594,30 @@ def apply_task_status_update(
         "status": task.status,
         "actualMinutes": task.actual_minutes,
         "deferCount": task.rescheduled_count or 0,
-        "reasonCode": payload.reason_code,
+        "reasonCode": reason_code,
         "reasonLabel": reason_label,
         "weeklyPlanId": plan.id if plan else None,
         "plan": serialize_plan(db, plan) if plan is not None else None,
     }
+
+
+@router.patch("/tasks/{task_id}")
+def update_study_task(
+    task_id: str,
+    payload: UpdateTaskRequest,
+    _: None = Depends(require_study_task_owner),
+    current_user: models.User = Depends(get_current_user_from_token),
+    db: Session = Depends(get_db),
+):
+    return apply_task_status_update(
+        db,
+        task_id=task_id,
+        current_user=current_user,
+        status=payload.status,
+        actual_minutes=payload.actual_minutes,
+        reason_code=payload.reason_code,
+        reason_note=payload.reason_note,
+    )
 
 
 @router.get("/reflection/preview")
