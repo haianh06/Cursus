@@ -37,15 +37,13 @@ services:
         value: "true"
       - key: MODEL_NAME
         value: gemini-2.5-flash
-      # Cursus Chat / ai-service wiring — cursus-ai-service is a public Web
-      # Service (Render Private Services require a paid plan; this project
-      # is on Free). Protected instead by AI_SERVICE_INTERNAL_KEY, which
-      # ai-service checks on every request. Set to cursus-ai-service's real
-      # https://... URL once that service exists (Render assigns the exact
-      # hostname, e.g. a random suffix like cursus-backend's own
-      # cursus-backend-53yc.onrender.com) — can't be hardcoded here.
-      - key: AI_SERVICE_URL
-        sync: false
+      # Cursus Chat's generation (src.services.core.ai_engine) — folded in
+      # from the formerly-standalone ai-service (27/08), now runs in-process
+      # on this same service. No second Render service needed anymore.
+      - key: OPENAI_STRONG_MODEL
+        value: pro/gpt-5.6-terra
+      - key: OPENAI_LIGHT_MODEL
+        value: pro/gpt-5.6-luna
       - key: CURSUS_CHAT_RATE_LIMIT_PER_MINUTE
         value: "10"
       - key: LLM_DAILY_REQUEST_LIMIT
@@ -81,10 +79,14 @@ services:
         sync: false
       - key: PASSWORD_RESET_URL_BASE
         sync: false
-      # Must be the EXACT same value as AI_SERVICE_INTERNAL_KEY on
-      # cursus-ai-service below — it's the shared secret the two services use
-      # to authenticate calls to each other, not a per-user credential.
-      - key: AI_SERVICE_INTERNAL_KEY
+      # OpenAI-compatible gateway key (currently apilit.dev) — NOT a real
+      # OpenAI key. Rotate immediately if this value is ever exposed outside
+      # the Render dashboard. Was already set on the now-retired
+      # cursus-ai-service service — copy the same value here, don't reuse a
+      # key that's been pasted anywhere insecure.
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_BASE_URL
         sync: false
       # Crisis-safety escalation: if left unset, a crisis signal is only
       # logged, nobody is emailed. Must be set to a real, monitored inbox
@@ -92,29 +94,4 @@ services:
       - key: CRISIS_ESCALATION_EMAIL
         sync: false
       - key: OPS_ALERT_EMAIL
-        sync: false
-
-  - type: web
-    name: cursus-ai-service
-    runtime: docker
-    dockerfilePath: ./ai-service/Dockerfile
-    dockerContext: ./ai-service
-    plan: free
-    region: singapore
-    autoDeploy: false
-    healthCheckPath: /health
-    envVars:
-      - key: OPENAI_LIGHT_MODEL
-        value: pro/gpt-5.6-luna
-      - key: OPENAI_STRONG_MODEL
-        value: pro/gpt-5.6-terra
-      # Same value as cursus-backend's AI_SERVICE_INTERNAL_KEY above.
-      - key: AI_SERVICE_INTERNAL_KEY
-        sync: false
-      # OpenAI-compatible gateway key (currently apilit.dev) — NOT a real
-      # OpenAI key. Rotate immediately if this value is ever exposed outside
-      # the Render dashboard.
-      - key: OPENAI_API_KEY
-        sync: false
-      - key: OPENAI_BASE_URL
         sync: false
