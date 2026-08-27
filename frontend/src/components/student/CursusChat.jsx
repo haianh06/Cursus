@@ -28,6 +28,10 @@ const ERROR_MESSAGES = {
   LLM_BUDGET_EXCEEDED: 'Cursus đang tạm ngừng do đã dùng hết hạn mức hỗ trợ AI trong ngày. Vui lòng quay lại vào ngày mai.',
   DB_ERROR: 'Không thể kết nối cơ sở dữ liệu lúc này. Vui lòng thử lại sau ít phút.',
   AI_UNAVAILABLE: 'Cursus đang tạm thời không phản hồi. Hãy thử lại sau.',
+  // Same student-facing copy as AI_UNAVAILABLE — a bad server-side API key
+  // isn't something the student can act on differently, but ops logs/alerts
+  // upstream keep this code distinct from a real provider outage.
+  AI_MISCONFIGURED: 'Cursus đang tạm thời không phản hồi. Hãy thử lại sau.',
   INTERNAL_ERROR: 'Có lỗi xảy ra phía hệ thống. Vui lòng thử lại.',
   NETWORK_ERROR: 'Không kết nối được tới máy chủ. Kiểm tra lại kết nối mạng của bạn.',
 };
