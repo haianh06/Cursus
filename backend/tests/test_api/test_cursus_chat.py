@@ -424,16 +424,21 @@ def test_retention_job_cleans_expired_rows():
         db.add(old_impression)
         db.commit()
 
+        expired_convo_id = expired_convo.id
+        expired_pending_id = expired_pending.id
+        old_confirmed_id = old_confirmed.id
+        old_impression_id = old_impression.id
+
         result = run_retention(db)
         assert result["conversations_deleted"] >= 1
         assert result["action_proposals_expired"] >= 1
         assert result["action_proposals_deleted"] >= 1
         assert result["briefing_impressions_deleted"] >= 1
 
-        assert db.get(models.ChatConversation, expired_convo.id) is None
-        refreshed_pending = db.get(models.ChatActionProposal, expired_pending.id)
+        assert db.get(models.ChatConversation, expired_convo_id) is None
+        refreshed_pending = db.get(models.ChatActionProposal, expired_pending_id)
         assert refreshed_pending.status == "EXPIRED"
-        assert db.get(models.ChatActionProposal, old_confirmed.id) is None
-        assert db.get(models.ChatBriefingImpression, old_impression.id) is None
+        assert db.get(models.ChatActionProposal, old_confirmed_id) is None
+        assert db.get(models.ChatBriefingImpression, old_impression_id) is None
     finally:
         db.close()
