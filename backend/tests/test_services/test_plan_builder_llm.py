@@ -86,9 +86,7 @@ def test_llm_success_maps_to_generated_tasks_grounded_in_retrieved_chunks(monkey
         ],
         insufficient_context=False,
     )
-    mock_llm = MagicMock()
-    mock_llm.with_structured_output.return_value.invoke.return_value = payload
-    monkeypatch.setattr(plan_builder, "get_llm", lambda: mock_llm)
+    monkeypatch.setattr(plan_builder, "generate_structured", lambda **kwargs: payload)
     monkeypatch.setattr(
         plan_builder.Path, "read_text", lambda self, encoding=None: "system prompt"
     )
@@ -147,19 +145,15 @@ def test_accent_stripped_titles_trigger_retry_and_recover(monkeypatch):
         ],
         insufficient_context=False,
     )
-    mock_llm = MagicMock()
-    mock_llm.with_structured_output.return_value.invoke.side_effect = [
-        broken_payload,
-        fixed_payload,
-    ]
-    monkeypatch.setattr(plan_builder, "get_llm", lambda: mock_llm)
+    mock_generate = MagicMock(side_effect=[broken_payload, fixed_payload])
+    monkeypatch.setattr(plan_builder, "generate_structured", mock_generate)
 
     tasks, trace = plan_builder._llm_generated_tasks(db=MagicMock(), assignment=_fake_assignment())
 
     assert tasks is not None
     assert tasks[0].title == "Ôn tập CSI106 - Biểu diễn dữ liệu"
     assert trace == {"retrieval_empty": False, "llm_success": True}
-    assert mock_llm.with_structured_output.return_value.invoke.call_count == 2
+    assert mock_generate.call_count == 2
 
 
 def test_insufficient_context_returns_none(monkeypatch):
@@ -171,9 +165,7 @@ def test_insufficient_context_returns_none(monkeypatch):
         lambda self, **kwargs: [_fake_retrieved_chunk("SSA101-c1")],
     )
     payload = LlmPlanPayload(tasks=[], insufficient_context=True)
-    mock_llm = MagicMock()
-    mock_llm.with_structured_output.return_value.invoke.return_value = payload
-    monkeypatch.setattr(plan_builder, "get_llm", lambda: mock_llm)
+    monkeypatch.setattr(plan_builder, "generate_structured", lambda **kwargs: payload)
     monkeypatch.setattr(
         plan_builder.Path, "read_text", lambda self, encoding=None: "system prompt"
     )
@@ -194,10 +186,10 @@ def test_llm_exception_falls_back_to_none(monkeypatch):
         lambda self, **kwargs: [_fake_retrieved_chunk("SSA101-c1")],
     )
 
-    def _boom():
+    def _boom(**kwargs):
         raise RuntimeError("provider unavailable")
 
-    monkeypatch.setattr(plan_builder, "get_llm", _boom)
+    monkeypatch.setattr(plan_builder, "generate_structured", _boom)
     monkeypatch.setattr(
         plan_builder.Path, "read_text", lambda self, encoding=None: "system prompt"
     )

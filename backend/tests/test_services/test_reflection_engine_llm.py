@@ -39,11 +39,8 @@ def test_no_configured_llm_returns_deterministic_summary(monkeypatch):
 
 def test_llm_success_returns_llm_summary(monkeypatch):
     monkeypatch.setattr(reflection_engine, "has_configured_llm", lambda: True)
-    mock_llm = MagicMock()
-    mock_llm.with_structured_output.return_value.invoke.return_value = (
-        LlmReflectionSummaryPayload(summary="Tuần này bạn hoàn thành tốt, giữ nhịp ổn định.")
-    )
-    monkeypatch.setattr(reflection_engine, "get_llm", lambda: mock_llm)
+    payload = LlmReflectionSummaryPayload(summary="Tuần này bạn hoàn thành tốt, giữ nhịp ổn định.")
+    monkeypatch.setattr(reflection_engine, "generate_structured", lambda **kwargs: payload)
     monkeypatch.setattr(
         reflection_engine.Path, "read_text", lambda self, encoding=None: "system prompt"
     )
@@ -56,11 +53,8 @@ def test_llm_success_returns_llm_summary(monkeypatch):
 
 def test_llm_blank_summary_falls_back_to_deterministic(monkeypatch):
     monkeypatch.setattr(reflection_engine, "has_configured_llm", lambda: True)
-    mock_llm = MagicMock()
-    mock_llm.with_structured_output.return_value.invoke.return_value = LlmReflectionSummaryPayload(
-        summary="   "
-    )
-    monkeypatch.setattr(reflection_engine, "get_llm", lambda: mock_llm)
+    payload = LlmReflectionSummaryPayload(summary="   ")
+    monkeypatch.setattr(reflection_engine, "generate_structured", lambda **kwargs: payload)
     monkeypatch.setattr(
         reflection_engine.Path, "read_text", lambda self, encoding=None: "system prompt"
     )
@@ -77,10 +71,10 @@ def test_llm_blank_summary_falls_back_to_deterministic(monkeypatch):
 def test_llm_exception_falls_back_to_deterministic(monkeypatch):
     monkeypatch.setattr(reflection_engine, "has_configured_llm", lambda: True)
 
-    def _boom():
+    def _boom(**kwargs):
         raise RuntimeError("provider unavailable")
 
-    monkeypatch.setattr(reflection_engine, "get_llm", _boom)
+    monkeypatch.setattr(reflection_engine, "generate_structured", _boom)
     monkeypatch.setattr(
         reflection_engine.Path, "read_text", lambda self, encoding=None: "system prompt"
     )
