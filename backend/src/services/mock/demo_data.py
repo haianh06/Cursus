@@ -17,7 +17,7 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[4]
 DATA_DIR = ROOT / "docs" / "planning" / "v2" / "data"
 CLASS_SNAPSHOT_FILE = "seed_students_SSA101.json"
 CURRICULUM_FILE = "courses_BIT_SE_K20D_K21A.json"

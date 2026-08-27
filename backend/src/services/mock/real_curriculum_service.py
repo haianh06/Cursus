@@ -28,7 +28,7 @@ from src.services.mock.gate2_demo import ingest_official_chunks, load_official_c
 
 logger = logging.getLogger(__name__)
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[4]
 CATALOG_PATH = ROOT / "docs" / "planning" / "v2" / "data" / "courses_BIT_SE_K20D_K21A.json"
 CHUNKS_DIR = ROOT / "docs" / "planning" / "v2" / "data"
 

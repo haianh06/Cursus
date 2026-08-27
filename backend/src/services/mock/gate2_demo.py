@@ -40,7 +40,7 @@ _CLASS_CACHE = None
 
 logger = logging.getLogger(__name__)
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[4]
 SSA101_CHUNKS_PATH = ROOT / "docs" / "planning" / "v2" / "data" / "chunks_SSA101.json"
 
 FIXTURE_VERSION = prov.FIXTURE_VERSION
