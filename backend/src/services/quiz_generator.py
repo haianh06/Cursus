@@ -14,8 +14,11 @@ import logging
 import re
 from typing import Any
 
-from src.config import Settings, get_settings
-from src.services.core.llm import get_llm
+from pydantic import BaseModel
+
+from src.config import get_settings
+from src.services.core.ai_service_client import generate_structured
+from src.services.core.llm import has_configured_llm
 
 logger = logging.getLogger(__name__)
 
@@ -49,8 +52,7 @@ def generate_questions(
     if not chunks:
         raise ValueError("No lecture material found for this course")
 
-    settings = get_settings()
-    if _has_real_google_key(settings):
+    if has_configured_llm():
         try:
             return _from_llm(chunks, count)
         except (ValueError, json.JSONDecodeError) as exc:
