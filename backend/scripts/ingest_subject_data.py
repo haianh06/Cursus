@@ -133,7 +133,7 @@ def extract_course_pdfs(code: str, course_dir: Path) -> tuple[list[dict[str, Any
             continue
         slot = _slot_number_for(pdf_path.name, index)
         source_label = f"subject_data · Slot {slot:02d} · {code} · {title}"
-        rel_path = str(pdf_path.relative_to(ROOT)).replace("\\", "/")
+        rel_path = str(pdf_path.relative_to(REPO_ROOT)).replace("\\", "/")
         for chunk in chunk_text(cleaned):
             entries.append(
                 {
