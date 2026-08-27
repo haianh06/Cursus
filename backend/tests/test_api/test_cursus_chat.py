@@ -6,7 +6,6 @@ frequency cap, and the retention job."""
 from __future__ import annotations
 
 import uuid
-from contextlib import asynccontextmanager
 from datetime import UTC, datetime, timedelta
 
 import pytest
@@ -196,7 +195,7 @@ async def test_guardrail_blocks_graded_deliverable_without_calling_ai_service(cl
         called["hit"] = True
         raise AssertionError("ai-service must not be called when guardrail blocks")
 
-    monkeypatch.setattr(cursus_chat_module.httpx, "AsyncClient", _fail_if_called)
+    monkeypatch.setattr(cursus_chat_module, "generate_chat_stream", _fail_if_called)
 
     org_id = ensure_org(f"cc-grd-{uuid.uuid4().hex[:6]}", "cc-grd")
     instructor_id = ensure_user(email=f"cc.gi.{uuid.uuid4().hex}@example.test", org_id=org_id, role=models.UserRole.INSTRUCTOR)
@@ -227,7 +226,7 @@ async def test_crisis_safety_triggers_before_guardrail_and_ai_service(client, mo
         called["hit"] = True
         raise AssertionError("neither guardrail nor ai-service should run after a crisis trigger")
 
-    monkeypatch.setattr(cursus_chat_module.httpx, "AsyncClient", _fail_if_called)
+    monkeypatch.setattr(cursus_chat_module, "generate_chat_stream", _fail_if_called)
 
     org_id = ensure_org(f"cc-crisis-{uuid.uuid4().hex[:6]}", "cc-crisis")
     student_email = f"cc.crs.{uuid.uuid4().hex}@example.test"
@@ -429,7 +428,7 @@ async def test_rate_limit_blocks_before_touching_db_or_ai_service(client, monkey
     def _fail_if_called(*args, **kwargs):
         raise AssertionError("ai-service must not be reached when rate-limited")
 
-    monkeypatch.setattr(cursus_chat_module.httpx, "AsyncClient", _fail_if_called)
+    monkeypatch.setattr(cursus_chat_module, "generate_chat_stream", _fail_if_called)
 
     org_id = ensure_org(f"cc-rl-{uuid.uuid4().hex[:6]}", "cc-rl")
     student_email = f"cc.rl.{uuid.uuid4().hex}@example.test"
@@ -458,7 +457,7 @@ async def test_llm_daily_budget_exceeded_stops_before_calling_ai_service(client,
     def _fail_if_called(*args, **kwargs):
         raise AssertionError("ai-service must not be reached once the daily budget is exhausted")
 
-    monkeypatch.setattr(cursus_chat_module.httpx, "AsyncClient", _fail_if_called)
+    monkeypatch.setattr(cursus_chat_module, "generate_chat_stream", _fail_if_called)
 
     org_id = ensure_org(f"cc-budget-{uuid.uuid4().hex[:6]}", "cc-budget")
     student_email = f"cc.budget.{uuid.uuid4().hex}@example.test"
@@ -481,7 +480,7 @@ async def test_crisis_trigger_creates_escalation_admin_can_see_and_resolve(clien
     def _fail_if_called(*args, **kwargs):
         raise AssertionError("crisis path must never reach ai-service")
 
-    monkeypatch.setattr(cursus_chat_module.httpx, "AsyncClient", _fail_if_called)
+    monkeypatch.setattr(cursus_chat_module, "generate_chat_stream", _fail_if_called)
 
     org_id = ensure_org(f"cc-esc-{uuid.uuid4().hex[:6]}", "cc-esc")
     student_email = f"cc.esc.{uuid.uuid4().hex}@example.test"
