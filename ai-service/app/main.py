@@ -9,6 +9,8 @@ from fastapi.responses import StreamingResponse
 from openai import AsyncOpenAI
 from pydantic import BaseModel, Field
 from app.core.routing import select_model
+from app.domains.structured.schemas import StructuredGenerateRequest, StructuredGenerateResponse
+from app.domains.structured.service import generate_structured
 
 app = FastAPI(title="Cursus AI Service", version="1.0.0")
 
@@ -20,9 +22,13 @@ class GenerateRequest(BaseModel):
     memory: str | None = None
 
 
-def _model_for(request: GenerateRequest) -> str:
-    route = select_model(intent=request.intent, source_count=len(request.context), message=request.message)
+def _model_for_route(*, intent: str, source_count: int, message: str) -> str:
+    route = select_model(intent=intent, source_count=source_count, message=message)
     return os.getenv(route.model_env, "gpt-5.6-terra" if route.model_env == "OPENAI_STRONG_MODEL" else "gpt-5.6-luna")
+
+
+def _model_for(request: GenerateRequest) -> str:
+    return _model_for_route(intent=request.intent, source_count=len(request.context), message=request.message)
 
 
 def _require_internal_key(key: str | None) -> None:
@@ -68,3 +74,18 @@ async def generate_stream(
             yield "event: error\ndata: {\"code\":\"AI_UNAVAILABLE\"}\n\n"
 
     return StreamingResponse(events(), media_type="text/event-stream")
+
+
+@app.post("/v1/structured/generate", response_model=StructuredGenerateResponse)
+async def structured_generate(
+    request: StructuredGenerateRequest,
+    x_ai_service_key: str | None = Header(default=None),
+) -> StructuredGenerateResponse:
+    """Non-streaming structured-JSON generation for Plan/Reflection/Practice —
+    backend already built system_prompt/user_prompt from its own DB/retrieval
+    context and only needs the LLM round-trip + schema-shaped JSON back."""
+    _require_internal_key(x_ai_service_key)
+    client = AsyncOpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    model = _model_for_route(intent=request.intent, source_count=0, message=request.user_prompt)
+    data = await generate_structured(client, model=model, request=request)
+    return StructuredGenerateResponse(data=data)
