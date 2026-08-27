@@ -245,53 +245,76 @@ def _propose_action(db: Session, *, student_id: str, intent: str, message: str) 
 
 @router.post("/stream")
 async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(get_current_user_from_token), db: Session = Depends(get_db), settings: Settings = Depends(get_settings)) -> StreamingResponse:
-    _cleanup(db)
-    conversation = _conversation(db, current_user.id, payload.conversation_id)
-    db.add(models.ChatMessage(id=str(uuid4()), conversation_id=conversation.id, role="user", content=payload.message, metadata_info={}))
-    db.commit()
+    allowed, retry_after = await rate_limit_allow(
+        f"cursus-chat-rate:{current_user.id}",
+        limit=settings.cursus_chat_rate_limit_per_minute,
+        window_seconds=_RATE_LIMIT_WINDOW_SECONDS,
+    )
+    if not allowed:
+        return _error_stream(
+            code="RATE_LIMITED",
+            message=f"Bạn đang gửi tin nhắn quá nhanh, vui lòng thử lại sau {retry_after} giây.",
+        )
+
+    try:
+        _cleanup(db)
+        conversation = _conversation(db, current_user.id, payload.conversation_id)
+        db.add(models.ChatMessage(id=str(uuid4()), conversation_id=conversation.id, role="user", content=payload.message, metadata_info={}))
+        db.commit()
+    except HTTPException:
+        raise
+    except Exception:
+        logger.exception("cursus_chat_db_error_before_stream student_id=%s", current_user.id)
+        db.rollback()
+        return _error_stream(code="DB_ERROR", message="Không thể kết nối cơ sở dữ liệu, vui lòng thử lại sau.")
 
     crisis = evaluate_crisis(payload.message)
     if crisis.triggered:
         await _audit_chat_decision(db, event_type="CRISIS_SAFETY_TRIGGERED", decision="ALLOW", student_id=current_user.id, conversation_id=conversation.id, extra={})
+        await _escalate_crisis(db, student=current_user, conversation_id=conversation.id, message=payload.message, settings=settings)
+        return _single_event_stream(conversation_id=conversation.id, text=crisis.answer)
 
-        async def crisis_response():
-            yield f"event: meta\ndata: {json.dumps({'conversationId': conversation.id})}\n\n"
-            yield f"event: delta\ndata: {json.dumps({'text': crisis.answer})}\n\n"
-            yield "event: done\ndata: {}\n\n"
-        return StreamingResponse(crisis_response(), media_type="text/event-stream")
+    try:
+        decision = GuardrailService(db).evaluate(payload.message)
+    except Exception:
+        logger.exception("cursus_chat_guardrail_error student_id=%s", current_user.id)
+        return _error_stream(code="INTERNAL_ERROR", message="Có lỗi xảy ra, vui lòng thử lại.")
 
-    decision = GuardrailService(db).evaluate(payload.message)
     if decision.blocked:
         await _audit_chat_decision(
             db, event_type="GUARDRAIL_DECISION", decision="BLOCK", student_id=current_user.id,
             conversation_id=conversation.id, extra={"reason": decision.reason, "intent": decision.intent},
         )
-
-        async def blocked():
-            yield f"event: meta\ndata: {json.dumps({'conversationId': conversation.id})}\n\n"
-            yield f"event: delta\ndata: {json.dumps({'text': decision.answer})}\n\n"
-            yield "event: done\ndata: {}\n\n"
-        return StreamingResponse(blocked(), media_type="text/event-stream")
+        return _single_event_stream(conversation_id=conversation.id, text=decision.answer)
     if decision.reason == "out_of_scope":
         await _audit_chat_decision(
             db, event_type="GUARDRAIL_DECISION", decision="ALLOW", student_id=current_user.id,
             conversation_id=conversation.id, extra={"reason": decision.reason, "intent": decision.intent},
         )
 
-    sources = _context(db, current_user.id, payload.message)
+    try:
+        sources = _context(db, current_user.id, payload.message)
+    except Exception:
+        logger.exception("cursus_chat_retrieval_error student_id=%s", current_user.id)
+        return _error_stream(code="DB_ERROR", message="Không thể truy xuất tài liệu môn học, vui lòng thử lại sau.")
     intent = _intent(payload.message, sources)
 
     async def relay():
         answer = ""
         yield f"event: meta\ndata: {json.dumps({'conversationId': conversation.id, 'intent': intent})}\n\n"
+
+        if not await check_and_increment_async():
+            yield f"event: error\ndata: {json.dumps({'code': 'LLM_BUDGET_EXCEEDED', 'message': 'Hệ thống trợ lý đang tạm ngừng do vượt hạn mức sử dụng AI trong ngày. Vui lòng thử lại vào ngày mai.'})}\n\n"
+            return
+
         try:
             # ai-service sends "event: X" and "data: Y" as separate lines;
             # httpx.aiter_lines() yields them one at a time, so the event
             # name for the *next* data line must be tracked across
             # iterations -- forwarding a bare "data: ..." line with no
-            # preceding "event: ..." (the previous version of this loop)
-            # left every relayed delta un-typed and silently dropped by any
-            # SSE consumer that dispatches on event name.
+            # preceding "event: ..." (an earlier version of this loop) left
+            # every relayed delta un-typed and silently dropped by any SSE
+            # consumer that dispatches on event name.
             current_event = "message"
             async with httpx.AsyncClient(timeout=60) as client:
                 async with client.stream("POST", f"{settings.ai_service_url.rstrip('/')}/v1/generate/stream", headers={"x-ai-service-key": settings.ai_service_internal_key or ""}, json={"message": payload.message, "intent": intent, "context": sources}) as response:
@@ -308,7 +331,12 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
                             answer += data.get("text", "")
                             yield f"event: delta\ndata: {data_raw}\n\n"
                         elif current_event == "error":
+                            # ai-service already classifies its own failure
+                            # (RATE_LIMITED/QUOTA_EXHAUSTED/AI_UNAVAILABLE) --
+                            # forward its code as-is rather than collapsing
+                            # it into one generic message here.
                             yield f"event: error\ndata: {data_raw}\n\n"
+                            return
                         # ai-service's own "done" is not forwarded -- this
                         # relay emits its own "done" below, after citations
                         # and any action proposal have also been sent.
@@ -329,7 +357,15 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
                     db.commit()
                     yield f"event: action_proposal\ndata: {json.dumps({'id': proposal.id, 'actionType': action_type, 'payload': action_payload})}\n\n"
             yield "event: done\ndata: {}\n\n"
+        except httpx.HTTPStatusError as exc:
+            db.rollback()
+            code = "RATE_LIMITED" if exc.response.status_code == 429 else "AI_UNAVAILABLE"
+            yield f"event: error\ndata: {json.dumps({'code': code})}\n\n"
+        except httpx.TimeoutException:
+            db.rollback()
+            yield f"event: error\ndata: {json.dumps({'code': 'AI_UNAVAILABLE', 'message': 'ai-service phản hồi quá chậm.'})}\n\n"
         except Exception:
+            logger.exception("cursus_chat_relay_failed student_id=%s", current_user.id)
             db.rollback()
             yield "event: error\ndata: {\"code\":\"AI_UNAVAILABLE\"}\n\n"
     return StreamingResponse(relay(), media_type="text/event-stream")
