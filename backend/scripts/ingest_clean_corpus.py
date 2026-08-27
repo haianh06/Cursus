@@ -60,15 +60,18 @@ def extract(path: Path) -> list[tuple[str, str]]:
             return extract(converted)
     if path.suffix == ".xlsx":
         workbook = load_workbook(path, read_only=True, data_only=True)
-        sheets = []
-        for sheet in workbook.worksheets:
-            lines = [
-                "\t".join(str(cell) for cell in row if cell is not None)
-                for row in sheet.iter_rows(values_only=True)
-                if any(cell is not None for cell in row)
-            ]
-            sheets.append((f"sheet {sheet.title}", "\n".join(lines)))
-        return sheets
+        try:
+            sheets = []
+            for sheet in workbook.worksheets:
+                lines = [
+                    "\t".join(str(cell) for cell in row if cell is not None)
+                    for row in sheet.iter_rows(values_only=True)
+                    if any(cell is not None for cell in row)
+                ]
+                sheets.append((f"sheet {sheet.title}", "\n".join(lines)))
+            return sheets
+        finally:
+            workbook.close()
     deck = Presentation(path)
     return [(f"slide {i}", "\n".join(shape.text for shape in slide.shapes if hasattr(shape, "text") and shape.text.strip())) for i, slide in enumerate(deck.slides, 1)]
 
