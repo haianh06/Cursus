@@ -16,6 +16,7 @@ import {
 } from '../../lib/api';
 import { CitationChip, SourceDrawer } from '../shared/SourceDrawer';
 import ConfirmDialog from '../shared/ConfirmDialog';
+import CursusMascot from '../shared/CursusMascot';
 
 /** One message per failure mode backend/ai-service can report, instead of
  * a single generic "Cursus is unavailable" for every case — a rate limit
@@ -320,9 +321,9 @@ export default function CursusChat({ user }) {
           aria-label="Mở Cursus"
           onClick={() => setOpen(true)}
           style={{ background: HEADER_GRADIENT }}
-          className="fixed bottom-5 right-5 z-[90] flex h-14 w-14 items-center justify-center overflow-hidden rounded-full text-white shadow-lg transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+          className="fixed bottom-5 right-5 z-[90] flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
         >
-          <img src="/cursus-bot.png" alt="" className="h-12 w-12 object-contain" />
+          <CursusMascot size="launcher" />
         </button>
       )}
       {open && (
@@ -332,8 +333,8 @@ export default function CursusChat({ user }) {
         >
           <header style={{ background: HEADER_GRADIENT }} className="flex items-center justify-between px-5 py-4 text-white">
             <div className="flex items-center gap-3">
-              <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/20">
-                <img src="/cursus-bot.png" alt="" className="h-9 w-9 object-contain" />
+              <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/20">
+                <CursusMascot size={36} state={loading ? 'thinking' : 'idle'} />
                 <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white bg-emerald-400" />
               </div>
               <div>
