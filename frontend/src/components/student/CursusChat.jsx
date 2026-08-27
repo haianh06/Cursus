@@ -17,6 +17,25 @@ import {
 import { CitationChip, SourceDrawer } from '../shared/SourceDrawer';
 import ConfirmDialog from '../shared/ConfirmDialog';
 
+/** One message per failure mode backend/ai-service can report, instead of
+ * a single generic "Cursus is unavailable" for every case — a rate limit
+ * or a daily-budget pause is not the same problem as the service being
+ * genuinely down, and telling the student which one it is sets the right
+ * expectation for whether "try again in a minute" will actually help. */
+const ERROR_MESSAGES = {
+  RATE_LIMITED: 'Bạn đang gửi tin nhắn quá nhanh. Vui lòng đợi một chút rồi thử lại.',
+  QUOTA_EXHAUSTED: 'Hệ thống AI đang tạm hết hạn mức sử dụng. Vui lòng thử lại sau ít phút.',
+  LLM_BUDGET_EXCEEDED: 'Cursus đang tạm ngừng do đã dùng hết hạn mức hỗ trợ AI trong ngày. Vui lòng quay lại vào ngày mai.',
+  DB_ERROR: 'Không thể kết nối cơ sở dữ liệu lúc này. Vui lòng thử lại sau ít phút.',
+  AI_UNAVAILABLE: 'Cursus đang tạm thời không phản hồi. Hãy thử lại sau.',
+  INTERNAL_ERROR: 'Có lỗi xảy ra phía hệ thống. Vui lòng thử lại.',
+  NETWORK_ERROR: 'Không kết nối được tới máy chủ. Kiểm tra lại kết nối mạng của bạn.',
+};
+
+function messageForErrorCode(code) {
+  return ERROR_MESSAGES[code] || ERROR_MESSAGES.AI_UNAVAILABLE;
+}
+
 /** Frequency-capped greeting shown once per open panel session — the server
  * (ChatBriefingImpression) decides whether it's actually due; this is just
  * the dismiss/snooze UI on top of that decision. */
