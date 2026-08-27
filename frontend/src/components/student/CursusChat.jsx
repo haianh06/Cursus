@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Bot, Send, X, History, Download, Trash2, Check, XCircle, Sparkles } from 'lucide-react';
+import { Send, X, History, Download, Trash2, Check, XCircle, Sparkles } from 'lucide-react';
 import {
   streamCursusChat,
   getCursusBriefing,
@@ -320,9 +320,9 @@ export default function CursusChat({ user }) {
           aria-label="Mở Cursus"
           onClick={() => setOpen(true)}
           style={{ background: HEADER_GRADIENT }}
-          className="fixed bottom-5 right-5 z-[90] flex h-14 w-14 items-center justify-center rounded-full text-white shadow-lg transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+          className="fixed bottom-5 right-5 z-[90] flex h-14 w-14 items-center justify-center overflow-hidden rounded-full text-white shadow-lg transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
         >
-          <Bot size={24} />
+          <img src="/cursus-bot.png" alt="" className="h-12 w-12 object-contain" />
         </button>
       )}
       {open && (
@@ -332,8 +332,8 @@ export default function CursusChat({ user }) {
         >
           <header style={{ background: HEADER_GRADIENT }} className="flex items-center justify-between px-5 py-4 text-white">
             <div className="flex items-center gap-3">
-              <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/20">
-                <Bot size={20} />
+              <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/20">
+                <img src="/cursus-bot.png" alt="" className="h-9 w-9 object-contain" />
                 <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white bg-emerald-400" />
               </div>
               <div>
