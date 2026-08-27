@@ -50,6 +50,7 @@ DEPLOY_ONLY_PATHS = {
     "frontend/.gitignore",
     "DEPLOY.md",
     "scripts/sync_and_deploy.py",
+    "scripts/keep_alive.py",
 }
 DEPLOY_ONLY_PREFIXES = ("scripts/sql/", ".claude/", "supabase/", "frontend/.vercel/")
 
