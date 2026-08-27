@@ -71,7 +71,7 @@ async def lifespan(app: FastAPI):
     # rows are only swept lazily on request today (cursus_chat.py::_cleanup);
     # a student who never comes back would otherwise leave rows forever.
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(_run_retention_job, "interval", hours=1, id="cursus_chat_retention", next_run_time=None)
+    scheduler.add_job(_run_retention_job, "interval", hours=1, id="cursus_chat_retention")
     scheduler.start()
     app.state.scheduler = scheduler
     yield
