@@ -11,6 +11,13 @@ os.environ.setdefault(
     "JWT_SECRET_KEY",
     "unit-test-secret-key-at-least-32-characters-long",
 )
+# Force has_configured_llm() to False by default so LLM-backed paths take
+# their deterministic fallback and tests never make a real network call,
+# even when a real OPENAI_API_KEY is present in the developer's own .env
+# (loaded by src.config's load_dotenv()). Individual tests that need the
+# "LLM configured" path already monkeypatch has_configured_llm() directly
+# rather than relying on this env var, so overriding it here is safe.
+os.environ["OPENAI_API_KEY"] = ""
 # Cookie jar in httpx TestClient would otherwise trip CSRF on refresh/login
 # chains. CSRF behavior is covered by test_security_infrastructure.py.
 os.environ["CSRF_PROTECTION_ENABLED"] = "false"
