@@ -5,6 +5,7 @@ import remarkGfm from 'remark-gfm';
 import { Send, X, History, Download, Trash2, Check, XCircle, Sparkles } from 'lucide-react';
 import {
   streamCursusChat,
+  pingBackendHealth,
   getCursusBriefing,
   dismissCursusBriefing,
   getCursusConversations,
@@ -287,6 +288,30 @@ export default function CursusChat({ user }) {
     sendMessage(value);
   };
 
+  const updateLastMessageText = (newText) =>
+    setMessages((items) => items.map((item, i) => (i === items.length - 1 ? { ...item, text: newText } : item)));
+
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  /** Render free tier doesn't tell us "cold-start finishes in X seconds" —
+   * these are optimistic estimates, not a real ETA, so we re-check /health
+   * at the end of every round instead of trusting the countdown blindly.
+   * 3 rounds (~70s total) covers the typical 30-60s cold start with margin;
+   * past that we stop retrying automatically rather than spinning forever
+   * on something that might be a real outage, not just a cold start. */
+  const waitForWarmup = async () => {
+    const roundsSeconds = [40, 20, 15];
+    for (const roundSeconds of roundsSeconds) {
+      for (let s = roundSeconds; s > 0; s -= 1) {
+        updateLastMessageText(`🔄 Máy chủ đang khởi động sau thời gian không hoạt động, dự kiến sẵn sàng trong ~${s}s...`);
+        await sleep(1000);
+      }
+      updateLastMessageText('🔄 Đang kiểm tra lại...');
+      if (await pingBackendHealth({ timeoutMs: 6000 })) return true;
+    }
+    return false;
+  };
+
   const sendMessage = async (rawText) => {
     const text = rawText.trim();
     if (!text || loading) return;
@@ -294,6 +319,14 @@ export default function CursusChat({ user }) {
     setMessages((items) => [...items, { role: 'user', text }, { role: 'assistant', text: '', citations: [] }]);
     setLoading(true);
     try {
+      if (!(await pingBackendHealth())) {
+        const ready = await waitForWarmup();
+        if (!ready) {
+          updateLastMessageText('Máy chủ vẫn chưa sẵn sàng sau vài lần thử. Vui lòng gửi lại tin nhắn sau ít phút.');
+          return;
+        }
+        updateLastMessageText('');
+      }
       await streamCursusChat({
         message: text,
         conversationId,

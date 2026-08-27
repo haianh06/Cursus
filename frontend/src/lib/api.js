@@ -387,6 +387,25 @@ export function getSourceChunk(chunkId) {
   return request(`/qa/sources/${encodeURIComponent(chunkId)}`);
 }
 
+/** Cheap probe used only to detect a Render free-tier cold start before
+ * paying for a full chat round-trip — /health has no auth/DB dependency, so
+ * a slow/failed response here means the container itself is still waking
+ * up, not that something is actually broken. Short timeout on purpose: we
+ * want to know quickly that it's cold, not wait out the cold start here. */
+export async function pingBackendHealth({ timeoutMs = 4000 } = {}) {
+  const root = API_BASE_URL.replace(/\/api\/v1\/?$/, '');
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(`${root}/health`, { signal: controller.signal });
+    return response.ok;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export async function streamCursusChat({ message, conversationId, onEvent }) {
   const headers = new Headers({ 'Content-Type': 'application/json' });
   applyCsrfHeader(headers, 'POST');
