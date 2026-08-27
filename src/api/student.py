@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from src.api.auth import get_current_user_from_token
 from src.db import models
 from src.db.connection import get_db
+from src.repositories.audit_repository import AuditRepository
 from src.security.authorization import require_roles
 from src.security.ownership import (
     require_student_assignment_access,
@@ -19,6 +20,7 @@ from src.services.ai.plan_builder import (
     serialize_plan,
 )
 from src.services.ai.reflection_engine import ReflectionEngine, serialize_reflection
+from src.services.core.audit_service import AuditService
 from src.services.mock import gate2_demo
 from src.services.mock.gate2_demo import Gate2DemoService
 from src.services.mock.student_mock_data_service import StudentMockDataService
@@ -284,6 +286,43 @@ def get_student_course_detail(
         "assessment_structure": course.assessment_structure,
         "modules": modules_list,
         "documents": visible_docs,
+    }
+
+
+@router.get("/courses/{course_id}/documents/{document_id}")
+def get_student_course_document(
+    course_id: str,
+    document_id: str,
+    _: None = Depends(require_student_course_access),
+    current_user: models.User = Depends(get_current_user_from_token),
+    db: Session = Depends(get_db),
+):
+    """Return an enrolled student's visible document as ordered chunk text.
+
+    Private uploads owned by another student deliberately return 404 so the
+    endpoint does not disclose whether that document identifier exists.
+    """
+    document = db.query(models.Document).filter_by(id=document_id, course_id=course_id).first()
+    if document is None:
+        raise HTTPException(status_code=404, detail="Document not found")
+
+    meta = document.metadata_info or {}
+    source = meta.get("source") or "curriculum"
+    uploaded_by = meta.get("uploaded_by")
+    if source == "student_upload" and uploaded_by != current_user.id:
+        raise HTTPException(status_code=404, detail="Document not found")
+
+    chunks = (
+        db.query(models.DocumentChunk)
+        .filter_by(document_id=document.id)
+        .order_by(models.DocumentChunk.chunk_index.asc())
+        .all()
+    )
+    return {
+        "id": document.id,
+        "title": document.title,
+        "docType": document.doc_type,
+        "content": "\n\n".join(chunk.text for chunk in chunks),
     }
 
 
@@ -717,37 +756,31 @@ def get_demo_state(
 
 
 @router.post("/personal-data/delete")
-def delete_my_personal_data(
+async def delete_my_personal_data(
     current_user: models.User = Depends(get_current_user_from_token),
     db: Session = Depends(get_db),
 ):
     """mục 6.3/6.4 Cài đặt: self-service hard delete of the caller's own
-    reflections and Cursus Assistant chat history. Aggregated class/school
-    metrics are untouched -- they carry no student_id link to this user."""
-    conversation_ids = [
-        row[0]
-        for row in db.query(models.Conversation.id).filter_by(student_id=current_user.id).all()
-    ]
-    messages_deleted = 0
-    if conversation_ids:
-        messages_deleted = (
-            db.query(models.Message)
-            .filter(models.Message.conversation_id.in_(conversation_ids))
-            .delete(synchronize_session=False)
-        )
-    conversations_deleted = (
-        db.query(models.Conversation)
-        .filter_by(student_id=current_user.id)
-        .delete(synchronize_session=False)
-    )
+    reflections. Aggregated class/school metrics are untouched -- they carry
+    no student_id link to this user."""
     reflections_deleted = (
         db.query(models.WeeklyReflection)
         .filter_by(student_id=current_user.id)
         .delete(synchronize_session=False)
     )
     db.commit()
+
+    await AuditService(AuditRepository(db)).log_event(
+        event_type="SELF_SERVICE_DATA_DELETE",
+        decision="ALLOW",
+        actor_user_id=current_user.id,
+        resource_type="STUDENT_PERSONAL_DATA",
+        resource_id=current_user.id,
+        metadata={
+            "reflectionsDeleted": reflections_deleted,
+        },
+    )
+
     return {
         "reflectionsDeleted": reflections_deleted,
-        "conversationsDeleted": conversations_deleted,
-        "messagesDeleted": messages_deleted,
     }

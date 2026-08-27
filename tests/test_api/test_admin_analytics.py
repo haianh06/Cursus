@@ -151,3 +151,36 @@ def test_get_analytics_fails_closed_for_a_caller_with_no_organization():
 
     assert data["at_risk_student_count"] == 0
     assert data["weekly_risk_trend"] == []
+
+
+@pytest.mark.asyncio
+async def test_admin_analytics_summary_uses_measured_catalog_contract(client):
+    """The Admin dashboard must expose the chung summary contract, not the
+    legacy simulated with_cursus/baseline KPI cards."""
+    org = ensure_org("analytics-summary-org", "Analytics Summary Org")
+    admin_email = f"analytics.summary.admin.{uuid.uuid4().hex}@example.test"
+    ensure_user(email=admin_email, org_id=org, role=UserRole.ADMIN)
+
+    token = await login(client, admin_email)
+    response = await client.get(
+        "/api/v1/admin/analytics/summary",
+        headers=auth_headers(token),
+    )
+
+    assert response.status_code == 200, response.text
+    data = response.json()["data"]
+    assert set(data) == {
+        "at_risk_students",
+        "ingested_courses",
+        "total_courses",
+        "total_documents",
+        "total_chunks",
+        "measurement_status",
+        "method_note",
+    }
+    assert data["measurement_status"] == "not_measured"
+    assert data["total_courses"] >= data["ingested_courses"] >= 0
+    assert data["total_documents"] >= 0
+    assert data["total_chunks"] >= 0
+    assert data["at_risk_students"] >= 0
+    assert data["method_note"]

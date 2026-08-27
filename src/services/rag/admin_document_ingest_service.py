@@ -5,6 +5,7 @@ import logging
 import re
 import uuid
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 
 from sqlalchemy import func
@@ -19,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_UPLOADS_ROOT = ROOT / "data" / "admin_uploads"
 ALLOWED_EXTENSIONS = frozenset({".md", ".txt"})
 MAX_UPLOAD_BYTES = 2 * 1024 * 1024
+MAX_CONTENT_PREVIEW_CHARS = 100_000
 MAX_CHUNKS = 80
 # SYLLABUS was the only value this pipeline ever wrote, unconditionally --
 # LECTURE (and the rest of DocType) were reachable in the enum but no upload
@@ -67,11 +69,31 @@ class AdminDocumentIngestService:
 
     def list_documents(self, course_code: str) -> list[dict]:
         course = self._course(course_code)
-        documents = self._db.query(models.Document).filter_by(course_id=course.id).order_by(models.Document.title).all()
-        return [
-            self._serialize(document)
-            for document in documents
+        documents = [
+            document
+            for document in self._db.query(models.Document).filter_by(course_id=course.id).all()
             if (document.metadata_info or {}).get("source") == "admin_curriculum"
+        ]
+        latest_by_group: dict[str, models.Document] = {}
+        for document in documents:
+            group = document.version_group or document.id
+            current = latest_by_group.get(group)
+            if current is None or _version_number(document.version) > _version_number(current.version):
+                latest_by_group[group] = document
+        return [self._serialize(document) for document in sorted(latest_by_group.values(), key=lambda item: item.title)]
+
+    def list_versions(self, document_id: str) -> list[dict]:
+        document = self._admin_document(document_id)
+        group = document.version_group or document.id
+        versions = (
+            self._db.query(models.Document)
+            .filter(models.Document.course_id == document.course_id, models.Document.version_group == group)
+            .all()
+        )
+        return [
+            self._serialize(item)
+            for item in sorted(versions, key=lambda item: _version_number(item.version), reverse=True)
+            if (item.metadata_info or {}).get("source") == "admin_curriculum"
         ]
 
     def ingest_new(
@@ -138,37 +160,110 @@ class AdminDocumentIngestService:
         paragraphs = _validated_paragraphs(validated.text)
         _validate_chunk_limit(paragraphs)
         content_flags = _scan_and_log(validated.text, course_code=course.code, actor_user_id=actor_user_id)
-        old_path = self._absolute_path(document.file_path)
-        # Always stage replacements under a fresh path so a rollback cannot
-        # overwrite the currently committed file. The runner removes the old
-        # path only after the database transaction commits.
-        new_path = self._write(f"{document.id}_replacement_{uuid.uuid4().hex}", validated)
+        replacement_id = f"doc_admin_{uuid.uuid4().hex}"
+        new_path = self._write(replacement_id, validated)
         try:
-            self._db.query(models.DocumentChunk).filter_by(document_id=document.id).delete(synchronize_session=False)
-            document.title = validated.title
-            document.file_path = self._stored_path(new_path)
-            document.version = str(int(document.version or "0") + 1)
-            document.checksum = hashlib.sha256(validated.text.encode("utf-8")).hexdigest()
-            document.provenance = {**(document.provenance or {}), "course_code": course.code}
-            # Content changed -- any prior validation no longer describes
-            # what's on disk now. Must be re-validated before it can publish.
-            document.validated_at = None
-            document.validated_by = None
-            document.metadata_info = {
+            next_version = str(self._next_version(document.version_group or document.id))
+            metadata = {
                 **(document.metadata_info or {}),
                 "uploaded_by": actor_user_id,
                 "original_filename": validated.filename,
                 "content_flagged": bool(content_flags),
                 "content_flags": content_flags,
             }
-            chunk_count = self._chunk(document, paragraphs, course.code)
+            replacement = models.Document(
+                id=replacement_id,
+                course_id=document.course_id,
+                title=validated.title,
+                file_path=self._stored_path(new_path),
+                doc_type=document.doc_type,
+                version=next_version,
+                metadata_info=metadata,
+                scope=document.scope,
+                publication_status="DRAFT",
+                version_group=document.version_group or document.id,
+                previous_version_id=document.id,
+                provenance={**(document.provenance or {}), "course_code": course.code},
+                checksum=hashlib.sha256(validated.text.encode("utf-8")).hexdigest(),
+            )
+            self._db.add(replacement)
+            if document.publication_status != "PUBLISHED":
+                document.publication_status = "ARCHIVED"
+                document.archived_at = datetime.utcnow()
+                document.change_reason = "Superseded by a replacement draft"
+            self._db.flush()
+            chunk_count = self._chunk(replacement, paragraphs, course.code)
         except Exception:
             _unlink_file(new_path)
             raise
-        result = self._serialize(document)
+        result = self._serialize(replacement)
         result["chunk_count"] = chunk_count
         result["_created_path"] = new_path
-        result["_cleanup_path"] = old_path if old_path != new_path else None
+        result["_cleanup_path"] = None
+        return result
+
+    def rollback(self, *, document_id: str, actor_user_id: str, change_reason: str) -> dict:
+        target = self._admin_document(document_id)
+        if target.publication_status != "ARCHIVED":
+            raise ValueError("Rollback target must be an archived version")
+        source_bytes = self.read_source_bytes(target)
+        if source_bytes is None:
+            raise ValueError("Rollback source file is unavailable")
+        filename = (target.metadata_info or {}).get("original_filename") or f"{target.title}.md"
+        validated = validate_admin_document(filename, source_bytes)
+        paragraphs = _validated_paragraphs(validated.text)
+        _validate_chunk_limit(paragraphs)
+        group = target.version_group or target.id
+        rollback_id = f"doc_admin_{uuid.uuid4().hex}"
+        new_path = self._write(rollback_id, validated)
+        now = datetime.utcnow()
+        try:
+            active_versions = (
+                self._db.query(models.Document)
+                .filter(
+                    models.Document.course_id == target.course_id,
+                    models.Document.version_group == group,
+                    models.Document.publication_status == "PUBLISHED",
+                )
+                .all()
+            )
+            for active in active_versions:
+                active.publication_status = "ARCHIVED"
+                active.archived_at = now
+                active.change_reason = f"Archived by rollback to version {target.version}"
+            rollback = models.Document(
+                id=rollback_id,
+                course_id=target.course_id,
+                title=target.title,
+                file_path=self._stored_path(new_path),
+                doc_type=target.doc_type,
+                version=str(self._next_version(group)),
+                metadata_info={
+                    **(target.metadata_info or {}),
+                    "uploaded_by": actor_user_id,
+                    "rollback_of": target.id,
+                },
+                scope=target.scope,
+                publication_status="PUBLISHED",
+                version_group=group,
+                previous_version_id=active_versions[0].id if active_versions else target.id,
+                provenance={**(target.provenance or {}), "rollback_of": target.id},
+                checksum=hashlib.sha256(validated.text.encode("utf-8")).hexdigest(),
+                validated_at=now,
+                validated_by=actor_user_id,
+                published_at=now,
+                published_by=actor_user_id,
+                change_reason=change_reason,
+            )
+            self._db.add(rollback)
+            self._db.flush()
+            chunk_count = self._chunk(rollback, paragraphs, self._db.get(models.Course, target.course_id).code)
+        except Exception:
+            _unlink_file(new_path)
+            raise
+        result = self._serialize(rollback)
+        result["chunk_count"] = chunk_count
+        result["_created_path"] = new_path
         return result
 
     def delete(self, *, document_id: str, actor_user_id: str | None) -> Path:
@@ -188,6 +283,10 @@ class AdminDocumentIngestService:
         if course is None:
             raise LookupError(f"Course not found: {code}")
         return course
+
+    def _next_version(self, version_group: str) -> int:
+        versions = self._db.query(models.Document.version).filter(models.Document.version_group == version_group).all()
+        return max((_version_number(value) for (value,) in versions), default=0) + 1
 
     def _admin_document(self, document_id: str) -> models.Document:
         document = self._db.get(models.Document, document_id)
@@ -227,6 +326,27 @@ class AdminDocumentIngestService:
         except OSError:
             return None
 
+    def get_content(self, document_id: str, *, max_chars: int = MAX_CONTENT_PREVIEW_CHARS) -> dict:
+        """Return a bounded UTF-8 preview for an Admin curriculum document."""
+        document = self._admin_document(document_id)
+        source_bytes = self.read_source_bytes(document)
+        if source_bytes is None:
+            raise LookupError("Document file not found")
+        try:
+            content = source_bytes.decode("utf-8")
+        except UnicodeDecodeError as exc:
+            raise ValueError("Document file is not valid UTF-8") from exc
+
+        bounded_limit = max(1, min(max_chars, MAX_CONTENT_PREVIEW_CHARS))
+        return {
+            "id": document.id,
+            "filename": (document.metadata_info or {}).get("original_filename"),
+            "title": document.title,
+            "version": document.version,
+            "content": content[:bounded_limit],
+            "truncated": len(content) > bounded_limit,
+        }
+
     def _chunk(self, document: models.Document, paragraphs: list[str], course_code: str) -> int:
         for index, paragraph in enumerate(paragraphs):
             section = _section_heading(paragraph)
@@ -261,7 +381,24 @@ class AdminDocumentIngestService:
             "version": document.version,
             "chunk_count": self._db.query(models.DocumentChunk).filter_by(document_id=document.id).count(),
             "content_flagged": bool(meta.get("content_flagged")),
+            "publication_status": document.publication_status or "DRAFT",
+            "version_group": document.version_group or document.id,
+            "previous_version_id": document.previous_version_id,
+            "validated_at": document.validated_at.isoformat() if document.validated_at else None,
+            "published_at": document.published_at.isoformat() if document.published_at else None,
+            "archived_at": document.archived_at.isoformat() if document.archived_at else None,
+            "change_reason": document.change_reason,
         }
+
+    def serialize_document(self, document: models.Document) -> dict:
+        return self._serialize(document)
+
+
+def _version_number(value: str | int | None) -> int:
+    try:
+        return int(str(value or "0").lstrip("vV"))
+    except ValueError:
+        return 0
 
 
 def _safe_filename(filename: str) -> str:

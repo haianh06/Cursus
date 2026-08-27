@@ -17,12 +17,9 @@ behavior regardless of how the permission check evolves. Assignments are
 the one exception (plain READ): they're course material, not the student's
 own private data (see that route's own comment).
 
-"Sessions" (self-study sessions) tab from the source spec is NOT included
--- this branch has no `self_study_sessions` table (that table only exists
-on chung's own, incompatible migration chain, see
-docs/AUDIT_NHANH_CHUNG_ADMIN_23AUG.md). Fabricating a new table for it in
-this pass would be exactly the kind of unreviewed schema change the
-standing project rules ask to avoid this close to a deadline.
+The self-study sessions tab uses the `self_study_sessions` table already
+present in this branch's restored student-role migration. It follows the
+same audited-read path as every other raw tab; no new schema is introduced.
 """
 from __future__ import annotations
 
@@ -80,6 +77,14 @@ async def _audited_read(
 ):
     """Runs the fail-closed audit-then-release pattern around already-loaded
     `items`. Returns `items` only after the audit commit succeeds."""
+    subject_student_id = None
+    if resource_id.startswith("collection:"):
+        subject_student_id = resource_id.rsplit(":", 1)[-1]
+    metadata = {
+        "resourceCount": len(items),
+        **({"subjectStudentId": subject_student_id} if subject_student_id else {}),
+        **(extra_metadata or {}),
+    }
     try:
         await AuditService(AuditRepository(db)).log_event(
             event_type=SENSITIVE_READ_EVENT,
@@ -87,7 +92,7 @@ async def _audited_read(
             actor_user_id=actor_id,
             resource_type=resource_type,
             resource_id=resource_id,
-            metadata={"resourceCount": len(items), **(extra_metadata or {})},
+            metadata=metadata,
             commit=False,
         )
         db.commit()
@@ -288,6 +293,52 @@ async def get_student_reminders(
 
 
 @router.get(
+    "/{student_id}/sessions",
+    dependencies=[Depends(require_permission(Resource.SESSION, Permission.READ_SENSITIVE))],
+)
+async def get_student_self_study_sessions(
+    student_id: str,
+    page: int = PageQuery,
+    page_size: int = PageSizeQuery,
+    current_user: models.User = Depends(get_current_user_from_token),
+    db: Session = Depends(get_db),
+):
+    """Read self-study Pomodoro sessions through the same fail-closed gate
+    as plans/tasks. Session rows contain timing and focus activity, so they
+    are sensitive student data even though the session table itself is not a
+    risk table."""
+    _require_student(db, current_user, student_id)
+    rows = _paginate(
+        db.query(models.SelfStudySession)
+        .filter_by(student_id=student_id)
+        .order_by(models.SelfStudySession.started_at.desc()),
+        page,
+        page_size,
+    ).all()
+    items = [
+        {
+            "id": session.id,
+            "title": session.title,
+            "plannedMinutes": session.planned_minutes,
+            "startedAt": session.started_at.isoformat(),
+            "scheduledEndAt": session.scheduled_end_at.isoformat(),
+            "endedAt": session.ended_at.isoformat() if session.ended_at else None,
+            "actualMinutes": session.actual_minutes,
+            "pomodorosCompleted": session.pomodoros_completed,
+            "status": session.status,
+        }
+        for session in rows
+    ]
+    return {"success": True, "data": await _audited_read(
+        db,
+        actor_id=current_user.id,
+        resource_type="SELF_STUDY_SESSION",
+        resource_id=_collection_resource_id("sessions", student_id),
+        items=items,
+    )}
+
+
+@router.get(
     "/{student_id}/assignments",
     dependencies=[Depends(require_permission(Resource.ASSIGNMENT, Permission.READ))],
 )
@@ -386,72 +437,6 @@ async def get_student_reflections(
     return {"success": True, "data": await _audited_read(
         db, actor_id=current_user.id, resource_type="REFLECTION",
         resource_id=_collection_resource_id("reflections", student_id), items=items,
-    )}
-
-
-@router.get(
-    "/{student_id}/conversations",
-    dependencies=[Depends(require_permission(Resource.CHAT, Permission.READ_SENSITIVE))],
-)
-async def get_student_conversations(
-    student_id: str,
-    page: int = PageQuery,
-    page_size: int = PageSizeQuery,
-    current_user: models.User = Depends(get_current_user_from_token),
-    db: Session = Depends(get_db),
-):
-    _require_student(db, current_user, student_id)
-    rows = _paginate(
-        db.query(models.Conversation).filter_by(student_id=student_id).order_by(models.Conversation.created_at.desc()),
-        page,
-        page_size,
-    ).all()
-    items = [
-        {"id": c.id, "title": c.title, "subjectCode": c.subject_code, "createdAt": c.created_at.isoformat()}
-        for c in rows
-    ]
-    return {"success": True, "data": await _audited_read(
-        db, actor_id=current_user.id, resource_type="CHAT",
-        resource_id=_collection_resource_id("conversations", student_id), items=items,
-    )}
-
-
-@router.get(
-    "/{student_id}/conversations/{conversation_id}",
-    dependencies=[Depends(require_permission(Resource.CHAT, Permission.READ_SENSITIVE))],
-)
-async def get_student_conversation_detail(
-    student_id: str,
-    conversation_id: str,
-    page: int = PageQuery,
-    page_size: int = PageSizeQuery,
-    current_user: models.User = Depends(get_current_user_from_token),
-    db: Session = Depends(get_db),
-):
-    _require_student(db, current_user, student_id)
-    conversation = db.get(models.Conversation, conversation_id)
-    if not conversation or conversation.student_id != student_id:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="conversation_not_found")
-    rows = _paginate(
-        db.query(models.Message).filter_by(conversation_id=conversation_id).order_by(models.Message.created_at.asc()),
-        page,
-        page_size,
-    ).all()
-    items = [
-        {
-            "id": m.id,
-            "sender": m.sender,
-            "content": m.content,
-            "createdAt": m.created_at.isoformat(),
-        }
-        for m in rows
-    ]
-    # Detail read: resource_id names the exact conversation, not a
-    # collection id -- an investigation should see exactly which
-    # conversation was opened, not just "some conversations tab was viewed."
-    return {"success": True, "data": await _audited_read(
-        db, actor_id=current_user.id, resource_type="CHAT",
-        resource_id=conversation_id, items=items,
     )}
 
 

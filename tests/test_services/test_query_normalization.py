@@ -1,4 +1,3 @@
-from src.services.ai.conversation_intent_service import ConversationIntentService
 from src.services.rag.query_normalization import (
     looks_like_accent_stripped_vietnamese,
     normalize_query,
@@ -16,14 +15,6 @@ def test_normalize_typos_and_accents():
     result = normalize_query("`xin chao`")
     assert result.folded == "xin chao"
     assert "chào" in result.cleaned or result.cleaned == "xin chào"
-
-
-def test_conversation_intent_handles_noisy_greeting():
-    service = ConversationIntentService()
-    intent = service.resolve("`Xin chào`", subject_code="SSA101")
-    assert intent.is_chat is True
-    assert intent.answer
-    assert "SSA101" in intent.answer
 
 
 # --- Vietnamese-diacritics-loss detector (a weaker fallback LLM occasionally

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { CalendarRange, Plus, Trash2, Save, GraduationCap } from 'lucide-react';
+import { CalendarDays, CalendarRange, Clock3, Plus, Trash2, Save, GraduationCap } from 'lucide-react';
 import {
   getActiveAcademicTerm,
   setActiveAcademicTerm,
@@ -144,6 +144,23 @@ export default function AdminAcademicPanel() {
     return <div className="card p-5 text-xs text-fg-muted">{lang === 'vi' ? 'Đang tải…' : 'Loading…'}</div>;
   }
 
+  const calendarAnchor = term?.start_date ? new Date(`${term.start_date}T00:00:00`) : new Date();
+  const calendarYear = calendarAnchor.getFullYear();
+  const calendarMonth = calendarAnchor.getMonth();
+  const monthStartOffset = (new Date(calendarYear, calendarMonth, 1).getDay() + 6) % 7;
+  const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+  const calendarCells = [
+    ...Array.from({ length: monthStartOffset }, () => null),
+    ...Array.from({ length: daysInMonth }, (_, index) => index + 1),
+  ];
+  while (calendarCells.length % 7 !== 0) calendarCells.push(null);
+  const scheduledSessions = exams.flatMap((exam) => (exam.sessions || []).map((session) => ({
+    ...session,
+    courseCode: exam.course_code || exam.course_id,
+    kind: exam.kind,
+  }))).sort((left, right) => String(left.exam_date).localeCompare(String(right.exam_date)));
+  const sessionDateSet = new Set(scheduledSessions.map((session) => session.exam_date));
+
   return (
     <div className="flex flex-col gap-6 text-left">
       {error && (
@@ -152,8 +169,66 @@ export default function AdminAcademicPanel() {
         </div>
       )}
 
+      <section className="grid min-w-0 gap-4 xl:grid-cols-[15rem_minmax(0,1fr)_18rem]" aria-label={lang === 'vi' ? 'Tổng quan học kỳ và lịch thi' : 'Term and exam overview'}>
+        <article className="card p-5">
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="font-display text-lg font-bold text-fg">{term?.name || termForm.name || '—'}</h2>
+            {term && <span className="badge badge-success text-[9px] font-bold">{lang === 'vi' ? 'Đang hoạt động' : 'Active'}</span>}
+          </div>
+          <dl className="mt-5 space-y-4 text-xs">
+            <div><dt className="text-fg-muted">{lang === 'vi' ? 'Bắt đầu' : 'Starts'}</dt><dd className="mono mt-1 font-semibold text-fg">{term?.start_date || '—'}</dd></div>
+            <div><dt className="text-fg-muted">{lang === 'vi' ? 'Kết thúc' : 'Ends'}</dt><dd className="mono mt-1 font-semibold text-fg">{term?.end_date || '—'}</dd></div>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="rounded-md border border-line bg-surface-elevated p-3"><dt className="text-[9px] uppercase text-fg-muted">{lang === 'vi' ? 'Tuần học' : 'Study'}</dt><dd className="mono mt-1 text-lg font-bold text-accent">{term?.study_weeks || termForm.studyWeeks}</dd></div>
+              <div className="rounded-md border border-line bg-surface-elevated p-3"><dt className="text-[9px] uppercase text-fg-muted">{lang === 'vi' ? 'Tuần thi' : 'Exams'}</dt><dd className="mono mt-1 text-lg font-bold text-accent">{term?.exam_weeks || termForm.examWeeks}</dd></div>
+            </div>
+          </dl>
+          <button type="button" className="btn btn-outline mt-5 min-h-10 w-full text-xs" onClick={() => document.getElementById('term-config')?.scrollIntoView({ behavior: 'smooth' })}>
+            {lang === 'vi' ? 'Chỉnh sửa học kỳ' : 'Edit term'}
+          </button>
+        </article>
+
+        <article className="card min-w-0 p-5">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <h2 className="flex items-center gap-2 text-sm font-bold text-fg"><CalendarDays size={16} className="text-accent" />{calendarAnchor.toLocaleDateString(lang === 'vi' ? 'vi-VN' : 'en-US', { month: 'long', year: 'numeric' })}</h2>
+            <span className="text-[10px] text-fg-muted">{lang === 'vi' ? 'Lịch học & đánh giá' : 'Study & assessment calendar'}</span>
+          </div>
+          <div className="grid grid-cols-7 text-center text-[10px] font-bold uppercase text-fg-muted">
+            {(lang === 'vi' ? ['T2','T3','T4','T5','T6','T7','CN'] : ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']).map((day) => <span key={day} className="py-2">{day}</span>)}
+          </div>
+          <div className="grid grid-cols-7 overflow-hidden rounded-md border border-line bg-surface-card">
+            {calendarCells.map((day, index) => {
+              const isoDate = day ? `${calendarYear}-${String(calendarMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}` : null;
+              const hasExam = isoDate && sessionDateSet.has(isoDate);
+              const isStart = day === calendarAnchor.getDate();
+              return (
+                <div key={`${day ?? 'blank'}-${index}`} className="relative flex min-h-10 items-center justify-center border-b border-r border-line text-xs last:border-r-0">
+                  {day && <span className={`mono inline-flex h-7 w-7 items-center justify-center rounded-full ${isStart ? 'bg-accent-cta text-white' : 'text-fg'}`}>{day}</span>}
+                  {hasExam && <span className="absolute bottom-1 h-1.5 w-1.5 rounded-full bg-danger" aria-label={lang === 'vi' ? 'Có lịch thi' : 'Exam scheduled'} />}
+                </div>
+              );
+            })}
+          </div>
+          <div className="mt-3 flex flex-wrap gap-4 text-[10px] text-fg-muted"><span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-accent" />{lang === 'vi' ? 'Bắt đầu học kỳ' : 'Term start'}</span><span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-danger" />{lang === 'vi' ? 'Lịch thi' : 'Exam'}</span></div>
+        </article>
+
+        <aside className="admin-detail-panel">
+          <h2 className="flex items-center gap-2 text-sm font-bold text-fg"><Clock3 size={15} className="text-accent" />{lang === 'vi' ? 'Lịch đánh giá sắp tới' : 'Upcoming assessments'}</h2>
+          <div className="mt-3 space-y-2">
+            {scheduledSessions.length === 0 ? (
+              <div className="flex min-h-44 flex-col items-center justify-center rounded-md border border-dashed border-line px-4 text-center text-xs text-fg-muted"><GraduationCap size={20} className="mb-2 text-accent" />{lang === 'vi' ? 'Chưa có lịch thi trong học kỳ.' : 'No exams scheduled for this term.'}</div>
+            ) : scheduledSessions.slice(0, 4).map((session, index) => (
+              <div key={`${session.courseCode}-${session.exam_date}-${index}`} className="rounded-md border border-line p-3">
+                <div className="flex items-start justify-between gap-2"><strong className="mono text-xs text-fg">{session.courseCode}</strong><span className="mono text-xs font-bold text-accent">{new Date(`${session.exam_date}T00:00:00`).getDate()}</span></div>
+                <p className="mt-1 text-[10px] text-fg-muted">{session.kind} · Slot {session.slot_id}</p>
+              </div>
+            ))}
+          </div>
+        </aside>
+      </section>
+
       {/* Academic term */}
-      <div className="card p-5">
+      <div id="term-config" className="card p-5">
         <div className="flex items-center gap-2 mb-4">
           <CalendarRange size={16} className="text-accent" />
           <h2 className="text-sm font-bold text-fg">{lang === 'vi' ? 'Học kỳ hiện hành' : 'Active academic term'}</h2>

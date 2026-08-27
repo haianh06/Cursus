@@ -76,13 +76,18 @@ class OrgInviteService:
                 created_at=now,
             )
         )
-        await self._notifications.send_org_invite(
-            email,
-            token,
-            role=invite.role,
-            full_name=invite.full_name,
-            org_name=org.name,
-        )
+        try:
+            await self._notifications.send_org_invite(
+                email,
+                token,
+                role=invite.role,
+                full_name=invite.full_name,
+                org_name=org.name,
+            )
+        except Exception as exc:
+            self._invites.set_delivery_status(invite, status="failed", sent_at=None)
+            raise OrgInviteError("Invitation delivery failed") from exc
+        self._invites.set_delivery_status(invite, status="sent", sent_at=now)
         return invite
 
     def get_valid_invite_by_token(self, token: str) -> ResolvedInvite:
@@ -106,6 +111,36 @@ class OrgInviteService:
         if not invite or invite.organization_id != organization_id:
             raise InviteNotFoundError("Invitation not found")
         return self._invites.revoke(invite, _utc_now_naive())
+
+    async def resend(self, invite_id: str, *, organization_id: str) -> OrgInvite:
+        invite = self._invites.get_by_id(invite_id)
+        if not invite or invite.organization_id != organization_id:
+            raise InviteNotFoundError("Invitation not found")
+        self._assert_usable(invite)
+
+        org = self._organizations.get_by_id(organization_id)
+        if not org:
+            raise InviteNotFoundError("Invitation not found")
+
+        token = create_opaque_token()
+        now = _utc_now_naive()
+        self._invites.rotate_token(
+            invite,
+            token_hash=hash_opaque_token(token),
+            expires_at=now + timedelta(minutes=self._settings.org_invite_token_minutes),
+        )
+        try:
+            await self._notifications.send_org_invite(
+                invite.email,
+                token,
+                role=invite.role,
+                full_name=invite.full_name,
+                org_name=org.name,
+            )
+        except Exception as exc:
+            self._invites.set_delivery_status(invite, status="failed", sent_at=None)
+            raise OrgInviteError("Invitation delivery failed") from exc
+        return self._invites.set_delivery_status(invite, status="sent", sent_at=now)
 
     def _assert_usable(self, invite: OrgInvite) -> None:
         now = _utc_now_naive()

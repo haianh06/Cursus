@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Clock, Sparkles } from 'lucide-react';
 import { SkeletonRows } from '../shared/Skeleton';
 import ProvenanceBadge from '../shared/ProvenanceBadge';
@@ -7,7 +7,6 @@ import Timetable from './Timetable';
 import { useGate2 } from '../../context/Gate2Context';
 import { useLanguage } from '../../context/LanguageContext';
 import { isToday } from '../../lib/dates.js';
-import { requestCompanionReminder } from '../../lib/companionChatBus';
 
 const STATUS_LABEL = {
   vi: { COMPLETED: 'Hoàn thành', IN_PROGRESS: 'Đang làm', DEFERRED: 'Đã dời' },
@@ -102,39 +101,18 @@ function TodayTaskRow({ task, onStart, onComplete, onDefer, busy, lang }) {
  * screens. Left: the real hour-by-hour calendar (`Timetable`, defaulted to
  * its existing "day" view — classes + self-study blocks, unchanged data).
  * Right: a checklist of today's real StudyTasks (same start/complete/defer
- * actions as everywhere else in Gate2). On first load, if there are open
- * tasks due today, it asks the floating companion chat to proactively
- * surface a reminder (see lib/companionChatBus.js) — real task data, not a
- * scripted chat line.
+ * actions as everywhere else in Gate2).
  */
 export default function TodayPlanScreen() {
   const { lang } = useLanguage();
   const { tasks, deferReasons, loading, mutating, startTask, completeTask, deferTask } = useGate2();
   const [deferTarget, setDeferTarget] = useState(null);
   const [actionError, setActionError] = useState(null);
-  const remindedRef = useRef(false);
 
   const todayTasks = useMemo(
     () => (tasks || []).filter((task) => isToday(task.scheduledDate)),
     [tasks],
   );
-
-  useEffect(() => {
-    if (loading || remindedRef.current) return;
-    remindedRef.current = true;
-    const openTasks = todayTasks.filter(
-      (task) => task.status !== 'COMPLETED' && task.status !== 'DEFERRED',
-    );
-    if (openTasks.length > 0) {
-      requestCompanionReminder({
-        tasks: openTasks.slice(0, 3).map((task) => ({
-          id: task.id,
-          title: task.title,
-          estimatedMinutes: task.estimatedMinutes,
-        })),
-      });
-    }
-  }, [loading, todayTasks]);
 
   const run = async (fn) => {
     setActionError(null);

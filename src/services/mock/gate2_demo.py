@@ -859,6 +859,10 @@ class Gate2DemoService:
                     rescheduled_count=0,
                 )
             )
+            # ProgressEvent only stores the task foreign key; there is no ORM
+            # relationship for SQLAlchemy to infer insert ordering from. Flush
+            # the daily plan, schedule block, and task before adding its event.
+            self._db.flush()
             task_meta[task_id] = {
                 "scheduled_date": scheduled.date().isoformat(),
                 "provenance": prov.ai_suggested(),

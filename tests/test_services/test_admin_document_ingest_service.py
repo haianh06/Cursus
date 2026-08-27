@@ -37,7 +37,7 @@ def test_validation_rejects_unsupported_content(filename, content, message):
         validate_admin_document(filename, content)
 
 
-def test_admin_document_lifecycle_creates_retrievable_curriculum_chunks(db_session, tmp_path):
+def test_admin_document_lifecycle_only_exposes_published_curriculum_chunks(db_session, tmp_path):
     from src.services.rag.admin_document_ingest_service import AdminDocumentIngestService
 
     service = AdminDocumentIngestService(db_session, uploads_root=tmp_path)
@@ -50,10 +50,14 @@ def test_admin_document_lifecycle_creates_retrievable_curriculum_chunks(db_sessi
 
     chunks = ChunkRepository(db_session).list_chunks_for_course(subject_code="SSA101")
     assert created["chunk_count"] == 2
-    assert len(chunks) == 2
-    assert all(chunk.doc_title == "week1" for chunk in chunks)
+    assert chunks == []
     document = db_session.get(Document, created["id"])
     assert document.metadata_info["source"] == "admin_curriculum"
+    document.publication_status = "PUBLISHED"
+    db_session.flush()
+    chunks = ChunkRepository(db_session).list_chunks_for_course(subject_code="SSA101")
+    assert len(chunks) == 2
+    assert all(chunk.doc_title == "week1" for chunk in chunks)
 
     replaced = service.replace(
         document_id=created["id"],
@@ -61,13 +65,20 @@ def test_admin_document_lifecycle_creates_retrievable_curriculum_chunks(db_sessi
         content=b"Replacement only",
         actor_user_id="admin_demo",
     )
-    assert replaced["id"] == created["id"]
+    assert replaced["id"] != created["id"]
+    assert replaced["version"] == "2"
     assert replaced["chunk_count"] == 1
-    assert db_session.query(DocumentChunk).filter_by(document_id=created["id"]).count() == 1
+    assert db_session.get(Document, created["id"]).publication_status == "PUBLISHED"
+    assert db_session.get(Document, replaced["id"]).previous_version_id == created["id"]
+    assert db_session.query(DocumentChunk).filter_by(document_id=created["id"]).count() == 2
+    assert db_session.query(DocumentChunk).filter_by(document_id=replaced["id"]).count() == 1
+    # The published predecessor remains the learner-visible version while its
+    # replacement stays a draft awaiting validation and publication.
+    assert [chunk.doc_title for chunk in ChunkRepository(db_session).list_chunks_for_course(subject_code="SSA101")] == ["week1", "week1"]
 
-    service.delete(document_id=created["id"], actor_user_id="admin_demo")
-    assert db_session.get(Document, created["id"]) is None
-    assert db_session.query(DocumentChunk).filter_by(document_id=created["id"]).count() == 0
+    service.delete(document_id=replaced["id"], actor_user_id="admin_demo")
+    assert db_session.get(Document, replaced["id"]) is None
+    assert db_session.get(Document, created["id"]) is not None
 
 
 def test_admin_document_rejects_truncating_documents(db_session, tmp_path):

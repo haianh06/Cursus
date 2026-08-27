@@ -46,6 +46,36 @@ class RealCourseSpec(NamedTuple):
     semester: str
 
 
+def _load_valid_syllabus_payload(path: Path) -> dict | None:
+    """Return a payload only when it matches the parsed-syllabus contract.
+
+    Planning summaries can also use the ``chunks_<CODE>.json`` naming
+    convention. A filename alone is therefore not enough evidence that a
+    document is an official parsed syllabus. Real payloads must carry
+    structured metadata and at least one non-empty session chunk.
+    """
+    if not path.is_file():
+        return None
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError, UnicodeDecodeError):
+        logger.warning("real_curriculum: invalid syllabus JSON at %s", path)
+        return None
+    if not isinstance(payload, dict):
+        return None
+    meta = payload.get("meta")
+    chunks = payload.get("chunks")
+    if not isinstance(meta, dict) or not meta or not isinstance(chunks, list):
+        return None
+    has_session = any(
+        isinstance(chunk, dict)
+        and str(chunk.get("section") or "").startswith("Session ")
+        and bool(str(chunk.get("text") or "").strip())
+        for chunk in chunks
+    )
+    return payload if has_session else None
+
+
 def _load_catalog_specs() -> dict[str, RealCourseSpec]:
     catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
     specs: dict[str, RealCourseSpec] = {}
@@ -67,7 +97,7 @@ def discover_real_course_codes() -> list[str]:
     for code in specs:
         if code in _EXCLUDED_CODES:
             continue
-        if (CHUNKS_DIR / f"chunks_{code}.json").exists():
+        if _load_valid_syllabus_payload(CHUNKS_DIR / f"chunks_{code}.json") is not None:
             codes.append(code)
     return sorted(codes)
 
@@ -115,13 +145,18 @@ def ingest_real_course(db: Session, code: str) -> int:
         logger.warning("real_curriculum: %s is not a catalog subject code", code)
         return 0
 
+    payload_path = CHUNKS_DIR / f"chunks_{code}.json"
+    payload = _load_valid_syllabus_payload(payload_path)
+    if payload is None:
+        logger.warning("real_curriculum: %s has no valid parsed syllabus", code)
+        return 0
+
     course = ensure_course_row(db, spec)
     chunks = load_official_chunks(code, fallback_title=spec.name)
     if not chunks:
         return 0
 
-    payload_path = CHUNKS_DIR / f"chunks_{code}.json"
-    meta = json.loads(payload_path.read_text(encoding="utf-8")).get("meta") or {}
+    meta = payload["meta"]
     syllabus_id = str(meta.get("Syllabus ID") or "").strip()
     approved = str(meta.get("ApprovedDate") or "").strip()
     version = f"{syllabus_id}-{approved}" if syllabus_id else "unknown"
@@ -182,10 +217,9 @@ def get_curriculum_detail(code: str) -> dict | None:
     here; `Note` is returned as-is under its own key, and no LO column
     exists in the returned session shape.
     """
-    path = CHUNKS_DIR / f"chunks_{code}.json"
-    if not path.exists():
+    payload = _load_valid_syllabus_payload(CHUNKS_DIR / f"chunks_{code}.json")
+    if payload is None:
         return None
-    payload = json.loads(path.read_text(encoding="utf-8"))
     chunks = payload.get("chunks") or []
     clos: list[dict] = []
     sessions: list[dict] = []

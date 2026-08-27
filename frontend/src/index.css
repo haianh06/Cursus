@@ -110,7 +110,7 @@
 @layer base {
   :root {
     /* Dynamic Typography Setup */
-    --font-family-custom: 'Geist', 'Inter', -apple-system, sans-serif;
+    --font-family-custom: 'Sora', 'Inter', -apple-system, sans-serif;
     --font-size-adjust: 100%; /* base size */
 
     /* Base canvas - Warm Premium Alabaster / Milk theme */
@@ -377,7 +377,7 @@
   }
 
   h1, h2, h3, h4, h5, h6, .font-display {
-    font-family: 'Geist', sans-serif;
+    font-family: 'Sora', sans-serif;
     font-weight: 700;
   }
 }
@@ -402,7 +402,7 @@
 
 /* Redesigned Typography Scale & Sizing for Landing Page */
 .hero-heading {
-  font-family: 'Geist', sans-serif;
+  font-family: 'Sora', sans-serif;
   font-weight: 700;
   line-height: 1.02;
   letter-spacing: -0.02em;
@@ -428,7 +428,7 @@
 }
 
 .section-heading {
-  font-family: 'Geist', sans-serif;
+  font-family: 'Sora', sans-serif;
   font-weight: 700;
   font-size: 34px; /* mobile */
   line-height: 1.15;
@@ -791,7 +791,7 @@ section[id] {
    the JSX (h2/h3/ul/strong), styled here so the content stays readable
    markup instead of a utility class on every paragraph. */
 .legal-content h2 {
-  font-family: 'Manrope', 'Geist', sans-serif;
+  font-family: 'Manrope', 'Sora', sans-serif;
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--landing-text);
@@ -833,7 +833,7 @@ section[id] {
 }
 
 .landing-wordmark {
-  font-family: 'Geist', sans-serif;
+  font-family: 'Sora', sans-serif;
   font-size: 17.5px;
   font-weight: 650;
   line-height: 1;
@@ -932,7 +932,7 @@ section[id] {
 }
 
 .logo-text-custom {
-  font-family: 'Geist', sans-serif;
+  font-family: 'Sora', sans-serif;
   font-size: 24px !important;
   font-weight: 800 !important;
   letter-spacing: -0.02em !important;
@@ -1020,7 +1020,7 @@ section[id] {
 
 /* SANDBOX SECTION DESIGN METRICS */
 .sandbox-heading {
-  font-family: 'Geist', sans-serif;
+  font-family: 'Sora', sans-serif;
   font-size: 32px !important; /* mobile */
   font-weight: 750 !important;
   line-height: 1.15 !important;
@@ -1185,95 +1185,6 @@ section[id] {
 .bento-cell--evidence { grid-area: evidence; }
 .bento-cell--guardrail { grid-area: guardrail; }
 
-/* ================================================================
-   SANDBOX CHAT INTERFACE
-   ================================================================ */
-.chat-bubble {
-  max-width: 90%;
-  border-radius: 16px;
-  padding: 14px 16px;
-  font-size: 16px;
-  line-height: 1.6;
-}
-
-.chat-bubble-user {
-  background: var(--accent);
-  color: #ffffff;
-  border-bottom-right-radius: 4px;
-}
-
-.chat-bubble-assistant {
-  width: 100%;
-  background: var(--bg-card);
-  border: 1px solid var(--border-ui);
-  color: var(--text-primary);
-  border-bottom-left-radius: 4px;
-}
-
-.chat-bubble-blocked {
-  background: var(--danger-soft);
-  border-color: rgba(239, 68, 68, 0.25);
-}
-
-.chat-text {
-  font-size: 16px;
-  line-height: 1.6;
-}
-
-.source-preview {
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-ui);
-}
-
-.followup-chip {
-  font-family: 'Inter', -apple-system, sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: var(--accent-soft);
-  color: var(--accent-text-safe);
-  border: 1px solid rgba(36, 104, 201, 0.18);
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.followup-chip:hover {
-  background: var(--accent-glow);
-  transform: translateY(-1px);
-}
-.followup-chip:active {
-  transform: translateY(0) scale(0.97);
-}
-
-.feedback-btn {
-  width: 26px;
-  height: 26px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.feedback-btn:hover {
-  background: var(--bg-elevated);
-  color: var(--text-primary);
-}
-
-.feedback-btn-active-up {
-  background: var(--success-soft);
-  color: var(--success);
-}
-
-.feedback-btn-active-down {
-  background: var(--danger-soft);
-  color: var(--danger);
-}
 
 /* ================================================================
    LAYOUTS & CARDS
@@ -2665,7 +2576,7 @@ input:-webkit-autofill:active {
 }
 
 .api-error-screen__heading {
-  font-family: 'Geist', sans-serif;
+  font-family: 'Sora', sans-serif;
   font-weight: 700;
   font-size: 26px;
   line-height: 1.2;
@@ -2826,7 +2737,7 @@ input:-webkit-autofill:active {
 }
 
 .feature-error-card__heading {
-  font-family: 'Geist', sans-serif;
+  font-family: 'Sora', sans-serif;
   font-size: 15px;
   font-weight: 700;
   color: var(--text-primary);
@@ -2900,7 +2811,7 @@ input:-webkit-autofill:active {
 }
 
 .fatal-error-screen__brand-name {
-  font-family: 'Geist', sans-serif;
+  font-family: 'Sora', sans-serif;
   font-size: 22px;
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -2919,7 +2830,7 @@ input:-webkit-autofill:active {
 }
 
 .fatal-error-screen__heading {
-  font-family: 'Geist', sans-serif;
+  font-family: 'Sora', sans-serif;
   font-size: 24px;
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -3004,7 +2915,7 @@ input:-webkit-autofill:active {
 }
 
 .error-state__heading {
-  font-family: 'Geist', sans-serif;
+  font-family: 'Sora', sans-serif;
   font-size: 16px;
   font-weight: 700;
   color: var(--text-primary);

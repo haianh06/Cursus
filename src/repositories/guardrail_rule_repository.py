@@ -56,6 +56,28 @@ class GuardrailRuleRepository:
     def enabled_codes(self) -> frozenset[str]:
         return frozenset(rule.code for rule in self.list_rules() if rule.enabled)
 
+    def preview_set_enabled(self, code: str, *, enabled: bool, reason: str) -> dict:
+        """Return the exact policy delta without publishing or persisting it."""
+        if code not in _KNOWN_CODES:
+            raise LookupError(f"Unknown guardrail rule: {code}")
+        self.ensure_seeded()
+        rule = self._db.query(GuardrailRule).filter_by(code=code).one()
+        if rule.core_locked and not enabled:
+            raise CoreGuardrailLockedError(code)
+
+        current = {item.code: bool(item.enabled) for item in self.list_rules()}
+        proposed = dict(current)
+        proposed[code] = enabled
+        return {
+            "code": code,
+            "current_enabled": current[code],
+            "proposed_enabled": enabled,
+            "core_locked": bool(rule.core_locked),
+            "changed_codes": [item for item in current if current[item] != proposed[item]],
+            "any_disabled": any(not value for value in proposed.values()),
+            "reason": reason,
+        }
+
     def _publish_version(
         self, rules: list[GuardrailRule], *, change_reason: str | None, actor_user_id: str | None
     ) -> GuardrailPolicyVersion:
@@ -104,17 +126,46 @@ class GuardrailRuleRepository:
         self._publish_version(self.list_rules(), change_reason=reason, actor_user_id=actor_user_id)
         return rule
 
-    def restore_defaults(self, actor_user_id: str | None) -> list[GuardrailRule]:
+    def restore_defaults(self, actor_user_id: str | None, *, reason: str | None = None) -> list[GuardrailRule]:
         rules = self.list_rules()
         updated_at = _now()
+        change_reason = reason.strip() if reason and reason.strip() else "Restore defaults"
         for rule in rules:
             rule.enabled = True
-            rule.change_reason = "Restore defaults"
+            rule.change_reason = change_reason
             rule.updated_at = updated_at
             rule.updated_by = actor_user_id
         self._db.flush()
-        self._publish_version(rules, change_reason="Restore defaults", actor_user_id=actor_user_id)
+        self._publish_version(rules, change_reason=change_reason, actor_user_id=actor_user_id)
         return rules
+
+    def rollback(
+        self, version: str, *, actor_user_id: str | None, reason: str
+    ) -> tuple[GuardrailPolicyVersion, GuardrailPolicyVersion]:
+        target = self._db.query(GuardrailPolicyVersion).filter_by(version=version).one_or_none()
+        if target is None:
+            raise LookupError(f"Unknown guardrail policy version: {version}")
+
+        rules = self.list_rules()
+        snapshot = {str(code): bool(enabled) for code, enabled in (target.rules_snapshot or {}).items()}
+        if set(snapshot) != _KNOWN_CODES:
+            raise ValueError(f"Guardrail policy version {version} has an invalid snapshot")
+        for rule in rules:
+            if rule.core_locked and not snapshot[rule.code]:
+                raise CoreGuardrailLockedError(rule.code)
+
+        rollback_reason = f"Rollback to {version}: {reason.strip()}"
+        updated_at = _now()
+        for rule in rules:
+            rule.enabled = snapshot[rule.code]
+            rule.change_reason = rollback_reason
+            rule.updated_at = updated_at
+            rule.updated_by = actor_user_id
+        self._db.flush()
+        published = self._publish_version(
+            rules, change_reason=rollback_reason, actor_user_id=actor_user_id
+        )
+        return published, target
 
     def list_policy_history(self) -> list[GuardrailPolicyVersion]:
         return (

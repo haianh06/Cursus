@@ -8,8 +8,8 @@ from src.db.connection import SessionLocal
 
 def _seed_blocked_guardrail_event() -> str:
     """Guardrail_service khong persist gi ca (xem ghi chu trong instructor.py)
-    nen phai tu dung Conversation/Message/GuardrailEvent de test duoc endpoint
-    doc/duyet. Idempotent: goi lai nhieu lan van an toan."""
+    nen phai tu dung GuardrailEvent de test duoc endpoint doc/duyet.
+    Idempotent: goi lai nhieu lan van an toan."""
     db = SessionLocal()
     try:
         existing = db.query(models.GuardrailEvent).filter_by(id="grail_test_ethan").first()
@@ -18,28 +18,8 @@ def _seed_blocked_guardrail_event() -> str:
 
         now = datetime.now(UTC).replace(tzinfo=None)
         db.add(
-            models.Conversation(
-                id="conv_test_ethan",
-                student_id="student_ethan",
-                section_id="sec_ssa101_demo",
-                title="Test conversation",
-                created_at=now,
-            )
-        )
-        db.add(
-            models.Message(
-                id="msg_test_ethan_blocked",
-                conversation_id="conv_test_ethan",
-                sender="USER",
-                content="Giải hộ em bài tập Programming Assignment 2",
-                created_at=now,
-                metadata_info={},
-            )
-        )
-        db.add(
             models.GuardrailEvent(
                 id="grail_test_ethan",
-                message_id="msg_test_ethan_blocked",
                 classification="BLOCKED",
                 safety_evaluation={
                     "reason": "academic_integrity",
@@ -445,8 +425,10 @@ async def test_instructor_intervention_note_persists(client):
 
 @pytest.mark.asyncio
 async def test_guardrail_review_queue_lifecycle(client):
-    """Appeal queue: GV thay dung case bi chan trong lop minh, duyet bo chan,
-    va doc lai dung trang thai — khong lien quan gi toi case cua lop khac."""
+    """Review queue: GV thay case bi chan, duyet bo chan, va doc lai dung
+    trang thai. GuardrailEvent khong con lien ket toi mot lop/SV cu the
+    (chat feature da bi go bo) nen moi GV/ADMIN deu thay va duyet duoc moi
+    case (khong con khai niem "case cua lop minh")."""
     event_id = _seed_blocked_guardrail_event()
     headers = await _login_instructor(client)
 
@@ -454,9 +436,7 @@ async def test_guardrail_review_queue_lifecycle(client):
     assert resp.status_code == 200
     reviews = resp.json()
     case = next(item for item in reviews if item["id"] == event_id)
-    assert case["studentAlias"] == "Ethan Nguyen"
     assert case["blockReason"] == "academic_integrity"
-    assert case["question"] == "Giải hộ em bài tập Programming Assignment 2"
     assert case["reviewStatus"] == "PENDING"
 
     resp = await client.post(
@@ -470,31 +450,6 @@ async def test_guardrail_review_queue_lifecycle(client):
     resp = await client.get("/api/v1/instructor/guardrail-reviews", headers=headers)
     updated = next(item for item in resp.json() if item["id"] == event_id)
     assert updated["reviewStatus"] == "UNBLOCKED"
-
-
-@pytest.mark.asyncio
-async def test_guardrail_review_queue_scoped_to_own_class(client):
-    """GV cua lop khac (inst_other) khong duoc thay case cua sec_ssa101_demo,
-    va khong duyet duoc case do qua endpoint POST (404, khong phai 200)."""
-    event_id = _seed_blocked_guardrail_event()
-
-    resp = await client.post(
-        "/api/v1/auth/login",
-        json={"email": "instructor.other@example.test", "password": "password123"},
-    )
-    assert resp.status_code == 200
-    other_headers = {"Authorization": f"Bearer {resp.json()['token']}"}
-
-    resp = await client.get("/api/v1/instructor/guardrail-reviews", headers=other_headers)
-    assert resp.status_code == 200
-    assert all(item["id"] != event_id for item in resp.json())
-
-    resp = await client.post(
-        f"/api/v1/instructor/guardrail-reviews/{event_id}",
-        json={"decision": "KEEP"},
-        headers=other_headers,
-    )
-    assert resp.status_code == 404
 
 
 @pytest.mark.asyncio

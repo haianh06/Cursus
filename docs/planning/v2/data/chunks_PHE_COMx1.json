@@ -1,0 +1,62 @@
+{
+  "subject_code": "PHE_COM*1",
+  "subject_name": "Physical Education 1_Giáo dục thể chất 1",
+  "chunks": [
+    {
+      "chunk_id": "PHE_COM*1-syllabus.md-1",
+      "subject_code": "PHE_COM*1",
+      "subject_name": "Physical Education 1_Giáo dục thể chất 1",
+      "section": "PHE_COM*1 — Physical Education 1_Giáo dục thể chất 1",
+      "text": "# PHE_COM*1 — Physical Education 1_Giáo dục thể chất 1",
+      "source_label": "PHE_COM*1 Syllabus — Physical Education 1_Giáo dục thể chất 1 — PHE_COM*1 — Physical Education 1_Giáo dục thể chất 1"
+    },
+    {
+      "chunk_id": "PHE_COM*1-syllabus.md-2",
+      "subject_code": "PHE_COM*1",
+      "subject_name": "Physical Education 1_Giáo dục thể chất 1",
+      "section": "PHE_COM*1 Syllabus — Physical Education 1_Giáo dục thể chất 1",
+      "text": "Description: Physical Education 1_Giáo dục thể chất 1",
+      "source_label": "PHE_COM*1 Syllabus — Physical Education 1_Giáo dục thể chất 1 — PHE_COM*1 Syllabus — Physical Education 1_Giáo dục thể chất 1"
+    },
+    {
+      "chunk_id": "PHE_COM*1-syllabus.md-3",
+      "subject_code": "PHE_COM*1",
+      "subject_name": "Physical Education 1_Giáo dục thể chất 1",
+      "section": "PHE_COM*1 Syllabus — Physical Education 1_Giáo dục thể chất 1",
+      "text": "NoCredit: 2\nPre-Requisite: None\nSemester: 0\nTime Allocation: 30h lecture + 60h self-study (typical FLM pattern).",
+      "source_label": "PHE_COM*1 Syllabus — Physical Education 1_Giáo dục thể chất 1 — PHE_COM*1 Syllabus — Physical Education 1_Giáo dục thể chất 1"
+    },
+    {
+      "chunk_id": "PHE_COM*1-syllabus.md-4",
+      "subject_code": "PHE_COM*1",
+      "subject_name": "Physical Education 1_Giáo dục thể chất 1",
+      "section": "PHE_COM*1 Syllabus — Physical Education 1_Giáo dục thể chất 1",
+      "text": "StudentTasks: Attend lectures/labs, complete assignments on time, keep a weekly study log, and do not submit AI-generated graded work as your own.",
+      "source_label": "PHE_COM*1 Syllabus — Physical Education 1_Giáo dục thể chất 1 — PHE_COM*1 Syllabus — Physical Education 1_Giáo dục thể chất 1"
+    },
+    {
+      "chunk_id": "PHE_COM*1-syllabus.md-5",
+      "subject_code": "PHE_COM*1",
+      "subject_name": "Physical Education 1_Giáo dục thể chất 1",
+      "section": "PHE_COM*1 Syllabus — Physical Education 1_Giáo dục thể chất 1",
+      "text": "Conditions to pass: Final exam ≥ 4/10 and overall average ≥ 5/10; attendance according to faculty rules.",
+      "source_label": "PHE_COM*1 Syllabus — Physical Education 1_Giáo dục thể chất 1 — PHE_COM*1 Syllabus — Physical Education 1_Giáo dục thể chất 1"
+    },
+    {
+      "chunk_id": "PHE_COM*1-syllabus.md-6",
+      "subject_code": "PHE_COM*1",
+      "subject_name": "Physical Education 1_Giáo dục thể chất 1",
+      "section": "PHE_COM*1 Syllabus — Physical Education 1_Giáo dục thể chất 1",
+      "text": "Progress marks: Participation 10%; Assignments/Labs 30%; Progress test 20%; Final 40% (illustrative weights for grounded Q&A).",
+      "source_label": "PHE_COM*1 Syllabus — Physical Education 1_Giáo dục thể chất 1 — PHE_COM*1 Syllabus — Physical Education 1_Giáo dục thể chất 1"
+    },
+    {
+      "chunk_id": "PHE_COM*1-syllabus.md-7",
+      "subject_code": "PHE_COM*1",
+      "subject_name": "Physical Education 1_Giáo dục thể chất 1",
+      "section": "PHE_COM*1 Syllabus — Physical Education 1_Giáo dục thể chất 1",
+      "text": "Overview: Physical Education 1_Giáo dục thể chất 1 (PHE_COM*1) is part of BIT_SE_K20D_K21A. Cursus answers must stay inside this syllabus and cite the section used.",
+      "source_label": "PHE_COM*1 Syllabus — Physical Education 1_Giáo dục thể chất 1 — PHE_COM*1 Syllabus — Physical Education 1_Giáo dục thể chất 1"
+    }
+  ]
+}

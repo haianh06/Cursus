@@ -6,19 +6,21 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { NAV_GROUPS } from './adminNavigationConfig';
+import { ADMIN_PATHS } from './adminRoutes';
+import './admin-operations.css';
 
 const ITEM_ICONS = {
-  '/admin/overview': LayoutDashboard,
-  '/admin/people': UsersIcon,
-  '/admin/datarequests': ClipboardList,
-  '/admin/analytics': BarChart3,
-  '/admin/courses': BookOpen,
-  '/admin/academic': CalendarRange,
-  '/admin/policy': ShieldCheck,
-  '/admin/mocklms': GitCompareArrows,
-  '/admin/users': UsersIcon,
-  '/admin/org-settings': Settings,
-  '/admin/audit': ScrollText,
+  [ADMIN_PATHS.overview]: LayoutDashboard,
+  [ADMIN_PATHS.people]: UsersIcon,
+  [ADMIN_PATHS.dataRequests]: ClipboardList,
+  [ADMIN_PATHS.analytics]: BarChart3,
+  [ADMIN_PATHS.curriculum]: BookOpen,
+  [ADMIN_PATHS.academic]: CalendarRange,
+  [ADMIN_PATHS.aiPolicy]: ShieldCheck,
+  [ADMIN_PATHS.eduSync]: GitCompareArrows,
+  [ADMIN_PATHS.access]: UsersIcon,
+  [ADMIN_PATHS.settings]: Settings,
+  [ADMIN_PATHS.logs]: ScrollText,
 };
 
 /** Admin Console's primary navigation, rebuilt from chung's "observe before
@@ -32,7 +34,7 @@ export default function AdminNavigation({ onNavigate }) {
   const { t } = useLanguage();
 
   return (
-    <nav aria-label={t('admin.navigationLabel')} className="flex flex-col gap-3">
+    <nav aria-label={t('admin.navigationLabel')} className="admin-nav flex flex-col gap-3">
       {NAV_GROUPS.map((group) => {
         const labelId = `admin-nav-group-${group.id}`;
         return (

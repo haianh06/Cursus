@@ -1,12 +1,17 @@
 import hashlib
 from datetime import date, datetime
+from uuid import uuid4
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, UploadFile, status
 from pydantic import BaseModel, Field
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from src.api.auth import get_current_user_from_token, get_org_invite_service
+from src.api.auth import (
+    get_current_user_from_token,
+    get_org_invite_service,
+    get_password_reset_service,
+)
 from src.db import models
 from src.db.connection import get_db
 from src.db.models import GuardrailRule, OrgInvite, User, UserRole
@@ -23,10 +28,19 @@ from src.schemas.admin_schemas import (
     AcademicTermUpsertRequest,
     AccessRequestResponse,
     AdminAnalyticsResponse,
+    AdminAnalyticsSummaryResponse,
     AdminCourseCreateRequest,
     AdminCoursesResponse,
+    AdminDocumentContentResponse,
+    AdminDocumentMutationResponse,
     AdminDocumentsResponse,
+    AdminDocumentVersionsResponse,
     AdminGuardrailHistoryResponse,
+    AdminGuardrailRestoreRequest,
+    AdminGuardrailRollbackRequest,
+    AdminGuardrailRollbackResponse,
+    AdminGuardrailRulePreviewRequest,
+    AdminGuardrailRulePreviewResponse,
     AdminGuardrailRulesResponse,
     AdminGuardrailRuleUpdateRequest,
     AdminGuardrailRuleUpdateResponse,
@@ -50,6 +64,7 @@ from src.services.auth.org_invite_service import (
     OrgInviteError,
     OrgInviteService,
 )
+from src.services.auth.password_reset_service import PasswordResetService
 from src.services.core.admin_ingest_runner import run_admin_ingest_job
 from src.services.core.admin_read_service import AdminDataUnavailable, AdminReadService
 from src.services.core.audit_service import AuditService
@@ -60,6 +75,7 @@ from src.services.rag.admin_document_ingest_service import (
     MAX_CHUNKS,
     MAX_UPLOAD_BYTES,
     AdminDocumentIngestService,
+    _unlink_file,
     validate_admin_document,
 )
 
@@ -248,6 +264,26 @@ def get_admin_kpi(service: AdminReadService = Depends(get_admin_read_service)):
 
 
 @router.get(
+    "/analytics/summary",
+    response_model=AdminAnalyticsSummaryResponse,
+    dependencies=[Depends(require_permission(Resource.KPI, Permission.READ))],
+)
+def get_admin_analytics_summary(
+    current_user: User = Depends(get_current_user_from_token),
+    service: AdminReadService = Depends(get_admin_read_service),
+):
+    try:
+        return {
+            "success": True,
+            "data": service.get_analytics_summary(
+                organization_id=current_user.organization_id,
+            ),
+        }
+    except AdminDataUnavailable as exc:
+        raise HTTPException(status_code=503, detail="Admin data is temporarily unavailable") from exc
+
+
+@router.get(
     "/analytics",
     response_model=AdminAnalyticsResponse,
     dependencies=[Depends(require_permission(Resource.KPI, Permission.READ))],
@@ -285,6 +321,11 @@ def get_guardrail_rules_history(
             "rules_snapshot": version.rules_snapshot,
             "source_version": version.source_version,
             "change_reason": version.change_reason,
+            "rolled_back_from": (
+                version.change_reason[len("Rollback to ") :].split(":", 1)[0]
+                if (version.change_reason or "").startswith("Rollback to ")
+                else None
+            ),
             "is_active": version.is_active,
             "created_by": version.created_by,
             "created_at": version.created_at.isoformat(),
@@ -292,6 +333,31 @@ def get_guardrail_rules_history(
         for version in repository.list_policy_history()
     ]
     return {"success": True, "data": {"versions": versions}}
+
+
+@router.post(
+    "/guardrail-rules/{code}/preview",
+    response_model=AdminGuardrailRulePreviewResponse,
+    dependencies=[Depends(require_permission(Resource.CHAT, Permission.MANAGE))],
+)
+def preview_guardrail_rule(
+    code: str,
+    payload: AdminGuardrailRulePreviewRequest,
+    repository: GuardrailRuleRepository = Depends(get_guardrail_rule_repository),
+):
+    try:
+        return {"success": True, "data": repository.preview_set_enabled(
+            code,
+            enabled=payload.enabled,
+            reason=payload.reason,
+        )}
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=f"Unknown guardrail rule: {code}") from exc
+    except CoreGuardrailLockedError as exc:
+        raise HTTPException(
+            status_code=409,
+            detail=f"Guardrail rule {exc.code} is core-locked and cannot be disabled",
+        ) from exc
 
 
 @router.patch(
@@ -350,19 +416,20 @@ async def update_guardrail_rule(
     dependencies=[Depends(require_permission(Resource.CHAT, Permission.MANAGE))],
 )
 async def restore_guardrail_defaults(
+    payload: AdminGuardrailRestoreRequest,
     current_user: User = Depends(get_current_user_from_token),
     repository: GuardrailRuleRepository = Depends(get_guardrail_rule_repository),
     db: Session = Depends(get_db),
 ):
     try:
-        rules = repository.restore_defaults(current_user.id)
+        rules = repository.restore_defaults(current_user.id, reason=payload.reason or None)
         await AuditService(AuditRepository(db)).log_event(
             event_type="guardrail_rule_updated",
             decision="ALLOW",
             actor_user_id=current_user.id,
             resource_type="GUARDRAIL_RULE",
             resource_id="ALL",
-            metadata={"restore_defaults": True},
+            metadata={"restore_defaults": True, "reason": payload.reason or None},
             commit=False,
         )
         db.commit()
@@ -371,6 +438,67 @@ async def restore_guardrail_defaults(
         raise
 
     return {"success": True, "data": _rules_payload(rules)}
+
+
+@router.post(
+    "/guardrail-rules/versions/{policy_version}/rollback",
+    response_model=AdminGuardrailRollbackResponse,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_permission(Resource.CHAT, Permission.MANAGE))],
+)
+async def rollback_guardrail_policy(
+    policy_version: str,
+    payload: AdminGuardrailRollbackRequest,
+    current_user: User = Depends(get_current_user_from_token),
+    repository: GuardrailRuleRepository = Depends(get_guardrail_rule_repository),
+    db: Session = Depends(get_db),
+):
+    try:
+        published, target = repository.rollback(
+            policy_version,
+            actor_user_id=current_user.id,
+            reason=payload.reason,
+        )
+        await AuditService(AuditRepository(db)).log_event(
+            event_type="guardrail_rule_updated",
+            decision="ALLOW",
+            actor_user_id=current_user.id,
+            resource_type="GUARDRAIL_POLICY",
+            resource_id=published.version,
+            metadata={
+                "rollback_from": target.version,
+                "reason": payload.reason,
+                "version": published.version,
+            },
+            commit=False,
+        )
+        db.commit()
+    except LookupError as exc:
+        db.rollback()
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except CoreGuardrailLockedError as exc:
+        db.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail=f"Guardrail rule {exc.code} is core-locked and cannot be disabled",
+        ) from exc
+    except ValueError as exc:
+        db.rollback()
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    except Exception:
+        db.rollback()
+        raise
+
+    snapshot = {str(code): bool(enabled) for code, enabled in published.rules_snapshot.items()}
+    return {
+        "success": True,
+        "data": {
+            "version": published.version,
+            "rolled_back_from": target.version,
+            "rules": snapshot,
+            "any_disabled": any(not value for value in snapshot.values()),
+        },
+    }
 
 
 @router.post(
@@ -478,6 +606,26 @@ def list_admin_course_documents(code: str, db: Session = Depends(get_db)):
     _ensure_visible_course(db, code)
     documents = AdminDocumentIngestService(db).list_documents(code)
     return {"success": True, "data": {"documents": documents}}
+
+
+@router.get(
+    "/courses/{code}/documents/{document_id}/content",
+    response_model=AdminDocumentContentResponse,
+    dependencies=[Depends(require_permission(Resource.COURSE, Permission.READ))],
+)
+def get_admin_course_document_content(
+    code: str,
+    document_id: str,
+    db: Session = Depends(get_db),
+):
+    _owned_document(db, code, document_id)
+    try:
+        content = AdminDocumentIngestService(db).get_content(document_id)
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    return {"success": True, "data": content}
 
 
 @router.post(
@@ -592,6 +740,14 @@ def delete_admin_course_document(
     db: Session = Depends(get_db),
 ):
     document = _owned_document(db, code, document_id)
+    if document.publication_status in {"PUBLISHED", "ARCHIVED"}:
+        raise HTTPException(
+            status_code=409,
+            detail="Published or archived document versions are immutable",
+        )
+    dependent = db.query(models.Document.id).filter(models.Document.previous_version_id == document.id).first()
+    if dependent is not None:
+        raise HTTPException(status_code=409, detail="A later version depends on this document")
     job = _course_repository(db).start_job(
         code, operation="delete", document_id=document.id
     )
@@ -679,7 +835,7 @@ def validate_admin_course_document(
     "/courses/{code}/documents/{document_id}/publish",
     dependencies=[Depends(require_permission(Resource.COURSE, Permission.MANAGE))],
 )
-def publish_admin_course_document(
+async def publish_admin_course_document(
     code: str,
     document_id: str,
     payload: DocumentLifecyclePayload,
@@ -692,30 +848,47 @@ def publish_admin_course_document(
     if document.validated_at is None:
         raise HTTPException(status_code=400, detail="Document must pass validation before it can be published")
 
+    group = document.version_group or document.id
     currently_published = db.query(models.Document).filter(
         models.Document.course_id == document.course_id,
-        models.Document.publication_status == "PUBLISHED"
+        models.Document.version_group == group,
+        models.Document.publication_status == "PUBLISHED",
     ).all()
-    for doc in currently_published:
-        if doc.id != document.id:
-            doc.publication_status = "ARCHIVED"
-            doc.archived_at = datetime.utcnow()
-            doc.change_reason = "Auto-archived due to new publication"
-
-    document.publication_status = "PUBLISHED"
-    document.published_at = datetime.utcnow()
-    document.published_by = current_user.id
-    document.change_reason = payload.change_reason
-    db.commit()
-
-    return {"success": True}
+    now = datetime.utcnow()
+    try:
+        for published in currently_published:
+            if published.id != document.id:
+                published.publication_status = "ARCHIVED"
+                published.archived_at = now
+                published.change_reason = "Auto-archived due to new publication"
+        document.publication_status = "PUBLISHED"
+        document.published_at = now
+        document.published_by = current_user.id
+        document.archived_at = None
+        document.change_reason = payload.change_reason
+        await _audit_admin_mutation(
+            db,
+            event_type="curriculum_published",
+            actor_user_id=current_user.id,
+            resource_type="DOCUMENT",
+            resource_id=document.id,
+            metadata={"course_code": code, "version": document.version, "change_reason": payload.change_reason},
+        )
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    return {
+        "success": True,
+        "data": {"document": AdminDocumentIngestService(db).serialize_document(document)},
+    }
 
 
 @router.post(
     "/courses/{code}/documents/{document_id}/archive",
     dependencies=[Depends(require_permission(Resource.COURSE, Permission.MANAGE))],
 )
-def archive_admin_course_document(
+async def archive_admin_course_document(
     code: str,
     document_id: str,
     payload: DocumentLifecyclePayload,
@@ -726,12 +899,90 @@ def archive_admin_course_document(
     if document.publication_status != "PUBLISHED":
         raise HTTPException(status_code=400, detail="Only PUBLISHED documents can be archived")
 
-    document.publication_status = "ARCHIVED"
-    document.archived_at = datetime.utcnow()
-    document.change_reason = payload.change_reason
-    db.commit()
+    try:
+        document.publication_status = "ARCHIVED"
+        document.archived_at = datetime.utcnow()
+        document.change_reason = payload.change_reason
+        await _audit_admin_mutation(
+            db,
+            event_type="curriculum_archived",
+            actor_user_id=current_user.id,
+            resource_type="DOCUMENT",
+            resource_id=document.id,
+            metadata={"course_code": code, "version": document.version, "change_reason": payload.change_reason},
+        )
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    return {
+        "success": True,
+        "data": {"document": AdminDocumentIngestService(db).serialize_document(document)},
+    }
 
-    return {"success": True}
+
+@router.get(
+    "/courses/{code}/documents/{document_id}/versions",
+    response_model=AdminDocumentVersionsResponse,
+    dependencies=[Depends(require_permission(Resource.COURSE, Permission.READ))],
+)
+def list_admin_course_document_versions(
+    code: str,
+    document_id: str,
+    db: Session = Depends(get_db),
+):
+    _owned_document(db, code, document_id)
+    versions = AdminDocumentIngestService(db).list_versions(document_id)
+    return {"success": True, "data": {"versions": versions}}
+
+
+@router.post(
+    "/courses/{code}/documents/{document_id}/rollback",
+    response_model=AdminDocumentMutationResponse,
+    dependencies=[Depends(require_permission(Resource.COURSE, Permission.MANAGE))],
+)
+async def rollback_admin_course_document(
+    code: str,
+    document_id: str,
+    payload: DocumentLifecyclePayload,
+    current_user: User = Depends(get_current_user_from_token),
+    db: Session = Depends(get_db),
+):
+    _owned_document(db, code, document_id)
+    service = AdminDocumentIngestService(db)
+    cleanup_on_failure = None
+    try:
+        rolled_back = service.rollback(
+            document_id=document_id,
+            actor_user_id=current_user.id,
+            change_reason=payload.change_reason,
+        )
+        cleanup_on_failure = rolled_back.pop("_created_path", None)
+        await _audit_admin_mutation(
+            db,
+            event_type="curriculum_rolled_back",
+            actor_user_id=current_user.id,
+            resource_type="DOCUMENT",
+            resource_id=rolled_back["id"],
+            metadata={
+                "course_code": code,
+                "rollback_of": document_id,
+                "version": rolled_back["version"],
+                "change_reason": payload.change_reason,
+            },
+        )
+        db.commit()
+    except ValueError as exc:
+        db.rollback()
+        if cleanup_on_failure is not None:
+            _unlink_file(cleanup_on_failure)
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    except Exception:
+        db.rollback()
+        if cleanup_on_failure is not None:
+            _unlink_file(cleanup_on_failure)
+        raise
+    return {"success": True, "data": {"document": rolled_back}}
 
 
 # ── Org invites / access requests (B2B2C onboarding, pre-dates develop's
@@ -746,6 +997,7 @@ async def create_invite(
     payload: CreateInviteRequest,
     current_user: User = Depends(require_roles(UserRole.ADMIN)),
     invite_service: OrgInviteService = Depends(get_org_invite_service),
+    db: Session = Depends(get_db),
 ) -> InviteResponse:
     """Only path (besides seed/provisioning scripts) that grants any role —
     Student, Instructor, or Admin — access to Cursus. Always scoped to the
@@ -769,6 +1021,15 @@ async def create_invite(
             status_code=status.HTTP_409_CONFLICT,
             detail=str(exc),
         ) from exc
+    await _audit_admin_mutation(
+        db,
+        event_type="invitation_created",
+        actor_user_id=current_user.id,
+        resource_type="INVITATION",
+        resource_id=invite.id,
+        metadata={"email": invite.email, "role": invite.role},
+    )
+    db.commit()
     return _serialize_invite(invite)
 
 
@@ -788,16 +1049,59 @@ async def revoke_invite(
     invite_id: str,
     current_user: User = Depends(require_roles(UserRole.ADMIN)),
     invite_service: OrgInviteService = Depends(get_org_invite_service),
+    db: Session = Depends(get_db),
 ) -> None:
     if not current_user.organization_id:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invitation not found")
     try:
-        invite_service.revoke(invite_id, organization_id=current_user.organization_id)
+        invite = invite_service.revoke(invite_id, organization_id=current_user.organization_id)
     except InviteNotFoundError as exc:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Invitation not found",
         ) from exc
+    await _audit_admin_mutation(
+        db,
+        event_type="invitation_revoked",
+        actor_user_id=current_user.id,
+        resource_type="INVITATION",
+        resource_id=invite.id,
+        metadata={"email": invite.email},
+    )
+    db.commit()
+
+
+@router.post("/invites/{invite_id}/resend", response_model=InviteResponse)
+async def resend_invite(
+    invite_id: str,
+    current_user: User = Depends(require_roles(UserRole.ADMIN)),
+    invite_service: OrgInviteService = Depends(get_org_invite_service),
+    db: Session = Depends(get_db),
+) -> InviteResponse:
+    if not current_user.organization_id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invitation not found")
+    try:
+        invite = await invite_service.resend(
+            invite_id,
+            organization_id=current_user.organization_id,
+        )
+    except InviteNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Invitation not found",
+        ) from exc
+    except OrgInviteError as exc:
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=str(exc)) from exc
+    await _audit_admin_mutation(
+        db=db,
+        event_type="invitation_resent",
+        actor_user_id=current_user.id,
+        resource_type="INVITATION",
+        resource_id=invite.id,
+        metadata={"email": invite.email, "resend_count": invite.resend_count},
+    )
+    db.commit()
+    return _serialize_invite(invite)
 
 
 def _serialize_user(user: User) -> AdminUserOut:
@@ -874,6 +1178,97 @@ async def update_user_status(
     return _serialize_user(target)
 
 
+@router.post("/users/{user_id}/reset-password")
+async def reset_user_password(
+    user_id: str,
+    current_user: User = Depends(require_permission(Resource.USER, Permission.MANAGE)),
+    db: Session = Depends(get_db),
+    password_reset_service: PasswordResetService = Depends(get_password_reset_service),
+):
+    """Gửi lại link đặt mật khẩu cho một thành viên trong cùng tổ chức.
+
+    Admin KHÔNG đặt mật khẩu thay người dùng -- chỉ phát hành token đặt lại,
+    người dùng tự chọn mật khẩu mới. Dùng lại đúng `PasswordResetService`
+    của luồng "Quên mật khẩu" công khai (`POST /auth/password/forgot` trong
+    `src/api/auth.py`) qua `get_password_reset_service`, để không tồn tại 2
+    cơ chế phát hành token song song. (Brief này giả định 1 hàm rời
+    `issue_password_reset(db, user=target)` trong 1 module chưa từng tồn tại
+    -- thực tế `password_reset_service.py` đã có sẵn class `PasswordResetService`
+    với `request_password_reset(email)`, nên route dưới đây tái sử dụng thẳng
+    class đó thay vì tạo hàm mới.)
+    """
+    if not current_user.organization_id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="organization_required")
+    target = (
+        db.query(User)
+        .filter_by(id=user_id, organization_id=current_user.organization_id)
+        .first()
+    )
+    if target is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    result = await password_reset_service.request_password_reset(target.email)
+    await AuditService(AuditRepository(db)).log_event(
+        event_type="admin_password_reset_issued",
+        decision="ALLOW",
+        actor_user_id=current_user.id,
+        resource_type="USER",
+        resource_id=target.id,
+        metadata={"issued": result.issued},
+    )
+    return {"success": True, "emailSent": bool(result.issued)}
+
+
+class AnnouncementRequest(BaseModel):
+    title: str = Field(min_length=1, max_length=200)
+    content: str = Field(min_length=1)
+
+
+@router.post("/announcements", status_code=status.HTTP_201_CREATED)
+async def create_announcement(
+    payload: AnnouncementRequest,
+    current_user: User = Depends(get_current_user_from_token),
+    db: Session = Depends(get_db),
+):
+    """Publish a notice to every instructor in the caller's organization.
+
+    `admin_announcements` was already read by `GET /instructor/announcements`
+    and rendered on the instructor dashboard, but nothing ever wrote to it,
+    so that panel was permanently empty. This is the missing writer.
+
+    Stamps `organization_id` -- see the column's note in `src/db/models.py`:
+    the reader had no organization filter, which only became a cross-tenant
+    leak once rows started existing.
+    """
+    if not current_user.organization_id:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="organization_required"
+        )
+
+    announcement = models.AdminAnnouncement(
+        id=f"ann_{uuid4().hex}",
+        title=payload.title.strip(),
+        content=payload.content.strip(),
+        created_by=current_user.id,
+        organization_id=current_user.organization_id,
+    )
+    db.add(announcement)
+    db.commit()
+    await AuditService(AuditRepository(db)).log_event(
+        event_type="admin_announcement_published",
+        decision="ALLOW",
+        actor_user_id=current_user.id,
+        resource_type="ADMIN_ANNOUNCEMENT",
+        resource_id=announcement.id,
+    )
+    return {
+        "id": announcement.id,
+        "title": announcement.title,
+        "content": announcement.content,
+        "createdAt": announcement.created_at.isoformat(),
+    }
+
+
 @router.get("/access-requests", response_model=list[AccessRequestResponse])
 async def list_access_requests(
     db: Session = Depends(get_db),
@@ -902,6 +1297,9 @@ def _serialize_invite(invite: OrgInvite) -> InviteResponse:
         expires_at=invite.expires_at.isoformat(),
         used_at=invite.used_at.isoformat() if invite.used_at else None,
         revoked_at=invite.revoked_at.isoformat() if invite.revoked_at else None,
+        delivery_status=invite.delivery_status or "sent",
+        resend_count=invite.resend_count or 0,
+        last_sent_at=invite.last_sent_at.isoformat() if invite.last_sent_at else None,
         created_at=invite.created_at.isoformat(),
     )
 

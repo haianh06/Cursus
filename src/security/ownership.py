@@ -33,19 +33,6 @@ async def require_weekly_plan_owner(
         )
 
 
-async def require_conversation_owner(
-    conversation_id: str,
-    current_user: User = Depends(get_current_user_from_token),
-    db: Session = Depends(get_db),
-) -> None:
-    ownership = OwnershipRepository(db)
-    if not ownership.student_owns_conversation(current_user.id, conversation_id):
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Conversation not found",
-        )
-
-
 async def require_study_task_owner(
     task_id: str,
     current_user: User = Depends(get_current_user_from_token),

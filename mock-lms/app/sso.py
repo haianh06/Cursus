@@ -27,12 +27,14 @@ from fastapi.responses import RedirectResponse
 
 from app.security import SIGNING_SECRET
 
-# Must be "localhost", not "127.0.0.1" -- the browser treats them as different
-# hosts for cookie purposes, and Cursus's frontend (VITE_API_URL) logs in via
-# "localhost:8000", so its session cookie is scoped to that exact host. Using
-# 127.0.0.1 here would make the browser never send that cookie to Cursus's
-# authorize endpoint, always showing "not logged in" even when you are.
+# This is the browser-visible Cursus URL. Must be "localhost", not
+# "127.0.0.1" -- the browser treats them as different hosts for cookie
+# purposes, and Cursus's frontend logs in via "localhost:8000".
 CURSUS_BASE_URL = os.environ.get("CURSUS_BASE_URL", "http://localhost:8000")
+# In Docker, the browser must be redirected to localhost while this container
+# must call Cursus over the Compose network. Keep those concerns separate so
+# SSO works both from a host process and from the edusync container.
+CURSUS_INTERNAL_BASE_URL = os.environ.get("CURSUS_INTERNAL_BASE_URL", CURSUS_BASE_URL)
 MOCK_LMS_PUBLIC_URL = os.environ.get("MOCK_LMS_PUBLIC_URL", "http://localhost:9000")
 # Must match Cursus's MOCK_LMS_SSO_SHARED_SECRET -- proves the /token caller
 # is really this app's backend, not a random client guessing codes.
@@ -80,7 +82,7 @@ async def exchange_code(code: str) -> dict:
     """Server-to-server call to Cursus -- never done from the browser."""
     async with httpx.AsyncClient(timeout=5.0) as client:
         resp = await client.post(
-            f"{CURSUS_BASE_URL}/api/v1/auth/sso/mock-lms/token",
+            f"{CURSUS_INTERNAL_BASE_URL}/api/v1/auth/sso/mock-lms/token",
             json={"code": code},
             headers={"X-Mock-Lms-Sso-Secret": SSO_SHARED_SECRET},
         )
@@ -99,9 +101,12 @@ def decode_state(state: str) -> tuple[str, str]:
 
 
 def require_identity(request: Request):
-    """Any logged-in Cursus user (Student/Instructor/Admin) -- view-only pages."""
-    token = request.cookies.get(SESSION_COOKIE_NAME)
-    identity = _read_session(token) if token else None
+    """Any logged-in Cursus user (Student/Instructor/Admin) -- gates the
+    *page* routes in web.py (GET /courses, GET /courses/{code}). A missing/
+    expired session there raises _NeedsLogin, which main.py's exception
+    handler turns into a redirect to Cursus's login -- correct for a real
+    browser navigation, which follows redirects across origins fine."""
+    identity = _read_identity_cookie(request)
     if not identity:
         return_to = str(request.url.path)
         if request.url.query:
@@ -110,7 +115,34 @@ def require_identity(request: Request):
     return identity
 
 
+def require_identity_json(request: Request):
+    """Same check as require_identity, for the /web-api/* JSON routes the
+    SPA calls with fetch() -- those must never trigger _NeedsLogin's
+    cross-origin redirect. `fetch()` doesn't navigate the browser on a
+    redirect: it either fails outright (opaque redirect to another origin)
+    or, if it somehow succeeded, would hand back Cursus's *login page HTML*
+    as if it were the JSON payload the SPA asked for. A plain 401 lets the
+    SPA's own fetch wrapper (frontend/src/lib/api.ts) detect it and force a
+    real top-level navigation back to this same page instead, which *does*
+    follow the SSO redirect correctly."""
+    identity = _read_identity_cookie(request)
+    if not identity:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="not_authenticated")
+    return identity
+
+
+def _read_identity_cookie(request: Request) -> dict | None:
+    token = request.cookies.get(SESSION_COOKIE_NAME)
+    return _read_session(token) if token else None
+
+
 def require_admin(identity: dict = Depends(require_identity)):
+    if identity.get("role") != "ADMIN":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="admin_only")
+    return identity
+
+
+def require_admin_json(identity: dict = Depends(require_identity_json)):
     if identity.get("role") != "ADMIN":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="admin_only")
     return identity

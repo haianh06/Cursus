@@ -203,12 +203,15 @@ class SemesterService:
         exam_skip: tuple[date, date] | None = None,
     ) -> list[dict[str, Any]]:
         self._repo.delete_events(semester.id)
-        instructor_id = self._repo.first_instructor_id(organization_id)
+        # No instructor is guessed here anymore (see migration
+        # 20260909_section_instructor_nullable + admin_overview_service's
+        # UNASSIGNED_SECTION work-queue source): a wizard-created section is
+        # left unassigned until an admin picks a real instructor for it.
         course_by_id = {course.id: course for course in courses}
         section_by_course: dict[str, str] = {}
         for course in courses:
             section = self._repo.get_or_create_section(
-                semester_id=semester.id, course=course, instructor_id=instructor_id, term=semester.name
+                semester_id=semester.id, course=course, term=semester.name
             )
             self._repo.ensure_enrollment(student_id=semester.student_id, section_id=section.id)
             section_by_course[course.id] = section.id

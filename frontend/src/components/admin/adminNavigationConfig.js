@@ -1,34 +1,29 @@
-/**
- * Admin Console sidebar navigation as data, adapted from chung's
- * observation-before-governance ordering contract (docs/branch-audit/
- * chung-admin-frontend.md) to this branch's actual route set. Chung only
- * has 8 items across its 2 groups; this branch additionally exposes
- * Analytics (observational -- grouped with Observe), Term & exams and
- * EduSync sync (governance actions -- grouped with Governance), which
- * chung's Admin Console doesn't have at all.
- */
+import { ADMIN_PATHS } from './adminRoutes';
+
+/** One canonical information architecture: observe first, then govern. */
 export const NAV_GROUPS = [
   {
     id: 'observe',
     labelKey: 'admin.navGroupObserve',
     items: [
-      { to: '/admin/overview', labelKey: 'admin.navOverview', end: true },
-      { to: '/admin/people', labelKey: 'admin.navPeople' },
-      { to: '/admin/datarequests', labelKey: 'admin.navDataRequests' },
-      { to: '/admin/analytics', labelKey: 'admin.navAnalytics' },
+      { to: ADMIN_PATHS.overview, labelKey: 'admin.navOverview', end: true },
+      { to: ADMIN_PATHS.people, labelKey: 'admin.navPeople' },
+      { to: ADMIN_PATHS.dataRequests, labelKey: 'admin.navDataRequests' },
+      { to: ADMIN_PATHS.analytics, labelKey: 'admin.navAnalytics' },
     ],
   },
   {
     id: 'governance',
     labelKey: 'admin.navGroupGovernance',
     items: [
-      { to: '/admin/courses', labelKey: 'admin.navCurriculum' },
-      { to: '/admin/academic', labelKey: 'admin.navAcademic' },
-      { to: '/admin/policy', labelKey: 'admin.navAiPolicy' },
-      { to: '/admin/mocklms', labelKey: 'admin.navMockLms' },
-      { to: '/admin/users', labelKey: 'admin.navAccounts' },
-      { to: '/admin/org-settings', labelKey: 'admin.navSettings' },
-      { to: '/admin/audit', labelKey: 'admin.navSystemLog' },
+      { to: ADMIN_PATHS.curriculum, labelKey: 'admin.navCurriculum' },
+      { to: ADMIN_PATHS.sections, labelKey: 'admin.navSections' },
+      { to: ADMIN_PATHS.academic, labelKey: 'admin.navAcademic' },
+      { to: ADMIN_PATHS.aiPolicy, labelKey: 'admin.navAiPolicy' },
+      { to: ADMIN_PATHS.eduSync, labelKey: 'admin.navMockLms' },
+      { to: ADMIN_PATHS.access, labelKey: 'admin.navAccounts' },
+      { to: ADMIN_PATHS.settings, labelKey: 'admin.navSettings' },
+      { to: ADMIN_PATHS.logs, labelKey: 'admin.navSystemLog' },
     ],
   },
 ];

@@ -1,5 +1,5 @@
-"""Add Self-Study Pomodoro + Student Memory tables (genuinely missing features,
-not restoring anything haidang2425 already rebuilt independently).
+"""Add Self-Study Pomodoro tables (genuinely missing features, not restoring
+anything haidang2425 already rebuilt independently).
 
 Revision ID: 20260902_student_role_restore
 Revises: 20260902_data_req_org_scoping
@@ -8,9 +8,11 @@ Create Date: 2026-09-02
 See docs/planning/STUDENT_ROLE_RESTORE_SPEC.md -- after comparing the pre-merge
 develop branch against current HEAD, most Student-role functionality
 (Planner/Timetable/SemesterSetup/Reflection/Practice) already exists here,
-independently rebuilt. Only three things were verified genuinely missing:
-Self-Study Pomodoro sessions, Student cross-session chat Memory, and recurring
-self-study timetable blocks. This migration adds exactly those, nothing else.
+independently rebuilt. Two things were verified genuinely missing: Self-Study
+Pomodoro sessions and recurring self-study timetable blocks. This migration
+adds exactly those. (It originally also added Student cross-session chat
+Memory tables; that feature was removed along with the chatbot -- see
+migrations/versions/20260910_remove_chatbot_feature.py.)
 
 Everything here reaches organization scoping transitively through student_id
 -> User.organization_id (same pattern as WeeklyPlan/StudyTask) -- no direct
@@ -20,9 +22,9 @@ Guarded the same way other migrations in this chain guard themselves: on a
 *fresh* database, 20260808_baseline_schema.py's create_all() already builds
 `schedule_blocks` straight from the *current* (post-restore) src/db/models.py,
 so `recurrence_series_id` already exists by the time this migration runs --
-only a pre-existing (already-upgraded) database needs it added here. The two
-new tables are not part of baseline's create_all list, so those are
-unconditional (still existence-guarded for safe re-runs).
+only a pre-existing (already-upgraded) database needs it added here. The new
+table is not part of baseline's create_all list, so it's unconditional
+(still existence-guarded for safe re-runs).
 """
 
 from __future__ import annotations
@@ -43,7 +45,7 @@ down_revision: str | Sequence[str] | None = "20260904_guardrail_policy_ver"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
-_NEW_TABLES = ["self_study_sessions", "student_memory_consent", "student_memory_entries"]
+_NEW_TABLES = ["self_study_sessions"]
 
 
 def upgrade() -> None:

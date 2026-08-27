@@ -164,26 +164,13 @@ class SemesterRepository:
         )
         self._db.flush()
 
-    def first_instructor_id(self, organization_id: str | None) -> str:
-        """An instructor from the *same org* to host auto-created sections.
-
-        Never picks an instructor from another org — a cross-org pick would
-        let a student's calendar leak into another tenant's roster.
-        """
-        instructor = (
-            self._db.query(models.User)
-            .filter(
-                models.User.role.in_(["INSTRUCTOR", models.UserRole.INSTRUCTOR.value]),
-                models.User.organization_id == organization_id,
-            )
-            .first()
-        )
-        if instructor is None:
-            raise LookupError("No instructor account available in this organization")
-        return instructor.id
-
     def get_or_create_section(
-        self, *, semester_id: str, course: models.Course, instructor_id: str, term: str
+        self,
+        *,
+        semester_id: str,
+        course: models.Course,
+        term: str,
+        instructor_id: str | None = None,
     ) -> models.CourseSection:
         section_id = f"sec_sem_{semester_id[-10:]}_{course.code.lower()}"
         section = self._db.query(models.CourseSection).filter_by(id=section_id).first()

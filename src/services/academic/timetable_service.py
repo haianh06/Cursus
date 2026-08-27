@@ -127,16 +127,14 @@ class TimetableService:
                 )
 
         sample_start = datetime.combine(monday + timedelta(days=1), time(19, 0))
-        existing_self_study = (
-            self._db.query(models.ScheduleBlock)
-            .join(models.DailyPlan)
-            .join(models.WeeklyPlan)
-            .filter(
-                models.WeeklyPlan.student_id == student_id,
-                models.ScheduleBlock.start_time >= start,
-                models.ScheduleBlock.start_time < end,
-            )
-            .first()
+        # Must use the same DRAFT/lecture-plan filtering as _self_study_blocks
+        # (the method get_week() renders with) -- otherwise a student whose
+        # only self-study rows belong to an unaccepted DRAFT plan looks
+        # "already seeded" here, so no sample block is added, yet those DRAFT
+        # rows are invisible in get_week()'s own output. Net effect: the week
+        # renders with zero self-study blocks despite this early-return.
+        existing_self_study = self._self_study_blocks(
+            student_id=student_id, start=start, end=end
         )
         if not existing_self_study:
             self.create_self_study_block(
@@ -768,16 +766,18 @@ class TimetableService:
             # Skip `lecture_plan_service` rows (goals.source == "lecture_plan")
             # — a new self-study block must never be re-parented onto that
             # separate product surface's plan. See the matching guard in
-            # `_self_study_blocks`.
-            plan = next(
-                (
-                    item
-                    for item in candidates
-                    if (item.goals if isinstance(item.goals, dict) else {}).get("source")
-                    != LECTURE_PLAN_SOURCE
-                ),
-                None,
-            )
+            # `_self_study_blocks`. Also skip DRAFT plans: `_self_study_blocks`
+            # hides a DRAFT plan's rows from the live timetable, so parenting
+            # a new block onto one would silently make it invisible too.
+            def _is_reusable(item: models.WeeklyPlan) -> bool:
+                goals = item.goals if isinstance(item.goals, dict) else {}
+                if goals.get("source") == LECTURE_PLAN_SOURCE:
+                    return False
+                if str(goals.get("status") or "").upper() == "DRAFT":
+                    return False
+                return True
+
+            plan = next((item for item in candidates if _is_reusable(item)), None)
         if not plan:
             plan = models.WeeklyPlan(
                 id=f"plan_{uuid.uuid4().hex[:10]}",

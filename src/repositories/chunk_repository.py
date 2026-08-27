@@ -40,6 +40,12 @@ class ChunkRepository:
             .join(models.Course)
             .filter(
                 models.Enrollment.student_id == student_id,
+                # Only count ENROLLED status. Without this filter, a student
+                # marked DROPPED can still access course material (this gate),
+                # but cannot be bound to a section (conversation_repository
+                # requires ENROLLED), creating an unbound conversation visible
+                # to all instructors — a cross-instructor leak.
+                models.Enrollment.status == models.EnrollmentStatus.ENROLLED.value,
                 # Case-insensitive: some real catalog codes have a lowercase
                 # suffix (e.g. "ENW493c", "SWE202c" — a genuine FPT naming
                 # convention, not a typo). Course.code is stored with that
@@ -77,6 +83,13 @@ class ChunkRepository:
             chunk_meta = chunk.metadata_info or {}
             source = doc_meta.get("source") or chunk_meta.get("source") or "curriculum"
             uploaded_by = doc_meta.get("uploaded_by") or chunk_meta.get("uploaded_by")
+
+            # Admin curriculum follows an explicit editorial lifecycle. Draft
+            # and archived versions are retained for validation/rollback, but
+            # only a published version may enter learner retrieval or practice
+            # generation.
+            if source == "admin_curriculum" and document.publication_status != "PUBLISHED":
+                continue
 
             # Hide other students' personal uploads from this student's RAG context.
             if source == "student_upload" and (

@@ -40,3 +40,32 @@ class OrgInviteRepository:
         self._db.commit()
         self._db.refresh(invite)
         return invite
+
+    def rotate_token(
+        self,
+        invite: OrgInvite,
+        *,
+        token_hash: str,
+        expires_at: datetime,
+    ) -> OrgInvite:
+        invite.token_hash = token_hash
+        invite.expires_at = expires_at
+        invite.resend_count = (invite.resend_count or 0) + 1
+        invite.delivery_status = "pending"
+        invite.last_sent_at = None
+        self._db.commit()
+        self._db.refresh(invite)
+        return invite
+
+    def set_delivery_status(
+        self,
+        invite: OrgInvite,
+        *,
+        status: str,
+        sent_at: datetime | None,
+    ) -> OrgInvite:
+        invite.delivery_status = status
+        invite.last_sent_at = sent_at
+        self._db.commit()
+        self._db.refresh(invite)
+        return invite

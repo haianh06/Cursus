@@ -1,6 +1,6 @@
 from typing import Annotated, Literal
 
-from pydantic import BaseModel, Field, StringConstraints
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
 InvitableRole = Literal["STUDENT", "INSTRUCTOR", "ADMIN"]
 
@@ -19,6 +19,9 @@ class InviteResponse(BaseModel):
     expires_at: str
     used_at: str | None
     revoked_at: str | None
+    delivery_status: Literal["pending", "sent", "failed"]
+    resend_count: int = Field(ge=0)
+    last_sent_at: str | None
     created_at: str
 
 
@@ -131,6 +134,21 @@ class AdminAnalyticsResponse(BaseModel):
     data: AdminAnalyticsData
 
 
+class AdminAnalyticsSummaryData(BaseModel):
+    at_risk_students: int = Field(ge=0)
+    ingested_courses: int = Field(ge=0)
+    total_courses: int = Field(ge=0)
+    total_documents: int = Field(ge=0)
+    total_chunks: int = Field(ge=0)
+    measurement_status: Literal["not_measured"]
+    method_note: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
+
+
+class AdminAnalyticsSummaryResponse(BaseModel):
+    success: Literal[True]
+    data: AdminAnalyticsSummaryData
+
+
 class AdminGuardrailRule(BaseModel):
     code: str
     name: str
@@ -168,11 +186,32 @@ class AdminGuardrailRuleUpdateResponse(BaseModel):
     data: AdminGuardrailRuleUpdateData
 
 
+class AdminGuardrailRulePreviewRequest(BaseModel):
+    enabled: bool
+    reason: Annotated[str, StringConstraints(strip_whitespace=True, min_length=5, max_length=2000)]
+
+
+class AdminGuardrailRulePreviewData(BaseModel):
+    code: str
+    current_enabled: bool
+    proposed_enabled: bool
+    core_locked: bool
+    changed_codes: list[str]
+    any_disabled: bool
+    reason: str
+
+
+class AdminGuardrailRulePreviewResponse(BaseModel):
+    success: Literal[True]
+    data: AdminGuardrailRulePreviewData
+
+
 class AdminGuardrailPolicyVersion(BaseModel):
     version: str
     rules_snapshot: dict[str, bool]
     source_version: str | None = None
     change_reason: str | None = None
+    rolled_back_from: str | None = None
     is_active: bool
     created_by: str | None = None
     created_at: str
@@ -185,6 +224,26 @@ class AdminGuardrailHistoryData(BaseModel):
 class AdminGuardrailHistoryResponse(BaseModel):
     success: Literal[True]
     data: AdminGuardrailHistoryData
+
+
+class AdminGuardrailRollbackRequest(BaseModel):
+    reason: Annotated[str, StringConstraints(strip_whitespace=True, min_length=5, max_length=2000)]
+
+
+class AdminGuardrailRollbackData(BaseModel):
+    version: str
+    rolled_back_from: str
+    rules: dict[str, bool]
+    any_disabled: bool
+
+
+class AdminGuardrailRollbackResponse(BaseModel):
+    success: Literal[True]
+    data: AdminGuardrailRollbackData
+
+
+class AdminGuardrailRestoreRequest(BaseModel):
+    reason: Annotated[str, StringConstraints(strip_whitespace=True, min_length=0, max_length=2000)] = ""
 
 
 class AdminCourseCreateRequest(BaseModel):
@@ -202,6 +261,13 @@ class AdminDocument(BaseModel):
     version: str
     chunk_count: int = Field(ge=0)
     content_flagged: bool
+    publication_status: str
+    version_group: str
+    previous_version_id: str | None = None
+    validated_at: str | None = None
+    published_at: str | None = None
+    archived_at: str | None = None
+    change_reason: str | None = None
 
 
 class AdminDocumentsData(BaseModel):
@@ -211,6 +277,38 @@ class AdminDocumentsData(BaseModel):
 class AdminDocumentsResponse(BaseModel):
     success: Literal[True]
     data: AdminDocumentsData
+
+
+class AdminDocumentContentData(BaseModel):
+    id: str
+    filename: str | None = None
+    title: str
+    version: str
+    content: str
+    truncated: bool
+
+
+class AdminDocumentContentResponse(BaseModel):
+    success: Literal[True]
+    data: AdminDocumentContentData
+
+
+class AdminDocumentVersionsData(BaseModel):
+    versions: list[AdminDocument]
+
+
+class AdminDocumentVersionsResponse(BaseModel):
+    success: Literal[True]
+    data: AdminDocumentVersionsData
+
+
+class AdminDocumentMutationData(BaseModel):
+    document: AdminDocument
+
+
+class AdminDocumentMutationResponse(BaseModel):
+    success: Literal[True]
+    data: AdminDocumentMutationData
 
 
 class AdminIngestJobData(BaseModel):
@@ -404,3 +502,42 @@ class AdminSettingsUpdateRequest(BaseModel):
     demoModeEnabled: bool | None = None
     autoRiskAlertsEnabled: bool | None = None
     defaultSemester: Annotated[str, StringConstraints(min_length=1, max_length=50)] | None = None
+
+
+# ── Admin sections (Task 6 — CourseSection CRUD + instructor assignment) ──
+
+
+class SectionCreateRequest(BaseModel):
+    course_id: str = Field(alias="courseId")
+    section_code: str = Field(alias="sectionCode", min_length=1, max_length=32)
+    term: str = Field(min_length=1, max_length=32)
+    instructor_id: str | None = Field(default=None, alias="instructorId")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class SectionUpdateRequest(BaseModel):
+    section_code: str | None = Field(default=None, alias="sectionCode", max_length=32)
+    term: str | None = Field(default=None, max_length=32)
+    instructor_id: str | None = Field(default=None, alias="instructorId")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class SectionOut(BaseModel):
+    id: str
+    course_code: str = Field(serialization_alias="courseCode")
+    course_name: str = Field(serialization_alias="courseName")
+    section_code: str = Field(serialization_alias="sectionCode")
+    term: str
+    instructor_id: str | None = Field(serialization_alias="instructorId")
+    instructor_name: str | None = Field(serialization_alias="instructorName")
+    enrolled_count: int = Field(serialization_alias="enrolledCount")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class RosterAddRequest(BaseModel):
+    student_id: str = Field(alias="studentId")
+
+    model_config = ConfigDict(populate_by_name=True)

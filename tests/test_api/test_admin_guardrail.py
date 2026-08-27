@@ -229,6 +229,90 @@ async def test_rule_change_publishes_a_policy_version_visible_in_history(client)
 
 
 @pytest.mark.asyncio
+async def test_guardrail_preview_is_read_only_and_reports_effect(client):
+    headers = await _admin_headers(client)
+
+    response = await client.post(
+        "/api/v1/admin/guardrail-rules/FULL_CODE/preview",
+        json={"enabled": False, "reason": "temporary rollout pause"},
+        headers=headers,
+    )
+
+    assert response.status_code == 200
+    preview = response.json()["data"]
+    assert preview["code"] == "FULL_CODE"
+    assert preview["current_enabled"] is True
+    assert preview["proposed_enabled"] is False
+    assert preview["changed_codes"] == ["FULL_CODE"]
+    assert preview["any_disabled"] is True
+
+    history = await client.get("/api/v1/admin/guardrail-rules/history", headers=headers)
+    assert history.status_code == 200
+    assert history.json()["data"]["versions"] == []
+    rules = await client.get("/api/v1/admin/guardrail-rules", headers=headers)
+    assert rules.json()["data"]["any_disabled"] is False
+
+
+@pytest.mark.asyncio
+async def test_guardrail_preview_rejects_core_rule_and_missing_reason(client):
+    headers = await _admin_headers(client)
+
+    locked = await client.post(
+        "/api/v1/admin/guardrail-rules/PROMPT_INJECTION/preview",
+        json={"enabled": False, "reason": "safety check"},
+        headers=headers,
+    )
+    assert locked.status_code == 409
+
+    missing_reason = await client.post(
+        "/api/v1/admin/guardrail-rules/FULL_CODE/preview",
+        json={"enabled": False, "reason": "no"},
+        headers=headers,
+    )
+    assert missing_reason.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_guardrail_rollback_creates_new_version_and_audit_event(client):
+    headers = await _admin_headers(client)
+    published = await client.patch(
+        "/api/v1/admin/guardrail-rules/FULL_CODE",
+        json={"enabled": False, "reason": "temporary rollout pause"},
+        headers=headers,
+    )
+    assert published.status_code == 200
+    first_version = published.json()["data"]["rule"]["current_version"]
+
+    restored = await client.post(
+        "/api/v1/admin/guardrail-rules/restore-defaults",
+        json={},
+        headers=headers,
+    )
+    assert restored.status_code == 200
+
+    rollback = await client.post(
+        f"/api/v1/admin/guardrail-rules/versions/{first_version}/rollback",
+        json={"reason": "rollback after safety review"},
+        headers=headers,
+    )
+    assert rollback.status_code == 201
+    assert rollback.json()["data"]["rules"]["FULL_CODE"] is False
+    assert rollback.json()["data"]["rolled_back_from"] == first_version
+
+    history = await client.get("/api/v1/admin/guardrail-rules/history", headers=headers)
+    versions = history.json()["data"]["versions"]
+    assert len(versions) == 3
+    assert versions[0]["rolled_back_from"] == first_version
+    assert versions[0]["is_active"] is True
+
+    events = await client.get(
+        "/api/v1/audit/events?event_type=guardrail_rule_updated",
+        headers=headers,
+    )
+    assert any(item["metadata"].get("rollback_from") == first_version for item in events.json())
+
+
+@pytest.mark.asyncio
 async def test_failed_audit_rolls_back_rule_change(client, monkeypatch):
     headers = await _admin_headers(client)
 

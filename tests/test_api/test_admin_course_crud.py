@@ -135,6 +135,20 @@ async def test_admin_document_upload_replace_list_and_delete(client):
     assert documents[0]["chunk_count"] == 2
     document_id = documents[0]["id"]
 
+    preview = await client.get(
+        f"/api/v1/admin/courses/{COURSE_CODE}/documents/{document_id}/content",
+        headers=headers,
+    )
+    assert preview.status_code == 200, preview.text
+    assert preview.json()["data"] == {
+        "id": document_id,
+        "filename": "week.md",
+        "title": "week",
+        "version": "1",
+        "content": "# Week\n\nContent",
+        "truncated": False,
+    }
+
     replaced = await client.put(
         f"/api/v1/admin/courses/{COURSE_CODE}/documents/{document_id}",
         files={"file": ("replacement.txt", b"Replacement", "text/plain")},
@@ -142,14 +156,26 @@ async def test_admin_document_upload_replace_list_and_delete(client):
     )
     after_replace = await client.get(f"/api/v1/admin/courses/{COURSE_CODE}/documents", headers=headers)
     assert replaced.status_code == 202
-    assert after_replace.json()["data"]["documents"][0]["chunk_count"] == 1
+    replacement = after_replace.json()["data"]["documents"][0]
+    replacement_id = replacement["id"]
+    assert replacement_id != document_id
+    assert replacement["version"] == "2"
+    assert replacement["chunk_count"] == 1
+
+    historical_delete = await client.delete(
+        f"/api/v1/admin/courses/{COURSE_CODE}/documents/{document_id}", headers=headers
+    )
+    assert historical_delete.status_code == 409
 
     deleted = await client.delete(
-        f"/api/v1/admin/courses/{COURSE_CODE}/documents/{document_id}", headers=headers
+        f"/api/v1/admin/courses/{COURSE_CODE}/documents/{replacement_id}", headers=headers
     )
     after_delete = await client.get(f"/api/v1/admin/courses/{COURSE_CODE}/documents", headers=headers)
     assert deleted.status_code == 202
-    assert after_delete.json()["data"]["documents"] == []
+    remaining = after_delete.json()["data"]["documents"]
+    assert len(remaining) == 1
+    assert remaining[0]["id"] == document_id
+    assert remaining[0]["publication_status"] == "ARCHIVED"
     db = SessionLocal()
     try:
         delete_job = (
@@ -299,20 +325,90 @@ async def test_document_replace_forces_revalidation(client):
         headers=headers,
     )
 
+    replacement = (await client.get(
+        f"/api/v1/admin/courses/{COURSE_CODE}/documents", headers=headers
+    )).json()["data"]["documents"][0]
+    replacement_id = replacement["id"]
+
     db = SessionLocal()
     try:
-        document = db.get(Document, document_id)
-        assert document.validated_at is None, "replacing content must force re-validation"
-        assert document.checksum is not None
+        historical = db.get(Document, document_id)
+        replacement_document = db.get(Document, replacement_id)
+        assert historical.validated_at is not None, "history must remain immutable"
+        assert replacement_document.validated_at is None, "replacement must force re-validation"
+        assert replacement_document.checksum is not None
     finally:
         db.close()
 
     publish_before_revalidate = await client.post(
-        f"/api/v1/admin/courses/{COURSE_CODE}/documents/{document_id}/publish",
+        f"/api/v1/admin/courses/{COURSE_CODE}/documents/{replacement_id}/publish",
         json={"change_reason": "should still be blocked"},
         headers=headers,
     )
     assert publish_before_revalidate.status_code == 400
+
+
+@pytest.mark.asyncio
+async def test_document_history_and_rollback_publish_a_new_version(client):
+    headers = await admin_headers(client)
+    await client.post(
+        "/api/v1/admin/courses",
+        json={"subject_code": COURSE_CODE, "subject_name": "CRUD Course", "semester": "9"},
+        headers=headers,
+    )
+    await client.post(
+        f"/api/v1/admin/courses/{COURSE_CODE}/documents",
+        files={"file": ("v1.md", b"# Version one\n\nOriginal", "text/markdown")},
+        headers=headers,
+    )
+    v1 = (await client.get(
+        f"/api/v1/admin/courses/{COURSE_CODE}/documents", headers=headers
+    )).json()["data"]["documents"][0]
+    await client.post(
+        f"/api/v1/admin/courses/{COURSE_CODE}/documents/{v1['id']}/validate",
+        headers=headers,
+    )
+    assert (await client.post(
+        f"/api/v1/admin/courses/{COURSE_CODE}/documents/{v1['id']}/publish",
+        json={"change_reason": "publish initial curriculum"},
+        headers=headers,
+    )).status_code == 200
+
+    await client.put(
+        f"/api/v1/admin/courses/{COURSE_CODE}/documents/{v1['id']}",
+        files={"file": ("v2.md", b"# Version two\n\nReplacement", "text/markdown")},
+        headers=headers,
+    )
+    v2 = (await client.get(
+        f"/api/v1/admin/courses/{COURSE_CODE}/documents", headers=headers
+    )).json()["data"]["documents"][0]
+    await client.post(
+        f"/api/v1/admin/courses/{COURSE_CODE}/documents/{v2['id']}/validate",
+        headers=headers,
+    )
+    assert (await client.post(
+        f"/api/v1/admin/courses/{COURSE_CODE}/documents/{v2['id']}/publish",
+        json={"change_reason": "publish replacement curriculum"},
+        headers=headers,
+    )).status_code == 200
+
+    history = await client.get(
+        f"/api/v1/admin/courses/{COURSE_CODE}/documents/{v2['id']}/versions",
+        headers=headers,
+    )
+    assert history.status_code == 200
+    assert [item["version"] for item in history.json()["data"]["versions"]] == ["2", "1"]
+
+    rollback = await client.post(
+        f"/api/v1/admin/courses/{COURSE_CODE}/documents/{v1['id']}/rollback",
+        json={"change_reason": "restore the approved first version"},
+        headers=headers,
+    )
+    assert rollback.status_code == 200, rollback.text
+    restored = rollback.json()["data"]["document"]
+    assert restored["version"] == "3"
+    assert restored["publication_status"] == "PUBLISHED"
+    assert restored["previous_version_id"] == v2["id"]
 
 
 @pytest.mark.asyncio

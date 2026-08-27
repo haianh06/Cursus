@@ -58,22 +58,6 @@ async def test_student_can_upload_and_delete_notes(client):
     assert mine["canDelete"] is True
     assert mine["source"] == "student_upload"
 
-    # Uploaded notes should be retrievable by the chat assistant for that course.
-    course_code = detail.json()["code"]
-    chat = await client.post(
-        "/api/v1/student/chat/messages",
-        headers=headers,
-        json={
-            "subjectCode": course_code,
-            "message": "Practice array reverse notes",
-        },
-    )
-    assert chat.status_code == 201
-    chat_body = chat.json()
-    assert chat_body["blocked"] is False
-    assert chat_body["mode"] in {"extractive", "llm"}
-    assert len(chat_body["citations"]) >= 1
-
     delete = await client.delete(
         f"/api/v1/student/courses/{course_id}/documents/{document_id}",
         headers=headers,

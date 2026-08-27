@@ -10,7 +10,6 @@ import LandingFeatureBento from '../landing/LandingFeatureBento';
 import LandingGroundedQA from '../landing/LandingGroundedQA';
 import LandingGuardrail from '../landing/LandingGuardrail';
 import LandingLecturerHITL from '../landing/LandingLecturerHITL';
-import LandingSandbox from '../landing/LandingSandbox';
 import LandingPrivacy from '../landing/LandingPrivacy';
 import LandingFAQ from '../landing/LandingFAQ';
 import LandingFooter from '../landing/LandingFooter';
@@ -180,7 +179,6 @@ export default function LandingPage() {
         <LandingGroundedQA />
         <LandingLecturerHITL />
         <LandingGuardrail />
-        <LandingSandbox />
         <LandingPrivacy />
         <LandingFAQ />
         <LandingFooter />

@@ -94,7 +94,13 @@ class Settings(BaseSettings):
     email_verification_url_base: str | None = None
     org_invite_token_minutes: int = Field(default=10080, ge=5, le=43200)  # default 7 days
     org_invite_url_base: str | None = None
-    demo_session_token_minutes: int = Field(default=60, ge=5, le=480)
+    # Was 60 -- a demo walkthrough that pauses to explore a role (e.g. going
+    # into Mock LMS/EduSync and back) routinely outlasted that, silently
+    # killing the whole session's refresh token (not just the access token)
+    # via SessionService's absolute_expires_at cap and forcing a re-login
+    # with no warning. 240 min (4h) comfortably covers one sitting without
+    # going unbounded.
+    demo_session_token_minutes: int = Field(default=240, ge=5, le=480)
     email_provider: Literal["none", "smtp"] = "none"
     smtp_host: str | None = None
     smtp_port: int = Field(default=587, ge=1, le=65535)
@@ -145,6 +151,10 @@ class Settings(BaseSettings):
     # đổi mã lấy danh tính (không phải mật khẩu người dùng nào).
     mock_lms_sso_shared_secret: str | None = None
     mock_lms_sso_allowed_redirect_prefixes: str = "http://127.0.0.1:9000,http://localhost:9000"
+    # Where the "not logged in" page (src/api/mock_lms_sso.py authorize())
+    # sends the visitor to actually log in — the Cursus *frontend* dev
+    # server, not this backend's own base_url.
+    cursus_frontend_url: str = "http://localhost:5173"
 
 
 @lru_cache

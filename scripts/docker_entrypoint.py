@@ -74,16 +74,19 @@ def _users_exist() -> bool:
 
 
 def _seed_demo_dataset() -> None:
-    """Fast 3-role accounts for local Docker system tests (not the 600-user dump)."""
+    """Seed the real sandbox flow used by the public role picker."""
     from src.db.connection import SessionLocal
-    from tests.support.api_demo_dataset import ensure_api_demo_dataset
+    from src.db.models import User
+    from src.services.mock.gate2_demo import DEMO_STUDENT_EMAIL, Gate2DemoService
 
     db = SessionLocal()
     try:
-        ensure_api_demo_dataset(db)
+        student = db.query(User).filter_by(email=DEMO_STUDENT_EMAIL).first()
+        if student is None:
+            raise RuntimeError("Demo sandbox student was not provisioned")
+        Gate2DemoService(db).reset(student_id=student.id)
     finally:
         db.close()
-    _provision("student.demo@example.test")
 
 
 def _seed_if_needed() -> None:
@@ -97,18 +100,18 @@ def _seed_if_needed() -> None:
         logger.warning("seed_blocked_non_dev_env app_env=%s", app_env)
         return
 
+    dataset = os.getenv("SEED_DATASET", "demo").strip().lower()
+    if dataset == "demo":
+        logger.info("seeding_demo_dataset app_env=%s", app_env)
+        _seed_demo_dataset()
+        return
+
     try:
         if _users_exist():
             logger.info("seed_skipped_users_present")
             return
     except Exception as exc:  # noqa: BLE001
         logger.warning("seed_user_check_failed error_type=%s", type(exc).__name__)
-        return
-
-    dataset = os.getenv("SEED_DATASET", "demo").strip().lower()
-    if dataset == "demo":
-        logger.info("seeding_demo_dataset app_env=%s", app_env)
-        _seed_demo_dataset()
         return
 
     logger.info("seeding_full_dataset app_env=%s", app_env)
@@ -131,7 +134,31 @@ def _seed_if_needed() -> None:
         ],
         check=False,
     )
-    _provision("student.demo@example.test")
+
+
+def _ensure_demo_sandbox() -> None:
+    """Provision the three accounts used by `/auth/demo-session`.
+
+    The generic API demo fixture uses different emails, so seeding it alone
+    leaves the public role picker returning HTTP 503. The provisioning script
+    is idempotent and keeps these accounts inside an isolated sandbox org.
+    """
+    app_env = os.getenv("APP_ENV", "development").strip().lower()
+    if app_env not in _SEEDABLE_ENVS:
+        return
+    _run(
+        [
+            sys.executable,
+            "provision_organization.py",
+            "cursus-demo",
+            "Cursus Demo University",
+            "sandbox",
+            "--admin-email",
+            "demo.admin@cursusdemo.local",
+            "--admin-name",
+            "Demo Admin",
+        ]
+    )
 
 
 def _provision(email: str) -> None:
@@ -150,8 +177,8 @@ def _provision(email: str) -> None:
 
 
 def _seed_extra_users() -> None:
-    from src.db.connection import SessionLocal
     from scripts.seed_extra_users import ensure_extra_users
+    from src.db.connection import SessionLocal
 
     db = SessionLocal()
     try:
@@ -213,15 +240,19 @@ def _ensure_academic_term() -> None:
     from datetime import UTC, date, datetime
 
     from src.db.connection import SessionLocal
-    from src.db.models import AcademicTerm
+    from src.db.models import AcademicTerm, Organization
 
     db = SessionLocal()
     try:
         if db.query(AcademicTerm).filter_by(is_active=True).first() is not None:
             return
+        organization = db.query(Organization).filter_by(slug="cursus-demo").first()
+        if organization is None:
+            raise RuntimeError("Demo sandbox organization was not provisioned")
         db.add(
             AcademicTerm(
                 id="term_fall2026",
+                organization_id=organization.id,
                 name="Fall 2026",
                 start_date=date(2026, 9, 7),
                 study_weeks=10,
@@ -245,6 +276,7 @@ def main() -> None:
 
     _wait_for_database()
     _alembic_upgrade()
+    _ensure_demo_sandbox()
     _ensure_academic_term()
     _seed_if_needed()
     _seed_curriculum()

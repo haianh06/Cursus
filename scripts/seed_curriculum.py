@@ -309,7 +309,7 @@ def _load_chunk_file(code: str) -> list[dict[str, Any]]:
 
 def seed_database(catalog: dict[str, Any]) -> dict[str, int]:
     from src.db.connection import SessionLocal
-    from src.db.models import Course, Document, DocumentChunk
+    from src.db.models import Course, Document, DocumentChunk, Organization
 
     db = SessionLocal()
     created_courses = 0
@@ -317,6 +317,11 @@ def seed_database(catalog: dict[str, Any]) -> dict[str, int]:
     documents = 0
     chunks = 0
     try:
+        organization = db.query(Organization).filter_by(slug="cursus-demo").first()
+        if organization is None:
+            raise RuntimeError(
+                "The cursus-demo organization must be provisioned before curriculum seeding"
+            )
         for subject in catalog["subjects"]:
             code = str(subject["Subject Code"]).strip()
             name = str(subject["Subject Name"]).strip()
@@ -332,6 +337,7 @@ def seed_database(catalog: dict[str, Any]) -> dict[str, int]:
                         name=name,
                         description=description,
                         syllabus=syllabus or None,
+                        organization_id=organization.id,
                     )
                 )
                 created_courses += 1

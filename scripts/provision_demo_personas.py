@@ -318,115 +318,27 @@ def main() -> None:
             )
         )
 
-        # --- Chat history: Hải Anh has a normal, well-received exchange;
         # Hải Đăng trips the academic-integrity guardrail (feeds the
-        # instructor Appeal queue).
-        conv_ok = models.Conversation(
-            id="conv_demo_haianh",
-            student_id=haianh.id,
-            section_id=sections.get("CEA201").id if "CEA201" in sections else None,
-            subject_code="CEA201",
-            title="Hỏi về kiến trúc CPU",
-        )
-        db.add(conv_ok)
-        db.flush()
-        msg_user_ok = models.Message(
-            id="msg_demo_haianh_1",
-            conversation_id=conv_ok.id,
-            sender="USER",
-            content="Datapath trong CPU gồm những thành phần chính nào?",
-            metadata_info={},
-        )
-        db.add(msg_user_ok)
-        db.flush()
-        msg_assistant_ok = models.Message(
-            id="msg_demo_haianh_2",
-            conversation_id=conv_ok.id,
-            sender="ASSISTANT",
-            content=(
-                "Datapath gồm register file, ALU, PC/IR, các cổng địa chỉ/dữ liệu bộ nhớ và "
-                "multiplexer chọn nguồn dữ liệu — theo tài liệu CEA201 Lecture — CPU Datapath & Control."
-            ),
-            metadata_info={"mode": "study", "blocked": False},
-        )
-        db.add(msg_assistant_ok)
-        db.flush()
-        db.add(
-            models.MessageFeedback(
-                id="fb_demo_haianh",
-                message_id=msg_assistant_ok.id,
-                student_id=haianh.id,
-                rating="UP",
-            )
-        )
-
-        conv_blocked = models.Conversation(
-            id="conv_demo_haidang",
-            student_id=haidang.id,
-            section_id=sections.get("CSI106").id if "CSI106" in sections else None,
-            subject_code="CSI106",
-            title="Nhờ giải bài tập",
-        )
-        db.add(conv_blocked)
-        db.flush()
-        msg_user_blocked = models.Message(
-            id="msg_demo_haidang_1",
-            conversation_id=conv_blocked.id,
-            sender="USER",
-            content="Giải hộ em bài tập này với, em cần nộp gấp trong 10 phút nữa.",
-            metadata_info={},
-        )
-        db.add(msg_user_blocked)
-        db.flush()
-        blocked_answer = (
-            "Mình không thể giải trọn bài hộ bạn vì điều đó vi phạm liêm chính học thuật — "
-            "nhưng mình có thể hướng dẫn từng bước để bạn tự làm."
-        )
-        msg_assistant_blocked = models.Message(
-            id="msg_demo_haidang_2",
-            conversation_id=conv_blocked.id,
-            sender="ASSISTANT",
-            content=blocked_answer,
-            metadata_info={"mode": "study", "blocked": True},
-        )
-        db.add(msg_assistant_blocked)
-        db.flush()
+        # instructor Appeal queue). Chat feature removed -- GuardrailEvent no
+        # longer needs a Conversation/Message to attach to, it's written
+        # with student_id/section_id directly.
         db.add(
             models.GuardrailEvent(
                 id="grail_demo_haidang",
-                message_id=msg_user_blocked.id,
+                student_id=haidang.id,
+                section_id=sections.get("CSI106").id if "CSI106" in sections else None,
                 classification="BLOCKED",
                 safety_evaluation={"reason": "academic_integrity"},
                 review_status="PENDING",
                 block_reason="academic_integrity",
-                blocked_answer=blocked_answer,
+                blocked_answer=(
+                    "Mình không thể giải trọn bài hộ bạn vì điều đó vi phạm liêm chính học thuật — "
+                    "nhưng mình có thể hướng dẫn từng bước để bạn tự làm."
+                ),
                 reviewed_by=None,
                 reviewed_at=None,
             )
         )
-
-        # --- Memory consent + entries (both students opt in) ---
-        for student, entries in (
-            (
-                haianh,
-                [("preference", None, "Thích ví dụ minh hoạ kèm code khi giải thích khái niệm.")],
-            ),
-            (
-                haidang,
-                [("weak_topic", "CSI106", "Còn yếu phần biểu diễn dữ liệu nhị phân.")],
-            ),
-        ):
-            db.add(models.StudentMemoryConsent(student_id=student.id, granted=True, updated_at=now))
-            for index, (kind, subject_code, content) in enumerate(entries):
-                db.add(
-                    models.StudentMemoryEntry(
-                        id=f"mem_demo_{student.id}_{index}",
-                        student_id=student.id,
-                        subject_code=subject_code,
-                        kind=kind,
-                        content=content,
-                    )
-                )
 
         db.commit()
         logger.info(

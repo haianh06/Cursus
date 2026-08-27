@@ -48,10 +48,21 @@ router = APIRouter(
 )
 
 @router.get("/announcements")
-def list_instructor_announcements(db: Session = Depends(get_db)):
-    """Thong bao rong tu Admin — hien trong khoi thong bao tren dashboard GV."""
+def list_instructor_announcements(
+    current_user: models.User = Depends(get_current_user_from_token),
+    db: Session = Depends(get_db),
+):
+    """Thong bao rong tu Admin — hien trong khoi thong bao tren dashboard GV.
+
+    Loc theo to chuc cua nguoi goi. Truoc day khong loc gi ca, nhung khong ai
+    thay vi khong route nao ghi vao `admin_announcements`; tu khi
+    `POST /admin/announcements` ton tai thi thieu bo loc nay la ro ri chéo
+    to chuc. Hang cu (truoc migration 20260910_announcement_org) co
+    `organization_id` NULL nen khong con hien voi ai -- huong an toan.
+    """
     rows = (
         db.query(models.AdminAnnouncement)
+        .filter(models.AdminAnnouncement.organization_id == current_user.organization_id)
         .order_by(models.AdminAnnouncement.created_at.desc())
         .limit(5)
         .all()
@@ -340,7 +351,7 @@ def _apply_intervention_decision(
 
 
 @router.post("/risks/{risk_id}/intervention")
-def submit_intervention(
+async def submit_intervention(
     risk_id: str,
     payload: InterventionRequest,
     _owner: None = Depends(require_instructor_risk_owner),
@@ -365,6 +376,16 @@ def submit_intervention(
         instructor_id=current_user.id,
     )
     db.commit()
+
+    await AuditService(AuditRepository(db)).log_event(
+        event_type="SUBMIT_INTERVENTION",
+        decision="ALLOW",
+        actor_user_id=current_user.id,
+        resource_type="RISK_SIGNAL",
+        resource_id=risk_id,
+        metadata={"decision": payload.decision},
+    )
+
     return result
 
 
@@ -639,7 +660,6 @@ def _serialize_guardrail_review(
         "classification": event.classification,
         "reviewStatus": status,
         "createdAt": event.created_at.isoformat() if event.created_at else None,
-        "messageId": event.message_id,
     }
 
 
@@ -650,11 +670,11 @@ def list_guardrail_reviews(
 ):
     """List blocked Q&A cases awaiting / finished instructor review.
 
-    An case thuoc RO RANG mot lop GV KHAC dang day (Conversation.section_id
-    -> CourseSection.instructor_id khac current_user) de tranh lo du lieu cheo
-    lop. Case KHONG gan section (cau hoi chung, section_id NULL) van hien cho
-    moi GV/ADMIN vi khong co tin hieu nao de quy ve dung 1 lop — an het nhung
-    case nay di thi khong ai xu ly duoc, con te hon la khong loc.
+    An case thuoc RO RANG mot lop GV KHAC dang day (GuardrailEvent.section_id
+    khac lop GV do) de tranh lo du lieu cheo lop. Case KHONG gan section (cau
+    hoi chung, section_id NULL) van hien cho moi GV/ADMIN vi khong co tin
+    hieu nao de quy ve dung 1 lop — an het nhung case nay di thi khong ai xu
+    ly duoc, con te hon la khong loc.
     """
     return _visible_guardrail_events(db, current_user)
 
@@ -669,7 +689,11 @@ def _visible_guardrail_events(
     """Loi cua list_guardrail_reviews, tach ra de dung lai cho ho so SV (A1) —
     cung 1 quy tac loc theo lop, khong duoc trung lap logic o 2 noi vi day la
     logic nhay cam ve quyen rieng tu (rat de lech nhau khi sua 1 cho ma quen
-    cho con lai)."""
+    cho con lai).
+
+    GuardrailEvent ghi truc tiep student_id/section_id luc record_block()
+    (chat feature da bi go bo, khong con Conversation/Message de join qua
+    nua — xem migrations/versions/20260910_remove_chatbot_feature.py)."""
     is_admin = str(current_user.role) == models.UserRole.ADMIN.value
     section_ids: set[str] | None = None
     if not is_admin:
@@ -679,41 +703,39 @@ def _visible_guardrail_events(
     events = (
         db.query(models.GuardrailEvent)
         .filter(models.GuardrailEvent.classification == "BLOCKED")
-        .order_by(models.GuardrailEvent.id.desc())
+        # id is `grd_{uuid4().hex[:16]}` -- ordering by it is really a random
+        # sort. Past 200 BLOCKED events org-wide that silently returned an
+        # arbitrary sample *before* the per-instructor section filter below,
+        # so a real pending case could vanish with no error. created_at is
+        # what _serialize_guardrail_review already reports as "when".
+        .order_by(models.GuardrailEvent.created_at.desc())
         .limit(200)
         .all()
     )
     reviews: list[dict] = []
     for event in events:
-        message = db.query(models.Message).filter_by(id=event.message_id).first()
-        student_name = "Unknown Student"
-        question = ""
-        conversation = None
-        conv_student_id: str | None = None
-        if message is not None:
-            question = message.content or ""
-            conversation = (
-                db.query(models.Conversation).filter_by(id=message.conversation_id).first()
-                if message.conversation_id
-                else None
-            )
-            conv_student_id = getattr(conversation, "student_id", None)
-            if conv_student_id:
-                student = db.query(models.User).filter_by(id=conv_student_id).first()
-                if student:
-                    student_name = student.full_name
+        question = (
+            event.safety_evaluation.get("question")
+            if isinstance(event.safety_evaluation, dict)
+            else None
+        ) or ""
 
-        if student_id is not None and conv_student_id != student_id:
+        student_name = "Unknown Student"
+        if event.student_id:
+            student = db.query(models.User).filter_by(id=event.student_id).first()
+            if student:
+                student_name = student.full_name
+
+        if student_id is not None and event.student_id != student_id:
             continue
 
         if section_ids is not None:
-            conv_section_id = getattr(conversation, "section_id", None)
-            if conv_section_id is not None and conv_section_id not in section_ids:
+            if event.section_id is not None and event.section_id not in section_ids:
                 continue
 
         reviews.append(
             _serialize_guardrail_review(
-                event, student_name=student_name, question=question, student_id=conv_student_id
+                event, student_name=student_name, question=question, student_id=event.student_id
             )
         )
         if len(reviews) >= limit:
@@ -722,7 +744,7 @@ def _visible_guardrail_events(
 
 
 @router.post("/guardrail-reviews/{case_id}")
-def decide_guardrail_review(
+async def decide_guardrail_review(
     case_id: str,
     payload: GuardrailReviewDecision,
     _owner: None = Depends(require_instructor_guardrail_owner),
@@ -751,6 +773,20 @@ def decide_guardrail_review(
     if payload.note is not None:
         event.reviewer_note = payload.note
     db.commit()
+
+    await AuditService(AuditRepository(db)).log_event(
+        event_type="GUARDRAIL_REVIEW_DECIDED",
+        decision="ALLOW",
+        actor_user_id=current_user.id,
+        resource_type="GUARDRAIL_EVENT",
+        resource_id=event.id,
+        metadata={
+            "decision": decision,
+            "previousState": previous,
+            "newState": event.review_status,
+            "note": payload.note,
+        },
+    )
 
     return {
         "id": event.id,

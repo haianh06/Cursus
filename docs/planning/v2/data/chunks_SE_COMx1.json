@@ -1,0 +1,62 @@
+{
+  "subject_code": "SE_COM*1",
+  "subject_name": "Subject 1 of Combo*_Học phần 1 của combo*",
+  "chunks": [
+    {
+      "chunk_id": "SE_COM*1-syllabus.md-1",
+      "subject_code": "SE_COM*1",
+      "subject_name": "Subject 1 of Combo*_Học phần 1 của combo*",
+      "section": "SE_COM*1 — Subject 1 of Combo*_Học phần 1 của combo*",
+      "text": "# SE_COM*1 — Subject 1 of Combo*_Học phần 1 của combo*",
+      "source_label": "SE_COM*1 Syllabus — Subject 1 of Combo*_Học phần 1 của combo* — SE_COM*1 — Subject 1 of Combo*_Học phần 1 của combo*"
+    },
+    {
+      "chunk_id": "SE_COM*1-syllabus.md-2",
+      "subject_code": "SE_COM*1",
+      "subject_name": "Subject 1 of Combo*_Học phần 1 của combo*",
+      "section": "SE_COM*1 Syllabus — Subject 1 of Combo*_Học phần 1 của combo*",
+      "text": "Description: Subject 1 of Combo*_Học phần 1 của combo*",
+      "source_label": "SE_COM*1 Syllabus — Subject 1 of Combo*_Học phần 1 của combo* — SE_COM*1 Syllabus — Subject 1 of Combo*_Học phần 1 của combo*"
+    },
+    {
+      "chunk_id": "SE_COM*1-syllabus.md-3",
+      "subject_code": "SE_COM*1",
+      "subject_name": "Subject 1 of Combo*_Học phần 1 của combo*",
+      "section": "SE_COM*1 Syllabus — Subject 1 of Combo*_Học phần 1 của combo*",
+      "text": "NoCredit: 3\nPre-Requisite: None\nSemester: 5\nTime Allocation: 30h lecture + 60h self-study (typical FLM pattern).",
+      "source_label": "SE_COM*1 Syllabus — Subject 1 of Combo*_Học phần 1 của combo* — SE_COM*1 Syllabus — Subject 1 of Combo*_Học phần 1 của combo*"
+    },
+    {
+      "chunk_id": "SE_COM*1-syllabus.md-4",
+      "subject_code": "SE_COM*1",
+      "subject_name": "Subject 1 of Combo*_Học phần 1 của combo*",
+      "section": "SE_COM*1 Syllabus — Subject 1 of Combo*_Học phần 1 của combo*",
+      "text": "StudentTasks: Attend lectures/labs, complete assignments on time, keep a weekly study log, and do not submit AI-generated graded work as your own.",
+      "source_label": "SE_COM*1 Syllabus — Subject 1 of Combo*_Học phần 1 của combo* — SE_COM*1 Syllabus — Subject 1 of Combo*_Học phần 1 của combo*"
+    },
+    {
+      "chunk_id": "SE_COM*1-syllabus.md-5",
+      "subject_code": "SE_COM*1",
+      "subject_name": "Subject 1 of Combo*_Học phần 1 của combo*",
+      "section": "SE_COM*1 Syllabus — Subject 1 of Combo*_Học phần 1 của combo*",
+      "text": "Conditions to pass: Final exam ≥ 4/10 and overall average ≥ 5/10; attendance according to faculty rules.",
+      "source_label": "SE_COM*1 Syllabus — Subject 1 of Combo*_Học phần 1 của combo* — SE_COM*1 Syllabus — Subject 1 of Combo*_Học phần 1 của combo*"
+    },
+    {
+      "chunk_id": "SE_COM*1-syllabus.md-6",
+      "subject_code": "SE_COM*1",
+      "subject_name": "Subject 1 of Combo*_Học phần 1 của combo*",
+      "section": "SE_COM*1 Syllabus — Subject 1 of Combo*_Học phần 1 của combo*",
+      "text": "Progress marks: Participation 10%; Assignments/Labs 30%; Progress test 20%; Final 40% (illustrative weights for grounded Q&A).",
+      "source_label": "SE_COM*1 Syllabus — Subject 1 of Combo*_Học phần 1 của combo* — SE_COM*1 Syllabus — Subject 1 of Combo*_Học phần 1 của combo*"
+    },
+    {
+      "chunk_id": "SE_COM*1-syllabus.md-7",
+      "subject_code": "SE_COM*1",
+      "subject_name": "Subject 1 of Combo*_Học phần 1 của combo*",
+      "section": "SE_COM*1 Syllabus — Subject 1 of Combo*_Học phần 1 của combo*",
+      "text": "Overview: Subject 1 of Combo*_Học phần 1 của combo* (SE_COM*1) is part of BIT_SE_K20D_K21A. Cursus answers must stay inside this syllabus and cite the section used.",
+      "source_label": "SE_COM*1 Syllabus — Subject 1 of Combo*_Học phần 1 của combo* — SE_COM*1 Syllabus — Subject 1 of Combo*_Học phần 1 của combo*"
+    }
+  ]
+}

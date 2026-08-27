@@ -15,6 +15,16 @@ service). If the parsed chunk set ever changes, regenerate by running, from the 
     python -c "from src.services.mock.real_curriculum_service import discover_real_course_codes as d; print(sorted(d()))"
 
 and updating DISCOVERABLE_34 below (plus re-checking EXCLUDED_BUT_INCLUDED still applies).
+
+The 8 excluded combo/elective-slot files under `data/clean/courses/` --
+PHE_COM_1, PHE_COM_2, PHE_COM_3 (Physical Education elective slots) and
+SE_COM_1, SE_COM_2, SE_COM_4, SE_GRA_ELE, TMI_ELE (Software Engineering
+elective/graduation-track slots) -- are deliberately not seeded here, not an
+oversight: each one is a placeholder for "pick one of several actual
+courses," not a single enrollable subject with its own credits/semester, so
+there's no single catalog row to seed it as. Surfacing them would need a
+"choose one of N" UI this catalog-style seeder doesn't model; scope that
+separately if elective selection ever becomes a real EduSync flow.
 """
 from __future__ import annotations
 

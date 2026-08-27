@@ -14,6 +14,13 @@ def test_unknown_code_returns_none():
     assert get_curriculum_detail("NOT_A_REAL_CODE_XYZ") is None
 
 
+def test_generated_summary_without_parsed_syllabus_contract_returns_none():
+    # EXE101 is an illustrative summary file created during planning. It has
+    # chunks, but no parsed syllabus meta/session structure, so production
+    # discovery and Admin detail must not present it as official curriculum.
+    assert get_curriculum_detail("EXE101") is None
+
+
 def test_ssa101_has_expected_meta_and_grading_note():
     detail = get_curriculum_detail("SSA101")
     assert detail is not None

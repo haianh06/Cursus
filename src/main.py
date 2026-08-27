@@ -12,6 +12,7 @@ from src.api.admin_mock_lms import router as admin_mock_lms_router
 from src.api.admin_overview import router as admin_overview_router
 from src.api.admin_people import router as admin_people_router
 from src.api.admin_risk_policy import router as admin_risk_policy_router
+from src.api.admin_sections import router as admin_sections_router
 from src.api.admin_settings import router as admin_settings_router
 from src.api.admin_student360 import router as admin_student360_router
 from src.api.audit import router as audit_router
@@ -20,7 +21,6 @@ from src.api.auth import router as auth_router
 # canvas_router import intentionally disabled — see include_router call below
 # for why (PROJECT_CONTEXT.md mục 6.6/9).
 # from src.api.canvas_routes import router as canvas_router
-from src.api.chat import router as chat_router
 from src.api.demo import router as demo_router
 from src.api.instructor import router as instructor_router
 from src.api.lecture_plan import router as lecture_plan_router
@@ -34,7 +34,6 @@ from src.api.routes import router
 from src.api.self_study import router as self_study_router
 from src.api.semester import router as semester_router
 from src.api.student import router as student_router
-from src.api.student_memory import router as student_memory_router
 from src.api.student_quizzes import router as student_quizzes_router
 from src.config import get_settings
 from src.security.exception_handlers import register_exception_handlers
@@ -108,15 +107,14 @@ app.include_router(admin_mock_lms_router, prefix="/api/v1")
 app.include_router(admin_settings_router, prefix="/api/v1")
 app.include_router(admin_overview_router, prefix="/api/v1")
 app.include_router(admin_people_router, prefix="/api/v1")
+app.include_router(admin_sections_router, prefix="/api/v1")
 app.include_router(public_router, prefix="/api/v1")
 app.include_router(demo_router, prefix="/api/v1")
 app.include_router(semester_router, prefix="/api/v1")
 app.include_router(self_study_router, prefix="/api/v1")
-app.include_router(student_memory_router, prefix="/api/v1")
 app.include_router(practice_student_router, prefix="/api/v1")
 app.include_router(practice_instructor_router, prefix="/api/v1")
 app.include_router(student_quizzes_router, prefix="/api/v1")
-app.include_router(chat_router, prefix="/api/v1")
 app.include_router(lecture_plan_router, prefix="/api/v1")
 
 

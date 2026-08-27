@@ -1,26 +1,22 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import {
-  getInstructorDashboard,
-  getInstructorAlerts,
-  recordIntervention,
-  getGuardrailReviewQueue,
-  resolveGuardrailReview,
   getAdminCourses,
   addAdminCourse,
   deleteAdminCourse,
   getAdminKpi,
-  updatePreferences,
   listSemesters,
 } from '../lib/api';
 
 /**
- * Instructor + Admin data plumbing — talks to the real backend
- * (`src/api/instructor.py`, `src/api/admin.py`) via `lib/api.js`.
+ * Admin course-catalog data plumbing — talks to the real backend
+ * (`src/api/admin.py`) via `lib/api.js`. Instructor pages fetch their own
+ * dashboard/alerts data independently (see InstructorHome, InstructorRiskPage)
+ * and don't use this context.
  *
  * This provider is mounted for every session (including anonymous ones, see
  * App.jsx) because the notification bell + mascot toggle it also hosts are
- * shared UI chrome. Only `user.role === 'instructor' | 'admin' | 'student'`
- * triggers any network call — a logged-out visitor never hits these
+ * shared UI chrome. Only `user.role === 'admin' | 'student'` triggers any
+ * network call — an instructor or logged-out visitor never hits these
  * authenticated, role-gated endpoints.
  */
 
@@ -38,16 +34,6 @@ const CursusContext = createContext();
 export function CursusProvider({ user, children }) {
   const role = user?.role;
 
-  // Instructor slice
-  const [classInfo, setClassInfo] = useState(null);
-  const [alerts, setAlerts] = useState([]);
-  const [queue, setQueue] = useState([]);
-  // mục 6.4 "bộ chọn lớp ở đầu trang" -- null means "every class combined"
-  // (previous, unchanged default). Persisted per-tab only, not across
-  // sessions: an instructor landing back on the dashboard tomorrow should
-  // see the same "all classes" overview as always, not a stale filter.
-  const [selectedCourseId, setSelectedCourseId] = useState(null);
-
   // Admin slice
   const [courses, setCourses] = useState([]);
   const [kpi, setKpi] = useState(null);
@@ -64,28 +50,6 @@ export function CursusProvider({ user, children }) {
 
   const load = useCallback(
     ({ silent = false } = {}) => {
-      if (role === 'instructor') {
-        if (!silent) setLoading(true);
-        setLoadError(null);
-        return Promise.all([
-          getInstructorDashboard(selectedCourseId),
-          getInstructorAlerts(selectedCourseId),
-          getGuardrailReviewQueue(),
-        ])
-          .then(([dashboard, alertData, queueData]) => {
-            setClassInfo(dashboard);
-            setAlerts(alertData?.alerts ?? []);
-            setQueue(Array.isArray(queueData) ? queueData : []);
-          })
-          .catch((err) => {
-            setLoadError(err);
-            throw err;
-          })
-          .finally(() => {
-            if (!silent) setLoading(false);
-          });
-      }
-
       if (role === 'admin') {
         if (!silent) setLoading(true);
         setLoadError(null);
@@ -106,9 +70,6 @@ export function CursusProvider({ user, children }) {
       if (role === 'student') {
         if (!silent) setLoading(true);
         setLoadError(null);
-        setClassInfo(null);
-        setAlerts([]);
-        setQueue([]);
         setCourses([]);
         setKpi(null);
         return listSemesters()
@@ -126,12 +87,9 @@ export function CursusProvider({ user, children }) {
           });
       }
 
-      // Anonymous — this context has nothing to load; make sure a previous
-      // instructor/admin/student session's data doesn't leak across a role
+      // Instructor / anonymous — this context has nothing to load; make sure a
+      // previous admin or student session's data doesn't leak across a role
       // switch on a shared device.
-      setClassInfo(null);
-      setAlerts([]);
-      setQueue([]);
       setCourses([]);
       setKpi(null);
       setActiveSemester(null);
@@ -139,7 +97,7 @@ export function CursusProvider({ user, children }) {
       setLoadError(null);
       return Promise.resolve();
     },
-    [role, selectedCourseId],
+    [role],
   );
 
   useEffect(() => {
@@ -147,25 +105,6 @@ export function CursusProvider({ user, children }) {
       /* surfaced through loadError */
     });
   }, [load]);
-
-  const selectClass = useCallback((courseId) => {
-    setSelectedCourseId(courseId || null);
-  }, []);
-
-  // ── Instructor: alerts + guardrail appeal queue ──────────────────────
-  const interveneAlert = useCallback(
-    (alertId, { action = 'contacted', note = null } = {}) =>
-      recordIntervention(alertId, { action, note }).then(() => load({ silent: true })),
-    [load],
-  );
-
-  const resolveAppeal = useCallback(
-    (appealId, decision) => {
-      const backendDecision = decision === 'approved' ? 'UNBLOCK' : 'KEEP';
-      return resolveGuardrailReview(appealId, backendDecision).then(() => load({ silent: true }));
-    },
-    [load],
-  );
 
   // ── Admin: course catalog ─────────────────────────────────────────────
   const addCourse = useCallback((code, name, semester) => {
@@ -180,30 +119,6 @@ export function CursusProvider({ user, children }) {
     });
   }, []);
 
-  // ── Shared UI chrome ──────────────────────────────────────────────────
-  const [showMascot, setShowMascot] = useState(() => {
-    if (user?.preferences && typeof user.preferences.showMascot === 'boolean') {
-      return user.preferences.showMascot;
-    }
-    return localStorage.getItem('cursus_show_mascot') !== 'false';
-  });
-
-  const toggleMascot = () => {
-    setShowMascot((prev) => {
-      const next = !prev;
-      localStorage.setItem('cursus_show_mascot', String(next));
-      // Synced server-side so the toggle follows the account across devices
-      // (see src/api/auth.py PUT /auth/me/preferences) — skipped for demo
-      // users since demo sessions aren't meant to persist preferences.
-      if (user && !user.isDemo) {
-        updatePreferences({ showMascot: next }).catch(() => {
-          /* best-effort sync — localStorage already has the new value */
-        });
-      }
-      return next;
-    });
-  };
-
   const markNotificationRead = (id) => {
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
   };
@@ -215,14 +130,6 @@ export function CursusProvider({ user, children }) {
   return (
     <CursusContext.Provider
       value={{
-        // Instructor
-        classInfo,
-        alerts,
-        interveneAlert,
-        queue,
-        resolveAppeal,
-        selectedCourseId,
-        selectClass,
         // Admin
         courses,
         addCourse,
@@ -231,8 +138,6 @@ export function CursusProvider({ user, children }) {
         // Student
         activeSemester,
         // Shared
-        showMascot,
-        toggleMascot,
         notifications,
         markNotificationRead,
         markAllNotificationsRead,

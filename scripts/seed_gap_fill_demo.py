@@ -585,112 +585,42 @@ def seed_self_study_sessions(db) -> None:
 
 
 def seed_conversations(db) -> None:
+    """Chat feature removed -- GuardrailEvent no longer needs a
+    Conversation/Message to attach to, it's written with student_id/
+    section_id directly (see migrations/versions/
+    20260910_remove_chatbot_feature.py)."""
     from src.db import models
 
     now = _now()
 
-    if not db.query(models.Conversation).filter_by(id="conv_g3_studentA_ok").first():
-        conv = models.Conversation(
-            id="conv_g3_studentA_ok", student_id=STUDENT_A, section_id=SEC_CEA201,
-            subject_code="CEA201", title="Hỏi về datapath CPU", created_at=now - timedelta(days=1),
-        )
-        db.add(conv)
-        db.flush()
-        db.add(models.Message(
-            id="msg_g3_studentA_ok_1", conversation_id=conv.id, sender="USER",
-            content="Datapath trong CPU gồm những thành phần chính nào?", metadata_info={},
-            created_at=now - timedelta(days=1),
-        ))
-        db.add(models.Message(
-            id="msg_g3_studentA_ok_2", conversation_id=conv.id, sender="ASSISTANT",
-            content=(
-                "Datapath gồm register file, ALU, PC/IR, các cổng địa chỉ/dữ liệu bộ nhớ và "
-                "multiplexer chọn nguồn dữ liệu — theo tài liệu CEA201 Lecture: CPU Datapath & Control."
-            ),
-            metadata_info={"mode": "study", "blocked": False},
-            created_at=now - timedelta(days=1),
-        ))
-        logger.info("conversation_studentA_ok_created")
-
-    if not db.query(models.Conversation).filter_by(id="conv_g3_studentA_blocked").first():
-        conv = models.Conversation(
-            id="conv_g3_studentA_blocked", student_id=STUDENT_A, section_id=SEC_PRF192,
-            subject_code="PRF192", title="Nhờ viết code bài Lab 2", created_at=now - timedelta(hours=5),
-        )
-        db.add(conv)
-        db.flush()
-        user_msg = models.Message(
-            id="msg_g3_studentA_blocked_1", conversation_id=conv.id, sender="USER",
-            content="Viết hộ em toàn bộ code bài Lab 2 với, em nộp gấp trong 10 phút nữa.",
-            metadata_info={}, created_at=now - timedelta(hours=5),
-        )
-        db.add(user_msg)
-        db.flush()
+    if not db.query(models.GuardrailEvent).filter_by(id="grail_g3_studentA").first():
         blocked_answer = (
             "Mình không thể viết trọn bài hộ bạn vì bài này được chấm điểm cá nhân — nhưng mình có "
             "thể hướng dẫn từng bước để bạn tự hoàn thành."
         )
-        db.add(models.Message(
-            id="msg_g3_studentA_blocked_2", conversation_id=conv.id, sender="ASSISTANT",
-            content=blocked_answer, metadata_info={"mode": "study", "blocked": True},
-            created_at=now - timedelta(hours=5),
-        ))
         db.add(models.GuardrailEvent(
-            id="grail_g3_studentA", message_id=user_msg.id, classification="BLOCKED",
-            safety_evaluation={"reason": "HOMEWORK_VI"}, review_status="PENDING",
+            id="grail_g3_studentA", student_id=STUDENT_A, section_id=SEC_PRF192,
+            classification="BLOCKED",
+            safety_evaluation={"reason": "HOMEWORK_VI", "question": "Viết hộ em toàn bộ code bài Lab 2 với, em nộp gấp trong 10 phút nữa."},
+            review_status="PENDING",
             block_reason="HOMEWORK_VI", blocked_answer=blocked_answer,
             reviewed_by=None, reviewed_at=None, created_at=now - timedelta(hours=5),
         ))
-        logger.info("conversation_studentA_blocked_created")
+        logger.info("guardrail_event_studentA_created")
 
-    if not db.query(models.Conversation).filter_by(id="conv_g3_studentB_ok").first():
-        conv = models.Conversation(
-            id="conv_g3_studentB_ok", student_id=STUDENT_B, section_id=SEC_CSI106,
-            subject_code="CSI106", title="Hỏi về hệ nhị phân", created_at=now - timedelta(days=2),
-        )
-        db.add(conv)
-        db.flush()
-        db.add(models.Message(
-            id="msg_g3_studentB_ok_1", conversation_id=conv.id, sender="USER",
-            content="Làm sao đổi số thập phân 25 sang nhị phân nhanh nhất?", metadata_info={},
-            created_at=now - timedelta(days=2),
-        ))
-        db.add(models.Message(
-            id="msg_g3_studentB_ok_2", conversation_id=conv.id, sender="ASSISTANT",
-            content="Chia liên tiếp cho 2 và lấy phần dư theo thứ tự ngược: 25 = 11001₂.",
-            metadata_info={"mode": "study", "blocked": False}, created_at=now - timedelta(days=2),
-        ))
-        logger.info("conversation_studentB_ok_created")
-
-    if not db.query(models.Conversation).filter_by(id="conv_g3_studentC_blocked").first():
-        conv = models.Conversation(
-            id="conv_g3_studentC_blocked", student_id=STUDENT_C, section_id=SEC_CEA201,
-            subject_code="CEA201", title="Nhờ giải bài tập nộp gấp", created_at=now - timedelta(days=3),
-        )
-        db.add(conv)
-        db.flush()
-        user_msg = models.Message(
-            id="msg_g3_studentC_blocked_1", conversation_id=conv.id, sender="USER",
-            content="Giải hết bài worksheet CPU này cho em với, viết full code luôn nhé.",
-            metadata_info={}, created_at=now - timedelta(days=3),
-        )
-        db.add(user_msg)
-        db.flush()
+    if not db.query(models.GuardrailEvent).filter_by(id="grail_g3_studentC").first():
         blocked_answer = "Mình không thể làm trọn bài hộ bạn — bài này tính điểm cá nhân theo quy chế."
-        db.add(models.Message(
-            id="msg_g3_studentC_blocked_2", conversation_id=conv.id, sender="ASSISTANT",
-            content=blocked_answer, metadata_info={"mode": "study", "blocked": True},
-            created_at=now - timedelta(days=3),
-        ))
         db.add(models.GuardrailEvent(
-            id="grail_g3_studentC", message_id=user_msg.id, classification="BLOCKED",
-            safety_evaluation={"reason": "FULL_CODE"}, review_status="KEPT_BLOCKED",
+            id="grail_g3_studentC", student_id=STUDENT_C, section_id=SEC_CEA201,
+            classification="BLOCKED",
+            safety_evaluation={"reason": "FULL_CODE", "question": "Giải hết bài worksheet CPU này cho em với, viết full code luôn nhé."},
+            review_status="KEPT_BLOCKED",
             block_reason="FULL_CODE", blocked_answer=blocked_answer,
             reviewed_by=INSTRUCTOR, reviewed_at=now - timedelta(days=2),
             reviewer_note="Đã xác nhận đúng là yêu cầu làm hộ toàn bộ bài. Giữ chặn, đã nhắc SV đến giờ OH.",
             created_at=now - timedelta(days=3),
         ))
-        logger.info("conversation_studentC_blocked_created")
+        logger.info("guardrail_event_studentC_created")
 
     db.commit()
 
@@ -750,6 +680,7 @@ def seed_risk_and_notes(db) -> None:
 def seed_admin_extras(db) -> None:
     from src.db import models
     from src.repositories.guardrail_rule_repository import GuardrailRuleRepository
+    from src.services.ai.risk_engine import DEFAULT_SIGNAL_THRESHOLDS, DEFAULT_SIGNAL_WEIGHTS
     from src.services.core.risk_policy_service import validate_policy_input
 
     now = _now()
@@ -794,9 +725,13 @@ def seed_admin_extras(db) -> None:
     if not db.query(models.RiskPolicy).filter_by(policy_version=2).first():
         v1 = db.query(models.RiskPolicy).filter_by(policy_version=1).first()
         if v1 is not None:
-            new_weights = dict(v1.signal_weights)
+            # v1 comes from migration 20260823, whose hardcoded JSON predates
+            # SELF_REPORTED_HIGH_STRESS. Merge the current defaults underneath
+            # so validate_policy_input() sees every required code — the same
+            # thing GET /admin/risk-policy does before handing over the form.
+            new_weights = {**DEFAULT_SIGNAL_WEIGHTS, **v1.signal_weights}
             new_weights["OVERDUE_TASKS_2_PLUS"] = 2.5
-            new_thresholds = dict(v1.signal_thresholds)
+            new_thresholds = {**DEFAULT_SIGNAL_THRESHOLDS, **v1.signal_thresholds}
             new_thresholds["COMPLETION_BELOW_40"] = 0.35
             validate_policy_input(new_weights, new_thresholds, v1.severity_bands)
             db.add(models.RiskPolicy(

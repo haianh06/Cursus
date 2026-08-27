@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Upload, FileText, CheckCircle2, Archive, XCircle, AlertCircle, Eye, Loader2, RefreshCw } from 'lucide-react';
+import React, { useCallback, useState, useEffect } from 'react';
+import { Upload, FileText, CheckCircle2, Archive, XCircle, AlertCircle, Eye, History, Loader2, RefreshCw, RotateCcw } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import {
   getAdminCourseDocuments,
+  getAdminCourseDocumentContent,
   uploadAdminCourseDocument,
   replaceAdminCourseDocument,
   validateAdminCourseDocument,
   publishAdminCourseDocument,
   archiveAdminCourseDocument,
-  deleteAdminCourseDocument
+  deleteAdminCourseDocument,
+  getAdminCourseDocumentVersions,
+  rollbackAdminCourseDocument,
 } from '../../lib/api';
 
 const DOC_TYPES = ['SYLLABUS', 'LECTURE', 'FAQ', 'LAB', 'NOTES'];
@@ -33,13 +36,21 @@ function docTypeLabel(lang, value) {
 
 
 export default function AdminCourseDocuments({ courseCode }) {
-  const { lang, t } = useLanguage();
+  const { lang } = useLanguage();
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   // States for individual actions
   const [actionLoading, setActionLoading] = useState({});
+  const [actionError, setActionError] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [openHistoryId, setOpenHistoryId] = useState(null);
+  const [historyByDocument, setHistoryByDocument] = useState({});
+  const [historyLoadingId, setHistoryLoadingId] = useState(null);
+  const [openPreviewId, setOpenPreviewId] = useState(null);
+  const [previewByDocument, setPreviewByDocument] = useState({});
+  const [previewLoadingId, setPreviewLoadingId] = useState(null);
   
   // States for publish/archive reason modal
   const [reasonModal, setReasonModal] = useState(null); // { type: 'publish' | 'archive', docId, reason }
@@ -47,7 +58,7 @@ export default function AdminCourseDocuments({ courseCode }) {
   // Upload / replace modal: { mode: 'upload' | 'replace', documentId?, file, docType, submitting, error }
   const [uploadModal, setUploadModal] = useState(null);
 
-  const loadDocs = async () => {
+  const loadDocs = useCallback(async () => {
     setLoading(true);
     try {
       const data = await getAdminCourseDocuments(courseCode);
@@ -58,27 +69,71 @@ export default function AdminCourseDocuments({ courseCode }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [courseCode]);
 
   useEffect(() => {
     loadDocs();
-  }, [courseCode]);
+  }, [loadDocs]);
 
   const handleAction = async (docId, actionName, actionFn) => {
     setActionLoading(prev => ({ ...prev, [docId]: actionName }));
+    setActionError(null);
     try {
       await actionFn();
       await loadDocs();
+      setHistoryByDocument({});
     } catch (err) {
-      alert(`Action failed: ${err.message || err}`);
+      setActionError(err.message || String(err));
     } finally {
       setActionLoading(prev => ({ ...prev, [docId]: null }));
     }
   };
 
+  const toggleHistory = async (docId) => {
+    if (openHistoryId === docId) {
+      setOpenHistoryId(null);
+      return;
+    }
+    setOpenHistoryId(docId);
+    if (historyByDocument[docId]) return;
+    setHistoryLoadingId(docId);
+    setActionError(null);
+    try {
+      const result = await getAdminCourseDocumentVersions(courseCode, docId);
+      setHistoryByDocument((current) => ({ ...current, [docId]: result?.versions || [] }));
+    } catch (err) {
+      setActionError(err.message || String(err));
+    } finally {
+      setHistoryLoadingId(null);
+    }
+  };
+
+  const togglePreview = async (docId) => {
+    if (openPreviewId === docId) {
+      setOpenPreviewId(null);
+      return;
+    }
+    setOpenPreviewId(docId);
+    if (previewByDocument[docId]) return;
+    setPreviewLoadingId(docId);
+    setActionError(null);
+    try {
+      const result = await getAdminCourseDocumentContent(courseCode, docId);
+      setPreviewByDocument((current) => ({ ...current, [docId]: result }));
+    } catch (err) {
+      setActionError(err.message || String(err));
+      setOpenPreviewId(null);
+    } finally {
+      setPreviewLoadingId(null);
+    }
+  };
+
   const submitReason = async () => {
     if (!reasonModal.reason || reasonModal.reason.length < 5) {
-      alert(lang === 'vi' ? 'Lý do phải dài ít nhất 5 ký tự.' : 'Reason must be at least 5 characters.');
+      setReasonModal((current) => ({
+        ...current,
+        error: lang === 'vi' ? 'Lý do phải dài ít nhất 5 ký tự.' : 'Reason must be at least 5 characters.',
+      }));
       return;
     }
     
@@ -87,8 +142,10 @@ export default function AdminCourseDocuments({ courseCode }) {
     
     if (type === 'publish') {
       await handleAction(docId, 'publish', () => publishAdminCourseDocument(courseCode, docId, reason));
-    } else {
+    } else if (type === 'archive') {
       await handleAction(docId, 'archive', () => archiveAdminCourseDocument(courseCode, docId, reason));
+    } else {
+      await handleAction(docId, 'rollback', () => rollbackAdminCourseDocument(courseCode, docId, reason));
     }
   };
 
@@ -145,6 +202,13 @@ export default function AdminCourseDocuments({ courseCode }) {
         </button>
       </div>
 
+      {actionError && (
+        <div role="alert" className="mb-4 flex items-start gap-2 rounded-lg border border-danger/30 bg-danger-soft p-3 text-xs text-danger">
+          <AlertCircle size={14} className="mt-0.5 shrink-0" aria-hidden="true" />
+          <span>{actionError}</span>
+        </div>
+      )}
+
       {documents.length === 0 ? (
         <p className="text-xs text-fg-muted">{lang === 'vi' ? 'Chưa có tài liệu nào.' : 'No documents found.'}</p>
       ) : (
@@ -187,7 +251,7 @@ export default function AdminCourseDocuments({ courseCode }) {
                     <div className="flex items-center justify-end gap-1">
                       {doc.publication_status === 'DRAFT' && (
                         <button 
-                          className="btn-ghost p-1 rounded hover:text-accent disabled:opacity-50 cursor-pointer"
+                          className="btn-ghost min-h-10 min-w-10 rounded-md p-2 hover:text-accent disabled:opacity-50 cursor-pointer"
                           title={lang === 'vi' ? 'Validate' : 'Validate'}
                           onClick={() => handleAction(doc.id, 'validate', () => validateAdminCourseDocument(courseCode, doc.id))}
                           disabled={actionLoading[doc.id]}
@@ -198,7 +262,7 @@ export default function AdminCourseDocuments({ courseCode }) {
                       
                       {(doc.publication_status === 'DRAFT' || doc.publication_status === 'READY_FOR_REVIEW') && (
                         <button 
-                          className="btn-ghost p-1 rounded hover:text-success disabled:opacity-50 cursor-pointer"
+                          className="btn-ghost min-h-10 min-w-10 rounded-md p-2 hover:text-success disabled:opacity-50 cursor-pointer"
                           title={lang === 'vi' ? 'Publish (Bắt đầu áp dụng)' : 'Publish'}
                           onClick={() => setReasonModal({ type: 'publish', docId: doc.id, reason: '' })}
                           disabled={actionLoading[doc.id]}
@@ -209,7 +273,7 @@ export default function AdminCourseDocuments({ courseCode }) {
 
                       {doc.publication_status === 'PUBLISHED' && (
                         <button
-                          className="btn-ghost p-1 rounded hover:text-warning disabled:opacity-50 cursor-pointer"
+                          className="btn-ghost min-h-10 min-w-10 rounded-md p-2 hover:text-warning disabled:opacity-50 cursor-pointer"
                           title={lang === 'vi' ? 'Archive (Lưu trữ)' : 'Archive'}
                           onClick={() => setReasonModal({ type: 'archive', docId: doc.id, reason: '' })}
                           disabled={actionLoading[doc.id]}
@@ -220,7 +284,7 @@ export default function AdminCourseDocuments({ courseCode }) {
 
                       {(doc.publication_status === 'DRAFT' || doc.publication_status === 'READY_FOR_REVIEW') && (
                         <button
-                          className="btn-ghost p-1 rounded hover:text-accent disabled:opacity-50 cursor-pointer"
+                          className="btn-ghost min-h-10 min-w-10 rounded-md p-2 hover:text-accent disabled:opacity-50 cursor-pointer"
                           title={lang === 'vi' ? 'Thay thế file' : 'Replace file'}
                           onClick={() => setUploadModal({ mode: 'replace', documentId: doc.id, file: null, submitting: false, error: null })}
                           disabled={actionLoading[doc.id]}
@@ -230,17 +294,51 @@ export default function AdminCourseDocuments({ courseCode }) {
                       )}
 
                       <button
-                        className="btn-ghost p-1 rounded hover:text-danger disabled:opacity-50 cursor-pointer"
-                        title={lang === 'vi' ? 'Xóa' : 'Delete'}
-                        onClick={() => {
-                          if (confirm(lang === 'vi' ? 'Xác nhận xóa tài liệu này?' : 'Delete this document?')) {
-                            handleAction(doc.id, 'delete', () => deleteAdminCourseDocument(courseCode, doc.id));
-                          }
-                        }}
+                        className="btn-ghost min-h-10 min-w-10 rounded-md p-2 hover:text-accent disabled:opacity-50 cursor-pointer"
+                        title={lang === 'vi' ? 'Xem trước nội dung' : 'Preview content'}
+                        aria-expanded={openPreviewId === doc.id}
+                        onClick={() => togglePreview(doc.id)}
                         disabled={actionLoading[doc.id]}
                       >
-                        {actionLoading[doc.id] === 'delete' ? <Loader2 size={13} className="animate-spin" /> : <XCircle size={13} />}
+                        {previewLoadingId === doc.id ? <Loader2 size={13} className="animate-spin" /> : <Eye size={13} />}
                       </button>
+
+                      <button
+                        className="btn-ghost min-h-10 min-w-10 rounded-md p-2 hover:text-accent disabled:opacity-50 cursor-pointer"
+                        title={lang === 'vi' ? 'Lịch sử phiên bản' : 'Version history'}
+                        aria-expanded={openHistoryId === doc.id}
+                        onClick={() => toggleHistory(doc.id)}
+                        disabled={actionLoading[doc.id]}
+                      >
+                        {historyLoadingId === doc.id ? <Loader2 size={13} className="animate-spin" /> : <History size={13} />}
+                      </button>
+
+                      {deleteTarget === doc.id ? (
+                        <>
+                          <button
+                            className="btn-danger-outline min-h-10 rounded-md px-2 text-[10px] font-semibold"
+                            onClick={() => {
+                              setDeleteTarget(null);
+                              handleAction(doc.id, 'delete', () => deleteAdminCourseDocument(courseCode, doc.id));
+                            }}
+                            disabled={actionLoading[doc.id]}
+                          >
+                            {lang === 'vi' ? 'Xác nhận xoá' : 'Confirm delete'}
+                          </button>
+                          <button className="btn-ghost min-h-10 rounded-md px-2 text-[10px]" onClick={() => setDeleteTarget(null)}>
+                            {lang === 'vi' ? 'Huỷ' : 'Cancel'}
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          className="btn-ghost min-h-10 min-w-10 rounded-md p-2 hover:text-danger disabled:opacity-50 cursor-pointer"
+                          title={lang === 'vi' ? 'Xóa' : 'Delete'}
+                          onClick={() => setDeleteTarget(doc.id)}
+                          disabled={actionLoading[doc.id] || doc.publication_status === 'PUBLISHED' || doc.publication_status === 'ARCHIVED'}
+                        >
+                          {actionLoading[doc.id] === 'delete' ? <Loader2 size={13} className="animate-spin" /> : <XCircle size={13} />}
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -250,9 +348,80 @@ export default function AdminCourseDocuments({ courseCode }) {
         </div>
       )}
 
+      {openHistoryId && (
+        <section className="mt-4 rounded-lg border border-line bg-surface-card p-4" aria-label={lang === 'vi' ? 'Lịch sử phiên bản' : 'Version history'}>
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <h5 className="flex items-center gap-2 text-xs font-bold text-fg">
+              <History size={14} className="text-accent" aria-hidden="true" />
+              {lang === 'vi' ? 'Lịch sử phiên bản' : 'Version history'}
+            </h5>
+            <button type="button" className="btn-ghost min-h-10 px-2 text-[10px]" onClick={() => setOpenHistoryId(null)}>
+              {lang === 'vi' ? 'Đóng' : 'Close'}
+            </button>
+          </div>
+          {historyLoadingId === openHistoryId ? (
+            <p role="status" className="flex items-center gap-2 text-xs text-fg-muted">
+              <Loader2 size={13} className="animate-spin" aria-hidden="true" />
+              {lang === 'vi' ? 'Đang tải lịch sử…' : 'Loading history…'}
+            </p>
+          ) : (
+            <ol className="space-y-2">
+              {(historyByDocument[openHistoryId] || []).map((version) => (
+                <li key={version.id} className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-line bg-surface-elevated p-3">
+                  <div>
+                    <p className="mono text-xs font-bold text-fg">v{version.version}</p>
+                    <p className="mt-1 text-[10px] text-fg-muted">
+                      {version.publication_status} · {version.change_reason || (lang === 'vi' ? 'Không có ghi chú' : 'No change note')}
+                    </p>
+                  </div>
+                  {version.publication_status === 'ARCHIVED' && (
+                    <button
+                      type="button"
+                      className="btn btn-outline flex min-h-10 items-center gap-1.5 px-3 text-[10px]"
+                      onClick={() => setReasonModal({ type: 'rollback', docId: version.id, reason: '' })}
+                      disabled={actionLoading[version.id]}
+                    >
+                      {actionLoading[version.id] === 'rollback'
+                        ? <Loader2 size={13} className="animate-spin" aria-hidden="true" />
+                        : <RotateCcw size={13} aria-hidden="true" />}
+                      {lang === 'vi' ? 'Khôi phục' : 'Rollback'}
+                    </button>
+                  )}
+                </li>
+              ))}
+            </ol>
+          )}
+        </section>
+      )}
+
+      {openPreviewId && previewByDocument[openPreviewId] && (
+        <section className="mt-4 rounded-lg border border-line bg-surface-card p-4" aria-label={lang === 'vi' ? 'Nội dung tài liệu' : 'Document content'}>
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <h5 className="flex items-center gap-2 text-xs font-bold text-fg">
+              <Eye size={14} className="text-accent" aria-hidden="true" />
+              {lang === 'vi' ? 'Xem trước nội dung' : 'Content preview'}
+            </h5>
+            <button type="button" className="btn-ghost min-h-10 px-2 text-[10px]" onClick={() => setOpenPreviewId(null)}>
+              {lang === 'vi' ? 'Đóng' : 'Close'}
+            </button>
+          </div>
+          <p className="mb-2 text-[10px] text-fg-muted">
+            {previewByDocument[openPreviewId].filename || previewByDocument[openPreviewId].title} · v{previewByDocument[openPreviewId].version}
+          </p>
+          <pre className="max-h-80 overflow-auto whitespace-pre-wrap rounded-md border border-line bg-surface-elevated p-3 text-xs leading-relaxed text-fg-secondary">
+            {previewByDocument[openPreviewId].content}
+          </pre>
+          {previewByDocument[openPreviewId].truncated && (
+            <p className="mt-2 text-[10px] text-fg-muted">
+              {lang === 'vi' ? 'Nội dung đã được rút gọn để xem trước.' : 'Content was truncated for preview.'}
+            </p>
+          )}
+        </section>
+      )}
+
       {uploadModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-surface-card w-full max-w-sm rounded-xl shadow-panel border border-line p-5">
+          <div className="bg-surface-card w-full max-w-sm rounded-lg shadow-panel border border-line p-5">
             <h3 className="text-sm font-bold text-fg mb-3">
               {uploadModal.mode === 'replace'
                 ? (lang === 'vi' ? 'Thay thế tài liệu' : 'Replace document')
@@ -319,24 +488,31 @@ export default function AdminCourseDocuments({ courseCode }) {
 
       {reasonModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-surface-card w-full max-w-sm rounded-xl shadow-panel border border-line p-5">
+          <div className="bg-surface-card w-full max-w-sm rounded-lg shadow-panel border border-line p-5">
             <h3 className="text-sm font-bold text-fg mb-3">
-              {reasonModal.type === 'publish' 
-                ? (lang === 'vi' ? 'Lý do Publish' : 'Publish Reason') 
-                : (lang === 'vi' ? 'Lý do Archive' : 'Archive Reason')}
+              {reasonModal.type === 'publish'
+                ? (lang === 'vi' ? 'Lý do xuất bản' : 'Publish reason')
+                : reasonModal.type === 'archive'
+                  ? (lang === 'vi' ? 'Lý do lưu trữ' : 'Archive reason')
+                  : (lang === 'vi' ? 'Lý do khôi phục phiên bản' : 'Rollback reason')}
             </h3>
             <textarea
               className="input text-xs w-full mb-4 resize-none h-24"
               placeholder={lang === 'vi' ? 'Nhập lý do (min 5 ký tự)...' : 'Enter reason (min 5 chars)...'}
               value={reasonModal.reason}
-              onChange={e => setReasonModal({ ...reasonModal, reason: e.target.value })}
+              onChange={e => setReasonModal({ ...reasonModal, reason: e.target.value, error: null })}
               autoFocus
             />
+            {reasonModal.error && <p role="alert" className="mb-3 text-[11px] text-danger">{reasonModal.error}</p>}
             <div className="flex justify-end gap-2">
               <button className="btn btn-ghost text-xs px-3 py-1.5 rounded-lg cursor-pointer" onClick={() => setReasonModal(null)}>
                 {lang === 'vi' ? 'Hủy' : 'Cancel'}
               </button>
-              <button className="btn btn-accent text-xs px-3 py-1.5 rounded-lg cursor-pointer" onClick={submitReason}>
+              <button
+                className="btn btn-accent min-h-10 rounded-lg px-3 py-1.5 text-xs cursor-pointer"
+                onClick={submitReason}
+                disabled={reasonModal.reason.trim().length < 5}
+              >
                 {lang === 'vi' ? 'Xác nhận' : 'Confirm'}
               </button>
             </div>

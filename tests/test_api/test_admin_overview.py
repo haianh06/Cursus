@@ -53,45 +53,6 @@ async def test_admin_work_queue_endpoint(client):
 
 
 @pytest.mark.asyncio
-async def test_llm_quota_status_requires_admin_role(client):
-    login = await client.post(
-        "/api/v1/auth/login",
-        json={"email": "instructor.demo@example.test", "password": "password123"},
-    )
-    headers = {"Authorization": f"Bearer {login.json()['token']}"}
-
-    resp = await client.get("/api/v1/admin/llm-quota-status", headers=headers)
-    assert resp.status_code == 403
-
-
-@pytest.mark.asyncio
-async def test_llm_quota_status_reflects_recorded_events(client):
-    """Gemini gives no way to query remaining quota ahead of a call, so this
-    endpoint is purely reactive -- confirms a real recorded 429 shows up."""
-    from src.services.core.llm_quota_service import record_quota_event
-
-    _ensure_admin_user()
-    login = await client.post(
-        "/api/v1/auth/login",
-        json={"email": "admin.demo@example.test", "password": "AdminPassword123"},
-    )
-    headers = {"Authorization": f"Bearer {login.json()['token']}"}
-
-    resp = await client.get("/api/v1/admin/llm-quota-status", headers=headers)
-    assert resp.status_code == 200, resp.text
-    before = resp.json()["countInWindow"]
-
-    record_quota_event(model="gemini-3.6-flash", source="test_admin_overview")
-
-    resp = await client.get("/api/v1/admin/llm-quota-status", headers=headers)
-    data = resp.json()
-    assert data["countInWindow"] == before + 1
-    assert data["lastModel"] == "gemini-3.6-flash"
-    assert data["lastSource"] == "test_admin_overview"
-    assert data["lastExhaustedAt"] is not None
-
-
-@pytest.mark.asyncio
 async def test_admin_overview_never_shows_fabricated_zero_percent_with_no_denominator(client):
     """A rate metric with a zero denominator must report `value: null`, not
     a misleading `0.0` -- see admin_overview_service._metric()."""

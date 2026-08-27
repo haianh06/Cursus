@@ -18,6 +18,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from src.db import models
+from src.services.core.admin_section_service import _course_belongs_to
 
 # Whitelisted event types shown on the Overview "recent critical changes"
 # feed -- kept in sync by hand with what src/api/admin*.py actually emits
@@ -37,6 +38,9 @@ CRITICAL_CHANGE_EVENTS: frozenset[str] = frozenset(
         "mock_lms_sync_rolled_back",
         "DSAR_DELETE_COMPLETED",
         "BULK_UPDATE_RISKS",
+        "GUARDRAIL_REVIEW_DECIDED",
+        "SUBMIT_INTERVENTION",
+        "SELF_SERVICE_DATA_DELETE",
     }
 )
 
@@ -109,9 +113,23 @@ def build_overview(db: Session, *, organization_id: str | None) -> dict[str, Any
         .scalar()
     ) or 0
 
+    # Scoped to this organization: unfiltered, one school's broken ingest
+    # turned every other school's banner to DEGRADED. `course_ingest_jobs`
+    # holds a `course_code` string rather than an FK, so this joins through
+    # `Course.code` -- upper-cased on both sides because
+    # `admin_course_repository.start_job` stores `course_code.upper()` while
+    # the real catalog has lower-case tails ("ENW493c"), same reason spelled
+    # out in `conversation_repository.section_id_for`.
     failed_jobs = (
         db.query(func.count(models.CourseIngestJob.id))
-        .filter(models.CourseIngestJob.status == "failed")
+        .join(
+            models.Course,
+            func.upper(models.Course.code) == func.upper(models.CourseIngestJob.course_code),
+        )
+        .filter(
+            models.CourseIngestJob.status == "failed",
+            models.Course.organization_id == organization_id,
+        )
         .scalar()
     ) or 0
 
@@ -194,13 +212,16 @@ def build_work_queue(db: Session, *, organization_id: str | None) -> list[dict[s
             }
         )
 
+    # GuardrailEvent.student_id is the self-contained field record_block()
+    # writes at block time (chat feature removed, no Conversation/Message to
+    # join through any more -- see
+    # migrations/versions/20260910_remove_chatbot_feature.py). Events written
+    # with no student_id (unscoped general questions) have no subject to
+    # route a work-queue item to, so they're skipped here and surfaced only
+    # in the dedicated guardrail review queue (src/api/instructor.py).
     guardrail_rows = (
-        db.query(models.GuardrailEvent, models.Message, models.Conversation)
-        .join(models.Message, models.GuardrailEvent.message_id == models.Message.id)
-        .join(models.Conversation, models.Message.conversation_id == models.Conversation.id)
-        .join(models.User, models.Conversation.student_id == models.User.id)
+        db.query(models.GuardrailEvent)
         .filter(
-            models.User.organization_id == organization_id,
             models.GuardrailEvent.classification == "BLOCKED",
             (models.GuardrailEvent.review_status.is_(None)) | (models.GuardrailEvent.review_status == "PENDING"),
         )
@@ -208,13 +229,18 @@ def build_work_queue(db: Session, *, organization_id: str | None) -> list[dict[s
         .limit(_WORK_QUEUE_SOURCE_LIMIT)
         .all()
     )
-    for event, _message, conversation in guardrail_rows:
+    for event in guardrail_rows:
+        if not event.student_id:
+            continue
+        student = db.query(models.User).filter_by(id=event.student_id).first()
+        if student is None or student.organization_id != organization_id:
+            continue
         items.append(
             {
                 "trigger_type": "GUARDRAIL_EVENT",
                 "trigger_id": event.id,
                 "priority": "HIGH",
-                "subject_user_id": conversation.student_id,
+                "subject_user_id": event.student_id,
                 "summary": "Guardrail safety event blocked",
                 "occurred_at": event.created_at,
             }
@@ -258,6 +284,42 @@ def build_work_queue(db: Session, *, organization_id: str | None) -> list[dict[s
                 "subject_user_id": None,
                 "summary": f"Ingest {row.operation} failed for {row.course_code}",
                 "occurred_at": row.created_at,
+            }
+        )
+
+    # Sections the student semester wizard (or an admin) left without an
+    # instructor -- see src/repositories/semester_repository.py's removed
+    # `first_instructor_id`: it used to guess an arbitrary instructor in the
+    # org instead of leaving this to a human. Course.organization_id can be
+    # NULL (shared catalogue), so this reuses admin_section_service's own
+    # `_course_belongs_to` org-scoping rule rather than re-deriving it here
+    # -- a second, drifted copy of that rule is exactly the kind of bug this
+    # task exists to remove elsewhere.
+    unassigned_rows = (
+        db.query(models.CourseSection, models.Course)
+        .join(models.Course, models.Course.id == models.CourseSection.course_id)
+        .filter(models.CourseSection.instructor_id.is_(None))
+        .order_by(models.Course.code)
+        .all()
+    )
+    unassigned_sections = [
+        (section, course)
+        for section, course in unassigned_rows
+        if _course_belongs_to(course, organization_id)
+    ][:_WORK_QUEUE_SOURCE_LIMIT]
+    for section, course in unassigned_sections:
+        items.append(
+            {
+                "trigger_type": "UNASSIGNED_SECTION",
+                "trigger_id": section.id,
+                "priority": "MEDIUM",
+                "subject_user_id": None,
+                # English, structured summary -- like the other four sources
+                # (DATA_REQUEST/INGEST_JOB above), this is a data carrier the
+                # frontend regex-matches and re-localizes
+                # (adminDisplay.js::adminWorkQueueSummary), not text shown as-is.
+                "summary": f"Section {course.code}/{section.section_code or section.id} has no instructor assigned",
+                "occurred_at": None,
             }
         )
 

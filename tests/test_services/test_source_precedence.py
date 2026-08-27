@@ -1,15 +1,11 @@
 """Unit tests for the Mock LMS source-precedence resolver (mục 6.6/14.3).
 
 Pure unit tests, no DB -- `rank`/`label_for`/`tier_for_content_source`/`winner` are
-plain functions, and `_citation_from_chunk` only needs a `RetrievedChunk` built
-in-memory.
+plain functions.
 """
 from __future__ import annotations
 
-from src.repositories.chunk_repository import ChunkRecord
-from src.services.ai.chat_answer_service import _citation_from_chunk
 from src.services.core import source_precedence as sp
-from src.services.rag.retrieval_service import RetrievedChunk
 
 
 def test_precedence_order_matches_muc_6_6():
@@ -53,41 +49,3 @@ def test_missing_content_source_defaults_to_syllabus_active():
     assert sp.tier_for_content_source("") == sp.SYLLABUS_ACTIVE
 
 
-def _make_retrieved(content_source: str) -> RetrievedChunk:
-    chunk = ChunkRecord(
-        chunk_id="chunk_test_1",
-        text="irrelevant text",
-        course_code="TEST101",
-        doc_title="Syllabus TEST101",
-        doc_type="syllabus",
-        source_label="Syllabus TEST101 — Overview",
-        section="Overview",
-        chunk_index=0,
-        content_source=content_source,
-    )
-    return RetrievedChunk(chunk=chunk, score=0.9)
-
-
-def test_citation_document_reflects_mock_lms_tier():
-    """This is the actual injection point (chat_answer_service.py's shared citation
-    builder) -- confirms `document` is no longer a dead field."""
-    citation = _citation_from_chunk(_make_retrieved("mock_lms"))
-    assert citation.document == sp.label_for(sp.MOCK_LMS)
-    assert citation.document == "Mock LMS (nguồn chính thức, đồng bộ gần nhất)"
-
-
-def test_citation_document_reflects_syllabus_tier_for_curriculum_content():
-    citation = _citation_from_chunk(_make_retrieved("curriculum"))
-    assert citation.document == sp.label_for(sp.SYLLABUS_ACTIVE)
-
-
-def test_citation_ismock_flag_unaffected_by_precedence_wiring():
-    """Regression guard: the pre-existing `isMock` flag (mục 16 fabricated-content
-    disclaimer) must keep working exactly as before -- it's a different concept
-    from source precedence and must not be conflated by this change."""
-    mock_citation = _citation_from_chunk(_make_retrieved("mock"))
-    assert mock_citation.isMock is True
-    assert mock_citation.document != sp.label_for(sp.MOCK_LMS)
-
-    real_citation = _citation_from_chunk(_make_retrieved("curriculum"))
-    assert real_citation.isMock is False

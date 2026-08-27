@@ -95,6 +95,9 @@ class OrgInvite(Base):
     expires_at: Mapped[datetime] = mapped_column(DateTime, index=True)
     used_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     revoked_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    delivery_status: Mapped[str] = mapped_column(String, default="sent")
+    resend_count: Mapped[int] = mapped_column(Integer, default=0)
+    last_sent_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 
@@ -310,12 +313,36 @@ class CourseSection(Base):
     __tablename__ = "course_sections"
     id: Mapped[str] = mapped_column(String, primary_key=True)
     course_id: Mapped[str] = mapped_column(String, ForeignKey("courses.id", ondelete="CASCADE"))
-    instructor_id: Mapped[str] = mapped_column(String, ForeignKey("users.id"))
+    # Nullable so Admin can create a section before assigning an instructor
+    # (src/services/core/admin_section_service.py) -- see migration
+    # 20260909_section_instructor_nullable.py. Previously every section-
+    # creation path (student semester wizard, seed scripts) had to supply
+    # some instructor up front; Admin needs to be able to leave this unset.
+    instructor_id: Mapped[str | None] = mapped_column(String, ForeignKey("users.id"), nullable=True)
     term: Mapped[str] = mapped_column(String) # e.g. Fall2026
     section_code: Mapped[str] = mapped_column(String) # e.g. SE1801
 
-    enrollments: Mapped[list["Enrollment"]] = relationship(back_populates="section")
-    modules: Mapped[list["Module"]] = relationship(back_populates="section")
+    # `enrollments.section_id` is NOT NULL with `ondelete="CASCADE"`, so the
+    # ORM's default "null out the child's FK on parent delete" is a straight
+    # contradiction of the schema: deleting a section raised
+    # `NOT NULL constraint failed: enrollments.section_id` (a 500 the SPA saw
+    # as a bare CORS/network failure). Reachable from Admin's section screen
+    # because `remove_from_roster` soft-deletes -- it sets status=DROPPED and
+    # leaves the row -- while `delete_section`'s guard only counts ENROLLED.
+    # Explicit ORM cascade rather than `passive_deletes=True`: tests run on
+    # SQLite, which does not enforce FKs by default, so leaning on the DB's
+    # CASCADE would silently leave orphans there.
+    enrollments: Mapped[list["Enrollment"]] = relationship(
+        back_populates="section", cascade="all, delete-orphan"
+    )
+    # Same reasoning as `enrollments` above: `modules.section_id` is NOT NULL
+    # with `ondelete="CASCADE"`, so without an ORM cascade the delete became
+    # `UPDATE modules SET section_id=NULL` and 500'd. Course-level material is
+    # untouched -- `documents.course_id` points at `courses`, not here -- so
+    # only the section's own week/lesson structure goes with it.
+    modules: Mapped[list["Module"]] = relationship(
+        back_populates="section", cascade="all, delete-orphan"
+    )
 
 class EnrollmentStatus(enum.Enum):
     ENROLLED = "ENROLLED"
@@ -344,7 +371,12 @@ class Module(Base):
     sequence_order: Mapped[int] = mapped_column(Integer)
 
     section: Mapped[CourseSection] = relationship(back_populates="modules")
-    lessons: Mapped[list["Lesson"]] = relationship(back_populates="module")
+    # `lessons.module_id` is NOT NULL with `ondelete="CASCADE"` too, so the
+    # cascade has to continue here -- otherwise deleting a section moves the
+    # same NOT NULL failure down one level instead of fixing it.
+    lessons: Mapped[list["Lesson"]] = relationship(
+        back_populates="module", cascade="all, delete-orphan"
+    )
 
 class Lesson(Base):
     __tablename__ = "lessons"
@@ -375,6 +407,11 @@ class Document(Base):
     scope: Mapped[str] = mapped_column(String, default="OFFICIAL")
     publication_status: Mapped[str] = mapped_column(String, default="DRAFT") # DRAFT, READY_FOR_REVIEW, PUBLISHED, ARCHIVED
     version_group: Mapped[str | None] = mapped_column(String, nullable=True)
+    previous_version_id: Mapped[str | None] = mapped_column(
+        String,
+        ForeignKey("documents.id", ondelete="SET NULL"),
+        nullable=True,
+    )
     provenance: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     checksum: Mapped[str | None] = mapped_column(String, nullable=True)
     validated_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
@@ -409,6 +446,16 @@ class AdminAnnouncement(Base):
     title: Mapped[str] = mapped_column(String)
     content: Mapped[str] = mapped_column(Text)
     created_by: Mapped[str] = mapped_column(String, ForeignKey("users.id"))
+    # "TAT CA giang vien" means all instructors *of one school*. Until
+    # POST /admin/announcements existed nothing ever wrote here, so the
+    # instructor reader's lack of an organization filter was harmless; the
+    # moment the table has rows it would show every school's notices to
+    # every other school. Nullable because rows predating the column have
+    # no organization to backfill from -- see migration
+    # 20260910_admin_announcement_org_scoping.
+    organization_id: Mapped[str | None] = mapped_column(
+        String, ForeignKey("organizations.id"), nullable=True, index=True
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 class CalendarEvent(Base):
@@ -632,85 +679,20 @@ class ResourceAccessEvent(Base):
     accessed_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     duration_seconds: Mapped[int] = mapped_column(Integer)
 
-class Conversation(Base):
-    __tablename__ = "conversations"
-    id: Mapped[str] = mapped_column(String, primary_key=True)
-    student_id: Mapped[str] = mapped_column(String, ForeignKey("users.id", ondelete="CASCADE"))
-    section_id: Mapped[str | None] = mapped_column(String, ForeignKey("course_sections.id", ondelete="SET NULL"), nullable=True)
-    title: Mapped[str] = mapped_column(String)
-    subject_code: Mapped[str | None] = mapped_column(String, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
-
-class Message(Base):
-    __tablename__ = "messages"
-    id: Mapped[str] = mapped_column(String, primary_key=True)
-    conversation_id: Mapped[str] = mapped_column(String, ForeignKey("conversations.id", ondelete="CASCADE"))
-    sender: Mapped[str] = mapped_column(String) # USER, ASSISTANT
-    content: Mapped[str] = mapped_column(Text)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    metadata_info: Mapped[dict] = mapped_column(JSON)
-
-class StudentMemoryConsent(Base):
-    """Opt-in flag for cross-session chat memory -- Privacy-by-Design: default
-    off. Withdrawing consent hard-deletes every entry (see StudentMemoryService),
-    not just a future-writes gate."""
-    __tablename__ = "student_memory_consent"
-    student_id: Mapped[str] = mapped_column(String, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
-    granted: Mapped[bool] = mapped_column(Boolean, default=False)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-
-class StudentMemoryEntry(Base):
-    """Cross-session chat memory: long-term preferences + per-subject learning
-    episodes, one unified table with a `kind` discriminator."""
-    __tablename__ = "student_memory_entries"
-    id: Mapped[str] = mapped_column(String, primary_key=True)
-    student_id: Mapped[str] = mapped_column(String, ForeignKey("users.id", ondelete="CASCADE"), index=True)
-    # NULL for kind="preference" (subject-agnostic); set for weak_topic/strength_topic.
-    subject_code: Mapped[str | None] = mapped_column(String, nullable=True, index=True)
-    kind: Mapped[str] = mapped_column(String) # preference | weak_topic | strength_topic
-    content: Mapped[str] = mapped_column(String)
-    source_conversation_id: Mapped[str | None] = mapped_column(
-        String, ForeignKey("conversations.id", ondelete="SET NULL"), nullable=True
-    )
-    reinforce_count: Mapped[int] = mapped_column(Integer, default=1)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    last_reinforced_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-
-class RAGTrace(Base):
-    __tablename__ = "rag_traces"
-    id: Mapped[str] = mapped_column(String, primary_key=True)
-    message_id: Mapped[str] = mapped_column(String, ForeignKey("messages.id", ondelete="CASCADE"))
-    retrieved_chunks: Mapped[dict] = mapped_column(JSON)
-    generation_metadata: Mapped[dict] = mapped_column(JSON)
-
-class LLMUsageEvent(Base):
-    __tablename__ = "llm_usage_events"
-    id: Mapped[str] = mapped_column(String, primary_key=True)
-    message_id: Mapped[str] = mapped_column(String, ForeignKey("messages.id", ondelete="CASCADE"))
-    model: Mapped[str] = mapped_column(String)
-    prompt_tokens: Mapped[int] = mapped_column(Integer)
-    completion_tokens: Mapped[int] = mapped_column(Integer)
-    cost: Mapped[float] = mapped_column(Float)
-
-class LLMQuotaEvent(Base):
-    """One row per RESOURCE_EXHAUSTED (429) response from the LLM provider —
-    Gemini's free tier gives no way to query remaining quota ahead of a call,
-    so this is the only signal the app has: recorded reactively, right when
-    a real call actually gets rejected. Admin's quota panel and the chat
-    UI's inline "using fallback" badge both read from this table. Not tied
-    to a Message (unlike LLMUsageEvent) since a quota failure can happen
-    before any assistant Message would otherwise be written."""
-    __tablename__ = "llm_quota_events"
-    id: Mapped[str] = mapped_column(String, primary_key=True)
-    occurred_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
-    model: Mapped[str] = mapped_column(String)
-    source: Mapped[str] = mapped_column(String)  # which service call site hit the 429
-
 class GuardrailEvent(Base):
     __tablename__ = "guardrail_events"
     id: Mapped[str] = mapped_column(String, primary_key=True)
-    message_id: Mapped[str] = mapped_column(String, ForeignKey("messages.id", ondelete="CASCADE"))
+    # Captured at write time (record_block) so the row is self-contained and
+    # can still be attributed to the right student/instructor without a
+    # conversation/message to join through (chat feature removed, see
+    # migrations/versions/20260906_remove_chatbot_feature.py) --
+    # safety_evaluation already keeps the question text itself.
+    student_id: Mapped[str | None] = mapped_column(
+        String, ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
+    section_id: Mapped[str | None] = mapped_column(
+        String, ForeignKey("course_sections.id", ondelete="SET NULL"), nullable=True
+    )
     classification: Mapped[str] = mapped_column(String) # ALLOWED, LIMITED, BLOCKED
     safety_evaluation: Mapped[dict] = mapped_column(JSON)
     # Instructor review queue (F5 HITL for blocked Q&A)

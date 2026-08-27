@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections import Counter
 from collections.abc import Callable
+from datetime import UTC, datetime
 from typing import Any
 
 from sqlalchemy.orm import Session
@@ -56,7 +57,12 @@ class AdminReadService:
             raise AdminDataUnavailable("Curriculum catalog count is invalid")
 
         rows = (
-            self._db.query(models.Course.code, models.Document.metadata_info, models.DocumentChunk.id)
+            self._db.query(
+                models.Course.code,
+                models.Document.metadata_info,
+                models.Document.publication_status,
+                models.DocumentChunk.id,
+            )
             .select_from(models.Course)
             .join(models.Document, models.Document.course_id == models.Course.id)
             .join(models.DocumentChunk, models.DocumentChunk.document_id == models.Document.id)
@@ -65,10 +71,12 @@ class AdminReadService:
         chunk_counts: Counter[str] = Counter()
         mock_chunk_counts: Counter[str] = Counter()
         unknown_source_counts: Counter[str] = Counter()
-        for course_code, metadata_info, _chunk_id in rows:
+        for course_code, metadata_info, publication_status, _chunk_id in rows:
             metadata = metadata_info if isinstance(metadata_info, dict) else {}
             source = metadata.get("source")
             if source == "student_upload":
+                continue
+            if source == "admin_curriculum" and publication_status == "ARCHIVED":
                 continue
             code = str(course_code).strip().upper()
             if source in _MOCK_CONTENT_SOURCES:
@@ -216,6 +224,67 @@ class AdminReadService:
             "total_documents": total_documents,
             "at_risk_student_count": at_risk_student_count,
             "weekly_risk_trend": weekly_risk_trend,
+        }
+
+    def get_analytics_summary(self, *, organization_id: str | None) -> dict[str, Any]:
+        """Return the measured Admin summary contract used by ``chung``.
+
+        The old ``get_kpi`` snapshot is intentionally not used here: its
+        with-Cursus/baseline values are illustrative rather than measured
+        production outcomes. Course/document counts are real catalog state;
+        risk counts remain organization-scoped so an Admin never sees another
+        tenant's students.
+        """
+        courses = self.list_courses()["courses"]
+        document_rows = (
+            self._db.query(
+                models.Document.id,
+                models.Document.metadata_info,
+                models.Document.publication_status,
+            )
+            .join(models.DocumentChunk, models.DocumentChunk.document_id == models.Document.id)
+            .all()
+        )
+        curriculum_document_ids: set[str] = set()
+        total_chunks = 0
+        for document_id, metadata_info, publication_status in document_rows:
+            metadata = metadata_info if isinstance(metadata_info, dict) else {}
+            source = metadata.get("source")
+            if source == "student_upload":
+                continue
+            if source == "admin_curriculum" and publication_status == "ARCHIVED":
+                continue
+            curriculum_document_ids.add(document_id)
+            total_chunks += 1
+
+        at_risk_students = 0
+        if organization_id:
+            at_risk_students = (
+                self._db.query(models.RiskSignal.student_id)
+                .join(models.User, models.User.id == models.RiskSignal.student_id)
+                .filter(
+                    models.User.organization_id == organization_id,
+                    models.RiskSignal.resolved_at.is_(None),
+                    models.RiskSignal.risk_level.in_(("MEDIUM", "HIGH")),
+                )
+                .distinct()
+                .count()
+            )
+
+        measured_at = datetime.now(UTC).replace(microsecond=0).isoformat()
+        return {
+            "at_risk_students": at_risk_students,
+            "ingested_courses": sum(course["ingest_status"] == "ingested" for course in courses),
+            "total_courses": len(courses),
+            "total_documents": len(curriculum_document_ids),
+            "total_chunks": total_chunks,
+            "measurement_status": "not_measured",
+            "method_note": (
+                f"Các số đếm được đo tại {measured_at}. Trạng thái nạp môn lấy từ danh mục hiện tại; "
+                "tài liệu và chunk chỉ tính nguồn curriculum, admin_curriculum và mock, "
+                "loại trừ student_upload; sinh viên có nguy cơ là số student_id riêng biệt "
+                "có risk signal MEDIUM/HIGH chưa xử lý trong organization hiện tại."
+            ),
         }
 
 

@@ -8,7 +8,8 @@ import uuid
 
 import pytest
 
-from src.db.models import UserRole
+from src.db.connection import SessionLocal
+from src.db.models import AuditLog, OrgInvite, UserRole
 from tests.support.semester_practice_fixtures import auth_headers, ensure_org, ensure_user, login
 
 
@@ -30,6 +31,55 @@ async def test_admin_lists_only_users_in_their_own_org(client):
     assert admin_email in emails
     assert student_a_email in emails
     assert other_org_email not in emails
+
+
+@pytest.mark.asyncio
+async def test_admin_can_resend_pending_invite_with_rotated_token_and_audit(client):
+    org = ensure_org("users-invite-resend", "Users Invite Resend Org")
+    admin_email = f"users.invite.admin.{uuid.uuid4().hex}@example.test"
+    ensure_user(email=admin_email, org_id=org, role=UserRole.ADMIN)
+    invited_email = f"users.invited.{uuid.uuid4().hex}@example.test"
+    token = await login(client, admin_email)
+    headers = auth_headers(token)
+
+    created = await client.post(
+        "/api/v1/admin/invites",
+        headers=headers,
+        json={"email": invited_email, "full_name": "Invite Resend", "role": "STUDENT"},
+    )
+    assert created.status_code == 201, created.text
+    invite_id = created.json()["id"]
+    assert created.json()["delivery_status"] == "sent"
+    assert created.json()["resend_count"] == 0
+
+    db = SessionLocal()
+    try:
+        invite_before = db.get(OrgInvite, invite_id)
+        token_hash_before = invite_before.token_hash
+        expires_before = invite_before.expires_at
+    finally:
+        db.close()
+
+    resent = await client.post(f"/api/v1/admin/invites/{invite_id}/resend", headers=headers)
+    assert resent.status_code == 200, resent.text
+    assert resent.json()["id"] == invite_id
+    assert resent.json()["delivery_status"] == "sent"
+    assert resent.json()["resend_count"] == 1
+
+    db = SessionLocal()
+    try:
+        invite_after = db.get(OrgInvite, invite_id)
+        assert invite_after.token_hash != token_hash_before
+        assert invite_after.expires_at > expires_before
+        audit = (
+            db.query(AuditLog)
+            .filter_by(event_type="invitation_resent", resource_id=invite_id)
+            .first()
+        )
+        assert audit is not None
+        assert audit.actor_user_id is not None
+    finally:
+        db.close()
 
 
 @pytest.mark.asyncio

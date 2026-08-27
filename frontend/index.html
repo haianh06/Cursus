@@ -95,10 +95,17 @@
     <!-- Google Fonts Imports — Outfit, Plus Jakarta Sans and Source Serif 4
          were previously requested here but are not referenced by any
          font-family rule in the codebase (verified via repo-wide grep) —
-         removed as dead render-blocking weight, not a design change. -->
+         removed as dead render-blocking weight, not a design change.
+         Geist -> Sora (heading role, see index.css's .font-display /
+         font-family-custom): Sora has real Vietnamese glyph coverage
+         (verified by rendering diacritic-heavy test strings before this
+         swap, unlike the earlier Cabinet Grotesk attempt) and more visual
+         character than a default-feeling grotesque. Geist Mono is
+         unrelated and stays -- it's a different family name the swap
+         didn't touch. -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&family=IBM+Plex+Mono:wght@500;600;700&family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Sora:wght@100..800&family=Geist+Mono:wght@100..900&family=IBM+Plex+Mono:wght@500;600;700&family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
   </head>
   <body>
     <div id="root"></div>

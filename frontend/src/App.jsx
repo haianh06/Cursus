@@ -2,9 +2,9 @@ import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import {
   BookOpen, RotateCcw, BarChart2,
-  LogOut, Sun, Moon, Globe, Menu, X, Bell, Search, ChevronDown,
+  LogOut, Sun, Moon, Globe, Menu, X, Bell, ChevronDown,
   Sparkles, GraduationCap, LayoutDashboard, CheckSquare, FlaskConical, Target,
-  MessageCircle, CalendarRange, NotebookPen, ExternalLink, CalendarClock, FileCheck2, ShieldAlert, Mail, ClipboardCheck, ShieldQuestion
+  CalendarRange, NotebookPen, ExternalLink, CalendarClock, FileCheck2, ShieldAlert, Mail, ClipboardCheck, ShieldQuestion
 } from 'lucide-react';
 import { useTheme } from './context/ThemeContext';
 import { useLanguage } from './context/LanguageContext';
@@ -21,7 +21,6 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 // page visitor, so they no longer belong in the same JS chunk (previously
 // they all shipped eagerly alongside the landing page bundle).
 import LandingPage from './components/shared/LandingPage';
-import CuriChatLauncher from './components/shared/CuriChatLauncher';
 import SelfStudyReminder from './components/student/SelfStudyReminder';
 
 const LoginScreen = lazy(() => import('./components/auth/LoginScreen'));
@@ -60,17 +59,15 @@ const AssignmentSubmissionsPanel = lazy(() => import('./components/instructor/As
 const GuardrailReviewQueue = lazy(() => import('./components/GuardrailReviewQueue'));
 
 import AdminNavigation from './components/admin/AdminNavigation';
+import AdminTopbarSearch from './components/admin/AdminTopbarSearch';
 
 const AdminConsole = lazy(() => import('./components/admin/AdminConsole'));
-const AdminStudent360 = lazy(() => import('./components/admin/AdminStudent360'));
-const AdminInstructor360 = lazy(() => import('./components/admin/AdminInstructor360'));
-// Additive student surface (semester setup, practice sets, companion chat) —
-// wired to the new backend endpoints in semester.py / practice.py /
-// companion.py. Kept as separate routes, never a gate in front of the
-// existing Gate2 demo flow above.
+// Additive student surface (semester setup, practice sets) — wired to the
+// new backend endpoints in semester.py / practice.py. Kept as separate
+// routes, never a gate in front of the existing Gate2 demo flow above.
 const SemesterSetupWizard = lazy(() => import('./components/student/SemesterSetupWizard'));
 const StudentPractice = lazy(() => import('./components/student/StudentPractice'));
-const StudentCompanionPage = lazy(() => import('./components/student/CourseCompanionChat'));
+const StudentCourseMaterials = lazy(() => import('./components/student/StudentCourseMaterials'));
 // Second, independent plan-generation flow (timetable/lecture sessions, not
 // assignments) — coexists with Gate2's PlanBuilder, never wired into it.
 const LecturePlanPanel = lazy(() => import('./components/student/LecturePlanPanel'));
@@ -152,7 +149,7 @@ function Sidebar({ user, onLogout, open, setOpen, activeSection }) {
             <LandingLogoMark size={22} strokeClassName="text-white" dotClassName="fill-brand-blue" />
           </span>
           <span className="font-display font-black text-sm text-white tracking-tight">Cursus</span>
-          <button className="btn-ghost ml-auto p-1 lg:hidden text-slate-400" onClick={() => setOpen(false)}
+          <button className="btn-ghost ml-auto min-h-10 min-w-10 p-2 lg:hidden text-slate-400" onClick={() => setOpen(false)}
             aria-label="Đóng menu">
             <X size={15} />
           </button>
@@ -176,9 +173,11 @@ function Sidebar({ user, onLogout, open, setOpen, activeSection }) {
 
         {/* Sidebar Nav Items — only the current role's own pages are shown */}
         <nav className="flex-1 px-2 py-3 space-y-1 overflow-y-auto">
-          <p className="px-2 pb-1 text-[9px] font-bold uppercase tracking-widest text-sidebar-text">
-            {lang === 'vi' ? 'Không gian làm việc' : 'Workspace'}
-          </p>
+          {user.role !== 'admin' && (
+            <p className="px-2 pb-1 text-[9px] font-bold uppercase tracking-widest text-sidebar-text">
+              {lang === 'vi' ? 'Không gian làm việc' : 'Workspace'}
+            </p>
+          )}
 
           {user.role === 'student' && (
             <>
@@ -238,14 +237,10 @@ function Sidebar({ user, onLogout, open, setOpen, activeSection }) {
                 <span>{t('nav.practice')}</span>
               </button>
 
-              {/* Companion chat has no sidebar entry in a46db63 — the chatbot
-                  rebuild's floating CuriChatLauncher (ChatPanel) is on every
-                  student page already, so /student/companion is a deep-link
-                  full-page view of the same conversation, not a separate nav
-                  destination. Quizzes (post-a46db63 feature) also has no
-                  sidebar entry, per explicit request to match a46db63's exact
-                  5-item sidebar — the /student/quizzes route still works via
-                  deep link, only the nav button is removed. */}
+              {/* Quizzes (post-a46db63 feature) has no sidebar entry, per
+                  explicit request to match a46db63's exact 5-item sidebar —
+                  the /student/quizzes route still works via deep link, only
+                  the nav button is removed. */}
             </>
           )}
 
@@ -263,42 +258,42 @@ function Sidebar({ user, onLogout, open, setOpen, activeSection }) {
                 onClick={() => handleItemClick('/instructor/risks')}
               >
                 <ShieldAlert size={15} />
-                <span>Rủi ro & Cảnh báo</span>
+                <span>{t('nav.instructorRisks')}</span>
               </button>
               <button
                 className={`nav-item w-full text-left ${location.pathname === '/instructor/activities' ? 'active' : ''}`}
                 onClick={() => handleItemClick('/instructor/activities')}
               >
                 <CalendarClock size={15} />
-                <span>Hoạt động lớp</span>
+                <span>{t('nav.instructorActivities')}</span>
               </button>
               <button
                 className={`nav-item w-full text-left ${location.pathname === '/instructor/quizzes' ? 'active' : ''}`}
                 onClick={() => handleItemClick('/instructor/quizzes')}
               >
                 <BookOpen size={15} />
-                <span>Quản lý Quiz</span>
+                <span>{t('nav.instructorQuizzes')}</span>
               </button>
               <button
                 className={`nav-item w-full text-left ${location.pathname === '/instructor/submissions' ? 'active' : ''}`}
                 onClick={() => handleItemClick('/instructor/submissions')}
               >
                 <FileCheck2 size={15} />
-                <span>Bài tập nộp</span>
+                <span>{t('nav.instructorSubmissions')}</span>
               </button>
               <button
                 className={`nav-item w-full text-left ${location.pathname === '/instructor/digest' ? 'active' : ''}`}
                 onClick={() => handleItemClick('/instructor/digest')}
               >
                 <Mail size={15} />
-                <span>Digest</span>
+                <span>{t('nav.instructorDigest')}</span>
               </button>
               <button
                 className={`nav-item w-full text-left ${location.pathname === '/instructor/guardrail-reviews' ? 'active' : ''}`}
                 onClick={() => handleItemClick('/instructor/guardrail-reviews')}
               >
                 <ShieldQuestion size={15} />
-                <span>Xét duyệt Guardrail</span>
+                <span>{t('nav.instructorGuardrail')}</span>
               </button>
             </>
           )}
@@ -357,7 +352,7 @@ function NotificationsBell({ lang }) {
     <div className="relative" ref={ref}>
       <button
         type="button"
-        className="btn-ghost p-2 rounded-lg text-slate-500 dark:text-slate-400 relative cursor-pointer"
+        className="btn-ghost min-h-10 min-w-10 p-2 rounded-lg text-slate-500 dark:text-slate-400 relative cursor-pointer"
         onClick={() => setOpen((v) => !v)}
         aria-label={lang === 'vi' ? 'Thông báo' : 'Notifications'}
         aria-expanded={open}
@@ -377,7 +372,7 @@ function NotificationsBell({ lang }) {
           <div className="flex items-center justify-between px-4 py-3 border-b border-line sticky top-0 bg-surface-card">
             <span className="text-xs font-bold text-fg">{lang === 'vi' ? 'Thông báo' : 'Notifications'}</span>
             {unread > 0 && (
-              <button type="button" className="text-[10px] font-bold text-accent-text-safe cursor-pointer" onClick={markAllNotificationsRead}>
+              <button type="button" className="min-h-10 text-[10px] font-bold text-accent-text-safe cursor-pointer" onClick={markAllNotificationsRead}>
                 {lang === 'vi' ? 'Đánh dấu đã đọc tất cả' : 'Mark all read'}
               </button>
             )}
@@ -419,7 +414,11 @@ function Topbar({ user, setSidebarOpen }) {
 
   return (
     <header className="h-14 flex items-center gap-3 px-4 border-b border-line shrink-0 bg-surface-card">
-      <button className="btn-ghost lg:hidden p-1 rounded-md" onClick={() => setSidebarOpen(true)}>
+      <button
+        className="btn-ghost lg:hidden min-h-10 min-w-10 p-2 rounded-md"
+        onClick={() => setSidebarOpen(true)}
+        aria-label={lang === 'vi' ? 'Mở menu điều hướng' : 'Open navigation menu'}
+      >
         <Menu size={18} className="text-fg-secondary" />
       </button>
 
@@ -445,49 +444,41 @@ function Topbar({ user, setSidebarOpen }) {
           bộ vẫn là "Mock LMS" trong code/docs, không hiện ra UI) — mở tab
           mới, tự đăng nhập qua SSO danh tính Cursus (ADR-020), không cần
           nhập tài khoản gì thêm. Hiện cho cả 3 role vì Topbar dùng chung 1
-          component. */}
+          component, quyền thao tác (xem/sửa) khác nhau theo role ở phía
+          EduSync.
+          `/sso/refresh` (không phải `/courses` thẳng) -- EduSync cache
+          session riêng tới 1 giờ; đi qua đây trước đảm bảo mỗi lần bấm vào
+          đều lấy đúng danh tính Cursus HIỆN TẠI, không bị dính role cũ sau
+          khi đổi demo role hoặc đổi tài khoản trong cùng trình duyệt. */}
       <a
-        href={`${import.meta.env.VITE_MOCK_LMS_URL || 'http://localhost:9000'}/courses`}
+        href={`${import.meta.env.VITE_MOCK_LMS_URL || 'http://localhost:9000'}/sso/refresh?next=/courses`}
         target="_blank"
         rel="noopener noreferrer"
-        className="btn-ghost hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-fg-secondary hover:text-fg"
+        className="btn-ghost hidden sm:flex min-h-10 items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-fg-secondary hover:text-fg"
         title={lang === 'vi' ? 'Mở hệ thống môn học ngoài (EduSync) ở tab mới' : 'Open the external course platform (EduSync) in a new tab'}
       >
         <ExternalLink size={13} />
         EduSync
       </a>
 
-      <div className="flex-1" />
-
-      {/* Search box — disabled until functional */}
-      <div className="relative hidden md:block w-56">
-        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-fg-muted" />
-        <input
-          type="text"
-          className="input pr-8 py-1.5 text-xs bg-surface"
-          // `.input` (index.css) sets its own shorthand `padding`, which wins
-          // over the `pl-9` Tailwind utility under this Tailwind v4 cascade
-          // — collapsing left padding back to 14px against a search icon
-          // that needs ~36px of clearance, so the icon sat on top of the
-          // placeholder text. Inline style has the specificity to actually
-          // win instead of silently losing to `.input` again.
-          style={{ paddingLeft: '2.25rem' }}
-          placeholder={t('common.searchPlaceholder')}
-          disabled
-          aria-label={t('common.searchPlaceholder')}
-        />
-      </div>
+      {user.role === 'admin' ? (
+        <div className="flex flex-1 justify-center px-2 lg:px-6">
+          <AdminTopbarSearch />
+        </div>
+      ) : (
+        <div className="flex-1" />
+      )}
 
       {/* Notifications */}
       <NotificationsBell lang={lang} />
 
       {/* Theme toggle */}
-      <button className="btn-ghost p-2 rounded-lg text-fg-muted" onClick={toggleTheme} aria-label={theme === 'dark' ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối'}>
+      <button className="btn-ghost min-h-10 min-w-10 p-2 rounded-lg text-fg-muted" onClick={toggleTheme} aria-label={theme === 'dark' ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối'}>
         {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
       </button>
 
       {/* Language toggle (consolidated, topbar only for students — sidebar keeps for all roles) */}
-      <button className="btn-ghost p-1.5 rounded-lg flex items-center gap-1 text-xs" onClick={toggleLang} aria-label={lang === 'vi' ? 'Switch to English' : 'Chuyển sang tiếng Việt'}>
+      <button className="btn-ghost min-h-10 p-1.5 rounded-lg flex items-center gap-1 text-xs" onClick={toggleLang} aria-label={lang === 'vi' ? 'Switch to English' : 'Chuyển sang tiếng Việt'}>
         <span className={`px-1.5 py-0.5 rounded font-bold ${lang === 'vi' ? 'bg-accent-cta text-white' : 'text-fg-muted'}`}>VI</span>
         <span className={`px-1.5 py-0.5 rounded font-bold ${lang === 'en' ? 'bg-accent-cta text-white' : 'text-fg-muted'}`}>EN</span>
       </button>
@@ -530,6 +521,11 @@ function AppShell({ user, onLogout, onUserUpdate }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('top');
   const mainRef = React.useRef(null);
+  const location = useLocation();
+
+  React.useEffect(() => {
+    mainRef.current?.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [location.pathname]);
 
   React.useEffect(() => {
     const mainEl = mainRef.current;
@@ -586,22 +582,18 @@ function AppShell({ user, onLogout, onUserUpdate }) {
       />
       <div className="flex-1 flex flex-col min-w-0">
         <Topbar user={user} setSidebarOpen={setSidebarOpen} />
-        <main ref={mainRef} className="flex-1 overflow-y-auto bg-surface bg-grid">
+        <main
+          id="main-content"
+          ref={mainRef}
+          className={`flex-1 overflow-y-auto bg-surface ${user.role === 'admin' ? 'admin-canvas' : 'bg-grid'}`}
+        >
           {withStudentState(
           <Suspense fallback={<RoutePageFallback />}>
           {user.role === 'admin' ? (
-            // AdminConsole owns everything else under /admin/* through its
-            // own nested <Routes> (overview, people, courses, ... -- see
-            // AdminConsole.jsx). A literal "settings" segment has to be
-            // declared here, ahead of the "/*" splat, because AdminConsole
-            // separately owns "org-settings" (org-wide config) at that same
-            // depth -- v6 ranks a static segment above a splat regardless
-            // of declaration order, so this always resolves to the
-            // account-level Settings screen, never AdminConsole's tab.
+            // Account settings remain an app-shell concern. Every Admin domain
+            // route, including Student/Instructor 360, is owned by AdminConsole.
             <Routes>
               <Route path="settings" element={<SettingsScreen user={user} onLogout={onLogout}/>} />
-              <Route path="students/:studentId" element={<AdminStudent360 user={user}/>} />
-              <Route path="instructors/:instructorId" element={<AdminInstructor360 user={user}/>} />
               <Route path="/*" element={<AdminConsole user={user}/>} />
             </Routes>
           ) : user.role === 'instructor' ? (
@@ -618,7 +610,7 @@ function AppShell({ user, onLogout, onUserUpdate }) {
               <Route path="planner"     element={<StudentPlanner user={user}/>} />
               <Route path="reflection"  element={<StudentReflection user={user}/>} />
               <Route path="practice"        element={<StudentPractice user={user}/>} />
-              <Route path="companion"       element={<StudentCompanionPage user={user}/>} />
+              <Route path="courses/:courseId" element={<StudentCourseMaterials />} />
               <Route path="semester-setup"  element={<SemesterSetupWizard user={user}/>} />
               <Route path="lecture-plan"    element={<LecturePlanPanel user={user}/>} />
               <Route path="quizzes"         element={<StudentQuizzes />} />
@@ -929,7 +921,7 @@ export default function App() {
               ) : (
                 user && user.onboarded ? <Navigate to={DEFAULT_ROUTE[user.role]} replace /> :
                 user && !user.email_confirmed ? <Navigate to="/email-verification" replace /> :
-                <OnboardingScreen />
+                <OnboardingScreen onLogout={logout} />
               )
             }/>
 
@@ -971,7 +963,6 @@ export default function App() {
           </Routes>
           </Suspense>
           <ScrollToTop />
-          <CuriChatLauncher />
         </BrowserRouter>
       </CursusProvider>
     </FatalErrorScreen>

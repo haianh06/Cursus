@@ -11,7 +11,7 @@ const SUMMARY_FIELD_KEYS = {
 
 const PRIORITY_KEYS = { CRITICAL: 'priorityCritical', HIGH: 'priorityHigh', MEDIUM: 'priorityMedium', LOW: 'priorityLow' };
 const STATUS_KEYS = { OPEN: 'statusOpen', IN_REVIEW: 'statusInReview', RESOLVED: 'statusResolved', CLOSED: 'statusClosed', REOPENED: 'statusReopened', PENDING: 'statusPending', IN_PROGRESS: 'statusInProgress', COMPLETED: 'statusCompleted', REJECTED: 'statusRejected', ACTIVE: 'statusActive', INACTIVE: 'statusInactive', ENROLLED: 'statusEnrolled', DROPPED: 'statusDropped' };
-const TRIGGER_KEYS = { RISK_SIGNAL: 'triggerRisk', GUARDRAIL_EVENT: 'triggerSafety', DATA_REQUEST: 'triggerDataRequest', INGEST_JOB: 'triggerCurriculum' };
+const TRIGGER_KEYS = { RISK_SIGNAL: 'triggerRisk', GUARDRAIL_EVENT: 'triggerSafety', DATA_REQUEST: 'triggerDataRequest', INGEST_JOB: 'triggerCurriculum', UNASSIGNED_SECTION: 'triggerUnassignedSection' };
 const RISK_TYPE_KEYS = {
   ACADEMIC_DECLINE: 'workQueueRiskAcademicDecline',
   LATE_SUBMISSION: 'workQueueRiskLateSubmission',
@@ -91,7 +91,10 @@ export function adminSummaryFieldLabel(t, field) {
 export function adminPriorityLabel(t, value) { return enumLabel(t, PRIORITY_KEYS, value); }
 export function adminStatusLabel(t, value) { return enumLabel(t, STATUS_KEYS, value); }
 export function adminTriggerLabel(t, value) { return enumLabel(t, TRIGGER_KEYS, value); }
-export function adminRoleLabel(t, value) { return enumLabel(t, ROLE_KEYS, value); }
+export function adminRoleLabel(t, value) {
+  const key = ROLE_KEYS[String(value || '').toUpperCase()];
+  return key ? t(`auth.${key}`) : t('admin.enumUnknown');
+}
 export function adminDataRequestTypeLabel(t, value) { return enumLabel(t, DATA_REQUEST_TYPE_KEYS, value); }
 export function adminRiskTypeLabel(t, value) {
   return t(`admin.${RISK_TYPE_KEYS[String(value || '').toUpperCase()] || 'riskTypeUnknown'}`);
@@ -139,6 +142,13 @@ export function adminWorkQueueSummary(t, item) {
     return match
       ? t('admin.workQueueIngestFailed').replace('{course}', match[1])
       : t('admin.workQueueIngestGeneric');
+  }
+
+  if (triggerType === 'UNASSIGNED_SECTION') {
+    const match = summary.match(/^Section (.+) has no instructor assigned$/i);
+    return match
+      ? t('admin.workQueueUnassignedSection').replace('{section}', match[1])
+      : t('admin.workQueueUnassignedSectionGeneric');
   }
 
   return t('admin.workQueueSummaryFallback');

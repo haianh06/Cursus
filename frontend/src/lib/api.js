@@ -308,6 +308,10 @@ export function revokeInvite(inviteId) {
   return request(`/admin/invites/${encodeURIComponent(inviteId)}`, { method: 'DELETE' });
 }
 
+export function resendInvite(inviteId) {
+  return request(`/admin/invites/${encodeURIComponent(inviteId)}/resend`, { method: 'POST' });
+}
+
 /** Admin-only org member list + lock/unlock (see AdminConsole's Users tab). */
 export function getOrgUsers() {
   return request('/admin/users');
@@ -318,6 +322,15 @@ export function updateUserStatus(userId, isActive, reason) {
     method: 'PATCH',
     body: { is_active: isActive, reason },
   });
+}
+
+/** Admin triggers the same reset-link flow the user would get themselves via
+ * "Forgot password" -- never sets a password directly. Response is
+ * `{success: true, emailSent: bool}` with no `data` key, so `request()`'s
+ * envelope-unwrap resolves this to `undefined`; treat the call as
+ * fire-and-forget (its rejection is the only thing that matters here). */
+export function resetAdminUserPassword(userId) {
+  return request(`/admin/users/${encodeURIComponent(userId)}/reset-password`, { method: 'POST' });
 }
 
 /** Admin-only system audit trail (see AdminConsole's Audit Log tab). Not
@@ -369,29 +382,12 @@ export async function logout() {
   }
 }
 
-/** Unified student chat — one continuous conversation per student, replacing
- * the old single-shot `/qa` + per-course `/student/companion/threads*`. */
-export function getChatState() {
-  return request('/student/chat');
-}
-
-export function clearChat() {
-  return request('/student/chat', { method: 'DELETE' });
-}
-
-export function sendChatMessage({ subjectCode, message }) {
-  return request('/student/chat/messages', {
-    method: 'POST',
-    body: { subjectCode, message },
-  });
-}
-
 /** Open the exact syllabus chunk behind a citation chip (source drawer). */
 export function getSourceChunk(chunkId) {
   return request(`/qa/sources/${encodeURIComponent(chunkId)}`);
 }
 
-/** Student courses (for plan + chat context). */
+/** Student courses (for plan context). */
 export function getStudentCourses() {
   return request('/student/courses');
 }
@@ -402,6 +398,12 @@ export function getStudentDashboard() {
 
 export function getStudentCourseDetail(courseId) {
   return request(`/student/courses/${encodeURIComponent(courseId)}`);
+}
+
+export function getStudentCourseDocument(courseId, documentId) {
+  return request(
+    `/student/courses/${encodeURIComponent(courseId)}/documents/${encodeURIComponent(documentId)}`,
+  );
 }
 
 /** Monday (local) of the week containing ``date``. */
@@ -668,33 +670,6 @@ export function abandonSelfStudySession(sessionId) {
   });
 }
 
-/* ── Student memory (cross-session companion-chat memory, opt-in) ───────
- * NOTE: consent + storage only — nothing currently reads this into the live
- * QA/companion answer pipeline (see src/services/ai/student_memory_service.py
- * module docstring). Turning this on lets the student see/manage facts, it
- * does not yet change how the assistant answers. */
-
-export function getMemoryConsent() {
-  return request('/student/memory/consent');
-}
-
-export function setMemoryConsent(granted) {
-  return request('/student/memory/consent', { method: 'PUT', body: { granted } });
-}
-
-export function getMemoryEntries(subjectCode = null) {
-  const query = subjectCode ? `?subjectCode=${encodeURIComponent(subjectCode)}` : '';
-  return request(`/student/memory${query}`);
-}
-
-export function deleteMemoryEntry(entryId) {
-  return request(`/student/memory/${encodeURIComponent(entryId)}`, { method: 'DELETE' });
-}
-
-export function forgetAllMemory() {
-  return request('/student/memory', { method: 'DELETE' });
-}
-
 /* ── Lecturer HITL ──────────────────────────────────────────────────── */
 
 /** Class overview: roster, completion, open/handled alert counts. */
@@ -716,20 +691,6 @@ export function getInstructorAlerts(courseId = null) {
  * Never contains raw chat/reflection text. */
 export function getAlertDetail(alertId) {
   return request(`/instructor/risks/${encodeURIComponent(alertId)}`);
-}
-
-/** Record a human decision. `action` is one of
- * contacted | snoozed | false_alert | resolved | note. */
-export function recordIntervention(alertId, { action, note = null, alertFeedback = null, snoozeDays = 3 }) {
-  return request(`/instructor/risks/${encodeURIComponent(alertId)}/intervention`, {
-    method: 'POST',
-    body: {
-      action,
-      note,
-      alert_feedback: alertFeedback,
-      snooze_days: snoozeDays,
-    },
-  });
 }
 
 export function getInterventionAudit(limit = 50) {
@@ -771,6 +732,10 @@ export function deleteAdminCourse(code) {
 
 export function getAdminCourseDocuments(courseCode) {
   return request(`/admin/courses/${encodeURIComponent(courseCode)}/documents`);
+}
+
+export function getAdminCourseDocumentContent(courseCode, documentId) {
+  return request(`/admin/courses/${encodeURIComponent(courseCode)}/documents/${encodeURIComponent(documentId)}/content`);
 }
 
 export function uploadAdminCourseDocument(courseCode, file, docType = 'SYLLABUS') {
@@ -818,6 +783,17 @@ export function archiveAdminCourseDocument(courseCode, documentId, changeReason)
   });
 }
 
+export function getAdminCourseDocumentVersions(courseCode, documentId) {
+  return request(`/admin/courses/${encodeURIComponent(courseCode)}/documents/${encodeURIComponent(documentId)}/versions`);
+}
+
+export function rollbackAdminCourseDocument(courseCode, documentId, changeReason) {
+  return request(`/admin/courses/${encodeURIComponent(courseCode)}/documents/${encodeURIComponent(documentId)}/rollback`, {
+    method: 'POST',
+    body: { change_reason: changeReason }
+  });
+}
+
 /** CLO list + session-by-session breakdown + syllabus metadata, read from
  * the course's own parsed chunk file. 404s (via request()'s ApiError) for a
  * course with no real syllabus behind it (e.g. added manually). */
@@ -829,9 +805,13 @@ export function getAdminKpi() {
   return request('/admin/kpi');
 }
 
-/** mục 6.5 expanded Analytics tab: total documents, system-wide at-risk
- * student count, weekly risk-signal trend -- alongside the with_cursus/
- * baseline KPI above. */
+/** Measured Admin summary contract. KPI snapshot cards are intentionally not
+ * part of this dashboard; they were illustrative rather than live metrics. */
+export function getAdminAnalyticsSummary() {
+  return request('/admin/analytics/summary');
+}
+
+/** Legacy endpoint kept for compatibility with older consumers. */
 export function getAdminAnalytics() {
   return request('/admin/analytics');
 }
@@ -844,12 +824,6 @@ export function getAdminOverview() {
 
 export function getAdminWorkQueue() {
   return request('/admin/work-queue');
-}
-
-/** Reactive-only: Gemini gives no way to check remaining quota ahead of a
- * call, so this reflects real 429s the app has actually hit recently. */
-export function getLlmQuotaStatus() {
-  return request('/admin/llm-quota-status');
 }
 
 /** `params`: `{ search, role, page }` — all optional. */
@@ -870,7 +844,7 @@ export function getAdminStudentSummary(studentId) {
   return request(`/admin/students/${encodeURIComponent(studentId)}/summary`);
 }
 
-/** `resourcePath` is one of: plans, tasks, progress-events, reminders,
+/** `resourcePath` is one of: plans, tasks, progress-events, reminders, sessions,
  * assignments, submissions, reflections, conversations, documents, risk,
  * interventions, access-history — or `conversations/{id}` for one
  * conversation's transcript. */
@@ -884,6 +858,61 @@ export function readAdminStudentResource(studentId, resourcePath, { page = 1, pa
 /* ── Admin: Instructor 360 (docs/SPEC_ADMIN_REBUILD_TU_CHUNG_23AUG.md mục 3.4) ── */
 export function getAdminInstructorSummary(instructorId) {
   return request(`/admin/instructors/${encodeURIComponent(instructorId)}/summary`);
+}
+
+/* ── Admin: Sections (Task 9 -- class assignment, closes the Work Queue's
+ * UNASSIGNED_SECTION loop). Backend: src/api/admin_sections.py. `request()`
+ * already unwraps the `{success, data}` envelope (see its "'success' in
+ * payload" branch above) -- none of these responses use that shape, so each
+ * function below just returns request()'s result as-is; wrapping it again
+ * would be the exact "double-unwrapped" mistake commit c79ec39 reverted. ── */
+export function getAdminSectionCourses() {
+  return request('/admin/sections/courses');
+}
+
+export function getAdminSections() {
+  return request('/admin/sections');
+}
+
+export function createAdminSection({ courseId, sectionCode, term, instructorId = null }) {
+  return request('/admin/sections', {
+    method: 'POST',
+    body: { courseId, sectionCode, term, instructorId },
+  });
+}
+
+export function updateAdminSection(sectionId, { sectionCode, term, instructorId } = {}) {
+  const body = {};
+  if (sectionCode !== undefined) body.sectionCode = sectionCode;
+  if (term !== undefined) body.term = term;
+  if (instructorId !== undefined) body.instructorId = instructorId;
+  return request(`/admin/sections/${encodeURIComponent(sectionId)}`, { method: 'PATCH', body });
+}
+
+export function deleteAdminSection(sectionId) {
+  return request(`/admin/sections/${encodeURIComponent(sectionId)}`, { method: 'DELETE' });
+}
+
+export function getAdminSectionRoster(sectionId) {
+  return request(`/admin/sections/${encodeURIComponent(sectionId)}/roster`);
+}
+
+/** Response is `{success: true}` with no `data` key, so `request()`'s
+ * envelope-unwrap resolves this to `undefined` -- callers must treat this as
+ * fire-and-forget (reload the roster on success) rather than read a value
+ * off the resolved promise. */
+export function addAdminSectionStudent(sectionId, studentId) {
+  return request(`/admin/sections/${encodeURIComponent(sectionId)}/roster`, {
+    method: 'POST',
+    body: { studentId },
+  });
+}
+
+export function removeAdminSectionStudent(sectionId, studentId) {
+  return request(
+    `/admin/sections/${encodeURIComponent(sectionId)}/roster/${encodeURIComponent(studentId)}`,
+    { method: 'DELETE' },
+  );
 }
 
 /* ── Admin: Data Requests (DSAR) (docs/SPEC_ADMIN_REBUILD_TU_CHUNG_23AUG.md mục 3.5) ── */
@@ -913,6 +942,23 @@ export function getGuardrailRules() {
   return request('/admin/guardrail-rules');
 }
 
+// Stable names used by the Admin AI Policy screen. Keep the older helpers
+// below as compatibility aliases for callers outside that screen.
+export function listGuardrailRules() {
+  return getGuardrailRules();
+}
+
+export function previewGuardrailRule(code, enabled, changeReason) {
+  return request(`/admin/guardrail-rules/${encodeURIComponent(code)}/preview`, {
+    method: 'POST',
+    body: { enabled, reason: changeReason },
+  });
+}
+
+export function getGuardrailPolicyHistory() {
+  return request('/admin/guardrail-rules/history').then((data) => data.versions);
+}
+
 export function setGuardrailRuleEnabled(code, enabled, reason) {
   return request(`/admin/guardrail-rules/${encodeURIComponent(code)}`, {
     method: 'PATCH',
@@ -920,8 +966,22 @@ export function setGuardrailRuleEnabled(code, enabled, reason) {
   });
 }
 
-export function restoreGuardrailDefaults() {
-  return request('/admin/guardrail-rules/restore-defaults', { method: 'POST' });
+export function setGuardrailRule(code, enabled, changeReason) {
+  return setGuardrailRuleEnabled(code, enabled, changeReason);
+}
+
+export function restoreGuardrailDefaults(changeReason = '') {
+  return request('/admin/guardrail-rules/restore-defaults', {
+    method: 'POST',
+    body: { reason: changeReason },
+  });
+}
+
+export function rollbackGuardrailPolicy(version, changeReason) {
+  return request(`/admin/guardrail-rules/versions/${encodeURIComponent(version)}/rollback`, {
+    method: 'POST',
+    body: { reason: changeReason },
+  });
 }
 
 /* ── Admin: settings (mục 6.5 "Cấu hình") ─────────────────────────────── */

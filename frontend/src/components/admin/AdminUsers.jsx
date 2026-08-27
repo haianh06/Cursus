@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AlertCircle, Lock, Mail, Unlock, UserPlus, User, X } from 'lucide-react';
+import { AlertCircle, Clock3, KeyRound, Lock, Mail, ShieldCheck, Unlock, UserPlus, User, X } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import ConfirmDialog from '../shared/ConfirmDialog';
 import { ROLE_LABEL } from '../../constants/roles';
@@ -8,7 +8,9 @@ import {
   createInvite,
   getInvites,
   getOrgUsers,
+  resetAdminUserPassword,
   revokeInvite,
+  resendInvite,
   updateUserStatus,
 } from '../../lib/api';
 
@@ -35,9 +37,10 @@ export default function AdminUsers() {
   const [users, setUsers] = useState(null);
   const [invites, setInvites] = useState(null);
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
   const [busyId, setBusyId] = useState('');
   const [showInviteModal, setShowInviteModal] = useState(false);
-  const [confirmAction, setConfirmAction] = useState(null); // { type: 'lockUser' | 'unlockUser' | 'revokeInvite', target: any, reason: '' }
+  const [confirmAction, setConfirmAction] = useState(null); // { type: 'lockUser' | 'unlockUser' | 'revokeInvite' | 'resetPassword', target: any, reason: '' }
 
   const load = useCallback(() => {
     setError('');
@@ -79,6 +82,26 @@ export default function AdminUsers() {
         .then(() => setInvites((rows) => rows.filter((row) => row.id !== target.id)))
         .catch((err) => setError(err.message || String(err)))
         .finally(() => setBusyId(''));
+    } else if (type === 'resendInvite') {
+      setConfirmAction(null);
+      setBusyId(target.id);
+      setError('');
+      resendInvite(target.id)
+        .then((updated) => setInvites((rows) => rows.map((row) => (row.id === updated.id ? updated : row))))
+        .catch((err) => setError(err.message || String(err)))
+        .finally(() => setBusyId(''));
+    } else if (type === 'resetPassword') {
+      setConfirmAction(null);
+      setBusyId(target.id);
+      setError('');
+      setNotice('');
+      // Response is `{success, emailSent}` with no `data` key, so
+      // request()'s envelope-unwrap resolves this to `undefined` -- a
+      // resolved promise (not its value) is what "it worked" means here.
+      resetAdminUserPassword(target.id)
+        .then(() => setNotice(t('admin.resetPasswordSuccess')))
+        .catch((err) => setError(err.message || String(err)))
+        .finally(() => setBusyId(''));
     }
   }
 
@@ -98,12 +121,45 @@ export default function AdminUsers() {
     });
   }
 
+  function handleResend(invite) {
+    setConfirmAction({ type: 'resendInvite', target: invite, reason: '' });
+  }
+
+  function handleResetPassword(user) {
+    setNotice('');
+    setConfirmAction({ type: 'resetPassword', target: user, reason: '' });
+  }
+
+  const activeUsers = users?.filter((user) => user.is_active).length || 0;
+  const lockedUsers = users?.filter((user) => !user.is_active).length || 0;
+  const pendingInvites = invites?.filter((invite) => inviteStatus(invite) === 'pending').length || 0;
+
   return (
     <div className="flex flex-col gap-6 text-left">
       {error && (
         <p className="flex items-center gap-2 text-xs text-danger" role="alert">
           <AlertCircle size={14} className="shrink-0" />{error}
         </p>
+      )}
+      {notice && (
+        <p className="flex items-center gap-2 text-xs text-success" role="status">
+          <ShieldCheck size={14} className="shrink-0" />{notice}
+        </p>
+      )}
+
+      {users && invites && (
+        <section className="grid grid-cols-1 gap-3 sm:grid-cols-3" aria-label={lang === 'vi' ? 'Tổng hợp tài khoản' : 'Account summary'}>
+          {[
+            { label: lang === 'vi' ? 'Đang hoạt động' : 'Active accounts', value: activeUsers, note: lang === 'vi' ? 'Thành viên' : 'Members', icon: ShieldCheck, tone: 'text-success bg-success-soft' },
+            { label: lang === 'vi' ? 'Lời mời chờ' : 'Pending invites', value: pendingInvites, note: lang === 'vi' ? 'Chưa kích hoạt' : 'Awaiting activation', icon: Clock3, tone: 'text-warning bg-warning-soft' },
+            { label: lang === 'vi' ? 'Đã khoá' : 'Locked', value: lockedUsers, note: lang === 'vi' ? 'Tài khoản' : 'Accounts', icon: Lock, tone: 'text-danger bg-danger-soft' },
+          ].map(({ label, value, note, icon: Icon, tone }) => (
+            <article key={label} className="admin-stat-card">
+              <span className={`admin-stat-icon ${tone}`}><Icon size={16} aria-hidden="true" /></span>
+              <div><p className="text-[10px] font-bold uppercase tracking-wide text-fg-muted">{label}</p><p className="mono mt-1 text-2xl font-bold text-fg">{value}</p><p className="mt-1 text-[10px] text-fg-muted">{note}</p></div>
+            </article>
+          ))}
+        </section>
       )}
 
       {/* Invites */}
@@ -148,18 +204,35 @@ export default function AdminUsers() {
                         <span className={`badge text-[9px] font-bold ${status === 'pending' ? 'badge-gold' : status === 'used' ? 'badge-success' : 'badge-neutral'}`}>
                           {t(`admin.${status === 'pending' ? 'invitePending' : status === 'used' ? 'inviteUsedStatus' : status === 'revoked' ? 'inviteRevokedStatus' : 'inviteExpiredStatus'}`)}
                         </span>
+                        <span className="ml-2 text-[10px] text-fg-muted">
+                          {invite.delivery_status === 'failed'
+                            ? (lang === 'vi' ? 'Gửi lỗi' : 'Delivery failed')
+                            : invite.delivery_status === 'pending'
+                              ? (lang === 'vi' ? 'Đang gửi' : 'Sending')
+                              : (lang === 'vi' ? 'Đã gửi' : 'Sent')}
+                        </span>
                       </td>
                       <td className="text-fg-muted">{new Date(invite.expires_at).toLocaleDateString(lang === 'vi' ? 'vi-VN' : 'en-US')}</td>
                       <td>
                         {status === 'pending' && (
-                          <button
-                            type="button"
-                            className="text-danger font-bold cursor-pointer hover:underline disabled:opacity-50 disabled:cursor-not-allowed outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
-                            disabled={busyId === invite.id}
-                            onClick={() => handleRevoke(invite)}
-                          >
-                            {t('admin.inviteRevokeBtn')}
-                          </button>
+                          <div className="flex flex-wrap items-center gap-3">
+                            <button
+                              type="button"
+                              className="font-bold text-accent cursor-pointer hover:underline disabled:opacity-50 disabled:cursor-not-allowed outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
+                              disabled={busyId === invite.id}
+                              onClick={() => handleResend(invite)}
+                            >
+                              {lang === 'vi' ? 'Gửi lại' : 'Resend'}
+                            </button>
+                            <button
+                              type="button"
+                              className="text-danger font-bold cursor-pointer hover:underline disabled:opacity-50 disabled:cursor-not-allowed outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
+                              disabled={busyId === invite.id}
+                              onClick={() => handleRevoke(invite)}
+                            >
+                              {t('admin.inviteRevokeBtn')}
+                            </button>
+                          </div>
                         )}
                       </td>
                     </tr>
@@ -218,6 +291,14 @@ export default function AdminUsers() {
                           {user.is_active ? <Lock size={12} /> : <Unlock size={12} />}
                           {user.is_active ? t('admin.userLockBtn') : t('admin.userUnlockBtn')}
                         </button>
+                        <button
+                          type="button"
+                          className="inline-flex items-center gap-1.5 min-h-[28px] font-bold text-accent-text-safe cursor-pointer hover:underline disabled:opacity-50 disabled:cursor-not-allowed outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
+                          disabled={busyId === user.id}
+                          onClick={() => handleResetPassword(user)}
+                        >
+                          <KeyRound size={12} /> {t('admin.resetPassword')}
+                        </button>
                         {user.role === 'STUDENT' && (
                           <Link
                             to={`/admin/students/${user.id}`}
@@ -256,10 +337,16 @@ export default function AdminUsers() {
 
       <ConfirmDialog
         open={!!confirmAction}
-        title={confirmAction?.type === 'revokeInvite' ? t('admin.inviteRevokeConfirm') : 
-               confirmAction?.type === 'lockUser' ? t('admin.userLockConfirm') : 
+        title={confirmAction?.type === 'resendInvite' ? (lang === 'vi' ? 'Gửi lại lời mời?' : 'Resend this invitation?') :
+               confirmAction?.type === 'revokeInvite' ? t('admin.inviteRevokeConfirm') :
+               confirmAction?.type === 'lockUser' ? t('admin.userLockConfirm') :
+               confirmAction?.type === 'resetPassword' ? t('admin.resetPasswordTitle') :
                (lang === 'vi' ? 'Xác nhận mở khóa tài khoản?' : 'Unlock this account?')}
-        message={lang === 'vi' ? 'Thao tác này sẽ được ghi vào nhật ký hệ thống (Audit Log).' : 'This action will be recorded in the Audit Log.'}
+        message={confirmAction?.type === 'resendInvite'
+          ? (lang === 'vi' ? 'Token cũ sẽ hết hiệu lực và hệ thống tạo link mới.' : 'The old token will be invalidated and a new link will be sent.')
+          : confirmAction?.type === 'resetPassword'
+          ? t('admin.resetPasswordConfirm')
+          : (lang === 'vi' ? 'Thao tác này sẽ được ghi vào nhật ký hệ thống (Audit Log).' : 'This action will be recorded in the Audit Log.')}
         confirmLabel={t('admin.confirmBtn')}
         cancelLabel={t('admin.cancelBtn')}
         danger={confirmAction?.type === 'lockUser' || confirmAction?.type === 'revokeInvite'}

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { AlertCircle, ChevronDown, ChevronRight, History, Search } from 'lucide-react';
+import { AlertCircle, CheckCircle2, ChevronRight, FileClock, History, Search, ShieldAlert, XCircle } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { getAuditEvents } from '../../lib/api';
 
@@ -42,7 +42,7 @@ export default function AdminAudit() {
   const [error, setError] = useState('');
   const [eventTypeFilter, setEventTypeFilter] = useState('');
   const [appliedFilter, setAppliedFilter] = useState('');
-  const [expandedId, setExpandedId] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
 
   const load = useCallback((eventType) => {
     setError('');
@@ -60,9 +60,30 @@ export default function AdminAudit() {
     setAppliedFilter(eventTypeFilter.trim());
   }
 
+  const selectedEvent = events?.find((event) => event.id === selectedId) || events?.[0] || null;
+  const allowedCount = events?.filter((event) => event.decision === 'ALLOW').length || 0;
+  const deniedCount = events?.filter((event) => event.decision !== 'ALLOW').length || 0;
+  const warningCount = events?.filter((event) => /FAILED|ROLLBACK|LOCK/i.test(event.event_type)).length || 0;
+
   return (
-    <section className="card p-5 sm:p-6 space-y-4 text-left" aria-labelledby="audit-title">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <section className="space-y-4 text-left" aria-labelledby="audit-title">
+      {events && (
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {[
+            { label: lang === 'vi' ? 'Tổng sự kiện' : 'Total events', value: events.length, icon: FileClock, tone: 'text-accent bg-accent-soft' },
+            { label: lang === 'vi' ? 'Thành công' : 'Successful', value: allowedCount, icon: CheckCircle2, tone: 'text-success bg-success-soft' },
+            { label: lang === 'vi' ? 'Cảnh báo' : 'Warnings', value: warningCount, icon: ShieldAlert, tone: 'text-warning bg-warning-soft' },
+            { label: lang === 'vi' ? 'Bị từ chối' : 'Denied', value: deniedCount, icon: XCircle, tone: 'text-danger bg-danger-soft' },
+          ].map(({ label, value, icon: Icon, tone }) => (
+            <article key={label} className="admin-stat-card">
+              <span className={`admin-stat-icon ${tone}`}><Icon size={16} aria-hidden="true" /></span>
+              <div><p className="text-[10px] font-bold uppercase tracking-wide text-fg-muted">{label}</p><p className="mono mt-1 text-2xl font-bold text-fg">{value}</p></div>
+            </article>
+          ))}
+        </div>
+      )}
+
+      <div className="admin-toolbar flex flex-wrap items-center justify-between gap-3">
         <h2 id="audit-title" className="text-sm font-bold text-fg flex items-center gap-2">
           <History size={16} className="text-accent" /> {t('admin.auditTitle')}
         </h2>
@@ -111,7 +132,8 @@ export default function AdminAudit() {
       ) : events.length === 0 ? (
         <p className="text-xs text-fg-muted">{t('admin.auditEmpty')}</p>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
+          <div className="overflow-x-auto rounded-lg border border-line bg-surface-card">
           <table className="data-table">
             <thead>
               <tr>
@@ -119,32 +141,27 @@ export default function AdminAudit() {
                 <th scope="col">{t('admin.auditColTime')}</th>
                 <th scope="col">{t('admin.auditColEvent')}</th>
                 <th scope="col">{t('admin.auditColActor')}</th>
-                <th scope="col">{t('admin.auditColResource')}</th>
+                <th scope="col" className="hidden 2xl:table-cell">{t('admin.auditColResource')}</th>
                 <th scope="col">{t('admin.auditColDecision')}</th>
               </tr>
             </thead>
             <tbody>
-              {events.map((event) => {
-                const isOpen = expandedId === event.id;
-                return (
-                  <React.Fragment key={event.id}>
-                    <tr>
+              {events.map((event) => (
+                    <tr key={event.id} className={selectedEvent?.id === event.id ? 'admin-selected-row' : ''}>
                       <td>
                         <button
                           type="button"
                           className="min-w-[24px] min-h-[24px] inline-flex items-center justify-center text-fg-muted hover:text-fg cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
-                          aria-expanded={isOpen}
-                          aria-controls={`audit-row-detail-${event.id}`}
                           aria-label={t('admin.auditToggleDetails')}
-                          onClick={() => setExpandedId(isOpen ? null : event.id)}
+                          onClick={() => setSelectedId(event.id)}
                         >
-                          {isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                          <ChevronRight size={14} />
                         </button>
                       </td>
                       <td className="text-fg-muted whitespace-nowrap">{formatTimestamp(event.created_at, lang)}</td>
                       <td className="mono text-fg font-semibold">{event.event_type}</td>
-                      <td className="text-fg-secondary">{event.actor_user_id || '—'}</td>
-                      <td className="text-fg-secondary">
+                      <td className="max-w-48 truncate text-fg-secondary">{event.actor_user_id || '—'}</td>
+                      <td className="hidden text-fg-secondary 2xl:table-cell">
                         {event.resource_type ? `${event.resource_type}${event.resource_id ? ` · ${event.resource_id}` : ''}` : '—'}
                       </td>
                       <td>
@@ -153,29 +170,35 @@ export default function AdminAudit() {
                         </span>
                       </td>
                     </tr>
-                    {isOpen && (
-                      <tr id={`audit-row-detail-${event.id}`} style={{ background: 'var(--bg-elevated)' }}>
-                        <td />
-                        <td colSpan={5}>
-                          <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px]">
-                            <dt className="text-fg-muted">{t('admin.auditColIp')}</dt>
-                            <dd className="text-fg-secondary mono">{event.ip_address || '—'}</dd>
-                            <dt className="text-fg-muted">{t('admin.auditColUserAgent')}</dt>
-                            <dd className="text-fg-secondary truncate">{event.user_agent || '—'}</dd>
-                          </dl>
-                          {Object.keys(event.metadata || {}).length > 0 && (
-                            <pre className="mt-2 text-[10px] mono bg-surface-elevated rounded-lg p-3 overflow-x-auto text-fg-secondary">
-                              {JSON.stringify(event.metadata, null, 2)}
-                            </pre>
-                          )}
-                        </td>
-                      </tr>
-                    )}
-                  </React.Fragment>
-                );
-              })}
+              ))}
             </tbody>
           </table>
+          </div>
+
+          <aside className="admin-detail-panel" aria-label={lang === 'vi' ? 'Chi tiết sự kiện' : 'Event details'}>
+            {selectedEvent && (
+              <>
+                <div className="border-b border-line pb-4">
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-fg-muted">{lang === 'vi' ? 'Chi tiết sự kiện' : 'Event details'}</p>
+                  <p className="mono mt-2 break-all text-sm font-bold text-fg">{selectedEvent.event_type}</p>
+                  <p className="mono mt-1 break-all text-[10px] text-fg-muted">{selectedEvent.id}</p>
+                </div>
+                <dl className="space-y-3 py-4 text-xs">
+                  <div><dt className="text-fg-muted">{t('admin.auditColTime')}</dt><dd className="mono mt-1 text-fg">{formatTimestamp(selectedEvent.created_at, lang)}</dd></div>
+                  <div><dt className="text-fg-muted">{t('admin.auditColActor')}</dt><dd className="mono mt-1 break-all text-fg">{selectedEvent.actor_user_id || '—'}</dd></div>
+                  <div><dt className="text-fg-muted">{t('admin.auditColResource')}</dt><dd className="mono mt-1 break-all text-fg">{selectedEvent.resource_type ? `${selectedEvent.resource_type}${selectedEvent.resource_id ? ` · ${selectedEvent.resource_id}` : ''}` : '—'}</dd></div>
+                  <div><dt className="text-fg-muted">{t('admin.auditColIp')}</dt><dd className="mono mt-1 text-fg">{selectedEvent.ip_address || '—'}</dd></div>
+                  <div><dt className="text-fg-muted">{t('admin.auditColUserAgent')}</dt><dd className="mt-1 break-words text-fg-secondary">{selectedEvent.user_agent || '—'}</dd></div>
+                </dl>
+                <div className="border-t border-line pt-4">
+                  <p className="mb-2 text-[10px] font-bold uppercase tracking-wide text-fg-muted">Metadata</p>
+                  <pre className="mono max-h-64 overflow-auto rounded-md border border-line bg-surface-elevated p-3 text-[10px] leading-relaxed text-fg-secondary">
+                    {JSON.stringify(selectedEvent.metadata || {}, null, 2)}
+                  </pre>
+                </div>
+              </>
+            )}
+          </aside>
         </div>
       )}
     </section>

@@ -91,9 +91,9 @@ export default function CursusMascot({ size = 150, className = '', state = 'idle
   const renderSize = typeof size === 'number' || size in SIZE_PRESETS ? px : size;
 
   // ── Unified state vocabulary — the union of every state string any
-  // current caller (CuriChatLauncher, AuthLayout, App.jsx boot loader,
-  // ErrorState, ApiErrorScreen, FeatureErrorBoundary) already passes. No new
-  // states invented; this just gives all of them one visual home.
+  // current caller (AuthLayout, App.jsx boot loader, ErrorState,
+  // ApiErrorScreen, FeatureErrorBoundary) already passes. No new states
+  // invented; this just gives all of them one visual home.
   const isError = state === 'error';
   const isOffline = state === 'offline';
   const isSleepDim = state === 'sleep' || state === 'inactive';

@@ -1,75 +1,113 @@
-# Production DB/Auth is Supabase-managed Postgres (ADR-001 in
-# docs/decisions/ADR.md) — DATABASE_URL in .env points at Supabase's pooler
-# by default. `db`/`redis` below run by default so `docker-compose up` works
-# fully offline out of the box: point DATABASE_URL at
-# `postgresql://cursus:cursus@db:5432/cursus` and REDIS_URL at
-# `redis://redis:6379/0` in your local .env to use them (already the default
-# in .env.example).
+# Local full-stack development. This stack deliberately uses its own
+# Postgres volume instead of the Supabase DATABASE_URL from .env: local
+# startup stays reproducible and cannot mutate the shared database.
 services:
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
-    env_file:
-      - .env
-    volumes:
-      - ./data:/app/data
-      - ./src:/app/src
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
   db:
     image: postgres:16-alpine
     environment:
       POSTGRES_USER: cursus
       POSTGRES_PASSWORD: cursus
       POSTGRES_DB: cursus
-    ports:
-      - "5432:5432"
     volumes:
       - cursus_db_data:/var/lib/postgresql/data
+    restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U cursus"]
+      test: ["CMD-SHELL", "pg_isready -U cursus -d cursus"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   redis:
     image: redis:7-alpine
-    ports:
-      - "6379:6379"
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
 
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    ports:
+      - "127.0.0.1:8000:8000"
+    env_file:
+      - .env
+    environment:
+      APP_ENV: development
+      DATABASE_URL: postgresql://cursus:cursus@db:5432/cursus
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET_KEY: ${DOCKER_JWT_SECRET_KEY:-docker-local-only-jwt-secret-change-before-deploy-2026}
+      CORS_ORIGINS: http://localhost:5174,http://127.0.0.1:5174,http://localhost:5173
+      CURSUS_FRONTEND_URL: http://localhost:5174
+      MOCK_LMS_BASE_URL: http://edusync:9000
+      SEED_ON_START: "true"
+      SEED_DATASET: demo
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+
+  edusync:
+    build:
+      context: .
+      dockerfile: mock-lms/Dockerfile
+    ports:
+      - "127.0.0.1:9000:9000"
+    environment:
+      MOCK_LMS_DB_PATH: /app/data/mock_lms.db
+      MOCK_LMS_SSO_SHARED_SECRET: ${MOCK_LMS_SSO_SHARED_SECRET:-dev-only-mock-lms-sso-secret}
+      MOCK_LMS_JWT_SECRET: ${MOCK_LMS_JWT_SECRET:-docker-local-only-edusync-jwt-secret}
+      MOCK_LMS_CLIENT_ID: ${MOCK_LMS_CLIENT_ID:-cursus-tool}
+      MOCK_LMS_CLIENT_SECRET: ${MOCK_LMS_CLIENT_SECRET:-docker-local-only-edusync-client-secret}
+      CURSUS_BASE_URL: http://localhost:8000
+      CURSUS_INTERNAL_BASE_URL: http://backend:8000
+      MOCK_LMS_PUBLIC_URL: http://localhost:9000
+    depends_on:
+      backend:
+        condition: service_healthy
+    volumes:
+      - edusync_data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:9000/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-      target: dev
+      target: runner
+      args:
+        VITE_API_URL: /api/v1
     ports:
-      - "5173:5173"
-    environment:
-      VITE_API_URL: http://localhost:8000/api/v1
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - "127.0.0.1:3000:3000"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/healthz >/dev/null || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
 volumes:
   cursus_db_data:
+  edusync_data:

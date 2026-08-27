@@ -198,7 +198,14 @@ class QuizRepository:
     def is_enrolled(self, student_id: str, section_id: str) -> bool:
         return (
             self._db.query(models.Enrollment)
-            .filter_by(student_id=student_id, section_id=section_id)
+            .filter(
+                models.Enrollment.student_id == student_id,
+                models.Enrollment.section_id == section_id,
+                # Only ENROLLED status grants access. Without this filter, a student
+                # marked DROPPED can still access quiz questions and submit answers.
+                # This is an access gate, same as chunk_repository.student_enrolled_in_course.
+                models.Enrollment.status == models.EnrollmentStatus.ENROLLED.value,
+            )
             .first()
             is not None
         )

@@ -1,6 +1,6 @@
 """P0#6 minimal viable version (mục 6.3/6.4 Cài đặt): self-service hard
-delete of a student's own reflections + Cursus Assistant chat history.
-Must be scoped to the caller only -- another student's data must survive."""
+delete of a student's own reflections. Must be scoped to the caller only --
+another student's data must survive."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from datetime import UTC, datetime
 import pytest
 
 from src.db.connection import SessionLocal
-from src.db.models import Conversation, Message, UserRole, WeeklyReflection
+from src.db.models import UserRole, WeeklyReflection
 from tests.support.semester_practice_fixtures import auth_headers, ensure_org, ensure_user, login
 
 
@@ -36,34 +36,6 @@ def _seed_reflection(student_id: str, week_number: int) -> str:
         db.close()
 
 
-def _seed_conversation_with_messages(student_id: str, message_count: int) -> str:
-    db = SessionLocal()
-    try:
-        convo = Conversation(
-            id=f"conv_{uuid.uuid4().hex[:10]}",
-            student_id=student_id,
-            title="Hỏi về SSA101",
-            created_at=_now(),
-        )
-        db.add(convo)
-        db.flush()
-        for _ in range(message_count):
-            db.add(
-                Message(
-                    id=f"msg_{uuid.uuid4().hex[:10]}",
-                    conversation_id=convo.id,
-                    sender="USER",
-                    content="Điều kiện qua môn là gì?",
-                    created_at=_now(),
-                    metadata_info={},
-                )
-            )
-        db.commit()
-        return convo.id
-    finally:
-        db.close()
-
-
 def _count(model, **filters) -> int:
     db = SessionLocal()
     try:
@@ -73,7 +45,7 @@ def _count(model, **filters) -> int:
 
 
 @pytest.mark.asyncio
-async def test_delete_my_personal_data_removes_only_the_caller_reflections_and_chat(client):
+async def test_delete_my_personal_data_removes_only_the_caller_reflections(client):
     org = ensure_org("privacy-org-a", "Privacy Org A")
     target_email = f"privacy.target.{uuid.uuid4().hex}@example.test"
     other_email = f"privacy.other.{uuid.uuid4().hex}@example.test"
@@ -82,11 +54,9 @@ async def test_delete_my_personal_data_removes_only_the_caller_reflections_and_c
 
     _seed_reflection(target_id, week_number=1)
     _seed_reflection(target_id, week_number=2)
-    _seed_conversation_with_messages(target_id, message_count=2)
 
     # Another student's data must never be touched by this call.
     _seed_reflection(other_id, week_number=1)
-    other_convo_id = _seed_conversation_with_messages(other_id, message_count=1)
 
     token = await login(client, target_email)
     resp = await client.post(
@@ -94,28 +64,16 @@ async def test_delete_my_personal_data_removes_only_the_caller_reflections_and_c
     )
     assert resp.status_code == 200, resp.text
     body = resp.json()
-    assert body == {
-        "reflectionsDeleted": 2,
-        "conversationsDeleted": 1,
-        "messagesDeleted": 2,
-    }
+    assert body == {"reflectionsDeleted": 2}
 
     assert _count(WeeklyReflection, student_id=target_id) == 0
-    assert _count(Conversation, student_id=target_id) == 0
-    assert _count(Message, conversation_id="__none__") == 0  # sanity: filter works
 
     # The other student's rows survived untouched.
     assert _count(WeeklyReflection, student_id=other_id) == 1
-    assert _count(Conversation, student_id=other_id) == 1
-    assert _count(Message, conversation_id=other_convo_id) == 1
 
     # Idempotent: nothing left for the target student, second call is a no-op.
     resp_again = await client.post(
         "/api/v1/student/personal-data/delete", headers=auth_headers(token)
     )
     assert resp_again.status_code == 200
-    assert resp_again.json() == {
-        "reflectionsDeleted": 0,
-        "conversationsDeleted": 0,
-        "messagesDeleted": 0,
-    }
+    assert resp_again.json() == {"reflectionsDeleted": 0}

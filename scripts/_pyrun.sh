@@ -60,5 +60,11 @@ fi
 
 [ -n "$PY" ] || exit 0
 
-# shellcheck disable=SC2086
-exec $PY "$@"
+# $PY must stay quoted: the .venv path can sit under a directory with spaces
+# (e.g. "1.Chuyen Nganh"), and a bare $PY word-splits there, so the hook dies
+# with exit 127 and silently logs nothing. "py -3" is the only multi-word value
+# we ever set, so split that one case explicitly instead of unquoting $PY.
+if [ "$PY" = "py -3" ]; then
+  exec py -3 "$@"
+fi
+exec "$PY" "$@"

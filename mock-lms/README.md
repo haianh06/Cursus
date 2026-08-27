@@ -16,9 +16,44 @@ cd mock-lms
 pip install -r requirements.txt   # already satisfied if using the main repo's .venv
 python scripts/seed_courses.py       # loads 36 real course codes from docs/planning/v2/data
 python scripts/seed_assignments.py   # generates synthetic assignments/deadlines (see script docstring)
+python scripts/seed_curriculum.py    # loads curriculum programs + prerequisite graph (generated
+                                      # from the real catalog, see script docstring) and full
+                                      # syllabus detail (CLOs/sessions/materials/questions/
+                                      # assessments) for CSI106 + SWE202c
+python scripts/seed_syllabi_from_chunks.py   # loads real CLOs + session plans for the other
+                                              # 42 courses from docs/planning/v2/data/chunks_*.json
+                                              # -- run this AFTER seed_curriculum.py (it skips
+                                              # CSI106/SWE202c, which that script owns)
 python scripts/create_oauth_client.py --name cursus --client-id cursus-tool   # prints a client_secret once
-uvicorn app.main:app --reload --port 9000
+
+# Build the web UI once (or after changing anything in frontend/) --
+# app/web.py serves the built output directly, there is no separate frontend server in prod.
+cd frontend && npm install && npm run build && cd ..
+
+uvicorn app.main:app --reload --reload-exclude "app/static/*" --port 9000
 ```
+
+## Docker Compose
+
+Từ thư mục gốc repository, `docker compose up --build -d` cũng build và chạy EduSync
+như một service riêng (`edusync`). Service này tự build SPA, seed 36 course + 144
+assignment + 44 syllabus, bootstrap OAuth client từ environment và lưu SQLite trong
+Docker volume `edusync_data`. Backend Cursus gọi EduSync qua `http://edusync:9000`, còn
+trình duyệt vẫn truy cập `http://localhost:9000`.
+
+Trong chế độ Docker, SSO dùng hai URL có chủ đích: `CURSUS_BASE_URL=http://localhost:8000`
+cho browser redirect và `CURSUS_INTERNAL_BASE_URL=http://backend:8000` cho server-to-server
+code exchange. Không đổi `CURSUS_BASE_URL` thành hostname Docker vì browser không phân giải
+được hostname nội bộ đó.
+
+`--reload-exclude "app/static/*"` matters: without it, `--reload` also watches the frontend's
+build output, and `npm run build`'s `emptyOutDir: true` deletes-then-recreates that directory --
+a reload landing in that gap 404s every asset until you edit a `.py` file to trigger another
+one. Excluding it means rebuilding the frontend never restarts the backend at all.
+
+For frontend UI development with hot reload, run `cd frontend && npm run dev` (port 9001)
+alongside `uvicorn` on port 9000 -- `frontend/vite.config.ts` proxies `/web-api` and `/sso` to
+9000 so the dev server behaves the same as the production build.
 
 Also make sure Cursus's own backend is running (`localhost:8000` by default) with
 `MOCK_LMS_SSO_SHARED_SECRET` set to the same value as this app's own env var of the same
@@ -32,6 +67,23 @@ Then:
   `grant_type=client_credentials&client_id=...&client_secret=...` to get a bearer token, then
   call `GET /api/v1/courses` / `GET /api/v1/courses/{code}/assignments` with
   `Authorization: Bearer <token>`.
+
+## Web UI architecture
+
+`frontend/` is a React + TypeScript + Vite app (Tailwind for styling) — it is a
+**human-facing skin only**, not a second integration surface: it talks to this app's own
+session-cookie-authenticated `/web-api/*` routes (`app/web.py`, `app/curriculum_api.py`), never
+to Cursus directly, and Cursus never talks to it either. `app/main.py` mounts `frontend`'s build
+output (`app/static/dist/`, gitignored, rebuild locally) as static files; `GET /courses` and
+`GET /courses/<rest:path>` in `app/web.py` gate on the same SSO identity as before and then just
+serve that build's `index.html` — the SPA does its own client-side routing (`frontend/src/App.tsx`)
+between screens: a role-aware features hub, the curriculum program browser, the prerequisite
+learning-path graph, syllabus search + detail (materials/CLOs/session plan/question bank/
+assessment structure — real seeded rows, see `scripts/seed_curriculum.py`, not a second copy
+of the OAuth API's course list), and the original assignment/due-date list+editor. The
+OAuth-protected JSON API Cursus's backend actually calls (`GET /api/v1/courses`,
+`GET /api/v1/courses/<code>/assignments` in `app/platform_api.py`) is completely separate and untouched
+by any of this.
 
 ## Web UI auth
 

@@ -2,10 +2,15 @@
 .gitignore
 .env
 .venv
+**/node_modules
+**/*.db
 __pycache__
 *.pyc
 .pytest_cache
+.pytest-tmp-*
 .ruff_cache
+.codex-*
+.worktrees
 docs/
 presentation/
 eval/

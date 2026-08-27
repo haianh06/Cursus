@@ -2,16 +2,15 @@
 
 Dự án gồm **backend** (FastAPI, `src/`) và **frontend** (Vite + React, `frontend/src/`).
 
-Deploy production / VPS: xem [DEPLOY.md](DEPLOY.md) — lưu ý tài liệu đó mô tả hạ tầng
-(`docker-compose.prod.yml`, `frontend/Dockerfile`, entrypoint tự `alembic upgrade head`)
-**chưa có trong repo hiện tại**, chỉ dùng được sau khi các file đó được thêm vào.
+Deploy production / VPS: xem [DEPLOY.md](DEPLOY.md). Local Docker dùng
+`docker-compose.yml`; production dùng cấu hình Compose riêng.
 
 ## 1. Yêu cầu
 
-- Python 3.11+ (repo dùng `.venv`)
-- Node.js 18+ và npm (frontend)
-- Một database Postgres có thể kết nối được — dự án dùng Supabase (xem ADR-001), không
-  cần cài Postgres local. Repo **không** có sẵn Postgres/Redis trong Docker Compose (xem mục 4).
+- Cách đơn giản nhất: Docker Desktop có Docker Compose.
+- Nếu chạy thủ công: Python 3.11+, Node.js 22+ và npm, cùng một PostgreSQL có thể kết nối.
+- Stack Docker local tự cấp PostgreSQL và Redis riêng; nó không dùng database Supabase trong
+  `.env`.
 
 ## 2. Chạy Backend (FastAPI)
 
@@ -232,27 +231,26 @@ uvicorn app.main:app --reload --port 9000
 
 Phạm vi có chủ đích **chưa làm** (không phải thiếu sót — xem mục 6.6): LTI 1.3 launch đầy đủ (stretch goal), 8 môn tổ hợp/elective, nối source-precedence vào citation phía Plan/StudyTask (Checkpoint 4b), deploy Mock LMS lên production.
 
-## 4. Docker (full stack: backend + frontend + Postgres + Redis)
+## 4. Docker (full stack — cách khuyên dùng)
 
-`docker-compose.yml` ở root khởi động đủ 4 service: `backend`, `frontend` (Vite dev
-server, có HMR nhờ bind-mount `./frontend`), `db` (Postgres local) và `redis`. `.env`
-đã mặc định trỏ `DATABASE_URL=postgresql://cursus:cursus@db:5432/cursus` và
-`REDIS_URL=redis://redis:6379/0` — không cần sửa gì thêm để chạy offline.
-
-Production vẫn dùng Supabase-managed Postgres (ADR-001) — muốn trỏ `DATABASE_URL`
-sang Supabase thay vì `db` local thì sửa lại `.env` và bỏ service `db`/`redis` nếu
-không cần.
+Compose chạy đủ PostgreSQL, Redis, FastAPI, frontend nginx và EduSync (Mock LMS).
+Backend/EduSync tự chờ dependency, seed dữ liệu demo/curriculum/syllabus và giữ dữ liệu
+trong các Docker volume local, tách biệt với Supabase.
 
 ```powershell
 docker compose up --build -d
 docker compose ps
-docker compose logs -f backend frontend
+docker compose logs -f backend
 ```
 
-- Backend: http://localhost:8000 (health: http://localhost:8000/health)
-- Frontend: http://localhost:5173
-- Postgres: localhost:5432 (user/pass/db: `cursus`)
-- Redis: localhost:6379
+- Frontend: http://localhost:3000 (máy hiện tại dùng override local: http://localhost:5174)
+- Chọn role demo: `/demo/select-role`
+- Backend/Swagger: http://localhost:8000/docs
+- Health: http://localhost:8000/health
+- EduSync: http://localhost:9000/courses (mở sau khi đăng nhập/chọn role Cursus)
+
+Compose nối backend tới EduSync bằng tên service `edusync:9000`; browser vẫn dùng các URL
+`localhost` để cookie và SSO hoạt động đúng. Không cần chạy thêm Uvicorn trong `mock-lms/`.
 
 Dừng:
 
@@ -260,11 +258,7 @@ Dừng:
 docker compose down
 ```
 
-Sửa code frontend khi container đang chạy sẽ tự reload (bind-mount + Vite HMR), không
-cần rebuild. Backend cũng bind-mount `./src:/app/src` và `docker_entrypoint.py` tự thêm
-`uvicorn --reload --reload-dir /app/src` ở `APP_ENV=development` — sửa file trong `src/`
-tự reload, không cần rebuild. Đổi `requirements.txt`, `scripts/`, hoặc file ngoài `src/`
-thì vẫn cần `docker compose up --build -d backend` lại.
+`docker compose down` giữ nguyên database volume để lần chạy sau không mất dữ liệu.
 
 ## 5. Test & Lint
 

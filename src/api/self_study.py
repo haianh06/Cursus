@@ -2,7 +2,7 @@
 from datetime import date
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from src.api.auth import get_current_user_from_token
@@ -23,7 +23,7 @@ router = APIRouter(
 
 
 class StartSelfStudyRequest(BaseModel):
-    blockId: str  # noqa: N815
+    block_id: str = Field(alias="blockId")
 
 
 def _http_for(exc: Exception) -> HTTPException:
@@ -72,7 +72,7 @@ def start_session(
     db: Session = Depends(get_db),
 ):
     try:
-        return SelfStudyService(db).start(student_id=current_user.id, block_id=payload.blockId)
+        return SelfStudyService(db).start(student_id=current_user.id, block_id=payload.block_id)
     except (LookupError, ValueError) as exc:
         db.rollback()
         raise _http_for(exc) from exc

@@ -13,6 +13,10 @@
  * @theme tokens, so no color redefinition is needed at all -- only the
  * layout/structural rules that are genuinely Admin-specific.
  */
+.admin-canvas {
+  background: var(--bg-app);
+}
+
 .admin-cockpit { min-height: 100%; }
 .admin-page-header { background: var(--bg-app); }
 .admin-cockpit-main {
@@ -24,6 +28,127 @@
 }
 .admin-scroll-x { overflow-x: auto; }
 .admin-case-ribbon { position: sticky; top: 0; z-index: 5; }
+
+/* Admin uses the denser, flatter hierarchy from the approved reference:
+ * borders separate regions, while elevation is reserved for drawers and
+ * popovers. This remains scoped so Student/Instructor cards keep their
+ * existing treatment. */
+.admin-operations .card,
+.admin-operations [class*="rounded-lg"][class*="border-line"] {
+  border-color: var(--border-strong);
+}
+
+.admin-operations .card {
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+.admin-operations .card:hover {
+  border-color: var(--border-strong);
+  box-shadow: none;
+}
+
+.admin-operations .data-table thead {
+  background: color-mix(in srgb, var(--bg-elevated) 58%, transparent);
+}
+
+.admin-operations .data-table tbody tr:hover {
+  background: color-mix(in srgb, var(--accent-soft) 48%, var(--bg-card));
+}
+
+.admin-stat-card {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 86px;
+  padding: 0.875rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--bg-card);
+}
+
+.admin-stat-icon {
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+}
+
+.admin-toolbar {
+  padding: 0.75rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--bg-card);
+}
+
+.admin-detail-panel {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-self: start;
+  padding: 1rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--bg-card);
+}
+
+.admin-empty-panel {
+  display: flex;
+  min-height: 15rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  border: 1px dashed var(--border-strong);
+  border-radius: 10px;
+  background: var(--bg-card);
+}
+
+.admin-avatar {
+  display: inline-flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent-text-safe);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.admin-operations .data-table tbody tr.admin-selected-row,
+.admin-operations .data-table tbody tr.admin-selected-row:hover {
+  background: var(--accent-soft);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+/* The reference makes the selected admin destination unambiguous with a
+ * solid brand block. The other roles retain the softer shared nav style. */
+.admin-nav .nav-item {
+  margin-left: 0;
+  padding: 0.5625rem 0.6875rem;
+  border-radius: 7px;
+  font-size: 0.8125rem;
+}
+
+.admin-nav .nav-item.active,
+.admin-nav .nav-item.active:hover {
+  background: var(--brand-blue);
+  color: var(--brand-blue-text-on);
+  box-shadow: none;
+}
+
+.admin-nav .nav-item.active svg {
+  color: currentColor;
+}
 
 .admin-operations button:focus-visible,
 .admin-operations a:focus-visible,
@@ -39,7 +164,14 @@
 }
 
 @media (min-width: 1280px) {
-  .admin-cockpit-main { padding: 1.5rem 2rem 2rem; }
+  .admin-cockpit-main { padding: 1.25rem 1.5rem 2rem; }
+}
+
+@media (max-width: 639px) {
+  .admin-cockpit-main { padding: 1rem; }
+  .admin-page-header { align-items: flex-start; }
+  .admin-page-header > button { width: 100%; justify-content: center; }
+  .admin-stat-card { min-height: 78px; padding: 0.75rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

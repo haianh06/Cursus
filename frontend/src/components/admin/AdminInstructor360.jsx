@@ -37,7 +37,7 @@ export default function AdminInstructor360() {
     const notFound = error.status === 404;
     return (
       <div className="p-4 md:p-6">
-        <button type="button" className="btn-ghost text-[13px] mb-4 inline-flex items-center gap-1.5 cursor-pointer" onClick={() => navigate('/admin')}>
+        <button type="button" className="btn-ghost text-[13px] mb-4 inline-flex items-center gap-1.5 cursor-pointer" onClick={() => navigate('/admin/people')}>
           <ArrowLeft size={14} /> {lang === 'vi' ? 'Quay lại' : 'Back'}
         </button>
         <p className="text-[14px] text-danger">
@@ -51,7 +51,7 @@ export default function AdminInstructor360() {
 
   return (
     <div className="p-4 md:p-6 flex flex-col gap-5 animate-fade-up max-w-[1100px] mx-auto">
-      <button type="button" className="btn-ghost text-[13px] w-fit inline-flex items-center gap-1.5 cursor-pointer" onClick={() => navigate('/admin')}>
+      <button type="button" className="btn-ghost text-[13px] w-fit inline-flex items-center gap-1.5 cursor-pointer" onClick={() => navigate('/admin/people')}>
         <ArrowLeft size={14} /> {lang === 'vi' ? 'Quay lại danh bạ' : 'Back to directory'}
       </button>
 

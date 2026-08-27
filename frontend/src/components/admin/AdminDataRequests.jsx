@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { AlertCircle, AlertTriangle, Check, CheckCircle2, FileX, Loader2, Play, Search, Trash2, X } from 'lucide-react';
+import { AlertCircle, AlertTriangle, Check, CheckCircle2, ChevronRight, Clock3, FileText, FileX, Loader2, Play, Search, Trash2, X } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import {
   completeDataRequest,
@@ -9,7 +9,6 @@ import {
   processDataRequest,
   rejectDataRequest
 } from '../../lib/api';
-import ConfirmDialog from '../shared/ConfirmDialog';
 
 /**
  * Custom confirm modal that includes a text area for "admin notes"
@@ -72,10 +71,11 @@ function ActionWithReasonModal({ open, title, message, confirmLabel, busy, onCon
 }
 
 export default function AdminDataRequests() {
-  const { t, lang } = useLanguage();
+  const { lang } = useLanguage();
   const [requests, setRequests] = useState(null);
   const [error, setError] = useState(null);
   const [busyId, setBusyId] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
 
   // Modal states
   const [actionReq, setActionReq] = useState(null);
@@ -144,12 +144,34 @@ export default function AdminDataRequests() {
     return <span className={`badge text-[10px] ${c.cls}`}>{c.label}</span>;
   };
 
+  const selectedRequest = requests?.find((request) => request.id === selectedId) || requests?.[0] || null;
+  const statusCounts = (requests || []).reduce((counts, request) => ({
+    ...counts,
+    [request.status]: (counts[request.status] || 0) + 1,
+  }), {});
+
   return (
     <div className="flex flex-col gap-6 text-left">
       {error && (
         <p className="flex items-center gap-2 text-[13px] text-danger bg-danger-soft p-3 rounded-lg">
           <AlertCircle size={15} className="shrink-0" /> {error}
         </p>
+      )}
+
+      {requests && (
+        <section className="grid grid-cols-2 gap-3 lg:grid-cols-4" aria-label={lang === 'vi' ? 'Tổng hợp yêu cầu dữ liệu' : 'Data request summary'}>
+          {[
+            { key: 'PENDING', label: lang === 'vi' ? 'Mới' : 'New', icon: FileText, tone: 'text-accent bg-accent-soft' },
+            { key: 'IN_PROGRESS', label: lang === 'vi' ? 'Đang xử lý' : 'In progress', icon: Clock3, tone: 'text-warning bg-warning-soft' },
+            { key: 'COMPLETED', label: lang === 'vi' ? 'Hoàn tất' : 'Completed', icon: CheckCircle2, tone: 'text-success bg-success-soft' },
+            { key: 'REJECTED', label: lang === 'vi' ? 'Từ chối' : 'Rejected', icon: FileX, tone: 'text-danger bg-danger-soft' },
+          ].map(({ key, label, icon: Icon, tone }) => (
+            <article key={key} className="admin-stat-card">
+              <span className={`admin-stat-icon ${tone}`}><Icon size={16} aria-hidden="true" /></span>
+              <div><p className="text-[10px] font-bold uppercase tracking-wide text-fg-muted">{label}</p><p className="mono mt-1 text-2xl font-bold text-fg">{statusCounts[key] || 0}</p></div>
+            </article>
+          ))}
+        </section>
       )}
 
       {/* Delete Preview Modal */}
@@ -205,8 +227,8 @@ export default function AdminDataRequests() {
         />
       )}
 
-      <section className="card p-5 sm:p-6 space-y-4">
-        <h2 className="text-sm font-bold text-fg flex items-center gap-2">
+      <section className="space-y-4">
+        <h2 className="flex items-center gap-2 text-sm font-bold text-fg">
           <Search size={16} className="text-accent" /> {lang === 'vi' ? 'Yêu cầu dữ liệu (DSAR)' : 'Data Requests (DSAR)'}
         </h2>
         
@@ -215,9 +237,16 @@ export default function AdminDataRequests() {
         {!requests ? (
           <div className="flex justify-center p-8"><Loader2 className="animate-spin text-fg-muted" /></div>
         ) : requests.length === 0 ? (
-          <p className="text-[13px] text-fg-muted italic">{lang === 'vi' ? 'Chưa có yêu cầu nào.' : 'No data requests found.'}</p>
+          <div className="admin-empty-panel">
+            <FileText size={22} className="text-accent" aria-hidden="true" />
+            <p className="text-sm font-semibold text-fg">{lang === 'vi' ? 'Chưa có yêu cầu dữ liệu' : 'No data requests'}</p>
+            <p className="max-w-sm text-center text-xs text-fg-muted">
+              {lang === 'vi' ? 'Các yêu cầu truy cập, xuất hoặc xoá dữ liệu sẽ xuất hiện tại đây để quản trị viên xử lý.' : 'Access, export, and deletion requests will appear here for admin review.'}
+            </p>
+          </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1fr)_21rem]">
+          <div className="overflow-x-auto rounded-lg border border-line bg-surface-card">
             <table className="data-table w-full text-[13px]">
               <thead>
                 <tr>
@@ -230,57 +259,53 @@ export default function AdminDataRequests() {
               </thead>
               <tbody>
                 {requests.map(req => (
-                  <tr key={req.id}>
+                  <tr key={req.id} className={selectedRequest?.id === req.id ? 'admin-selected-row' : ''}>
                     <td className="font-semibold">{req.requestType}</td>
                     <td>{statusBadge(req.status)}</td>
                     <td>{req.requesterEmail}</td>
                     <td>{new Date(req.createdAt).toLocaleString(lang === 'vi' ? 'vi-VN' : 'en-US')}</td>
                     <td>
-                      <div className="flex justify-end gap-2">
-                        {req.status === 'PENDING' && (
-                          <>
-                            <button
-                              type="button"
-                              className="btn btn-outline text-[11px] h-7 px-2 cursor-pointer"
-                              onClick={() => { setActionReq(req); setActionType('reject'); }}
-                            >
-                              <X size={12} className="mr-1 text-danger"/> {lang === 'vi' ? 'Từ chối' : 'Reject'}
-                            </button>
-                            <button
-                              type="button"
-                              className="btn btn-accent text-[11px] h-7 px-2 cursor-pointer"
-                              onClick={() => { setActionReq(req); setActionType('process'); }}
-                            >
-                              <Play size={12} className="mr-1"/> {lang === 'vi' ? 'Xử lý' : 'Process'}
-                            </button>
-                          </>
-                        )}
-                        {req.status === 'IN_PROGRESS' && req.requestType !== 'DELETE' && (
-                          <button
-                            type="button"
-                            className="btn btn-accent text-[11px] h-7 px-2 cursor-pointer"
-                            onClick={() => { setActionReq(req); setActionType('complete'); }}
-                          >
-                            <Check size={12} className="mr-1"/> {lang === 'vi' ? 'Hoàn tất' : 'Complete'}
-                          </button>
-                        )}
-                        {req.status === 'IN_PROGRESS' && req.requestType === 'DELETE' && (
-                          <button
-                            type="button"
-                            className="btn text-[11px] h-7 px-2 cursor-pointer border border-danger text-danger hover:bg-danger-soft"
-                            onClick={() => handlePreviewDelete(req)}
-                            disabled={previewLoading}
-                          >
-                            {previewLoading ? <Loader2 size={12} className="animate-spin" /> : <Trash2 size={12} className="mr-1"/>}
-                            {lang === 'vi' ? 'Xem trước xoá' : 'Preview Delete'}
-                          </button>
-                        )}
-                      </div>
+                      <button type="button" className="ml-auto flex min-h-9 items-center gap-1 text-xs font-semibold text-accent" onClick={() => setSelectedId(req.id)}>
+                        {lang === 'vi' ? 'Chi tiết' : 'Details'} <ChevronRight size={13} aria-hidden="true" />
+                      </button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          </div>
+
+          <aside className="admin-detail-panel" aria-label={lang === 'vi' ? 'Chi tiết yêu cầu dữ liệu' : 'Data request details'}>
+            {selectedRequest && (
+              <>
+                <div className="flex items-start justify-between gap-3 border-b border-line pb-4">
+                  <div><p className="mono text-xs font-bold text-accent">{selectedRequest.id}</p><h3 className="mt-1 font-display text-base font-bold text-fg">{selectedRequest.requestType}</h3></div>
+                  {statusBadge(selectedRequest.status)}
+                </div>
+                <dl className="space-y-3 py-4 text-xs">
+                  <div><dt className="text-fg-muted">{lang === 'vi' ? 'Người yêu cầu' : 'Requester'}</dt><dd className="mt-1 break-all font-semibold text-fg">{selectedRequest.requesterEmail}</dd></div>
+                  <div><dt className="text-fg-muted">{lang === 'vi' ? 'Ngày gửi' : 'Submitted'}</dt><dd className="mono mt-1 text-fg-secondary">{new Date(selectedRequest.createdAt).toLocaleString(lang === 'vi' ? 'vi-VN' : 'en-US')}</dd></div>
+                  {selectedRequest.updatedAt && <div><dt className="text-fg-muted">{lang === 'vi' ? 'Cập nhật gần nhất' : 'Last updated'}</dt><dd className="mono mt-1 text-fg-secondary">{new Date(selectedRequest.updatedAt).toLocaleString(lang === 'vi' ? 'vi-VN' : 'en-US')}</dd></div>}
+                </dl>
+                <div className="mt-auto space-y-2 border-t border-line pt-4">
+                  {selectedRequest.status === 'PENDING' && (
+                    <div className="grid grid-cols-2 gap-2">
+                      <button type="button" className="btn btn-outline min-h-10 text-xs text-danger" onClick={() => { setActionReq(selectedRequest); setActionType('reject'); }}><X size={13} />{lang === 'vi' ? 'Từ chối' : 'Reject'}</button>
+                      <button type="button" className="btn btn-accent min-h-10 text-xs" onClick={() => { setActionReq(selectedRequest); setActionType('process'); }}><Play size={13} />{lang === 'vi' ? 'Xử lý' : 'Process'}</button>
+                    </div>
+                  )}
+                  {selectedRequest.status === 'IN_PROGRESS' && selectedRequest.requestType !== 'DELETE' && (
+                    <button type="button" className="btn btn-accent min-h-10 w-full text-xs" onClick={() => { setActionReq(selectedRequest); setActionType('complete'); }}><Check size={13} />{lang === 'vi' ? 'Hoàn tất yêu cầu' : 'Complete request'}</button>
+                  )}
+                  {selectedRequest.status === 'IN_PROGRESS' && selectedRequest.requestType === 'DELETE' && (
+                    <button type="button" className="btn min-h-10 w-full border border-danger text-xs text-danger hover:bg-danger-soft" onClick={() => handlePreviewDelete(selectedRequest)} disabled={previewLoading}>
+                      {previewLoading ? <Loader2 size={13} className="animate-spin" /> : <Trash2 size={13} />}{lang === 'vi' ? 'Xem trước dữ liệu sẽ xoá' : 'Preview deletion'}
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
+          </aside>
           </div>
         )}
       </section>

@@ -46,8 +46,8 @@ logger = logging.getLogger(__name__)
 PLANNER_VERSION = "curi_planner_v1"
 PLAN_PROMPT_PATH = Path(__file__).resolve().parents[2] / "prompts" / "plan_v1.md"
 
-# See chat_answer_service._DIACRITICS_RETRY_NOTE — a weaker fallback model can
-# drop every Vietnamese diacritic under structured-JSON output; task titles
+# A weaker fallback model can drop every Vietnamese diacritic under
+# structured-JSON output; task titles
 # are shown verbatim to the student, so this must be caught here too.
 _DIACRITICS_RETRY_NOTE = (
     "\n\nQUAN TRỌNG: các task title/deliverable phía trên bị thiếu dấu tiếng "

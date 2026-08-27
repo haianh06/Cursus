@@ -1,4 +1,3 @@
-from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from src.db import models
@@ -73,17 +72,6 @@ class OwnershipRepository:
             is not None
         )
 
-    def student_owns_conversation(self, student_id: str, conversation_id: str) -> bool:
-        return (
-            self._db.query(models.Conversation.id)
-            .filter(
-                models.Conversation.id == conversation_id,
-                models.Conversation.student_id == student_id,
-            )
-            .first()
-            is not None
-        )
-
     def student_owns_study_task(self, student_id: str, task_id: str) -> bool:
         return (
             self._db.query(models.StudyTask.id)
@@ -148,22 +136,29 @@ class OwnershipRepository:
         )
 
     def instructor_owns_guardrail_event(self, instructor_id: str, event_id: str) -> bool:
-        """Case thuoc ve GV neu cuoc hoi thoai dien ra trong dung lop GV do
-        day (Conversation.section_id -> CourseSection.instructor_id), HOAC
-        cuoc hoi thoai khong gan section nao (cau hoi chung) — outerjoin +
-        cho phep NULL vi khong co tin hieu de quy rieng ve 1 GV, an het thi
-        khong ai xu ly duoc case do."""
+        """Case thuoc ve GV neu no gan voi dung lop GV do day, HOAC khong gan
+        section nao (cau hoi chung) — cho phep NULL vi khong co tin hieu de
+        quy rieng ve 1 GV, an het thi khong ai xu ly duoc case do.
+
+        `GuardrailEvent.section_id` duoc ghi truc tiep luc record_block(),
+        chat feature (Conversation/Message) da bi go bo hoan toan nen khong
+        con cach nao suy ra section tu conversation cho cac row cu nua — xem
+        migrations/versions/20260910_remove_chatbot_feature.py. Phai giu
+        dong bo logic voi `_visible_guardrail_events` (src/api/instructor.py)
+        — cung mot quy tac loc quyen rieng tu, chi khac noi trien khai.
+        """
+        event = self._db.query(models.GuardrailEvent).filter_by(id=event_id).first()
+        if event is None:
+            return False
+
+        if event.section_id is None:
+            return True
+
         return (
-            self._db.query(models.GuardrailEvent.id)
-            .join(models.Message, models.GuardrailEvent.message_id == models.Message.id)
-            .join(models.Conversation, models.Message.conversation_id == models.Conversation.id)
-            .outerjoin(models.CourseSection, models.Conversation.section_id == models.CourseSection.id)
+            self._db.query(models.CourseSection.id)
             .filter(
-                models.GuardrailEvent.id == event_id,
-                or_(
-                    models.CourseSection.instructor_id == instructor_id,
-                    models.Conversation.section_id.is_(None),
-                ),
+                models.CourseSection.id == event.section_id,
+                models.CourseSection.instructor_id == instructor_id,
             )
             .first()
             is not None

@@ -244,7 +244,7 @@ export default function StudentPractice() {
             >
               <ChevronLeft size={14} />
             </button>
-            <span className="mono text-xs font-bold w-10 text-center">{weekNumber}</span>
+            <span data-testid="practice-week-number" className="mono text-xs font-bold w-10 text-center">{weekNumber}</span>
             <button
               type="button"
               className="btn-ghost p-1.5 rounded-lg cursor-pointer"

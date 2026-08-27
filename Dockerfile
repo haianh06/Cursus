@@ -10,7 +10,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # ---- Stage 2: Production ----
-FROM python:3.11-slim
+FROM python:3.11-slim AS runtime
 
 WORKDIR /app
 
@@ -21,11 +21,10 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Security: run as non-root user
 RUN useradd -m appuser
 
-# Copy application code
-COPY . .
-
-# Create data directory with correct ownership
-RUN mkdir -p /app/data && chown -R appuser:appuser /app
+# Copy application code with its final ownership. Doing this at copy time keeps
+# incremental Docker rebuilds fast instead of recursively chowning the tree.
+RUN mkdir -p /app/data && chown appuser:appuser /app/data
+COPY --chown=appuser:appuser . .
 
 USER appuser
 
@@ -34,4 +33,7 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" || exit 1
 
-CMD ["python", "/app/scripts/docker_entrypoint.py"]
+# The entrypoint waits for Postgres, applies migrations, seeds the local
+# demo dataset when requested, and only then starts Uvicorn. Keeping this in
+# the image makes `docker compose up` deterministic on a fresh volume.
+ENTRYPOINT ["python", "scripts/docker_entrypoint.py"]

@@ -3,7 +3,8 @@ from datetime import UTC, datetime
 import pytest
 
 from src.db.connection import SessionLocal
-from src.db.models import AuditLog, User, UserRole
+from src.db.models import AuditLog, SelfStudySession, User, UserRole
+from src.repositories.audit_repository import AuditRepository
 from src.security.passwords import hash_password
 from tests.support.api_demo_dataset import DEMO_PASSWORD
 
@@ -118,10 +119,72 @@ async def test_admin_can_read_all_raw_tabs(client):
         "assignments",
         "submissions",
         "reflections",
-        "conversations",
         "documents",
         "risk",
         "interventions",
+        "sessions",
     ):
         response = await client.get(f"/api/v1/admin/students/{STUDENT_ID}/{path}", headers=headers)
         assert response.status_code == 200, f"{path} -> {response.status_code}: {response.text}"
+
+
+@pytest.mark.asyncio
+async def test_student_sessions_are_audited_before_release(client):
+    headers = await _admin_headers(client)
+
+    db = SessionLocal()
+    try:
+        if db.get(SelfStudySession, "session_student360_test") is None:
+            started_at = datetime.now(UTC).replace(tzinfo=None)
+            db.add(
+                SelfStudySession(
+                    id="session_student360_test",
+                    student_id=STUDENT_ID,
+                    schedule_block_id="sb_plan_ethan_w6",
+                    title="Admin 360 focus session",
+                    planned_minutes=50,
+                    started_at=started_at,
+                    scheduled_end_at=started_at,
+                    ended_at=None,
+                    actual_minutes=None,
+                    pomodoros_completed=1,
+                    status="IN_PROGRESS",
+                )
+            )
+            db.commit()
+    finally:
+        db.close()
+
+    response = await client.get(f"/api/v1/admin/students/{STUDENT_ID}/sessions", headers=headers)
+
+    assert response.status_code == 200
+    assert response.json()["success"] is True
+    assert response.json()["data"][0]["id"] == "session_student360_test"
+    assert response.json()["data"][0]["pomodorosCompleted"] == 1
+
+    db = SessionLocal()
+    try:
+        events = (
+            db.query(AuditLog)
+            .filter_by(event_type="ADMIN_SENSITIVE_READ", resource_type="SELF_STUDY_SESSION")
+            .filter(AuditLog.resource_id.like(f"%{STUDENT_ID}%"))
+            .all()
+        )
+        assert len(events) >= 1
+        assert events[-1].metadata_info["subjectStudentId"] == STUDENT_ID
+    finally:
+        db.close()
+
+
+@pytest.mark.asyncio
+async def test_student_sessions_fail_closed_when_audit_write_fails(client, monkeypatch):
+    headers = await _admin_headers(client)
+
+    def fail_audit(*args, **kwargs):
+        raise RuntimeError("audit unavailable")
+
+    monkeypatch.setattr(AuditRepository, "add", fail_audit)
+    response = await client.get(f"/api/v1/admin/students/{STUDENT_ID}/sessions", headers=headers)
+
+    assert response.status_code == 503
+    assert response.json()["detail"] == "sensitive_audit_unavailable"

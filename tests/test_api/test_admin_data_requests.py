@@ -133,18 +133,6 @@ def _seed_erasure_target(org_id: str) -> str:
                 scheduled_time=now,
             )
         )
-        db.add(models.StudentMemoryConsent(student_id=student_id, granted=True, updated_at=now))
-        db.add(
-            models.StudentMemoryEntry(
-                id="memory_dsar_target_1",
-                student_id=student_id,
-                subject_code=None,
-                kind="preference",
-                content="prefers short answers",
-                created_at=now,
-                last_reinforced_at=now,
-            )
-        )
         db.commit()
         return student_id
     finally:
@@ -191,8 +179,6 @@ async def test_delete_confirm_erases_every_student_owned_table(client):
     assert counts["learning_goals"] == 1
     assert counts["progress_events"] == 1
     assert counts["reminders"] == 1
-    assert counts["student_memory_entries"] == 1
-    assert counts["student_memory_consent"] == 1
 
     resp = await client.post(
         f"/api/v1/admin/data-requests/{req_id}/delete-confirm",
@@ -209,8 +195,6 @@ async def test_delete_confirm_erases_every_student_owned_table(client):
         assert db.query(models.LearningGoal).filter_by(student_id=student_id).count() == 0
         assert db.query(models.ProgressEvent).filter_by(student_id=student_id).count() == 0
         assert db.query(models.Reminder).filter_by(student_id=student_id).count() == 0
-        assert db.query(models.StudentMemoryEntry).filter_by(student_id=student_id).count() == 0
-        assert db.query(models.StudentMemoryConsent).filter_by(student_id=student_id).count() == 0
         # The user account itself is untouched by this flow (only their
         # owned records are erased) -- deleting the account is a separate
         # decision from erasing the data covered by this DSAR.

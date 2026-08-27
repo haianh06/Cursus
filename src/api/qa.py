@@ -1,9 +1,7 @@
-"""Source-drawer lookup for a chat citation chip. The Q&A/chat orchestration
-that used to live in this file (`POST /qa`) was replaced by the unified chat
-rebuild — see `src/api/chat.py` and `src/services/ai/chat_orchestrator_service.py`.
-This route is unrelated to that orchestration (it's a pure per-chunk lookup)
-and every citation chip, old or new, points at the same chunk ids, so it
-stays put unchanged."""
+"""Source-drawer lookup for a citation chip. The Q&A orchestration that used
+to live in this file (`POST /qa`) has been removed; this route is a pure
+per-chunk lookup unrelated to that orchestration, so it stays put
+unchanged."""
 
 from __future__ import annotations
 
