@@ -387,6 +387,18 @@ export function getSourceChunk(chunkId) {
   return request(`/qa/sources/${encodeURIComponent(chunkId)}`);
 }
 
+export async function streamCursusChat({ message, conversationId, onEvent }) {
+  const headers = new Headers({ 'Content-Type': 'application/json' });
+  applyCsrfHeader(headers, 'POST');
+  const response = await fetch(`${API_BASE_URL}/student/cursus/stream`, { method: 'POST', credentials: 'include', headers, body: JSON.stringify({ message, conversation_id: conversationId }) });
+  if (!response.ok || !response.body) throw new ApiError('Không thể kết nối Cursus.', 'CHAT_ERROR', response.status);
+  const reader = response.body.getReader(); const decoder = new TextDecoder(); let buffer = '';
+  while (true) { const { value, done } = await reader.read(); if (done) break; buffer += decoder.decode(value, { stream: true }); const parts = buffer.split('\n\n'); buffer = parts.pop(); for (const part of parts) { const event = part.match(/^event: (.+)$/m)?.[1] || 'message'; const raw = part.match(/^data: (.+)$/m)?.[1]; if (raw) onEvent(event, JSON.parse(raw)); } }
+}
+
+export function exportCursusHistory() { return request('/student/cursus/export'); }
+export function deleteCursusHistory() { return request('/student/cursus/history', { method: 'DELETE' }); }
+
 /** Student courses (for plan context). */
 export function getStudentCourses() {
   return request('/student/courses');
