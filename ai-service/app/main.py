@@ -8,6 +8,7 @@ from fastapi import FastAPI, Header, HTTPException
 from fastapi.responses import StreamingResponse
 from openai import AsyncOpenAI
 from pydantic import BaseModel, Field
+from app.core.routing import select_model
 
 app = FastAPI(title="Cursus AI Service", version="1.0.0")
 
@@ -20,11 +21,8 @@ class GenerateRequest(BaseModel):
 
 
 def _model_for(request: GenerateRequest) -> str:
-    simple = {"course_fact", "product_help", "companion"}
-    return os.getenv(
-        "OPENAI_LIGHT_MODEL" if request.intent in simple else "OPENAI_STRONG_MODEL",
-        "gpt-5.6-luna" if request.intent in simple else "gpt-5.6-terra",
-    )
+    route = select_model(intent=request.intent, source_count=len(request.context), message=request.message)
+    return os.getenv(route.model_env, "gpt-5.6-terra" if route.model_env == "OPENAI_STRONG_MODEL" else "gpt-5.6-luna")
 
 
 def _require_internal_key(key: str | None) -> None:
