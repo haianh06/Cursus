@@ -34,14 +34,15 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+REPO_ROOT = ROOT.parent
 
 import pymupdf  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger("ingest-subject-data")
 
-SUBJECT_DATA_DIR = ROOT / "data" / "subject_data"
-CHUNKS_DIR = ROOT / "docs" / "planning" / "v2" / "data"
+SUBJECT_DATA_DIR = REPO_ROOT / "data" / "subject_data"
+CHUNKS_DIR = REPO_ROOT / "docs" / "planning" / "v2" / "data"
 CURRICULUM_FILE = CHUNKS_DIR / "courses_BIT_SE_K20D_K21A.json"
 
 CHUNK_SIZE = 1100
