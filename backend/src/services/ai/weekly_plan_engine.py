@@ -134,26 +134,22 @@ def _llm_generated_tasks(
             f"Mục tiêu tuần: {goal_text}\n\n"
             "Đoạn tài liệu môn học:\n" + "\n\n".join(context_blocks)
         )
-        llm = get_llm().with_structured_output(LlmPlanPayload)
-        messages = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ]
-        payload = llm.invoke(messages)
-        if not isinstance(payload, LlmPlanPayload):
-            payload = LlmPlanPayload.model_validate(payload)
+        payload = generate_structured(
+            schema_model=LlmPlanPayload,
+            system_prompt=system_prompt,
+            user_prompt=user_prompt,
+            intent="plan_action",
+        )
 
         if payload.tasks and _looks_accent_stripped(payload):
             logger.warning("llm_weekly_goal_plan_missing_diacritics_retry subject_code=%s", subject_code)
-            retry_messages = [dict(m) for m in messages]
-            retry_messages[0] = {
-                "role": "system",
-                "content": retry_messages[0]["content"] + _DIACRITICS_RETRY_NOTE,
-            }
             try:
-                retried = llm.invoke(retry_messages)
-                if not isinstance(retried, LlmPlanPayload):
-                    retried = LlmPlanPayload.model_validate(retried)
+                retried = generate_structured(
+                    schema_model=LlmPlanPayload,
+                    system_prompt=system_prompt + _DIACRITICS_RETRY_NOTE,
+                    user_prompt=user_prompt,
+                    intent="plan_action",
+                )
                 if retried.tasks and not _looks_accent_stripped(retried):
                     payload = retried
             except Exception:
