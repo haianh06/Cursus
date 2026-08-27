@@ -136,6 +136,24 @@ class Settings(BaseSettings):
     csrf_cookie_name: str = "csrf_token"
     csrf_header_name: str = "x-csrf-token"
 
+    # Cursus Chat — operational safety nets. Defaults below are engineering
+    # judgment calls (spam/cost circuit-breakers), NOT a substitute for an
+    # actual product/compliance decision on data-retention or crisis-response
+    # policy — an org should override these via env once that review happens.
+    cursus_chat_rate_limit_per_minute: int = Field(default=10, ge=1, le=120)
+    # System-wide ai-service call budget per rolling day, across chat +
+    # Plan/Reflection/Practice/Quiz generation. Not a real dollar cap (this
+    # code has no visibility into OpenAI billing) -- a circuit breaker so a
+    # bug or abuse loop can't run up an unbounded bill unnoticed overnight.
+    llm_daily_request_limit: int = Field(default=2000, ge=1)
+    # Recipient for crisis-safety escalations and ops alerts (LLM budget
+    # exceeded, etc). No default -- an unset value means these alerts are
+    # logged only, never emailed, which a real deployment must not rely on.
+    crisis_escalation_email: str | None = None
+    ops_alert_email: str | None = None
+    chat_action_proposal_retention_days: int = Field(default=30, ge=1, le=365)
+    chat_briefing_impression_retention_days: int = Field(default=90, ge=1, le=730)
+
     # Vector Store
     chroma_persist_dir: str = "./data/chroma"
 
