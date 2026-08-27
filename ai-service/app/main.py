@@ -28,6 +28,11 @@ def _error_code_for(exc: Exception) -> str:
         if getattr(exc, "code", None) == "insufficient_quota":
             return "QUOTA_EXHAUSTED"
         return "RATE_LIMITED"
+    if isinstance(exc, openai.AuthenticationError | openai.PermissionDeniedError):
+        # A bad/missing OPENAI_API_KEY -- distinct from a real OpenAI outage
+        # so ops alerting (and this session's own manual QA) can tell "we
+        # misconfigured the secret" apart from "the provider is down".
+        return "AI_MISCONFIGURED"
     if isinstance(exc, openai.APIConnectionError | openai.APITimeoutError):
         return "AI_UNAVAILABLE"
     return "AI_UNAVAILABLE"
