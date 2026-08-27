@@ -50,14 +50,14 @@ def run_retention(db: Session) -> dict[str, int]:
         db.query(models.ChatActionProposal)
         .filter(
             models.ChatActionProposal.status.in_(["CONFIRMED", "CANCELLED", "EXPIRED"]),
-            models.ChatActionProposal.expires_at <= now - _ACTION_PROPOSAL_RETENTION,
+            models.ChatActionProposal.expires_at <= now - action_proposal_retention,
         )
         .delete(synchronize_session=False)
     )
 
     result["briefing_impressions_deleted"] = (
         db.query(models.ChatBriefingImpression)
-        .filter(models.ChatBriefingImpression.shown_at <= now - _BRIEFING_IMPRESSION_RETENTION)
+        .filter(models.ChatBriefingImpression.shown_at <= now - briefing_impression_retention)
         .delete(synchronize_session=False)
     )
 
