@@ -37,11 +37,15 @@ services:
         value: "true"
       - key: MODEL_NAME
         value: gemini-2.5-flash
-      # Cursus Chat / ai-service wiring — cursus-ai-service is a Private
-      # Service in this same Render project, so it's reachable from
-      # cursus-backend at http://<service-name>:<port> without a public URL.
+      # Cursus Chat / ai-service wiring — cursus-ai-service is a public Web
+      # Service (Render Private Services require a paid plan; this project
+      # is on Free). Protected instead by AI_SERVICE_INTERNAL_KEY, which
+      # ai-service checks on every request. Set to cursus-ai-service's real
+      # https://... URL once that service exists (Render assigns the exact
+      # hostname, e.g. a random suffix like cursus-backend's own
+      # cursus-backend-53yc.onrender.com) — can't be hardcoded here.
       - key: AI_SERVICE_URL
-        value: http://cursus-ai-service:8100
+        sync: false
       - key: CURSUS_CHAT_RATE_LIMIT_PER_MINUTE
         value: "10"
       - key: LLM_DAILY_REQUEST_LIMIT
@@ -90,7 +94,7 @@ services:
       - key: OPS_ALERT_EMAIL
         sync: false
 
-  - type: pserv
+  - type: web
     name: cursus-ai-service
     runtime: docker
     dockerfilePath: ./ai-service/Dockerfile
@@ -98,6 +102,7 @@ services:
     plan: free
     region: singapore
     autoDeploy: false
+    healthCheckPath: /health
     envVars:
       - key: OPENAI_LIGHT_MODEL
         value: pro/gpt-5.6-luna
