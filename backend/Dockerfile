@@ -14,6 +14,13 @@ FROM python:3.11-slim AS runtime
 
 WORKDIR /app
 
+# LibreOffice headless: converts legacy .ppt -> .pptx for the clean-corpus
+# ingest pipeline (backend/scripts/ingest_clean_corpus.py). --no-install-recommends
+# keeps this from pulling in the full desktop suite (fonts/help/etc still add
+# real size to the image, but that's accepted for ingest to work in-container).
+RUN apt-get update && apt-get install -y --no-install-recommends libreoffice \
+    && rm -rf /var/lib/apt/lists/*
+
 # Copy installed packages from builder
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
@@ -26,6 +33,11 @@ RUN useradd -m appuser
 RUN mkdir -p /app/data && chown appuser:appuser /app/data
 COPY --chown=appuser:appuser backend ./backend
 COPY --chown=appuser:appuser data ./data
+# docs/planning/v2 holds the parsed real-curriculum catalog/chunks that
+# src/services/mock/{real_curriculum_service,gate2_demo,demo_data}.py read
+# at ROOT.parent (repo root) relative to backend/ -- must exist alongside
+# backend/ and data/ inside the image for those lookups to resolve.
+COPY --chown=appuser:appuser docs/planning/v2 ./docs/planning/v2
 
 USER appuser
 
