@@ -55,6 +55,7 @@ const InstructorRiskPage = lazy(() => import('./components/instructor/Instructor
 const InstructorStudentProfile = lazy(() => import('./components/instructor/InstructorStudentProfile'));
 const InstructorQuizManager = lazy(() => import('./components/instructor/InstructorQuizManager'));
 const InstructorClassActivityPanel = lazy(() => import('./components/instructor/InstructorClassActivityPanel'));
+const InstructorClassSchedulePanel = lazy(() => import('./components/instructor/InstructorClassSchedulePanel'));
 const InstructorDigestPage = lazy(() => import('./components/instructor/InstructorDigestPage'));
 const AssignmentSubmissionsPanel = lazy(() => import('./components/instructor/AssignmentSubmissionsPanel'));
 const GuardrailReviewQueue = lazy(() => import('./components/GuardrailReviewQueue'));
@@ -509,6 +510,7 @@ function InstructorRoutes({ user }) {
       <Route path="digest" element={<InstructorDigestPage />} />
       <Route path="risks" element={<InstructorRiskPage />} />
       <Route path="activities" element={<InstructorClassActivityPanel />} />
+      <Route path="schedule" element={<InstructorClassSchedulePanel />} />
       <Route path="quizzes" element={<InstructorQuizManager />} />
       <Route path="submissions" element={<AssignmentSubmissionsPanel />} />
       <Route path="guardrail-reviews" element={<GuardrailReviewQueue />} />
