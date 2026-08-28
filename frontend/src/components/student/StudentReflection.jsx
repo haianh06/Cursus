@@ -425,7 +425,7 @@ export default function StudentReflection() {
       <div className="flex-[3] min-w-0 flex flex-col gap-5">
         <header>
           <h1 className="font-display text-2xl font-bold text-fg">
-            {lang === 'vi' ? `Phản tư tuần ${preview.weekNumber}` : `Week ${preview.weekNumber} reflection`}
+            {lang === 'vi' ? `Tự đánh giá tuần ${preview.weekNumber}` : `Week ${preview.weekNumber} self-assessment`}
           </h1>
           <p className="text-[13px] mt-1 text-fg-secondary">
             {lang === 'vi'
@@ -591,13 +591,13 @@ export default function StudentReflection() {
             <section
               className="card p-5"
               style={{ borderLeft: '3px solid var(--success)' }}
-              aria-label={lang === 'vi' ? 'Đã lưu phản tư' : 'Reflection saved'}
+              aria-label={lang === 'vi' ? 'Đã lưu tự đánh giá' : 'Self-assessment saved'}
               role="status"
             >
               <div className="flex items-center gap-2 mb-2">
                 <CheckCircle2 size={17} className="text-success" />
                 <h2 className="text-[15px] font-bold font-display text-fg">
-                  {lang === 'vi' ? 'Đã lưu phản tư' : 'Reflection saved'}
+                  {lang === 'vi' ? 'Đã lưu tự đánh giá' : 'Self-assessment saved'}
                 </h2>
               </div>
               <p className="text-[13px] leading-relaxed text-fg-secondary">

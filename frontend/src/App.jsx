@@ -218,7 +218,7 @@ function Sidebar({ user, onLogout, open, setOpen, activeSection }) {
                 <span>{t('nav.todayPlan')}</span>
               </button>
 
-              {/* 3. Phản tư */}
+              {/* 3. Tự đánh giá */}
               <button
                 aria-current={location.pathname === '/student/reflection' ? 'page' : undefined}
                 className={`nav-item w-full text-left ${location.pathname === '/student/reflection' ? 'active' : ''}`}

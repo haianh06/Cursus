@@ -19,7 +19,7 @@ from src.services.ai.plan_builder import (
     resolve_current_plan,
     serialize_plan,
 )
-from src.services.ai.reflection_engine import ReflectionEngine, serialize_reflection
+from src.services.ai.reflection_engine import ReflectionAiUnavailableError, ReflectionEngine, serialize_reflection
 from src.services.core.audit_service import AuditService
 from src.services.mock import gate2_demo
 from src.services.mock.gate2_demo import Gate2DemoService
@@ -555,12 +555,13 @@ def preview_reflection_summary(
     )
     engine = ReflectionEngine(db)
     facts = engine.facts_for_plan(plan)
-    summary, trace = engine.build_summary_llm(
-        facts=facts,
-        answers=[item.model_dump() for item in payload.answers],
-        adjustments=payload.adjustments,
-        lang=payload.language,
-    )
+    try:
+        summary, trace = engine.build_summary_llm(
+            facts=facts, answers=[item.model_dump() for item in payload.answers],
+            adjustments=payload.adjustments, lang=payload.language,
+        )
+    except ReflectionAiUnavailableError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
     return {
         "planId": plan.id,
         "weekNumber": plan.week_number,
