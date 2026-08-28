@@ -298,6 +298,14 @@ class StudentMockDataService:
         Returning students still get syllabus/assignment/lecture refresh so
         mock content updates propagate without re-registering.
         """
+        user = self._db.query(models.User).filter_by(id=student_id).first()
+        # The hosted Cursus Uni sandbox is seeded as one coherent, shared
+        # Week 1–3 dataset.  Do not silently add the legacy per-student mock
+        # sections, assignments, or calendar entries when a demo page loads.
+        # That fixture remains useful for local development and tests.
+        if user and user.organization and user.organization.slug == "cursus-demo":
+            return {"provisioned": False, "reason": "hosted_demo_seed"}
+
         expected_codes = {item["code"] for item in DEMO_COURSES}
         enrolled_courses = (
             self._db.query(models.Course)
