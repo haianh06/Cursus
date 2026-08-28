@@ -4,6 +4,7 @@ import {
   AlertTriangle,
   CalendarClock,
   CheckCircle2,
+  ChevronDown,
   Clock,
   Info,
   Sparkles,
@@ -80,68 +81,49 @@ function CapacityMeter({ planned, capacity, lang }) {
   );
 }
 
-function TaskDraftRow({ task, onOpenCitation, lang }) {
+function TaskDraftRow({ task, expanded, onToggle, onOpenCitation, lang }) {
   return (
-    <li className="p-3.5 rounded-xl border border-line bg-surface-card transition-colors duration-200 hover:border-line-strong">
-      <div className="flex items-start justify-between gap-3 flex-wrap">
+    <li className="rounded-lg border border-line bg-surface-card overflow-hidden">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={expanded}
+        className="w-full p-3 text-left flex items-start justify-between gap-3 hover:bg-surface-elevated cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-accent"
+      >
         <div className="min-w-0 flex-1">
-          <p className="text-[14px] font-semibold leading-snug text-fg">
+          <p className="text-[13px] font-semibold leading-snug text-fg">
             {task.title}
           </p>
-          <div className="flex flex-wrap items-center gap-2 mt-1.5">
-            <span className="flex items-center gap-1 text-[12px] text-fg-muted">
+          <div className="flex flex-wrap items-center gap-2 mt-1 text-[11px] text-fg-muted">
+            <span className="flex items-center gap-1">
               <CalendarClock size={11} /> {task.scheduledDate}
             </span>
-            <span className="flex items-center gap-1 text-[12px] text-fg-muted">
+            <span className="flex items-center gap-1">
               <Clock size={11} /> {formatMinutes(task.estimatedMinutes, lang)}
             </span>
-            <ProvenanceBadge provenance={task.estimateProvenance} lang={lang} size="xs" />
-            {task.deliverable && (
-              <ProvenanceBadge
-                sourceType="simulated"
-                lang={lang}
-                size="xs"
-                label={task.deliverable}
-                title={
-                  lang === 'vi'
-                    ? 'Hạng mục nộp là dữ liệu minh họa, không phải yêu cầu trích từ syllabus.'
-                    : 'Deliverable is sample data, not a syllabus-sourced requirement.'
-                }
-              />
-            )}
           </div>
         </div>
-        <span
-          className="badge text-[10px] shrink-0"
-          style={{
-            background: task.priority === 'HIGH' ? 'var(--danger-soft)' : 'var(--bg-elevated)',
-            color: task.priority === 'HIGH' ? 'var(--danger)' : 'var(--text-muted)',
-          }}
-        >
-          {task.priority}
-        </span>
-      </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <span className={`badge text-[10px] ${task.priority === 'HIGH' ? 'bg-danger-soft text-danger' : 'bg-surface-elevated text-fg-muted'}`}>{task.priority}</span>
+          <ChevronDown size={15} className={`text-fg-muted transition-transform ${expanded ? 'rotate-180' : ''}`} />
+        </div>
+      </button>
 
-      {task.suggestionReason && (
-        <p className="text-[12px] italic mt-2 leading-relaxed text-fg-muted">
-          <span className="not-italic font-semibold text-ai-insight">
-            {lang === 'vi' ? 'Vì sao Trợ lý Cursus đề xuất: ' : 'Why Cursus Assistant suggests this: '}
-          </span>
-          {task.suggestionReason}
-        </p>
-      )}
+      {expanded && (
+        <div className="border-t border-line px-3 py-2.5 space-y-2 text-[12px]">
+          {task.suggestionReason && <p className="leading-relaxed text-fg-secondary">{task.suggestionReason}</p>}
+          <div className="flex flex-wrap gap-1.5">
+            <ProvenanceBadge provenance={task.estimateProvenance} lang={lang} size="xs" />
+            {task.deliverable && <span className="badge text-[10px] bg-surface-elevated text-fg-muted">{task.deliverable}</span>}
+          </div>
 
-      {task.sourceFact && (
-        <p className="text-[12px] mt-1.5 leading-relaxed text-fg-secondary">
-          <ProvenanceBadge sourceType="official_document" lang={lang} size="xs" /> {task.sourceFact}
-        </p>
-      )}
+          {task.sourceFact && <p className="leading-relaxed text-fg-secondary">{task.sourceFact}</p>}
 
-      {task.sourceRefs?.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 mt-2">
-          {task.sourceRefs.map((ref) => (
-            <CitationChip key={ref.chunkId} citation={ref} onOpen={onOpenCitation} lang={lang} />
-          ))}
+          {task.sourceRefs?.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {task.sourceRefs.map((ref) => <CitationChip key={ref.chunkId} citation={ref} onOpen={onOpenCitation} lang={lang} />)}
+            </div>
+          )}
         </div>
       )}
     </li>
@@ -171,6 +153,7 @@ export default function StudentPlanner() {
   const [actionError, setActionError] = useState(null);
   const [openCitation, setOpenCitation] = useState(null);
   const [confirmed, setConfirmed] = useState(false);
+  const [expandedTaskId, setExpandedTaskId] = useState(null);
 
   const weekdays = lang === 'vi' ? WEEKDAYS_VI : WEEKDAYS_EN;
   const declaredMinutes = useMemo(
@@ -512,9 +495,16 @@ export default function StudentPlanner() {
                 <CapacityMeter planned={plan.plannedMinutes} capacity={plan.capacityMinutes} lang={lang} />
               </div>
 
-              <ul className="space-y-2">
+              <ul className="space-y-1.5">
                 {plan.tasks.map((task) => (
-                  <TaskDraftRow key={task.id} task={task} onOpenCitation={setOpenCitation} lang={lang} />
+                  <TaskDraftRow
+                    key={task.id}
+                    task={task}
+                    expanded={expandedTaskId === task.id}
+                    onToggle={() => setExpandedTaskId((current) => current === task.id ? null : task.id)}
+                    onOpenCitation={setOpenCitation}
+                    lang={lang}
+                  />
                 ))}
               </ul>
 
