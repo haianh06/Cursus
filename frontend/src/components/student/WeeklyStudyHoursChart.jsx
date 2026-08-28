@@ -65,6 +65,8 @@ export default function WeeklyStudyHoursChart({ tasks, lang }) {
   const plannedPoints = pointsFor(series, 'planned', yMax);
   const actualPoints = pointsFor(series, 'actual', yMax);
   const hovered = hoverIndex != null ? series[hoverIndex] : null;
+  const hasAnyActual = series.some((point) => point.actual > 0);
+  const hasAnyPlanned = series.some((point) => point.planned > 0);
 
   const t = {
     title: lang === 'vi' ? 'Giờ học mỗi ngày trong tuần' : 'Daily study hours this week',
@@ -181,6 +183,18 @@ export default function WeeklyStudyHoursChart({ tasks, lang }) {
           </div>
         )}
       </div>
+
+      {!hasAnyActual && (
+        <p className="mt-2 text-[11px] italic text-fg-muted">
+          {hasAnyPlanned
+            ? lang === 'vi'
+              ? 'Đường "Thực tế" sẽ dần lấp đầy khi bạn đánh dấu hoàn thành các việc trong tuần.'
+              : 'The "Actual" line fills in as you complete tasks this week.'
+            : lang === 'vi'
+              ? 'Chưa có việc nào được lên lịch tuần này.'
+              : 'No tasks scheduled for this week yet.'}
+        </p>
+      )}
 
       <table className="sr-only">
         <caption>{t.title}</caption>

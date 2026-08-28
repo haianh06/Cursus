@@ -179,6 +179,9 @@ function WeekProgress({ plan, completedCount, totalCount, progressPct, lang }) {
     },
   ];
 
+  const noPlan = totalCount === 0;
+  const notStarted = !noPlan && completedCount === 0;
+
   return (
     <section aria-label={lang === 'vi' ? 'Tiến độ tuần' : 'Week progress'}>
       <h2 className="text-[13px] font-bold uppercase tracking-widest mb-3 flex items-center gap-1.5 text-fg-muted">
@@ -203,6 +206,17 @@ function WeekProgress({ plan, completedCount, totalCount, progressPct, lang }) {
           </div>
         ))}
       </dl>
+      {(noPlan || notStarted) && (
+        <p className="mt-2 text-[12px] italic text-fg-muted">
+          {noPlan
+            ? lang === 'vi'
+              ? 'Chưa có kế hoạch cho tuần này — mở Planner để tạo một kế hoạch mới.'
+              : 'No plan for this week yet — open the planner to create one.'
+            : lang === 'vi'
+              ? 'Chưa có việc nào hoàn thành — bắt đầu với việc được gợi ý ở trên để tiến độ tuần này bắt đầu tăng.'
+              : 'Nothing completed yet — start with the suggested task above to get this week moving.'}
+        </p>
+      )}
     </section>
   );
 }
