@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 import AdminAcademicPanel from './AdminAcademicPanel';
+import AdminClassSchedulePanel from './AdminClassSchedulePanel';
 import AdminAiPolicy from './AdminAiPolicy';
 import AdminAiUsage from './AdminAiUsage';
 import AdminAnalytics from './AdminAnalytics';
@@ -79,6 +80,7 @@ export default function AdminConsole() {
         <Route path="governance/academic" element={
           <AdminPage title={lang === 'vi' ? 'Học kỳ & lịch thi' : 'Term & exams'} subtitle={t('admin.subtitleAcademic')}>
             <AdminAcademicPanel />
+            <AdminClassSchedulePanel />
           </AdminPage>
         } />
         <Route path="governance/ai-policy" element={
