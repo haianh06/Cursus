@@ -66,7 +66,6 @@ const AdminConsole = lazy(() => import('./components/admin/AdminConsole'));
 // Additive student surface (semester setup, practice sets) — wired to the
 // new backend endpoints in semester.py / practice.py. Kept as separate
 // routes, never a gate in front of the existing Gate2 demo flow above.
-const SemesterSetupWizard = lazy(() => import('./components/student/SemesterSetupWizard'));
 const StudentPractice = lazy(() => import('./components/student/StudentPractice'));
 const StudentCourseMaterials = lazy(() => import('./components/student/StudentCourseMaterials'));
 // Second, independent plan-generation flow (timetable/lecture sessions, not
@@ -612,7 +611,7 @@ function AppShell({ user, onLogout, onUserUpdate }) {
               <Route path="reflection"  element={<StudentReflection user={user}/>} />
               <Route path="practice"        element={<StudentPractice user={user}/>} />
               <Route path="courses/:courseId" element={<StudentCourseMaterials />} />
-              <Route path="semester-setup"  element={<SemesterSetupWizard user={user}/>} />
+              <Route path="semester-setup"  element={<Navigate to="/student/planner" replace />} />
               <Route path="lecture-plan"    element={<LecturePlanPanel user={user}/>} />
               <Route path="quizzes"         element={<StudentQuizzes />} />
               <Route path="today"           element={<TodayPlanScreen user={user}/>} />

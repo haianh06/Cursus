@@ -69,7 +69,7 @@ export default function LecturePlanPanel() {
           </p>
         </div>
         <Link
-          to="/student/semester-setup"
+          to="/student/planner"
           className="btn btn-outline text-xs px-3 py-1.5 rounded-lg cursor-pointer flex items-center gap-1.5 shrink-0"
         >
           <CalendarDays size={13} />

@@ -699,6 +699,39 @@ export function deleteTimetableBlock(blockId, scope = 'this') {
   });
 }
 
+/* ── Institutional class schedule ─────────────────────────────────────── */
+export function getAdminStudySlots(termName) {
+  return request(`/admin/class-schedule/slots?term_name=${encodeURIComponent(termName)}`);
+}
+
+export function createAdminStudySlot(payload) {
+  return request('/admin/class-schedule/slots', { method: 'POST', body: payload });
+}
+
+export function createFixedClassSchedule(payload) {
+  return request('/admin/class-schedule/fixed', { method: 'POST', body: payload });
+}
+
+export function getAdminClassWeek(sectionId, weekStart) {
+  return request(`/admin/class-schedule/week?section_id=${encodeURIComponent(sectionId)}&week_start=${encodeURIComponent(weekStart)}`);
+}
+
+export function createAdminClassException(payload) {
+  return request('/admin/class-schedule/exceptions', { method: 'POST', body: payload });
+}
+
+export function getInstructorClassWeek(weekStart) {
+  return request(`/instructor/class-schedule/week?week_start=${encodeURIComponent(weekStart)}`);
+}
+
+export function createInstructorClassException(payload) {
+  return request('/instructor/class-schedule/exceptions', { method: 'POST', body: payload });
+}
+
+export function getClassScheduleNotifications() {
+  return request('/student/class-schedule/notifications');
+}
+
 /* ── Self-study Pomodoro ──────────────────────────────────────────────── */
 
 /** Self-study blocks whose 10-minute reminder window is currently open. */
