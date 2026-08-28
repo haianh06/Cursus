@@ -50,6 +50,9 @@ const QUICK_REPLIES = [
   'Hôm nay mình nên học gì trước?',
   'Tóm tắt syllabus môn này giúp mình',
   'Kế hoạch học tập của mình đang thế nào?',
+  'Chào Cursus, cậu giúp được mình những gì?',
+  'Dạo này mình học hơi đuối, cho mình xin ít lời khuyên',
+  'Mình đang stress vì bài vở, phải làm sao đây?',
 ];
 
 function QuickReplies({ onPick, disabled }) {
