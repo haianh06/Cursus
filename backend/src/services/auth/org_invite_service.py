@@ -52,6 +52,7 @@ class OrgInviteService:
         full_name: str,
         role: str,
         invited_by_user_id: str,
+        section_id: str | None = None,
     ) -> OrgInvite:
         email = email.strip().lower()
         if self._users.get_by_email(email):
@@ -70,6 +71,7 @@ class OrgInviteService:
                 email=email,
                 full_name=full_name.strip(),
                 role=role.strip().upper(),
+                section_id=section_id,
                 invited_by_user_id=invited_by_user_id,
                 token_hash=hash_opaque_token(token),
                 expires_at=now + timedelta(minutes=self._settings.org_invite_token_minutes),
@@ -102,6 +104,19 @@ class OrgInviteService:
 
     def consume(self, invite: OrgInvite, used_at: datetime) -> OrgInvite:
         return self._invites.mark_used(invite, used_at)
+
+    def claim_section(self, invite: OrgInvite, *, instructor_id: str) -> bool:
+        """Áp dụng phần "lớp phụ trách" của lời mời cho tài khoản vừa tạo.
+
+        Không làm gì nếu lời mời không kèm lớp, hoặc không phải lời mời
+        INSTRUCTOR — kiểm lại ở đây dù route tạo lời mời đã chặn, vì các hàng
+        cũ và script seed ghi thẳng vào DB không đi qua route đó.
+        """
+        if not invite.section_id:
+            return False
+        if (invite.role or "").strip().upper() != "INSTRUCTOR":
+            return False
+        return self._invites.assign_section_instructor(invite.section_id, instructor_id)
 
     def list_for_org(self, organization_id: str) -> list[OrgInvite]:
         return self._invites.list_for_org(organization_id)

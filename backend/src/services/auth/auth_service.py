@@ -12,6 +12,7 @@ from src.security.passwords import (
     validate_password_policy,
     verify_password,
 )
+from src.security.request_context import actor_org_id_var, actor_user_id_var
 from src.security.token_exceptions import TokenError
 from src.security.tokens import create_access_token, parse_access_token_claims
 from src.services.auth.org_invite_service import InviteNotFoundError, OrgInviteService
@@ -98,6 +99,11 @@ class AuthService:
             )
         )
         self._invites.consume(invite, now)
+        # B5: lời mời có thể mang theo lớp mà người này sẽ phụ trách. Gán ở
+        # đây, ngay sau khi tài khoản tồn tại, để không còn khoảng trống giữa
+        # "đã mời" và "đã có giảng viên" -- khoảng đó chính là thứ Task 8 đẩy
+        # vào hàng đợi Admin dưới dạng UNASSIGNED_SECTION.
+        self._invites.claim_section(invite, instructor_id=user.id)
         return user
 
     async def login(
@@ -175,6 +181,11 @@ class AuthService:
         if not user.is_active:
             raise InactiveUserError("Account is deactivated")
 
+        # Chốt chặn duy nhất mọi route xác thực đi qua — công bố "ai đang gọi"
+        # ra ngữ cảnh request để bộ đo chi phí AI quy được về tổ chức/người
+        # dùng (D1/D2). Không route nào phải nhớ làm việc này.
+        actor_org_id_var.set(user.organization_id)
+        actor_user_id_var.set(user.id)
         return user
 
     async def refresh_access_token(self, refresh_token: str) -> AuthResult:

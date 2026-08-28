@@ -26,6 +26,7 @@ def create_test_invite(
     *,
     full_name: str = "Test User",
     org_slug: str = "test-org",
+    section_id: str | None = None,
 ) -> str:
     """Insert an `Organization` (if needed) and a valid `OrgInvite` for
     `email` directly via the DB, and return the plaintext invite token that
@@ -53,6 +54,7 @@ def create_test_invite(
                 email=email.strip().lower(),
                 full_name=full_name,
                 role=role,
+                section_id=section_id,
                 invited_by_user_id=None,
                 token_hash=hash_opaque_token(token),
                 expires_at=datetime.now(UTC).replace(tzinfo=None) + timedelta(days=1),

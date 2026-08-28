@@ -9,6 +9,10 @@ class CreateInviteRequest(BaseModel):
     email: str = Field(..., min_length=3, max_length=255)
     full_name: str = Field(..., min_length=1, max_length=255)
     role: InvitableRole
+    # Lớp người được mời sẽ phụ trách ngay khi đăng ký xong. Chỉ có nghĩa với
+    # role INSTRUCTOR; route từ chối 400 nếu gửi kèm role khác thay vì lặng lẽ
+    # bỏ qua, vì "bỏ qua âm thầm" là kiểu lỗi admin không bao giờ phát hiện ra.
+    section_id: str | None = Field(default=None, max_length=64)
 
 
 class InviteResponse(BaseModel):
@@ -19,6 +23,7 @@ class InviteResponse(BaseModel):
     expires_at: str
     used_at: str | None
     revoked_at: str | None
+    section_id: str | None = None
     delivery_status: Literal["pending", "sent", "failed"]
     resend_count: int = Field(ge=0)
     last_sent_at: str | None

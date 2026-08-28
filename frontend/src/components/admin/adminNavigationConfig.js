@@ -8,8 +8,8 @@ export const NAV_GROUPS = [
     items: [
       { to: ADMIN_PATHS.overview, labelKey: 'admin.navOverview', end: true },
       { to: ADMIN_PATHS.people, labelKey: 'admin.navPeople' },
-      { to: ADMIN_PATHS.dataRequests, labelKey: 'admin.navDataRequests' },
       { to: ADMIN_PATHS.analytics, labelKey: 'admin.navAnalytics' },
+      { to: ADMIN_PATHS.aiUsage, labelKey: 'admin.navAiUsage' },
     ],
   },
   {

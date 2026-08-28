@@ -216,6 +216,59 @@ async def test_guardrail_blocks_graded_deliverable_without_calling_ai_service(cl
     delta_text = next(data["text"] for kind, data in events if kind == "delta")
     assert "không thể" in delta_text.lower() or "không viết" in delta_text.lower() or delta_text
 
+    # Chặn xong phải để lại biên bản cho hàng đợi duyệt của giảng viên (F5 HITL).
+    # Bản ghi này từng nằm ở `guardrail_event_recorder.record_block()` và biến mất
+    # cùng tính năng chat cũ; vế đọc trong `instructor.py` không đổi, nên thiếu nó
+    # là hàng đợi rỗng vĩnh viễn — hỏng lặng lẽ, không lỗi, không test nào đỏ.
+    db = SessionLocal()
+    try:
+        event = (
+            db.query(models.GuardrailEvent)
+            .filter_by(student_id=student_id, classification="BLOCKED")
+            .one()
+        )
+        assert event.review_status == "PENDING"
+        assert event.blocked_answer, "biên bản phải giữ câu trả lời SV đã nhận"
+        assert event.safety_evaluation["source"] == "cursus_chat"
+        assert event.safety_evaluation["question"], "phải giữ câu hỏi để GV xem lại"
+    finally:
+        db.close()
+
+
+@pytest.mark.asyncio
+async def test_a_permitted_question_leaves_no_guardrail_case(client, monkeypatch):
+    """Chỉ câu BỊ CHẶN mới vào hàng đợi. Ghi cả câu hợp lệ sẽ nhấn chìm hàng đợi
+    trong nhiễu và làm giảng viên bỏ luôn màn hình đó."""
+    import src.api.cursus_chat as cursus_chat_module
+
+    async def _fake_stream(**kwargs):
+        yield {"type": "delta", "text": "Duoc phep."}
+        yield {"type": "done"}
+
+    monkeypatch.setattr(cursus_chat_module, "generate_chat_stream", _fake_stream)
+
+    org_id = ensure_org(f"cc-ok-{uuid.uuid4().hex[:6]}", "cc-ok")
+    instructor_id = ensure_user(email=f"cc.oi.{uuid.uuid4().hex}@example.test", org_id=org_id, role=models.UserRole.INSTRUCTOR)
+    student_email = f"cc.os.{uuid.uuid4().hex}@example.test"
+    student_id = ensure_user(email=student_email, org_id=org_id, role=models.UserRole.STUDENT)
+    code = _code("CCO")
+    course_id = ensure_course(code=code, org_id=org_id)
+    enroll_student(student_id=student_id, course_id=course_id, instructor_id=instructor_id)
+    _seed_chunk(course_id, code, text=f"{code} tai lieu bai giang.")
+
+    token = await login(client, student_email)
+    async with client.stream(
+        "POST", "/api/v1/student/cursus/stream", headers=auth_headers(token),
+        json={"message": f"Môn {code} tuần này học nội dung gì?"},
+    ) as response:
+        await _parse_sse(response)
+
+    db = SessionLocal()
+    try:
+        assert db.query(models.GuardrailEvent).filter_by(student_id=student_id).count() == 0
+    finally:
+        db.close()
+
 
 @pytest.mark.asyncio
 async def test_crisis_safety_triggers_before_guardrail_and_ai_service(client, monkeypatch):

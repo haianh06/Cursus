@@ -293,10 +293,13 @@ export function requestOrgAccess({ institutionName, contactName, email, roleInte
 }
 
 /** Admin-only invite management (see AdminConsole's Invites tab). */
-export function createInvite({ email, fullName, role }) {
+export function createInvite({ email, fullName, role, sectionId = null }) {
   return request('/admin/invites', {
     method: 'POST',
-    body: { email, full_name: fullName, role },
+    // `section_id` chỉ gửi khi thật sự có lớp: backend từ chối 400 nếu một
+    // lời mời không phải INSTRUCTOR mang theo trường này, kể cả giá trị null
+    // rỗng cũng không nên xuất hiện trong body cho các role khác.
+    body: sectionId ? { email, full_name: fullName, role, section_id: sectionId } : { email, full_name: fullName, role },
   });
 }
 
@@ -862,6 +865,12 @@ export function getAdminKpi() {
  * part of this dashboard; they were illustrative rather than live metrics. */
 export function getAdminAnalyticsSummary() {
   return request('/admin/analytics/summary');
+}
+
+/** AI cost/latency/error rollup for the "Chi phi AI" panel (PLO 5).
+ * `days` must be 7, 30 or 90 -- anything else falls back to 30 server-side. */
+export function getAdminAiUsage(days = 30) {
+  return request(`/admin/ai-usage?days=${encodeURIComponent(days)}`);
 }
 
 /** Legacy endpoint kept for compatibility with older consumers. */

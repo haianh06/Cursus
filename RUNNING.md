@@ -67,11 +67,16 @@ Kiểm tra đã ở đúng revision mới nhất:
 alembic current
 ```
 
-Muốn có dữ liệu mock để test UI (courses, users, plans...):
+Muốn có dữ liệu mock để test UI (tài khoản, môn học, curriculum):
 
 ```bash
-python seed.py
+python seed_demo_accounts.py        # 3 tài khoản demo (student/instructor/admin), idempotent
+python scripts/seed_curriculum.py   # chương trình đào tạo + môn học
 ```
+
+> **Không dùng `python seed.py`** — pipeline seeder tổng đó đang ngắt kết nối có chủ đích:
+> `mock_data/` đã bị xoá nguyên thư mục (Phase 1, 20/08) nên mọi lệnh gọi vào nó raise
+> `NameError` (xem TODO đầu `seed.py`). File giữ lại chờ Phase 3 tạo lại `mock_data/`.
 
 ### 2.3b. Tạo tài khoản thật (Cursus không có đăng ký công khai)
 

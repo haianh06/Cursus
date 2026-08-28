@@ -3,6 +3,7 @@ service was folded into backend as an in-process module -- picks the model
 env var to read, not the model name itself, so a route can survive a model
 rename by only touching config."""
 from __future__ import annotations
+
 from dataclasses import dataclass
 
 

@@ -19,13 +19,32 @@ from openai import AsyncOpenAI, OpenAI
 from src.config import Settings
 from src.services.core.ai_engine.routing import ModelRoute
 
+# Địa chỉ mặc định của OpenAI, khai tường minh chứ không để SDK tự suy.
+#
+# Vì sao không truyền `base_url=None` cho SDK tự lo: `config.py` gọi
+# `load_dotenv()`, nên MỌI dòng trong `.env` được xuất ra `os.environ` — kể cả
+# `OPENAI_BASE_URL=` bỏ trống, thành biến môi trường có tồn tại với giá trị là
+# chuỗi rỗng. Nhận `base_url=None`, SDK quay ra đọc `os.environ` đúng biến đó,
+# thấy `""` và dùng luôn làm địa chỉ. Kết quả: mọi request bắn vào URL rỗng và
+# trả `APIConnectionError: Connection error` — trông y hệt mất mạng, trong khi
+# khoá, model và đường truyền đều bình thường.
+#
+# Đây đúng là cấu hình mà `.env.example` hướng dẫn cho người dùng OpenAI thật
+# ("để trống nếu dùng thẳng OpenAI"), nên nếu không chốt cứng ở đây thì đường
+# đi mặc định của tài liệu là đường hỏng.
+_DEFAULT_OPENAI_BASE_URL = "https://api.openai.com/v1"
+
+
+def _base_url(settings: Settings) -> str:
+    return (settings.openai_base_url or "").strip() or _DEFAULT_OPENAI_BASE_URL
+
 
 def openai_client(settings: Settings) -> OpenAI:
-    return OpenAI(api_key=settings.openai_api_key or "", base_url=settings.openai_base_url or None)
+    return OpenAI(api_key=settings.openai_api_key or "", base_url=_base_url(settings))
 
 
 def async_openai_client(settings: Settings) -> AsyncOpenAI:
-    return AsyncOpenAI(api_key=settings.openai_api_key or "", base_url=settings.openai_base_url or None)
+    return AsyncOpenAI(api_key=settings.openai_api_key or "", base_url=_base_url(settings))
 
 
 def model_for_route(route: ModelRoute, settings: Settings) -> str:

@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.api.admin import academic_router as admin_academic_router
 from src.api.admin import router as admin_router
+from src.api.admin_ai_usage import router as admin_ai_usage_router
 from src.api.admin_crisis_escalations import router as admin_crisis_escalations_router
 from src.api.admin_data_requests import router as admin_data_requests_router
 from src.api.admin_instructor360 import router as admin_instructor360_router
@@ -135,6 +136,7 @@ app.include_router(admin_settings_router, prefix="/api/v1")
 app.include_router(admin_overview_router, prefix="/api/v1")
 app.include_router(admin_people_router, prefix="/api/v1")
 app.include_router(admin_sections_router, prefix="/api/v1")
+app.include_router(admin_ai_usage_router, prefix="/api/v1")
 app.include_router(public_router, prefix="/api/v1")
 app.include_router(demo_router, prefix="/api/v1")
 app.include_router(semester_router, prefix="/api/v1")

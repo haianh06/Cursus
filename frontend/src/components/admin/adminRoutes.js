@@ -3,6 +3,7 @@ export const ADMIN_PATHS = Object.freeze({
   people: '/admin/people',
   dataRequests: '/admin/data-requests',
   analytics: '/admin/analytics',
+  aiUsage: '/admin/ai-usage',
   curriculum: '/admin/governance/curriculum',
   sections: '/admin/governance/sections',
   academic: '/admin/governance/academic',

@@ -165,6 +165,35 @@ bash scripts/_pyrun.sh scripts/log_manual.py --tool chatgpt --prompt "..."
 
 Chi tiết cơ chế: [`docs/project/logging-guide.md`](docs/project/logging-guide.md).
 
+## Known Limitations
+
+Những giới hạn dưới đây là **quyết định có chủ đích** trong phạm vi Build Phase,
+không phải lỗi chưa phát hiện. Mỗi mục đều có lý do truy được về ADR hoặc spec.
+
+- **Instructor 360 chỉ ở mức tổng hợp (aggregate-only)** — hiện có 1 route. Chi tiết
+  hoạt động giảng viên (`ClassActivity`, `Quiz`, `PracticeSet`, quyết định guardrail)
+  để lại cho giai đoạn sau: công lớn, không phục vụ F6/F7 là hai mảng chính thức của
+  role Admin.
+- **Student 360 chưa bao gồm quiz / practice / semester** — 15 route hiện có phủ hồ sơ
+  học tập và tín hiệu rủi ro, chưa phủ ba nguồn dữ liệu này.
+- **Luồng DSAR qua Admin Console chưa mở** — tab "Yêu cầu dữ liệu" đã gỡ khỏi
+  điều hướng; 7 route backend và bảng `DataRequest` vẫn còn trong code nhưng không có
+  đường vào từ UI. Lý do đầy đủ: ADR-021.
+- **FR-1.3 (xoá dữ liệu cá nhân theo yêu cầu) mới thực thi một phần** — đây là mục
+  **Must của Mốc 3**, nên ghi rõ chứ không tính là đã xong. Hiện chỉ có nhánh
+  self-service `POST /api/v1/student/personal-data/delete`, xoá `Message` +
+  `Conversation` + `WeeklyReflection`. So với phạm vi spec còn thiếu `WeeklyPlan`,
+  `StudyTask`, `GuardrailEvent`, và chưa có nhánh cho Admin xoá thay sinh viên (spec
+  cho phép cả hai). Xem `docs/archive/planning-v2/02-Cursus-SRS.md` FR-1.3 và ADR-021.
+- **Chi phí AI hiển thị dạng ước tính, và bảng giá chưa điền** — màn "Chi phí AI" tính
+  chi phí bằng token nhân đơn giá niêm yết theo model, không phải số từ hoá đơn nhà
+  cung cấp. `src/services/core/ai_pricing.py` hiện chưa khai báo đơn giá cho model nào
+  nên cột chi phí báo "chưa có đơn giá"; token, độ trễ và tỷ lệ lỗi vẫn là số thật.
+  Model không có trong bảng giá **không bị đoán giá** — có chủ đích.
+- **RLS đa tổ chức (P0#3) vẫn 0%** — lọc theo tổ chức hiện thực hiện ở tầng ứng dụng,
+  chưa đẩy xuống Row Level Security của Postgres. `src/db/tenant_scope.py` đã viết sẵn
+  dependency cần thiết nhưng chưa gắn vào route nào; xem `docs/decisions/rls-migration-plan.md`.
+
 ## License
 
 MIT — sử dụng cho mục đích giáo dục (AI20K Build Phase).

@@ -88,6 +88,12 @@ class OrgInvite(Base):
     email: Mapped[str] = mapped_column(String, index=True)
     full_name: Mapped[str] = mapped_column(String)
     role: Mapped[str] = mapped_column(String)
+    # Lớp mà người được mời sẽ phụ trách ngay khi đăng ký xong (chỉ có nghĩa
+    # với lời mời INSTRUCTOR). Nullable vì phần lớn lời mời không kèm lớp, và
+    # SET NULL vì xoá lớp không được làm hỏng lời mời đang chờ.
+    section_id: Mapped[str | None] = mapped_column(
+        String, ForeignKey("course_sections.id", ondelete="SET NULL"), nullable=True
+    )
     invited_by_user_id: Mapped[str | None] = mapped_column(
         String, ForeignKey("users.id", ondelete="SET NULL"), nullable=True
     )
@@ -1090,3 +1096,39 @@ class DataRequest(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+
+
+class AIUsage(Base):
+    """Chi phí và độ trễ của mỗi lần gọi LLM — vế cuối cùng còn trống của
+    "giám sát cơ bản: độ trễ / lỗi / chi phí" (PLO 5, ràng buộc BTC #6).
+
+    Bảng MỚI, cố ý không tái dùng `RAGTrace`/`LLMUsageEvent`. ADR-017 đã đóng
+    hai bảng đó và chỉ ra đúng ba lý do khiến chúng không dùng được, cả ba
+    được sửa ở đây:
+
+    1. `LLMUsageEvent.message_id` là FK NOT NULL, mà `plan_builder` /
+       `reflection_engine` không sinh `Message` nào để gắn vào → ở đây không
+       có cột nào bắt buộc phải trỏ tới một hàng khác.
+    2. `LLMUsageEvent` không có cột thời gian → không chia được chi phí theo
+       tuần/tháng. `created_at` ở đây có index vì mọi truy vấn đều lọc theo kỳ.
+    3. Không có `organization_id` → không trả lời được "tổ chức nào tốn bao
+       nhiêu". Nullable, vì vài chỗ gọi LLM không có ngữ cảnh người dùng
+       (`qa_answer_service` chẳng hạn không giữ session DB nào).
+
+    Ghi bởi `AIUsageCallback` (`src/services/core/ai_usage_recorder.py`), gắn
+    vào client trong `get_llm()` — một cửa duy nhất cho cả 11 chỗ gọi.
+    """
+
+    __tablename__ = "ai_usage"
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+    organization_id: Mapped[str | None] = mapped_column(String, nullable=True, index=True)
+    user_id: Mapped[str | None] = mapped_column(String, nullable=True)
+    # Tên tính năng gọi LLM ("qa_answer", "weekly_plan", ...) — trục nhóm của
+    # báo cáo "tính năng nào tốn nhất".
+    feature: Mapped[str] = mapped_column(String, index=True)
+    model: Mapped[str] = mapped_column(String)
+    input_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    output_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    latency_ms: Mapped[int] = mapped_column(Integer, default=0)
+    success: Mapped[bool] = mapped_column(Boolean, default=True)

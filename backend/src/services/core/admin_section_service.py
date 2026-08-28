@@ -124,6 +124,15 @@ def _require_section(
     return section
 
 
+def get_section_for_org(
+    db: Session, *, organization_id: str | None, section_id: str
+) -> models.CourseSection:
+    """Tra cứu lớp theo đúng quy tắc org-scoping của router sections, cho các
+    nơi khác dùng lại (B5: gán lớp ngay lúc mời giảng viên). Đặt ở đây để quy
+    tắc "lớp thuộc tổ chức nào" chỉ có một bản, không bị chép lệch."""
+    return _require_section(db, section_id, organization_id)
+
+
 def update_section(
     db: Session,
     *,

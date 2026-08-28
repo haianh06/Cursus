@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 import AdminAcademicPanel from './AdminAcademicPanel';
 import AdminAiPolicy from './AdminAiPolicy';
+import AdminAiUsage from './AdminAiUsage';
 import AdminAnalytics from './AdminAnalytics';
 import AdminAudit from './AdminAudit';
 import AdminCurriculum from './AdminCurriculum';
@@ -58,6 +59,11 @@ export default function AdminConsole() {
         <Route path="analytics" element={
           <AdminPage title={t('admin.analyticsTabLabel')} subtitle={t('admin.subtitleAnalytics')}>
             <AdminAnalytics />
+          </AdminPage>
+        } />
+        <Route path="ai-usage" element={
+          <AdminPage title={t('admin.navAiUsage')} subtitle={t('admin.subtitleAiUsage')}>
+            <AdminAiUsage />
           </AdminPage>
         } />
         <Route path="governance/curriculum" element={

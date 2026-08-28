@@ -65,6 +65,7 @@ from src.services.auth.org_invite_service import (
     OrgInviteService,
 )
 from src.services.auth.password_reset_service import PasswordResetService
+from src.services.core import admin_section_service
 from src.services.core.admin_ingest_runner import run_admin_ingest_job
 from src.services.core.admin_read_service import AdminDataUnavailable, AdminReadService
 from src.services.core.audit_service import AuditService
@@ -1008,6 +1009,26 @@ async def create_invite(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Your account is not attached to an organization",
         )
+    role_value = payload.role.value if hasattr(payload.role, "value") else str(payload.role)
+    if payload.section_id is not None:
+        # `section_id` nghĩa là "người này sẽ phụ trách lớp đó" — vô nghĩa với
+        # Student/Admin. Từ chối thẳng thay vì bỏ qua: admin bấm chọn lớp rồi
+        # đổi role sẽ thấy lỗi ngay, thay vì tưởng đã gán mà thật ra không.
+        if role_value != UserRole.INSTRUCTOR.value:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Only an instructor invitation can carry a section",
+            )
+        try:
+            admin_section_service.get_section_for_org(
+                db,
+                organization_id=current_user.organization_id,
+                section_id=payload.section_id,
+            )
+        except admin_section_service.SectionNotFoundError as exc:
+            # 404 cho cả "không tồn tại" lẫn "thuộc tổ chức khác" — cùng quy tắc
+            # fail-closed như router sections, không lộ dữ liệu tổ chức khác.
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
     try:
         invite = await invite_service.create_invite(
             organization_id=current_user.organization_id,
@@ -1015,6 +1036,7 @@ async def create_invite(
             full_name=payload.full_name,
             role=payload.role,
             invited_by_user_id=current_user.id,
+            section_id=payload.section_id,
         )
     except OrgInviteError as exc:
         raise HTTPException(
@@ -1027,7 +1049,11 @@ async def create_invite(
         actor_user_id=current_user.id,
         resource_type="INVITATION",
         resource_id=invite.id,
-        metadata={"email": invite.email, "role": invite.role},
+        metadata={
+            "email": invite.email,
+            "role": invite.role,
+            "sectionId": invite.section_id,
+        },
     )
     db.commit()
     return _serialize_invite(invite)
@@ -1294,6 +1320,7 @@ def _serialize_invite(invite: OrgInvite) -> InviteResponse:
         email=invite.email,
         full_name=invite.full_name,
         role=invite.role,
+        section_id=invite.section_id,
         expires_at=invite.expires_at.isoformat(),
         used_at=invite.used_at.isoformat() if invite.used_at else None,
         revoked_at=invite.revoked_at.isoformat() if invite.revoked_at else None,

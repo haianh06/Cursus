@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   BarChart3, BookOpen, CalendarRange, ClipboardList, GitCompareArrows,
+  Coins,
   LayoutDashboard, ScrollText, Settings, ShieldCheck, Users as UsersIcon,
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
@@ -14,6 +15,7 @@ const ITEM_ICONS = {
   [ADMIN_PATHS.people]: UsersIcon,
   [ADMIN_PATHS.dataRequests]: ClipboardList,
   [ADMIN_PATHS.analytics]: BarChart3,
+  [ADMIN_PATHS.aiUsage]: Coins,
   [ADMIN_PATHS.curriculum]: BookOpen,
   [ADMIN_PATHS.academic]: CalendarRange,
   [ADMIN_PATHS.aiPolicy]: ShieldCheck,

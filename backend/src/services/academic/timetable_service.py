@@ -35,6 +35,8 @@ class TimetableBlock:
     task_status: str | None = None
     recurrence_series_id: str | None = None
     is_draft: bool = False
+    study_session_status: str | None = None
+    actual_study_minutes: int | None = None
 
     def to_dict(self) -> dict:
         return {
@@ -51,6 +53,8 @@ class TimetableBlock:
             "taskStatus": self.task_status,
             "recurrenceSeriesId": self.recurrence_series_id,
             "isDraft": self.is_draft,
+            "studySessionStatus": self.study_session_status,
+            "actualStudyMinutes": self.actual_study_minutes,
         }
 
 
@@ -408,6 +412,7 @@ class TimetableService:
         recurrence_scope: str = "this",
     ) -> dict:
         block = self._owned_block(student_id=student_id, block_id=block_id)
+        self._assert_block_has_no_study_session(block)
         original_start = block.start_time
         next_start = (start or block.start_time).replace(tzinfo=None)
         next_end = (end or block.end_time).replace(tzinfo=None)
@@ -421,6 +426,11 @@ class TimetableService:
                 .filter_by(recurrence_series_id=block.recurrence_series_id)
                 .all()
             )
+            # A started/finished session is an auditable record of actual
+            # learning, not a calendar draft. Do not let an "edit all"
+            # operation rewrite a series that contains such a record.
+            for occurrence in series:
+                self._assert_block_has_no_study_session(occurrence)
             for occurrence in series:
                 occ_start = occurrence.start_time + delta_start
                 occ_end = occ_start + new_duration
@@ -499,6 +509,11 @@ class TimetableService:
                 .all()
             )
         for target in targets:
+            # Deleting a block used to cascade-delete its Pomodoro session,
+            # erasing the only server-authoritative actual_minutes record.
+            # A student may still remove an unstarted plan, but study history
+            # is immutable once a timer has been created.
+            self._assert_block_has_no_study_session(target)
             tasks = (
                 self._db.query(models.StudyTask)
                 .filter_by(schedule_block_id=target.id)
@@ -506,25 +521,6 @@ class TimetableService:
             )
             for task in tasks:
                 self._db.delete(task)
-            # SelfStudySession.schedule_block_id has ON DELETE CASCADE at the
-            # DB level, but ScheduleBlock's `self_study_sessions` relationship
-            # has no `passive_deletes=True` (or explicit delete cascade), so
-            # SQLAlchemy's own unit-of-work loads that collection on flush and
-            # tries to disassociate it (set schedule_block_id = NULL) instead
-            # of just letting Postgres cascade the row away -- and that
-            # column is NOT NULL, so every delete of a block with a session
-            # crashed with a 500 that the browser only ever saw as a CORS-
-            # opaque network failure (found via a live user report: "xoá lịch
-            # Tự học không được"). Deleting the session explicitly, the same
-            # way tasks already are above, sidesteps that ORM cascade
-            # ambiguity entirely.
-            session_row = (
-                self._db.query(models.SelfStudySession)
-                .filter_by(schedule_block_id=target.id)
-                .first()
-            )
-            if session_row is not None:
-                self._db.delete(session_row)
             self._db.delete(target)
         self._db.commit()
 
@@ -660,13 +656,22 @@ class TimetableService:
         preview_plan_id: str | None = None,
     ) -> list[TimetableBlock]:
         rows = (
-            self._db.query(models.ScheduleBlock, models.StudyTask, models.WeeklyPlan)
+            self._db.query(
+                models.ScheduleBlock,
+                models.StudyTask,
+                models.WeeklyPlan,
+                models.SelfStudySession,
+            )
             .select_from(models.ScheduleBlock)
             .join(models.DailyPlan)
             .join(models.WeeklyPlan)
             .outerjoin(
                 models.StudyTask,
                 models.StudyTask.schedule_block_id == models.ScheduleBlock.id,
+            )
+            .outerjoin(
+                models.SelfStudySession,
+                models.SelfStudySession.schedule_block_id == models.ScheduleBlock.id,
             )
             .filter(
                 models.WeeklyPlan.student_id == student_id,
@@ -677,7 +682,7 @@ class TimetableService:
         )
 
         blocks: dict[str, TimetableBlock] = {}
-        for block, task, weekly_plan in rows:
+        for block, task, weekly_plan, study_session in rows:
             # `lecture_plan_service` drafts its own independent WeeklyPlan
             # rows (goals.source == "lecture_plan") in these same tables so
             # it can reuse the plan-generation schema. They are a different
@@ -714,6 +719,8 @@ class TimetableService:
                 ),
                 recurrence_series_id=block.recurrence_series_id,
                 is_draft=is_draft_plan,
+                study_session_status=study_session.status if study_session else None,
+                actual_study_minutes=study_session.actual_minutes if study_session else None,
             )
         return list(blocks.values())
 
@@ -828,6 +835,19 @@ class TimetableService:
         if not row:
             raise LookupError("Self-study block not found")
         return row
+
+    def _assert_block_has_no_study_session(self, block: models.ScheduleBlock) -> None:
+        """Keep actual self-study evidence independent from editable plans."""
+        session_exists = (
+            self._db.query(models.SelfStudySession.id)
+            .filter(models.SelfStudySession.schedule_block_id == block.id)
+            .first()
+            is not None
+        )
+        if session_exists:
+            raise ValueError(
+                "A self-study block cannot be changed or deleted after its study session starts"
+            )
 
     @staticmethod
     def _validate_range(start: datetime, end: datetime) -> None:

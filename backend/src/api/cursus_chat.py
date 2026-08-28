@@ -6,6 +6,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import uuid
 from datetime import datetime, timedelta
 from uuid import uuid4
 
@@ -161,6 +162,59 @@ def _intent(question: str, sources: list[dict[str, str]]) -> str:
     return "course_fact" if len(sources) <= 2 else "course_complex"
 
 
+
+def _record_guardrail_block(db: Session, *, student_id: str, question: str, decision) -> None:
+    """Lập biên bản `GuardrailEvent` cho một câu bị chặn — đầu vào của hàng đợi
+    duyệt guardrail bên giảng viên (F5 HITL, `instructor.py::list_guardrail_reviews`).
+
+    Vì sao cần dòng này dù ngay trên đã có `_audit_chat_decision`: nhật ký kiểm
+    toán **bất biến** có chủ đích, mà quy trình duyệt cần một trạng thái **sửa
+    được** (`PENDING` → `APPROVED`/`REJECTED`) và cần các trường audit không có
+    (`section_id`, `blocked_answer`, `reviewer_note`). Hai bảng phục vụ hai việc
+    khác nhau: audit trả lời "đã xảy ra chuyện gì", `guardrail_events` trả lời
+    "còn ca nào chờ người xem".
+
+    Lịch sử: việc ghi này từng nằm ở `guardrail_event_recorder.record_block()`,
+    bị xoá cùng `qa_service`/`companion_service` khi tính năng chat cũ được gỡ
+    (migration `20260910_remove_chatbot_feature`). Vế đọc trong `instructor.py`
+    không đổi, nên hàng đợi rỗng vĩnh viễn cho tới khi có lại dòng này.
+
+    `section_id` để `None` có chủ đích: Cursus Chat **không gắn với một môn nào**
+    (nó truy xuất trên mọi lớp sinh viên đang học), và guardrail chạy TRƯỚC bước
+    truy xuất nên lúc chặn chưa có nguồn nào để suy ra lớp. Hàng đợi đã lường
+    trước trường hợp này — case không gắn lớp hiện cho mọi GV/ADMIN, vì "ẩn hết
+    đi thì không ai xử lý được, còn tệ hơn là không lọc" (docstring của
+    `list_guardrail_reviews`).
+
+    Nuốt mọi lỗi: lập biên bản hỏng không được phép làm hỏng câu trả lời đang
+    trả cho sinh viên — cùng nguyên tắc với `_audit_chat_decision`.
+    """
+    try:
+        db.add(
+            models.GuardrailEvent(
+                id=f"grd_{uuid.uuid4().hex[:16]}",
+                student_id=student_id,
+                section_id=None,
+                classification="BLOCKED",
+                safety_evaluation={
+                    "question": question[:2000],
+                    "reason": decision.reason,
+                    "intent": decision.intent,
+                    "rule_code": decision.rule_code,
+                    "source": "cursus_chat",
+                },
+                review_status="PENDING",
+                block_reason=decision.reason,
+                blocked_answer=decision.answer,
+                created_at=datetime.utcnow(),
+            )
+        )
+        db.commit()
+    except Exception:
+        logger.exception("cursus_chat_guardrail_event_failed student_id=%s", student_id)
+        db.rollback()
+
+
 async def _audit_chat_decision(db: Session, *, event_type: str, decision: str, student_id: str, conversation_id: str, extra: dict) -> None:
     try:
         await AuditService(AuditRepository(db)).log_event(
@@ -303,6 +357,9 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
         await _audit_chat_decision(
             db, event_type="GUARDRAIL_DECISION", decision="BLOCK", student_id=current_user.id,
             conversation_id=conversation.id, extra={"reason": decision.reason, "intent": decision.intent},
+        )
+        _record_guardrail_block(
+            db, student_id=current_user.id, question=payload.message, decision=decision
         )
         return _single_event_stream(conversation_id=conversation.id, text=decision.answer)
     if decision.reason == "out_of_scope":

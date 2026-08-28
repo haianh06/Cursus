@@ -6,6 +6,7 @@ import ConfirmDialog from '../shared/ConfirmDialog';
 import { ROLE_LABEL } from '../../constants/roles';
 import {
   createInvite,
+  getAdminSections,
   getInvites,
   getOrgUsers,
   resetAdminUserPassword,
@@ -377,6 +378,11 @@ function InviteModal({ onClose, onSent }) {
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
   const [role, setRole] = useState('STUDENT');
+  // B5: lớp gán ngay cho giảng viên được mời. Chỉ nạp danh sách khi admin thật
+  // sự chọn role INSTRUCTOR -- mời sinh viên là trường hợp phổ biến hơn nhiều,
+  // không cần trả giá một request thừa cho nó.
+  const [sections, setSections] = useState(null);
+  const [sectionId, setSectionId] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const panelRef = useRef(null);
@@ -414,12 +420,36 @@ function InviteModal({ onClose, onSent }) {
     };
   }, [onClose]);
 
+  useEffect(() => {
+    if (role !== 'INSTRUCTOR' || sections !== null) return;
+    let alive = true;
+    getAdminSections()
+      .then((payload) => {
+        if (alive) setSections(payload?.items || []);
+      })
+      .catch(() => {
+        // Không chặn việc gửi lời mời chỉ vì không nạp được danh sách lớp --
+        // gán lớp là tuỳ chọn, admin vẫn gán tay ở màn Lớp học được.
+        if (alive) setSections([]);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [role, sections]);
+
+  const unassignedSections = (sections || []).filter((row) => !row.instructorId);
+
   function submit(event) {
     event.preventDefault();
     if (!email.trim() || !fullName.trim()) return;
     setBusy(true);
     setError('');
-    createInvite({ email: email.trim(), fullName: fullName.trim(), role })
+    createInvite({
+      email: email.trim(),
+      fullName: fullName.trim(),
+      role,
+      sectionId: role === 'INSTRUCTOR' ? sectionId || null : null,
+    })
       .then(onSent)
       .catch((err) => setError(err.message || String(err)))
       .finally(() => setBusy(false));
@@ -490,13 +520,42 @@ function InviteModal({ onClose, onSent }) {
               id="invite-role"
               className="input text-[13px] w-full"
               value={role}
-              onChange={(event) => setRole(event.target.value)}
+              onChange={(event) => {
+                setRole(event.target.value);
+                if (event.target.value !== 'INSTRUCTOR') setSectionId('');
+              }}
             >
               {INVITABLE_ROLES.map((value) => (
                 <option key={value} value={value}>{roleLabel(value, lang)}</option>
               ))}
             </select>
           </div>
+          {role === 'INSTRUCTOR' && (
+            <div>
+              <label htmlFor="invite-section" className="text-[11px] font-bold uppercase tracking-widest block mb-1.5 text-fg-muted">
+                {t('admin.inviteSectionLabel')}
+              </label>
+              <select
+                id="invite-section"
+                className="input text-[13px] w-full"
+                value={sectionId}
+                onChange={(event) => setSectionId(event.target.value)}
+                disabled={sections === null}
+              >
+                <option value="">{t('admin.inviteSectionNone')}</option>
+                {unassignedSections.map((row) => (
+                  <option key={row.id} value={row.id}>
+                    {row.courseCode} · {row.sectionCode} · {row.term}
+                  </option>
+                ))}
+              </select>
+              <p className="mt-1.5 text-[11px] text-fg-muted">
+                {sections !== null && unassignedSections.length === 0
+                  ? t('admin.inviteSectionEmpty')
+                  : t('admin.inviteSectionHint')}
+              </p>
+            </div>
+          )}
 
           <div className="flex justify-end gap-2 pt-2">
             <button type="button" className="btn btn-outline text-[13px] px-4 min-h-10 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-accent" onClick={onClose}>

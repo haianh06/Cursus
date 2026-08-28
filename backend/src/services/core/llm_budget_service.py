@@ -17,7 +17,6 @@ already async. Same day-keyed counter semantics either way.
 from __future__ import annotations
 
 import logging
-import time
 from datetime import UTC, datetime
 
 from src.config import get_settings

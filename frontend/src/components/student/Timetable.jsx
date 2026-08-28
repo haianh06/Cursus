@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import {
-  Calendar, ChevronLeft, ChevronRight, Loader2, Play, Plus, Sparkles, X, Repeat,
+  Calendar, ChevronLeft, ChevronRight, Clock3, Loader2, Play, Plus, Sparkles, X, Repeat,
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import {
@@ -147,6 +147,45 @@ function formatDuration(start, end) {
   return rest ? `${hours}h${String(rest).padStart(2, '0')}` : `${hours}h`;
 }
 
+/**
+ * Assign Google Calendar-style lanes to overlapping timed events.  Keeping
+ * every event full-width was the source of the clipped titles in a busy day:
+ * an event rendered later simply painted over the earlier one.  A connected
+ * overlap group gets the number of lanes it needs, while non-overlapping
+ * events can reuse a lane.
+ */
+function layoutDayBlocks(blocks) {
+  const result = [];
+  let group = [];
+  let groupEnd = null;
+
+  const flushGroup = () => {
+    if (!group.length) return;
+    const lanes = [];
+    const laidOut = group.map((block) => {
+      let lane = lanes.findIndex((laneEnd) => laneEnd <= block._start);
+      if (lane === -1) lane = lanes.length;
+      lanes[lane] = block._end;
+      return { ...block, _lane: lane };
+    });
+    const laneCount = lanes.length;
+    result.push(...laidOut.map((block) => ({ ...block, _laneCount: laneCount })));
+    group = [];
+    groupEnd = null;
+  };
+
+  [...blocks]
+    .filter((block) => block._start && block._end && block._end > block._start)
+    .sort((a, b) => a._start - b._start || b._end - a._end)
+    .forEach((block) => {
+      if (groupEnd && block._start >= groupEnd) flushGroup();
+      group.push(block);
+      if (!groupEnd || block._end > groupEnd) groupEnd = block._end;
+    });
+  flushGroup();
+  return result;
+}
+
 function blockTone(block) {
   const kind = String(block.kind || '').toUpperCase();
   const isExam = kind === 'EXAM_PE' || kind === 'EXAM_FE' || kind === 'EXAM';
@@ -253,7 +292,7 @@ export default function Timetable({ initialView = 'week', initialAnchor = null, 
       if (!map[key]) continue;
       map[key].push({ ...block, _start: start, _end: parseLocal(block.end) });
     }
-    Object.values(map).forEach((list) => list.sort((a, b) => a._start - b._start));
+    Object.keys(map).forEach((key) => { map[key] = layoutDayBlocks(map[key]); });
     return map;
   }, [data, visibleDays]);
 
@@ -656,17 +695,33 @@ export default function Timetable({ initialView = 'week', initialAnchor = null, 
                       const top = Math.max(0, minutesFromTop(block._start, hourStart) * (PX_PER_HOUR / 60));
                       const height = Math.max(20, ((block._end - block._start) / 60000) * (PX_PER_HOUR / 60));
                       const tone = blockTone(block);
+                      const sessionRecorded = Boolean(block.studySessionStatus);
                       const showTime = height >= 30;
                       const showCourse = height >= 46 && block.courseCode;
                       return (
                         <div
                           key={block.id}
-                          className={`absolute left-0.5 right-0.5 rounded-md border overflow-hidden select-none px-1.5 py-1 ${tone.className} ${block.isDraft ? 'border-dashed opacity-80' : ''}`}
-                          style={{ top, height, zIndex: 3 }}
+                          className={`absolute rounded-md border overflow-hidden select-none px-1.5 py-1 ${tone.className} ${block.isDraft ? 'border-dashed opacity-80' : ''}`}
+                          style={{
+                            top,
+                            height,
+                            zIndex: 3 + (block._lane || 0),
+                            left: `calc(${(block._lane / block._laneCount) * 100}% + 2px)`,
+                            width: `calc(${100 / block._laneCount}% - 4px)`,
+                          }}
                           title={block.description || block.title}
-                          onPointerDown={(e) => !block.locked && onPointerDownBlock(e, block, 'move')}
+                          onPointerDown={(e) => {
+                            if (block.locked) return;
+                            if (sessionRecorded) {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              openEdit(block, { x: e.clientX, y: e.clientY });
+                              return;
+                            }
+                            onPointerDownBlock(e, block, 'move');
+                          }}
                         >
-                          {!block.locked && (
+                          {!block.locked && !sessionRecorded && (
                             <div
                               className="absolute left-0 right-0 top-0 h-1.5 cursor-n-resize z-[1]"
                               onPointerDown={(e) => onPointerDownBlock(e, block, 'resize-top')}
@@ -683,7 +738,12 @@ export default function Timetable({ initialView = 'week', initialAnchor = null, 
                           </div>
                           {showCourse && <div className="text-[9px] font-mono opacity-80 truncate">{block.courseCode}</div>}
                           {showTime && <div className="text-[9px] font-mono opacity-70">{formatDuration(block._start, block._end)}</div>}
-                          {!block.locked && (
+                          {sessionRecorded && height >= 46 && (
+                            <div className="text-[9px] font-mono opacity-80 flex items-center gap-1">
+                              <Clock3 size={9} /> {block.actualStudyMinutes != null ? `${block.actualStudyMinutes}p` : (lang === 'vi' ? 'Đang ghi nhận' : 'Recording')}
+                            </div>
+                          )}
+                          {!block.locked && !sessionRecorded && (
                             <div
                               className="absolute left-0 right-0 bottom-0 h-1.5 cursor-s-resize z-[1]"
                               onPointerDown={(e) => onPointerDownBlock(e, block, 'resize-bottom')}
@@ -730,11 +790,18 @@ export default function Timetable({ initialView = 'week', initialAnchor = null, 
                 <Play size={13} /> {lang === 'vi' ? 'Bắt đầu tự học (Pomodoro)' : 'Start studying (Pomodoro)'}
               </button>
             )}
-            <div>
+            {modal.mode === 'edit' && modal.block.studySessionStatus && (
+              <div className="rounded-lg border border-line bg-surface-elevated px-3 py-2 text-[11px] text-fg-secondary">
+                {lang === 'vi'
+                  ? 'Buổi này đã bắt đầu ghi nhận. Lịch và dữ liệu học thực tế được giữ nguyên.'
+                  : 'This session has started recording. Its schedule and actual-study record are preserved.'}
+              </div>
+            )}
+            <div className={modal.block?.studySessionStatus ? 'opacity-50 pointer-events-none' : ''}>
               <label className="block text-[11px] font-semibold mb-1 text-fg-secondary">{lang === 'vi' ? 'Tiêu đề' : 'Title'}</label>
               <input className="input text-[13px] h-9" value={modal.title} onChange={(e) => setModal((m) => ({ ...m, title: e.target.value }))} placeholder={lang === 'vi' ? 'Tự học' : 'Self-study'} />
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className={`grid grid-cols-2 gap-2 ${modal.block?.studySessionStatus ? 'opacity-50 pointer-events-none' : ''}`}>
               <div>
                 <label className="block text-[11px] font-semibold mb-1 text-fg-secondary">{lang === 'vi' ? 'Bắt đầu' : 'Start'}</label>
                 <input type="datetime-local" className="input text-[12px] h-9" value={modal.start} onChange={(e) => setModal((m) => ({ ...m, start: e.target.value }))} />
@@ -753,7 +820,7 @@ export default function Timetable({ initialView = 'week', initialAnchor = null, 
               </div>
             )}
             <div className="flex items-center justify-between pt-1">
-              {modal.mode === 'edit' ? (
+              {modal.mode === 'edit' && !modal.block.studySessionStatus ? (
                 <button type="button" onClick={requestDelete} disabled={saving} className="text-[11px] font-bold text-danger cursor-pointer disabled:opacity-50">
                   {lang === 'vi' ? 'Xoá' : 'Delete'}
                 </button>
@@ -762,7 +829,7 @@ export default function Timetable({ initialView = 'week', initialAnchor = null, 
                 <button type="button" onClick={() => setModal(null)} disabled={saving} className="btn-ghost text-[11px] px-3 py-1.5 rounded-lg cursor-pointer">
                   {lang === 'vi' ? 'Huỷ' : 'Cancel'}
                 </button>
-                <button type="button" onClick={submitModal} disabled={saving} className="btn btn-accent text-[11px] px-3 py-1.5 rounded-lg cursor-pointer disabled:opacity-50">
+                <button type="button" onClick={submitModal} disabled={saving || Boolean(modal.block?.studySessionStatus)} className="btn btn-accent text-[11px] px-3 py-1.5 rounded-lg cursor-pointer disabled:opacity-50">
                   {saving ? <Loader2 size={13} className="animate-spin" /> : (lang === 'vi' ? 'Lưu' : 'Save')}
                 </button>
               </div>

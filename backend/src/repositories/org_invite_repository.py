@@ -2,7 +2,7 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 
-from src.db.models import OrgInvite
+from src.db.models import CourseSection, OrgInvite
 
 
 class OrgInviteRepository:
@@ -28,6 +28,29 @@ class OrgInviteRepository:
             .order_by(OrgInvite.created_at.desc())
             .all()
         )
+
+    def assign_section_instructor(self, section_id: str, instructor_id: str) -> bool:
+        """Gán giảng viên cho lớp mà lời mời mang theo — chỉ khi lớp còn trống.
+
+        Chạm `CourseSection` từ repository của lời mời vì chính lời mời là thứ
+        mang quyết định gán này; tách ra một repository riêng chỉ để đặt một
+        câu UPDATE thì đắt hơn là đáng.
+
+        Trả về True nếu thật sự gán. Điều kiện `instructor_id IS NULL` nằm
+        trong chính câu UPDATE: giữa lúc gửi lời mời và lúc người kia đăng ký,
+        admin vẫn có thể gán lớp cho người khác ở màn Lớp học — bản gán sau
+        cùng đó phải thắng, lời mời cũ không được cướp lại lớp.
+        """
+        updated = (
+            self._db.query(CourseSection)
+            .filter(
+                CourseSection.id == section_id,
+                CourseSection.instructor_id.is_(None),
+            )
+            .update({"instructor_id": instructor_id}, synchronize_session=False)
+        )
+        self._db.commit()
+        return bool(updated)
 
     def mark_used(self, invite: OrgInvite, used_at: datetime) -> OrgInvite:
         invite.used_at = used_at
