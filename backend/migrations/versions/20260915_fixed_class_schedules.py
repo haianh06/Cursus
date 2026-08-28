@@ -1,7 +1,7 @@
 """Add institutional class schedules, exceptions and recipient notifications.
 
 Revision ID: 20260915_fixed_class_schedules
-Revises: 20260914_purge_legacy_reflections_34_35
+Revises: 20260914_reflection_purge
 """
 
 from __future__ import annotations
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from alembic import op
 
 revision: str = "20260915_fixed_class_schedules"
-down_revision: str | Sequence[str] | None = "20260914_purge_legacy_reflections_34_35"
+down_revision: str | Sequence[str] | None = "20260914_reflection_purge"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 

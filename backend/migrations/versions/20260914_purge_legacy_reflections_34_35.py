@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from alembic import op
 
-revision: str = "20260914_purge_legacy_reflections_34_35"
+revision: str = "20260914_reflection_purge"
 down_revision: str | Sequence[str] | None = "20260913_timetable_plan_history"
 branch_labels = None
 depends_on = None
