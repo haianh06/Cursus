@@ -106,7 +106,14 @@ def _context(db: Session, student_id: str, question: str) -> list[dict[str, str]
     hits.sort(key=lambda hit: hit.score, reverse=True)
 
     sources: list[dict[str, str]] = []
+    seen_titles: set[str] = set()
     for hit in hits:
+        # One citation pill per source document -- hits are sorted by score
+        # above, so the first (highest-scoring) chunk seen for a title wins;
+        # without this, 2-3 top chunks from the same syllabus show up as
+        # repeated, visually-identical citation pills in the chat UI.
+        if hit.chunk.doc_title in seen_titles:
+            continue
         # LLM08 defense-in-depth (see document_content_validator.py's own
         # docstring): that scan already runs at ingest/upload time and flags
         # (never blocks) a document for admin review, but a flagged document
@@ -129,6 +136,7 @@ def _context(db: Session, student_id: str, question: str) -> list[dict[str, str]
                 "isMock": bool(getattr(hit.chunk, "content_source", None) == "mock"),
             }
         )
+        seen_titles.add(hit.chunk.doc_title)
         if len(sources) >= 5:
             break
     return sources

@@ -185,6 +185,32 @@ export default function CursusChat({ user }) {
   const [confirmDeleteAll, setConfirmDeleteAll] = useState(false);
   const [actioningId, setActioningId] = useState(null);
   const briefingCheckedRef = useRef(false);
+  /** Client-side typewriter pacing for assistant replies. SSE deltas from
+   * the backend can arrive in large, fast chunks (or as a single event for
+   * guardrail/crisis replies), so revealing text as it arrives doesn't read
+   * as "typing" — this instead reveals each assistant message's already-
+   * received text at a fixed pace, independent of network timing. */
+  useEffect(() => {
+    const TYPEWRITER_MS = 20;
+    const CHARS_PER_TICK = 2;
+    const id = setInterval(() => {
+      setMessages((items) => {
+        let changed = false;
+        const next = items.map((item) => {
+          if (item.role !== 'assistant') return item;
+          const target = item.text.length;
+          const current = item.displayedLength ?? 0;
+          if (current < target) {
+            changed = true;
+            return { ...item, displayedLength: Math.min(target, current + CHARS_PER_TICK) };
+          }
+          return item;
+        });
+        return changed ? next : items;
+      });
+    }, TYPEWRITER_MS);
+    return () => clearInterval(id);
+  }, []);
   /** null = not checked yet, true/false = last known result. Pinged once as
    * soon as this component mounts (i.e. as soon as the student's page
    * loads) rather than waiting for them to open the panel and send a
@@ -251,7 +277,16 @@ export default function CursusChat({ user }) {
   const selectConversation = async (id) => {
     try {
       const res = await getCursusConversationMessages(id);
-      setMessages((res.messages || []).map((m) => ({ role: m.role, text: m.content, citations: m.citations || [] })));
+      setMessages(
+        (res.messages || []).map((m) => ({
+          role: m.role,
+          text: m.content,
+          citations: m.citations || [],
+          // History is already "typed" — show it immediately rather than
+          // replaying the typewriter animation for old messages.
+          displayedLength: m.content.length,
+        })),
+      );
       setConversationId(id);
       setHistoryOpen(false);
     } catch {
@@ -359,7 +394,7 @@ export default function CursusChat({ user }) {
     const text = rawText.trim();
     if (!text || loading) return;
     setValue('');
-    setMessages((items) => [...items, { role: 'user', text }, { role: 'assistant', text: '', citations: [] }]);
+    setMessages((items) => [...items, { role: 'user', text }, { role: 'assistant', text: '', citations: [], displayedLength: 0 }]);
     setLoading(true);
     try {
       // Skip the extra round-trip when the background ping from mount (or
@@ -444,33 +479,50 @@ export default function CursusChat({ user }) {
             {messages.length === 0 && (
               <WelcomeCard briefing={briefing} onDismissBriefing={dismissBriefing} onPickReply={sendMessage} disabled={loading} />
             )}
-            {messages.map((item, index) => (
-              <article
-                key={index}
-                className={
-                  item.role === 'user'
-                    ? 'ml-8 rounded-2xl rounded-br-sm bg-accent-soft p-3 text-sm text-fg'
-                    : 'mr-4 rounded-2xl rounded-bl-sm border border-line bg-surface-card p-3 text-sm text-fg shadow-sm'
-                }
-              >
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{item.text || 'Đang soạn câu trả lời…'}</ReactMarkdown>
-                {item.citations?.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-2 border-t border-line pt-2">
-                    {item.citations.map((citation) => (
-                      <CitationChip key={citation.id} citation={citation} onOpen={setOpenCitation} lang="vi" />
-                    ))}
-                  </div>
-                )}
-                {item.actionProposal && !item.actionProposal.resolved && (
-                  <ActionProposalCard
-                    proposal={item.actionProposal}
-                    busy={actioningId === item.actionProposal.id}
-                    onConfirm={() => handleConfirmAction(index, item.actionProposal)}
-                    onCancel={() => handleCancelAction(index, item.actionProposal)}
-                  />
-                )}
-              </article>
-            ))}
+            {messages.map((item, index) => {
+              const isAssistant = item.role === 'assistant';
+              const displayedLength = item.displayedLength ?? item.text.length;
+              const shownText = isAssistant ? item.text.slice(0, displayedLength) : item.text;
+              const doneTyping = !isAssistant || displayedLength >= item.text.length;
+              const isLast = index === messages.length - 1;
+              return (
+                <article
+                  key={index}
+                  className={
+                    item.role === 'user'
+                      ? 'ml-8 rounded-2xl rounded-br-sm bg-accent-soft p-3 text-sm text-fg'
+                      : 'mr-4 rounded-2xl rounded-bl-sm border border-line bg-surface-card p-3 text-sm text-fg shadow-sm'
+                  }
+                >
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{shownText || 'Đang soạn câu trả lời…'}</ReactMarkdown>
+                  {/* Citations only appear once the reply has finished "typing" out,
+                      so they don't jump in mid-animation. */}
+                  {doneTyping && item.citations?.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-2 border-t border-line pt-2">
+                      {item.citations.map((citation) => (
+                        <CitationChip key={citation.id} citation={citation} onOpen={setOpenCitation} lang="vi" />
+                      ))}
+                    </div>
+                  )}
+                  {item.actionProposal && !item.actionProposal.resolved && (
+                    <ActionProposalCard
+                      proposal={item.actionProposal}
+                      busy={actioningId === item.actionProposal.id}
+                      onConfirm={() => handleConfirmAction(index, item.actionProposal)}
+                      onCancel={() => handleCancelAction(index, item.actionProposal)}
+                    />
+                  )}
+                  {/* Suggested follow-up questions after each finished bot reply —
+                      nudges toward reusing a common question instead of freeform
+                      retyping, which cuts down on redundant LLM calls. */}
+                  {isAssistant && isLast && doneTyping && !loading && (
+                    <div className="mt-3 border-t border-line pt-2">
+                      <QuickReplies onPick={sendMessage} disabled={loading} />
+                    </div>
+                  )}
+                </article>
+              );
+            })}
           </main>
           <form onSubmit={send} className="border-t border-line bg-surface-card p-3">
             <div className="flex items-end gap-2 rounded-full border border-line bg-surface px-4 py-2 focus-within:ring-2 focus-within:ring-accent">

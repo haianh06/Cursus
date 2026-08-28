@@ -85,7 +85,7 @@ export function SourceDrawer({ citation, onClose, lang = 'vi' }) {
   return (
     <>
       <div
-        className="fixed inset-0 z-[80] bg-black/40 backdrop-blur-sm"
+        className="fixed inset-0 z-[110] bg-black/40 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -94,7 +94,7 @@ export function SourceDrawer({ citation, onClose, lang = 'vi' }) {
         role="dialog"
         aria-modal="true"
         aria-label={lang === 'vi' ? 'Nguồn trích dẫn' : 'Citation source'}
-        className="fixed top-0 right-0 bottom-0 z-[85] w-full sm:w-[440px] flex flex-col animate-scale-in border-l bg-surface-card border-line"
+        className="fixed top-0 right-0 bottom-0 z-[115] w-full sm:w-[440px] flex flex-col animate-scale-in border-l bg-surface-card border-line"
       >
         <div className="flex items-center justify-between px-5 h-14 border-b shrink-0 border-line">
           <div className="flex items-center gap-2 min-w-0">
