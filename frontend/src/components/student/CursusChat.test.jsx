@@ -84,7 +84,7 @@ describe('CursusChat', () => {
 
     renderChat();
     const panel = await openPanel(user);
-    const textarea = within(panel).getByPlaceholder('Hỏi Cursus…');
+    const textarea = within(panel).getByPlaceholderText('Hỏi Cursus…');
     await user.type(textarea, 'Tóm tắt môn học giúp mình');
     await user.keyboard('{Enter}');
 
@@ -125,7 +125,7 @@ describe('CursusChat', () => {
     // must render above it, not behind it (the original bug).
     expect(panel.className).toMatch(/z-\[100\]/);
 
-    const textarea = within(panel).getByPlaceholder('Hỏi Cursus…');
+    const textarea = within(panel).getByPlaceholderText('Hỏi Cursus…');
     await user.type(textarea, 'Hỏi gì đó');
     await user.keyboard('{Enter}');
 
