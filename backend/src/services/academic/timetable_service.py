@@ -423,9 +423,15 @@ class TimetableService:
                 .all()
             )
             series_ids = {occurrence.id for occurrence in series}
-            for occurrence in series:
-                occ_start = occurrence.start_time + delta_start
-                occ_end = occ_start + new_duration
+            proposed_occurrences = [
+                (
+                    occurrence,
+                    occurrence.start_time + delta_start,
+                    occurrence.start_time + delta_start + new_duration,
+                )
+                for occurrence in series
+            ]
+            for _, occ_start, occ_end in proposed_occurrences:
                 # A recurring change is atomic: silently skipping one week
                 # creates a timetable the student cannot reason about.
                 self._assert_no_timetable_overlap(
@@ -434,6 +440,7 @@ class TimetableService:
                     end=occ_end,
                     exclude_block_ids=series_ids,
                 )
+            for occurrence, occ_start, occ_end in proposed_occurrences:
                 if occ_start.date() != occurrence.start_time.date():
                     daily_plan = self._ensure_daily_plan(student_id=student_id, day=occ_start.date())
                     occurrence.daily_plan_id = daily_plan.id
