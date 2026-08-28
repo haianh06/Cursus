@@ -90,7 +90,7 @@ def _ensure_user(db, org: Organization, email: str, full_name: str, role: str) -
 DEMO_ROLE_ACCOUNTS = [
     ("demo.student@cursusdemo.local", "Demo Student", UserRole.STUDENT.value),
     ("demo.instructor@cursusdemo.local", "Demo Instructor", UserRole.INSTRUCTOR.value),
-    ("admin@demo.com", "Cursus Uni Admin", UserRole.ADMIN.value),
+    ("demo.admin@cursusdemo.local", "Demo Admin", UserRole.ADMIN.value),
 ]
 
 

@@ -79,10 +79,7 @@ DEMO_ORG_SLUG = "cursus-demo"
 DEMO_ROLE_EMAILS = {
     "student": "demo.student@cursusdemo.local",
     "instructor": "demo.instructor@cursusdemo.local",
-    # Cursus Uni's designated demo administrator.  Keep this mapping in
-    # sync with provision_organization.py so the public Demo role selector
-    # never depends on a stale fixture email.
-    "admin": "admin@demo.com",
+    "admin": "demo.admin@cursusdemo.local",
 }
 
 router = APIRouter(prefix="/auth", tags=["auth"])

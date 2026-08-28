@@ -56,17 +56,12 @@ SSA101_DOC_ID = "doc_ssa101_syllabus_13785"
 SSA101_DOC_TITLE = "Syllabus SSA101 — Kỹ năng học thuật"
 SSA101_SYLLABUS_VERSION = "13785-2025-11-27"
 
-# The hosted Cursus Uni showcase is seeded from real course/syllabus records.
-# It must never be mixed with the older, self-provisioning Gate-2 SSA101
-# fixture that is still useful for isolated local development.
-HOSTED_DEMO_ORG_SLUG = "cursus-demo"
-
 # ── Demo personas (Blueprint §7) ─────────────────────────────────────────
 # Đăng is whoever signs in through the Student demo role; the seed only fixes
 # the display name so the story reads consistently on screen.
 DEMO_STUDENT_EMAIL = "demo.student@cursusdemo.local"
 DEMO_INSTRUCTOR_EMAIL = "demo.instructor@cursusdemo.local"
-DEMO_ADMIN_EMAIL = "admin@demo.com"
+DEMO_ADMIN_EMAIL = "demo.admin@cursusdemo.local"
 
 PERSONA_NAMES = {
     DEMO_STUDENT_EMAIL: "Trịnh Hải Đăng",
@@ -479,20 +474,6 @@ class Gate2DemoService:
 
     def ensure_student(self, student_id: str) -> dict:
         """Light-weight per-request hook: class exists + student enrolled."""
-        student = self._db.query(models.User).filter_by(id=student_id).first()
-        if (
-            student is not None
-            and student.organization is not None
-            and student.organization.slug == HOSTED_DEMO_ORG_SLUG
-        ):
-            return {
-                "fixtureVersion": "cursus_uni_seed_v1",
-                "courseId": "course_mock_cea201",
-                "sectionId": "sec_CEA201_SE2001",
-                "assignmentId": "asg_w3_sec_CEA201_SE2001",
-                "officialChunks": 0,
-            }
-
         existing_enrollment = (
             self._db.query(models.Enrollment.id)
             .filter_by(student_id=student_id, section_id=CLASS_SECTION_ID)

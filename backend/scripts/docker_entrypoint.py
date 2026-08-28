@@ -170,7 +170,7 @@ def _ensure_demo_sandbox() -> None:
             "Cursus Demo University",
             "sandbox",
             "--admin-email",
-            "admin@demo.com",
+            "demo.admin@cursusdemo.local",
             "--admin-name",
             "Demo Admin",
         ]
