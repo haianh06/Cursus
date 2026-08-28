@@ -51,6 +51,11 @@ DEPLOY_ONLY_PATHS = {
     "DEPLOY.md",
     "scripts/sync_and_deploy.py",
     "scripts/keep_alive.py",
+    # Production-demo reset/seed is a deploy-repo artifact.  It documents the
+    # retained syllabus contract and must never be overwritten by a similarly
+    # named source-repo fixture during mirror syncs.  Running it is always a
+    # deliberate, manual Supabase operation; deploys themselves never seed.
+    "backend/scripts/seed_cursus_uni_demo.sql",
 }
 DEPLOY_ONLY_PREFIXES = ("scripts/sql/", ".claude/", "supabase/", "frontend/.vercel/")
 
