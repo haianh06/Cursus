@@ -159,7 +159,7 @@ class TimetableService:
         plan_id: str,
         week_start: date | None = None,
     ) -> dict:
-        """Place approved plan tasks into free evening slots on the timetable."""
+        """Place tasks only in declared, waking-hour gaps — never by fallback."""
         plan = (
             self._db.query(models.WeeklyPlan)
             .filter_by(id=plan_id, student_id=student_id)
@@ -193,14 +193,27 @@ class TimetableService:
             if block["id"] not in plan_block_ids
         ]
 
-        cursor_day = 0
+        goals = plan.goals if isinstance(plan.goals, dict) else {}
+        declared = {
+            str(item.get("date")): int(item.get("availableMinutes") or 0)
+            for item in (goals.get("availability") or [])
+            if item.get("date")
+        }
+        if not declared:
+            raise ValueError("Hãy khai báo thời gian rảnh theo từng ngày trước khi xác nhận kế hoạch")
+        windows = {"MORNING": (time(7), time(12)), "AFTERNOON": (time(13), time(18)), "EVENING": (time(18), time(23))}
+        preferred_start, preferred_end = windows.get(str((goals.get("preferred_sessions") or ["EVENING"])[0]).upper(), windows["EVENING"])
         for task, block in task_rows:
             duration = max(30, int(task.planned_minutes or 60))
             placed = False
-            for day_offset in range(cursor_day, 5):  # Mon-Fri
+            preferred_day = max(0, min(6, (block.start_time.date() - monday).days))
+            for day_offset in list(range(preferred_day, 7)) + list(range(0, preferred_day)):
                 day = monday + timedelta(days=day_offset)
-                slot_start = datetime.combine(day, time(18, 0))
-                latest = datetime.combine(day, time(22, 0))
+                day_key = day.isoformat()
+                if declared.get(day_key, 0) < duration:
+                    continue
+                slot_start = datetime.combine(day, preferred_start)
+                latest = datetime.combine(day, preferred_end)
                 while slot_start + timedelta(minutes=duration) <= latest:
                     slot_end = slot_start + timedelta(minutes=duration)
                     if not self._overlaps(slot_start, slot_end, occupied):
@@ -212,24 +225,14 @@ class TimetableService:
                         block.end_time = slot_end
                         block.activity_description = task.title
                         occupied.append((slot_start, slot_end))
-                        cursor_day = day_offset
+                        declared[day_key] -= duration
                         placed = True
                         break
                     slot_start += timedelta(minutes=30)
                 if placed:
                     break
             if not placed:
-                day = monday + timedelta(days=5)
-                slot_start = datetime.combine(day, time(19, 0))
-                slot_end = slot_start + timedelta(minutes=duration)
-                daily = self._ensure_daily_plan(
-                    student_id=student_id, day=day, weekly_plan_id=plan_id
-                )
-                block.daily_plan_id = daily.id
-                block.start_time = slot_start
-                block.end_time = slot_end
-                block.activity_description = task.title
-                occupied.append((slot_start, slot_end))
+                raise ValueError("Không đủ khoảng trống để xếp toàn bộ kế hoạch. Hãy tăng giờ rảnh hoặc điều chỉnh ưu tiên.")
 
         # The caller owns the transaction so scheduling and plan approval commit atomically.
         self._db.flush()
