@@ -562,3 +562,53 @@ async def test_suspicious_chunk_is_excluded_from_llm_context(client, monkeypatch
         events = await _parse_sse(response)
     citation_items = next((data for kind, data in events if kind == "citation"), {"items": []})["items"]
     assert all("chunk_inj_bad" not in item["id"] for item in citation_items)
+
+
+@pytest.mark.asyncio
+async def test_stream_dedups_citations_from_the_same_document(client, monkeypatch):
+    """Two chunks that both match the question but live in the same syllabus
+    document must collapse into a single citation pill -- otherwise the same
+    document shows up twice in the chat UI (see cursus_chat.py's `_context`,
+    which now dedups by `doc_title`, keeping the highest-scoring chunk)."""
+    _patch_ai_service(monkeypatch)
+    org_id = ensure_org(f"cc-dedup-{uuid.uuid4().hex[:6]}", "cc-dedup")
+    instructor_id = ensure_user(email=f"cc.dedupi.{uuid.uuid4().hex}@example.test", org_id=org_id, role=models.UserRole.INSTRUCTOR)
+    student_email = f"cc.dedups.{uuid.uuid4().hex}@example.test"
+    student_id = ensure_user(email=student_email, org_id=org_id, role=models.UserRole.STUDENT)
+    code = _code("CCD")
+    course_id = ensure_course(code=code, org_id=org_id)
+    enroll_student(student_id=student_id, course_id=course_id, instructor_id=instructor_id)
+
+    db = SessionLocal()
+    try:
+        doc = models.Document(
+            id=f"doc_dedup_{course_id}", course_id=course_id, title=f"{code} Syllabus",
+            file_path="mock.md", doc_type="SYLLABUS", version="1.0", metadata_info={"source": "test"},
+        )
+        db.add(doc)
+        db.flush()
+        db.add(models.DocumentChunk(
+            id=f"chunk_dedup_a_{course_id}", document_id=doc.id, chunk_index=0,
+            text=f"{code} kien truc he thong may tinh phan mo dau co ban.",
+            token_count=10, metadata_info={"course_code": code, "doc_type": "SYLLABUS", "section": "Phan 1"},
+        ))
+        db.add(models.DocumentChunk(
+            id=f"chunk_dedup_b_{course_id}", document_id=doc.id, chunk_index=1,
+            text=f"{code} kien truc he thong may tinh phan nang cao chi tiet.",
+            token_count=10, metadata_info={"course_code": code, "doc_type": "SYLLABUS", "section": "Phan 2"},
+        ))
+        db.commit()
+    finally:
+        db.close()
+
+    token = await login(client, student_email)
+    async with client.stream(
+        "POST", "/api/v1/student/cursus/stream", headers=auth_headers(token),
+        json={"message": f"{code} kien truc he thong may tinh la gi?"},
+    ) as response:
+        events = await _parse_sse(response)
+    citation_items = next((data for kind, data in events if kind == "citation"), {"items": []})["items"]
+    titles = [item["title"] for item in citation_items]
+    assert titles, "expected at least one citation for a clearly-matching question"
+    assert titles.count(f"{code} Syllabus") == 1
+    assert len(titles) == len(set(titles))
