@@ -189,8 +189,11 @@ export default function CursusChat({ user }) {
    * the backend can arrive in large, fast chunks (or as a single event for
    * guardrail/crisis replies), so revealing text as it arrives doesn't read
    * as "typing" — this instead reveals each assistant message's already-
-   * received text at a fixed pace, independent of network timing. */
+   * received text at a fixed pace, independent of network timing.
+   * Gated on `open` so the panel being closed/never opened doesn't leave a
+   * 20ms interval running for the app's entire lifetime. */
   useEffect(() => {
+    if (!open) return undefined;
     const TYPEWRITER_MS = 20;
     const CHARS_PER_TICK = 2;
     const id = setInterval(() => {
@@ -210,7 +213,7 @@ export default function CursusChat({ user }) {
       });
     }, TYPEWRITER_MS);
     return () => clearInterval(id);
-  }, []);
+  }, [open]);
   /** null = not checked yet, true/false = last known result. Pinged once as
    * soon as this component mounts (i.e. as soon as the student's page
    * loads) rather than waiting for them to open the panel and send a
