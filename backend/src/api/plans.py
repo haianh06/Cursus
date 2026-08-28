@@ -239,16 +239,20 @@ def generate_weekly_plan(
     )
 
     if payload.goal_text and payload.subject_code:
-        plan = weekly_plan_engine.generate(
-            db,
-            student_id=current_user.id,
-            goal_text=payload.goal_text,
-            subject_code=payload.subject_code,
-            available_hours=payload.available_hours,
-            preferred_sessions=payload.preferred_sessions,
-            availability=availability,
-            week_start=payload.week_start,
-        )
+        try:
+            plan = weekly_plan_engine.generate(
+                db,
+                student_id=current_user.id,
+                goal_text=payload.goal_text,
+                subject_code=payload.subject_code,
+                available_hours=payload.available_hours,
+                preferred_sessions=payload.preferred_sessions,
+                availability=availability,
+                week_start=payload.week_start,
+            )
+        except weekly_plan_engine.PlanGenerationError as exc:
+            db.rollback()
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
         db.commit()
         return serialize_plan(db, plan)
 

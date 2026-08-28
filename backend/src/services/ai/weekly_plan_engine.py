@@ -58,6 +58,10 @@ class GeneratedTask:
     suggestion_reason: str = ""
 
 
+class PlanGenerationError(ValueError):
+    """The planner must never substitute a fabricated template for AI work."""
+
+
 def _generic_templates(goal_text: str) -> list[GeneratedTask]:
     """Honest, uncited 5-step decomposition — used when no LLM is configured
     or the LLM call fails/returns insufficient context. Never claims a
@@ -355,7 +359,13 @@ def generate(
     discard_drafts_for_week(db, student_id, monday)
 
     llm_tasks, trace = _llm_generated_tasks(db, subject_code=subject_code, goal_text=goal_text)
-    tasks = llm_tasks or _generic_templates(goal_text)
+    if llm_tasks is None:
+        if not has_configured_llm():
+            raise PlanGenerationError("AI lập kế hoạch chưa được cấu hình. Không thể tạo kế hoạch thay thế bằng dữ liệu mẫu.")
+        if trace["retrieval_empty"]:
+            raise PlanGenerationError("Chưa có tài liệu môn học để AI lập kế hoạch có căn cứ.")
+        raise PlanGenerationError("AI chưa tạo được kế hoạch đáng tin cậy. Vui lòng thử lại.")
+    tasks = llm_tasks
 
     capacity_minutes = _capacity_minutes(availability, available_hours)
     plan_id = f"plan_{uuid.uuid4().hex[:8]}"
