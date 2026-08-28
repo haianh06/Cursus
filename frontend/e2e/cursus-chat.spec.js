@@ -37,14 +37,15 @@ test.describe('Cursus chat widget', () => {
     // follow-up FAQ chips (mục 2) to reappear under the finished answer.
     await expect(panel.getByRole('button', { name: /Hôm nay mình nên học gì trước/i })).toBeVisible({ timeout: 30000 });
 
-    // Citation dedup (mục 1): collect every citation chip's visible label
-    // text and assert there are no duplicates.
-    const citationChips = assistantBubble.locator('button.citation, button:has-text("")').filter({ hasText: /Syllabus|CEA|CSI|PRF/i });
+    // Citation dedup (mục 1): CitationChip always sets a `title` attribute
+    // ("Mở nguồn: <label>" / "Dữ liệu mô phỏng — mở nguồn: <label>") that
+    // uniquely names the source document -- collect those and assert no
+    // two chips point at the same document.
+    const citationChips = assistantBubble.locator('button[title^="Mở nguồn:"], button[title^="Dữ liệu mô phỏng"]');
     const count = await citationChips.count();
     if (count > 0) {
-      const labels = await citationChips.allTextContents();
-      const trimmed = labels.map((l) => l.trim());
-      expect(new Set(trimmed).size).toBe(trimmed.length);
+      const titles = await citationChips.evaluateAll((buttons) => buttons.map((b) => b.getAttribute('title')));
+      expect(new Set(titles).size).toBe(titles.length);
 
       // Source drawer z-index (mục 4): clicking a citation must render the
       // drawer's close button clickable/on-top, not hidden behind the panel.
