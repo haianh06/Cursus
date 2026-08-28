@@ -26,6 +26,56 @@
   margin: 0 auto;
   padding: 1rem;
 }
+
+/* Settings controls use explicit geometry instead of a utility transform.
+ * This keeps the thumb inside its track at every zoom level and prevents
+ * the semester action from squeezing the input on narrow admin viewports. */
+.admin-settings-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-settings-switch {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  width: 2.75rem;
+  height: 1.5rem;
+  flex: 0 0 2.75rem;
+  padding: 0;
+  border-radius: 9999px;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.admin-settings-switch-thumb {
+  position: absolute;
+  top: 0.125rem;
+  left: 0.125rem;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.16);
+  transition: left 150ms ease;
+}
+
+.admin-settings-switch.is-enabled .admin-settings-switch-thumb {
+  left: 1.5rem;
+}
+
+.admin-settings-semester-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-settings-save {
+  min-width: 4.5rem;
+  white-space: nowrap;
+}
 .admin-scroll-x { overflow-x: auto; }
 .admin-case-ribbon { position: sticky; top: 0; z-index: 5; }
 
@@ -172,6 +222,8 @@
   .admin-page-header { align-items: flex-start; }
   .admin-page-header > button { width: 100%; justify-content: center; }
   .admin-stat-card { min-height: 78px; padding: 0.75rem; }
+  .admin-settings-semester-form { grid-template-columns: 1fr; }
+  .admin-settings-save { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {

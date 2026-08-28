@@ -82,7 +82,7 @@ export default function AdminSettingsPanel() {
       )}
 
       <div className="space-y-3">
-        <label className="flex items-center justify-between gap-4 rounded-xl border border-line bg-surface-card p-4">
+        <label className="admin-settings-row rounded-xl border border-line bg-surface-card p-4">
           <div className="min-w-0">
             <p className="text-xs font-bold text-fg">{t('admin.demoModeLabel')}</p>
             <p className="mt-1 text-[11px] text-fg-secondary leading-relaxed">{t('admin.demoModeDesc')}</p>
@@ -93,13 +93,13 @@ export default function AdminSettingsPanel() {
             aria-checked={settings.demoModeEnabled}
             disabled={busy}
             onClick={() => toggle('demoModeEnabled')}
-            className={`shrink-0 relative h-6 w-11 rounded-full transition-colors cursor-pointer disabled:opacity-60 ${settings.demoModeEnabled ? 'bg-accent' : 'bg-surface-elevated border border-line'}`}
+            className={`admin-settings-switch cursor-pointer disabled:opacity-60 ${settings.demoModeEnabled ? 'is-enabled bg-accent' : 'bg-surface-elevated border border-line'}`}
           >
-            <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${settings.demoModeEnabled ? 'translate-x-5' : 'translate-x-0.5'}`} />
+            <span className="admin-settings-switch-thumb" />
           </button>
         </label>
 
-        <label className="flex items-center justify-between gap-4 rounded-xl border border-line bg-surface-card p-4">
+        <label className="admin-settings-row rounded-xl border border-line bg-surface-card p-4">
           <div className="min-w-0">
             <p className="text-xs font-bold text-fg">{t('admin.autoRiskAlertsLabel')}</p>
             <p className="mt-1 text-[11px] text-fg-secondary leading-relaxed">{t('admin.autoRiskAlertsDesc')}</p>
@@ -110,16 +110,16 @@ export default function AdminSettingsPanel() {
             aria-checked={settings.autoRiskAlertsEnabled}
             disabled={busy}
             onClick={() => toggle('autoRiskAlertsEnabled')}
-            className={`shrink-0 relative h-6 w-11 rounded-full transition-colors cursor-pointer disabled:opacity-60 ${settings.autoRiskAlertsEnabled ? 'bg-accent' : 'bg-surface-elevated border border-line'}`}
+            className={`admin-settings-switch cursor-pointer disabled:opacity-60 ${settings.autoRiskAlertsEnabled ? 'is-enabled bg-accent' : 'bg-surface-elevated border border-line'}`}
           >
-            <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${settings.autoRiskAlertsEnabled ? 'translate-x-5' : 'translate-x-0.5'}`} />
+            <span className="admin-settings-switch-thumb" />
           </button>
         </label>
 
         <form onSubmit={saveSemester} className="rounded-xl border border-line bg-surface-card p-4 space-y-2.5">
           <label htmlFor="default-semester" className="text-xs font-bold text-fg block">{t('admin.defaultSemesterLabel')}</label>
           <p className="text-[11px] text-fg-secondary leading-relaxed">{t('admin.defaultSemesterDesc')}</p>
-          <div className="flex items-center gap-2 pt-1">
+          <div className="admin-settings-semester-form pt-1">
             <input
               id="default-semester"
               type="text"
@@ -131,7 +131,7 @@ export default function AdminSettingsPanel() {
             <button
               type="submit"
               disabled={busy || !draftSemester.trim() || draftSemester === settings.defaultSemester}
-              className="btn btn-accent text-xs px-4 py-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn btn-accent admin-settings-save text-xs px-4 py-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {busy ? t('admin.saving') : t('admin.saveBtn')}
             </button>
