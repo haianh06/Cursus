@@ -710,18 +710,9 @@ export default function Timetable({ initialView = 'week', initialAnchor = null, 
                             width: `calc(${100 / block._laneCount}% - 4px)`,
                           }}
                           title={block.description || block.title}
-                          onPointerDown={(e) => {
-                            if (block.locked) return;
-                            if (sessionRecorded) {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              openEdit(block, { x: e.clientX, y: e.clientY });
-                              return;
-                            }
-                            onPointerDownBlock(e, block, 'move');
-                          }}
+                          onPointerDown={(e) => !block.locked && onPointerDownBlock(e, block, 'move')}
                         >
-                          {!block.locked && !sessionRecorded && (
+                          {!block.locked && (
                             <div
                               className="absolute left-0 right-0 top-0 h-1.5 cursor-n-resize z-[1]"
                               onPointerDown={(e) => onPointerDownBlock(e, block, 'resize-top')}
@@ -793,15 +784,15 @@ export default function Timetable({ initialView = 'week', initialAnchor = null, 
             {modal.mode === 'edit' && modal.block.studySessionStatus && (
               <div className="rounded-lg border border-line bg-surface-elevated px-3 py-2 text-[11px] text-fg-secondary">
                 {lang === 'vi'
-                  ? 'Buổi này đã bắt đầu ghi nhận. Lịch và dữ liệu học thực tế được giữ nguyên.'
-                  : 'This session has started recording. Its schedule and actual-study record are preserved.'}
+                  ? 'Bạn vẫn có thể dời hoặc xóa kế hoạch. Nhật ký thời gian thực tế sẽ luôn được lưu riêng.'
+                  : 'You can still move or delete this plan. Its actual-study record is kept separately.'}
               </div>
             )}
-            <div className={modal.block?.studySessionStatus ? 'opacity-50 pointer-events-none' : ''}>
+            <div>
               <label className="block text-[11px] font-semibold mb-1 text-fg-secondary">{lang === 'vi' ? 'Tiêu đề' : 'Title'}</label>
               <input className="input text-[13px] h-9" value={modal.title} onChange={(e) => setModal((m) => ({ ...m, title: e.target.value }))} placeholder={lang === 'vi' ? 'Tự học' : 'Self-study'} />
             </div>
-            <div className={`grid grid-cols-2 gap-2 ${modal.block?.studySessionStatus ? 'opacity-50 pointer-events-none' : ''}`}>
+            <div className="grid grid-cols-2 gap-2">
               <div>
                 <label className="block text-[11px] font-semibold mb-1 text-fg-secondary">{lang === 'vi' ? 'Bắt đầu' : 'Start'}</label>
                 <input type="datetime-local" className="input text-[12px] h-9" value={modal.start} onChange={(e) => setModal((m) => ({ ...m, start: e.target.value }))} />
@@ -820,7 +811,7 @@ export default function Timetable({ initialView = 'week', initialAnchor = null, 
               </div>
             )}
             <div className="flex items-center justify-between pt-1">
-              {modal.mode === 'edit' && !modal.block.studySessionStatus ? (
+              {modal.mode === 'edit' ? (
                 <button type="button" onClick={requestDelete} disabled={saving} className="text-[11px] font-bold text-danger cursor-pointer disabled:opacity-50">
                   {lang === 'vi' ? 'Xoá' : 'Delete'}
                 </button>
@@ -829,7 +820,7 @@ export default function Timetable({ initialView = 'week', initialAnchor = null, 
                 <button type="button" onClick={() => setModal(null)} disabled={saving} className="btn-ghost text-[11px] px-3 py-1.5 rounded-lg cursor-pointer">
                   {lang === 'vi' ? 'Huỷ' : 'Cancel'}
                 </button>
-                <button type="button" onClick={submitModal} disabled={saving || Boolean(modal.block?.studySessionStatus)} className="btn btn-accent text-[11px] px-3 py-1.5 rounded-lg cursor-pointer disabled:opacity-50">
+                <button type="button" onClick={submitModal} disabled={saving} className="btn btn-accent text-[11px] px-3 py-1.5 rounded-lg cursor-pointer disabled:opacity-50">
                   {saving ? <Loader2 size={13} className="animate-spin" /> : (lang === 'vi' ? 'Lưu' : 'Save')}
                 </button>
               </div>

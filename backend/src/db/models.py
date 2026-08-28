@@ -591,6 +591,10 @@ class ScheduleBlock(Base):
     # block, so an edit/delete can be scoped to "this" one occurrence or "all" of
     # them. NULL for a plain (non-repeating) block.
     recurrence_series_id: Mapped[str | None] = mapped_column(String, nullable=True, index=True)
+    # A removed calendar plan must not erase its linked Pomodoro evidence.
+    # NULL means the block is still scheduled; a timestamp hides it from the
+    # calendar while retaining the immutable study session/history.
+    cancelled_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, index=True)
 
     daily_plan: Mapped[DailyPlan] = relationship(back_populates="schedule_blocks")
     study_tasks: Mapped[list["StudyTask"]] = relationship(back_populates="schedule_block")

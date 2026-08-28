@@ -325,7 +325,7 @@ class TimetableService:
         # Non-repeating: a single occurrence, conflict is fatal (existing
         # behavior, unchanged).
         if repeat_weekly_until is None:
-            self._assert_no_class_overlap(student_id=student_id, start=next_start, end=next_end)
+            self._assert_no_timetable_overlap(student_id=student_id, start=next_start, end=next_end)
             block = self._create_block_row(
                 student_id=student_id, title=clean_title, start=next_start, end=next_end
             )
@@ -342,7 +342,7 @@ class TimetableService:
         first_block: models.ScheduleBlock | None = None
         while occurrence_start.date() <= repeat_weekly_until:
             try:
-                self._assert_no_class_overlap(
+                self._assert_no_timetable_overlap(
                     student_id=student_id, start=occurrence_start, end=occurrence_end
                 )
             except ValueError:
@@ -412,7 +412,6 @@ class TimetableService:
         recurrence_scope: str = "this",
     ) -> dict:
         block = self._owned_block(student_id=student_id, block_id=block_id)
-        self._assert_block_has_no_study_session(block)
         original_start = block.start_time
         next_start = (start or block.start_time).replace(tzinfo=None)
         next_end = (end or block.end_time).replace(tzinfo=None)
@@ -426,22 +425,18 @@ class TimetableService:
                 .filter_by(recurrence_series_id=block.recurrence_series_id)
                 .all()
             )
-            # A started/finished session is an auditable record of actual
-            # learning, not a calendar draft. Do not let an "edit all"
-            # operation rewrite a series that contains such a record.
-            for occurrence in series:
-                self._assert_block_has_no_study_session(occurrence)
+            series_ids = {occurrence.id for occurrence in series}
             for occurrence in series:
                 occ_start = occurrence.start_time + delta_start
                 occ_end = occ_start + new_duration
-                # Each occurrence is re-validated individually; a conflicting
-                # one is skipped rather than blocking the whole series edit.
-                try:
-                    self._assert_no_class_overlap(
-                        student_id=student_id, start=occ_start, end=occ_end
-                    )
-                except ValueError:
-                    continue
+                # A recurring change is atomic: silently skipping one week
+                # creates a timetable the student cannot reason about.
+                self._assert_no_timetable_overlap(
+                    student_id=student_id,
+                    start=occ_start,
+                    end=occ_end,
+                    exclude_block_ids=series_ids,
+                )
                 if occ_start.date() != occurrence.start_time.date():
                     daily_plan = self._ensure_daily_plan(student_id=student_id, day=occ_start.date())
                     occurrence.daily_plan_id = daily_plan.id
@@ -453,10 +448,11 @@ class TimetableService:
             self._db.refresh(block)
             return self._block_to_dict(block)
 
-        self._assert_no_class_overlap(
+        self._assert_no_timetable_overlap(
             student_id=student_id,
             start=next_start,
             end=next_end,
+            exclude_block_ids={block.id},
         )
 
         if next_start.date() != block.start_time.date():
@@ -475,27 +471,49 @@ class TimetableService:
         self._db.refresh(block)
         return self._block_to_dict(block)
 
-    def _assert_no_class_overlap(
+    def _assert_no_timetable_overlap(
         self,
         *,
         student_id: str,
         start: datetime,
         end: datetime,
+        exclude_block_ids: set[str] | None = None,
     ) -> None:
-        """Reject self-study ranges that collide with fixed class sessions."""
-        class_blocks = self._class_blocks(
-            student_id=student_id,
-            start=start,
-            end=end,
-        )
-        for class_block in class_blocks:
-            if start < class_block.end and end > class_block.start:
-                label = class_block.course_code or class_block.title
+        """One student can have only one scheduled event at a time."""
+        fixed_blocks = [
+            *self._class_blocks(student_id=student_id, start=start, end=end),
+            *self._exam_blocks(student_id=student_id, start=start, end=end),
+        ]
+        for fixed_block in fixed_blocks:
+            if start < fixed_block.end and end > fixed_block.start:
+                label = fixed_block.course_code or fixed_block.title
                 raise ValueError(
-                    f"Self-study cannot overlap fixed class ({label} "
-                    f"{class_block.start.strftime('%H:%M')}-"
-                    f"{class_block.end.strftime('%H:%M')})"
+                    f"Self-study overlaps fixed schedule ({label} "
+                    f"{fixed_block.start.strftime('%H:%M')}-"
+                    f"{fixed_block.end.strftime('%H:%M')})"
                 )
+
+        query = (
+            self._db.query(models.ScheduleBlock)
+            .join(models.DailyPlan)
+            .join(models.WeeklyPlan)
+            .filter(
+                models.WeeklyPlan.student_id == student_id,
+                models.ScheduleBlock.cancelled_at.is_(None),
+                models.ScheduleBlock.start_time < end,
+                models.ScheduleBlock.end_time > start,
+            )
+        )
+        if exclude_block_ids:
+            query = query.filter(~models.ScheduleBlock.id.in_(exclude_block_ids))
+        conflict = query.order_by(models.ScheduleBlock.start_time).first()
+        if conflict:
+            raise ValueError(
+                "Self-study overlaps another self-study plan "
+                f"({conflict.activity_description} "
+                f"{conflict.start_time.strftime('%H:%M')}-"
+                f"{conflict.end_time.strftime('%H:%M')})"
+            )
 
     def delete_self_study_block(
         self, *, student_id: str, block_id: str, scope: str = "this"
@@ -509,19 +527,10 @@ class TimetableService:
                 .all()
             )
         for target in targets:
-            # Deleting a block used to cascade-delete its Pomodoro session,
-            # erasing the only server-authoritative actual_minutes record.
-            # A student may still remove an unstarted plan, but study history
-            # is immutable once a timer has been created.
-            self._assert_block_has_no_study_session(target)
-            tasks = (
-                self._db.query(models.StudyTask)
-                .filter_by(schedule_block_id=target.id)
-                .all()
-            )
-            for task in tasks:
-                self._db.delete(task)
-            self._db.delete(target)
+            # Calendar deletion is a soft delete. The plan disappears right
+            # away, while any linked Pomodoro session remains an auditable
+            # actual-time record.
+            target.cancelled_at = datetime.utcnow()
         self._db.commit()
 
     def _class_blocks(
@@ -550,8 +559,8 @@ class TimetableService:
             .filter(
                 models.CalendarEvent.section_id.in_(section_ids),
                 models.CalendarEvent.event_type == "LECTURE",
-                models.CalendarEvent.start_time >= start,
                 models.CalendarEvent.start_time < end,
+                models.CalendarEvent.end_time > start,
             )
             .all()
         )
@@ -675,6 +684,7 @@ class TimetableService:
             )
             .filter(
                 models.WeeklyPlan.student_id == student_id,
+                models.ScheduleBlock.cancelled_at.is_(None),
                 models.ScheduleBlock.start_time >= start,
                 models.ScheduleBlock.start_time < end,
             )
@@ -835,19 +845,6 @@ class TimetableService:
         if not row:
             raise LookupError("Self-study block not found")
         return row
-
-    def _assert_block_has_no_study_session(self, block: models.ScheduleBlock) -> None:
-        """Keep actual self-study evidence independent from editable plans."""
-        session_exists = (
-            self._db.query(models.SelfStudySession.id)
-            .filter(models.SelfStudySession.schedule_block_id == block.id)
-            .first()
-            is not None
-        )
-        if session_exists:
-            raise ValueError(
-                "A self-study block cannot be changed or deleted after its study session starts"
-            )
 
     @staticmethod
     def _validate_range(start: datetime, end: datetime) -> None:

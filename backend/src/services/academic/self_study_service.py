@@ -226,6 +226,7 @@ class SelfStudyService:
             .join(models.WeeklyPlan)
             .filter(
                 models.WeeklyPlan.student_id == student_id,
+                models.ScheduleBlock.cancelled_at.is_(None),
                 models.ScheduleBlock.start_time >= start,
                 models.ScheduleBlock.start_time < end,
             )
