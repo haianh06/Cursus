@@ -187,8 +187,8 @@ async def test_recurring_self_study_block_create_and_delete_all(client):
 
 
 @pytest.mark.asyncio
-async def test_started_self_study_block_cannot_be_changed_or_deleted(client):
-    """A calendar plan stays editable only until its real timer starts."""
+async def test_started_self_study_plan_can_be_changed_or_removed_without_losing_session(client):
+    """Plans are flexible; Pomodoro evidence survives their removal."""
     headers = await _login_student(client)
 
     start = datetime.now() + timedelta(minutes=1)
@@ -214,12 +214,46 @@ async def test_started_self_study_block_cannot_be_changed_or_deleted(client):
         headers=headers,
         json={"title": "Edited after starting"},
     )
-    assert update_response.status_code == 400, update_response.text
+    assert update_response.status_code == 200, update_response.text
 
     delete_response = await client.delete(
         f"/api/v1/plans/timetable/blocks/{block_id}", headers=headers,
     )
-    assert delete_response.status_code == 400, delete_response.text
+    assert delete_response.status_code == 204, delete_response.text
+
+    monday = start.date() - timedelta(days=start.weekday())
+    timetable = await client.get(
+        f"/api/v1/plans/timetable?week_start={monday.isoformat()}", headers=headers,
+    )
+    assert all(block["id"] != block_id for block in timetable.json()["blocks"])
+
+    session_response = await client.get(
+        f"/api/v1/student/self-study/sessions/{start_session.json()['id']}", headers=headers,
+    )
+    assert session_response.status_code == 200, session_response.text
+
+
+@pytest.mark.asyncio
+async def test_timetable_rejects_overlap_between_self_study_plans(client):
+    headers = await _login_student(client)
+    monday = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    while monday.weekday() != 0:
+        monday += timedelta(days=1)
+
+    first = await client.post(
+        "/api/v1/plans/timetable/blocks",
+        headers=headers,
+        json={"title": "Focus A", "start": monday.replace(hour=18).isoformat(), "end": monday.replace(hour=19).isoformat()},
+    )
+    assert first.status_code == 201, first.text
+
+    overlap = await client.post(
+        "/api/v1/plans/timetable/blocks",
+        headers=headers,
+        json={"title": "Focus B", "start": monday.replace(hour=18, minute=30).isoformat(), "end": monday.replace(hour=19, minute=30).isoformat()},
+    )
+    assert overlap.status_code == 400, overlap.text
+    assert "overlap" in overlap.json()["detail"].lower()
 
 
 @pytest.mark.asyncio

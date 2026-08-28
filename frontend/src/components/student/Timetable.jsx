@@ -734,7 +734,7 @@ export default function Timetable({ initialView = 'week', initialAnchor = null, 
                               <Clock3 size={9} /> {block.actualStudyMinutes != null ? `${block.actualStudyMinutes}p` : (lang === 'vi' ? 'Đang ghi nhận' : 'Recording')}
                             </div>
                           )}
-                          {!block.locked && !sessionRecorded && (
+                          {!block.locked && (
                             <div
                               className="absolute left-0 right-0 bottom-0 h-1.5 cursor-s-resize z-[1]"
                               onPointerDown={(e) => onPointerDownBlock(e, block, 'resize-bottom')}

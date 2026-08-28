@@ -333,24 +333,23 @@ class TimetableService:
             self._db.refresh(block)
             return self._block_to_dict(block)
 
-        # Recurring: each week is its own attempt (a46db63 §6.3.8) — a
-        # conflicting occurrence is skipped, not fatal, unless it's the first
-        # (which the caller is directly waiting on a result for).
+        # Recurring plans are all-or-nothing. Skipping only a conflicting week
+        # makes a repeating commitment misleading, so validate every proposed
+        # occurrence before writing the first row.
         series_id = f"rseries_{uuid.uuid4().hex[:10]}"
-        occurrence_start = next_start
-        occurrence_end = next_end
-        first_block: models.ScheduleBlock | None = None
+        occurrences: list[tuple[datetime, datetime]] = []
+        occurrence_start, occurrence_end = next_start, next_end
         while occurrence_start.date() <= repeat_weekly_until:
-            try:
-                self._assert_no_timetable_overlap(
-                    student_id=student_id, start=occurrence_start, end=occurrence_end
-                )
-            except ValueError:
-                if first_block is None:
-                    raise
-                occurrence_start += timedelta(days=7)
-                occurrence_end += timedelta(days=7)
-                continue
+            occurrences.append((occurrence_start, occurrence_end))
+            occurrence_start += timedelta(days=7)
+            occurrence_end += timedelta(days=7)
+        for occurrence_start, occurrence_end in occurrences:
+            self._assert_no_timetable_overlap(
+                student_id=student_id, start=occurrence_start, end=occurrence_end
+            )
+
+        first_block: models.ScheduleBlock | None = None
+        for occurrence_start, occurrence_end in occurrences:
             block = self._create_block_row(
                 student_id=student_id,
                 title=clean_title,
@@ -360,8 +359,6 @@ class TimetableService:
             )
             if first_block is None:
                 first_block = block
-            occurrence_start += timedelta(days=7)
-            occurrence_end += timedelta(days=7)
         self._db.commit()
         self._db.refresh(first_block)
         return self._block_to_dict(first_block)
@@ -839,6 +836,7 @@ class TimetableService:
             .filter(
                 models.ScheduleBlock.id == block_id,
                 models.WeeklyPlan.student_id == student_id,
+                models.ScheduleBlock.cancelled_at.is_(None),
             )
             .first()
         )
