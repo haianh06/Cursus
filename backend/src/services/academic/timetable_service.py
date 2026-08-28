@@ -18,6 +18,7 @@ from src.services.academic.academic_calendar import (
     slot_datetimes,
 )
 from src.services.academic.lecture_plan_service import LECTURE_PLAN_SOURCE
+from src.services.academic.class_schedule_service import ClassScheduleService
 
 
 @dataclass(frozen=True)
@@ -572,7 +573,7 @@ class TimetableService:
             .all()
         )
 
-        return [
+        blocks = [
             TimetableBlock(
                 id=event.id,
                 title=event.title,
@@ -586,6 +587,19 @@ class TimetableService:
             )
             for event, course in events
         ]
+        institutional_meetings = ClassScheduleService(self._db).student_meetings(
+            student_id=student_id, start=start, end=end
+        )
+        blocks.extend(
+            TimetableBlock(
+                id=meeting.id, title=meeting.title, start=meeting.start, end=meeting.end,
+                kind=meeting.kind, locked=True,
+                description=" · ".join(part for part in [meeting.room, meeting.note] if part) or None,
+                course_code=meeting.course_code, course_name=meeting.course_name,
+            )
+            for meeting in institutional_meetings
+        )
+        return blocks
 
     def _exam_blocks(
         self,
