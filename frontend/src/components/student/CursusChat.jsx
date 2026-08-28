@@ -478,7 +478,11 @@ export default function CursusChat({ user }) {
               </button>
             </div>
           </header>
-          <main className="flex-1 space-y-4 overflow-y-auto bg-surface p-5">
+          <main
+            role="log"
+            aria-label="Cuộc trò chuyện với Cursus"
+            className="flex-1 space-y-4 overflow-y-auto bg-surface p-5"
+          >
             {messages.length === 0 && (
               <WelcomeCard briefing={briefing} onDismissBriefing={dismissBriefing} onPickReply={sendMessage} disabled={loading} />
             )}
@@ -491,6 +495,14 @@ export default function CursusChat({ user }) {
               return (
                 <article
                   key={index}
+                  // While an assistant reply is still "typing" out, its
+                  // text mutates every 20ms — announcing every one of those
+                  // partial-word updates would flood a screen reader.
+                  // aria-live stays off until the message is fully shown,
+                  // then flips to polite so the *complete* answer is
+                  // announced once, the same as a normal chat message.
+                  aria-live={isAssistant && !doneTyping ? 'off' : 'polite'}
+                  aria-atomic="true"
                   className={
                     item.role === 'user'
                       ? 'ml-8 rounded-2xl rounded-br-sm bg-accent-soft p-3 text-sm text-fg'

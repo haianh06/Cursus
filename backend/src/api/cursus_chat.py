@@ -51,12 +51,20 @@ _BRIEFING_MESSAGE = (
 _RATE_LIMIT_WINDOW_SECONDS = 60
 
 
+# Render (and most reverse proxies in front of a Python app) buffer a
+# streaming response by default unless told otherwise, which would silently
+# turn every SSE event below into one delivered-all-at-once burst -- making
+# the client-side typewriter effect pointless since there'd be nothing left
+# to reveal gradually. Applied to every StreamingResponse this module returns.
+_SSE_HEADERS = {"X-Accel-Buffering": "no", "Cache-Control": "no-cache"}
+
+
 def _single_event_stream(*, conversation_id: str, text: str) -> StreamingResponse:
     async def _gen():
         yield f"event: meta\ndata: {json.dumps({'conversationId': conversation_id})}\n\n"
         yield f"event: delta\ndata: {json.dumps({'text': text})}\n\n"
         yield "event: done\ndata: {}\n\n"
-    return StreamingResponse(_gen(), media_type="text/event-stream")
+    return StreamingResponse(_gen(), media_type="text/event-stream", headers=_SSE_HEADERS)
 
 
 def _error_stream(*, code: str, message: str | None = None) -> StreamingResponse:
@@ -65,7 +73,7 @@ def _error_stream(*, code: str, message: str | None = None) -> StreamingResponse
         if message:
             payload["message"] = message
         yield f"event: error\ndata: {json.dumps(payload)}\n\n"
-    return StreamingResponse(_gen(), media_type="text/event-stream")
+    return StreamingResponse(_gen(), media_type="text/event-stream", headers=_SSE_HEADERS)
 
 
 class ChatRequest(BaseModel):
@@ -366,7 +374,7 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
             logger.exception("cursus_chat_relay_failed student_id=%s", current_user.id)
             db.rollback()
             yield "event: error\ndata: {\"code\":\"AI_UNAVAILABLE\"}\n\n"
-    return StreamingResponse(relay(), media_type="text/event-stream")
+    return StreamingResponse(relay(), media_type="text/event-stream", headers=_SSE_HEADERS)
 
 
 @router.get("/briefing")
