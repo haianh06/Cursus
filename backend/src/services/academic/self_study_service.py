@@ -195,6 +195,7 @@ class SelfStudyService:
             .filter(
                 models.ScheduleBlock.id == block_id,
                 models.WeeklyPlan.student_id == student_id,
+                models.ScheduleBlock.cancelled_at.is_(None),
             )
             .first()
         )
