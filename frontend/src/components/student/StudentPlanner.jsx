@@ -167,6 +167,7 @@ export default function StudentPlanner() {
   const [availability, setAvailability] = useState(DEFAULT_AVAILABILITY);
   const [session, setSession] = useState('EVENING');
   const [generating, setGenerating] = useState(false);
+  const [generationPhase, setGenerationPhase] = useState(0);
   const [actionError, setActionError] = useState(null);
   const [openCitation, setOpenCitation] = useState(null);
   const [confirmed, setConfirmed] = useState(false);
@@ -218,6 +219,8 @@ export default function StudentPlanner() {
       return;
     }
     setGenerating(true);
+    setGenerationPhase(1);
+    window.setTimeout(() => setGenerationPhase(2), 450);
     try {
       await createPlan({
         goalText,
@@ -236,6 +239,7 @@ export default function StudentPlanner() {
     } catch (err) {
       setActionError(err);
     } finally {
+      setGenerationPhase(3);
       setGenerating(false);
     }
   };
@@ -445,8 +449,26 @@ export default function StudentPlanner() {
 
           {generating ? (
             <section className="card p-5">
-              <Skeleton className="h-5 w-40 rounded mb-4" />
-              <SkeletonRows count={5} rowClassName="h-20 rounded-xl" />
+              <h2 className="text-[15px] font-bold font-display text-fg">
+                {lang === 'vi' ? 'Cursus AI đang lập kế hoạch' : 'Cursus AI is building your plan'}
+              </h2>
+              <ol className="mt-4 space-y-3">
+                {[
+                  lang === 'vi' ? 'Đọc mục tiêu và tài liệu môn học' : 'Reading your goal and course materials',
+                  lang === 'vi' ? 'Phân tích các khoảng trống trên lịch' : 'Checking free gaps in your timetable',
+                  lang === 'vi' ? 'Tạo bản nháp để bạn xem lại' : 'Preparing a draft for your review',
+                ].map((label, index) => (
+                  <li key={label} className="flex items-center gap-2 text-[12px]">
+                    <span className={`w-5 h-5 rounded-full border flex items-center justify-center font-mono text-[10px] ${index + 1 <= generationPhase ? 'bg-accent-soft border-accent text-accent' : 'border-line text-fg-muted'}`}>
+                      {index + 1 <= generationPhase ? '✓' : index + 1}
+                    </span>
+                    <span className={index + 1 <= generationPhase ? 'text-fg font-semibold' : 'text-fg-muted'}>{label}</span>
+                  </li>
+                ))}
+              </ol>
+              <div className="mt-4 h-1.5 rounded-full bg-line overflow-hidden">
+                <div className="h-full bg-accent transition-all duration-300" style={{ width: `${Math.max(12, generationPhase * 34)}%` }} />
+              </div>
             </section>
           ) : !plan ? (
             <section className="card" aria-label={lang === 'vi' ? 'Chưa có kế hoạch' : 'No plan yet'}>

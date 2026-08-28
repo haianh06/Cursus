@@ -462,7 +462,7 @@ def accept_weekly_plan(
             plan_id=plan.id,
             week_start=current_monday,
         )
-    except LookupError as exc:
+    except (LookupError, ValueError) as exc:
         db.rollback()
         raise HTTPException(status_code=409, detail=str(exc)) from exc
 
