@@ -61,7 +61,7 @@ SSA101_SYLLABUS_VERSION = "13785-2025-11-27"
 # the display name so the story reads consistently on screen.
 DEMO_STUDENT_EMAIL = "demo.student@cursusdemo.local"
 DEMO_INSTRUCTOR_EMAIL = "demo.instructor@cursusdemo.local"
-DEMO_ADMIN_EMAIL = "demo.admin@cursusdemo.local"
+DEMO_ADMIN_EMAIL = "admin@demo.com"
 
 PERSONA_NAMES = {
     DEMO_STUDENT_EMAIL: "Trịnh Hải Đăng",
