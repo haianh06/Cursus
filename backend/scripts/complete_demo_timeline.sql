@@ -1,5 +1,12 @@
 BEGIN;
-DELETE FROM enrollments WHERE student_id = 'student_01' AND (section_id LIKE 'section_mock_%' OR section_id = 'section_gate2_ssa101_se_k20');
+-- Demo Student belongs to SE2001 only.  Remove legacy fixture enrollments
+-- before restoring the four real Cursus Uni subjects for that class.
+DELETE FROM enrollments WHERE student_id = 'student_01';
+INSERT INTO enrollments (id, student_id, section_id, status, enrolled_at) VALUES
+('enr_student_01_sec_CSI106_SE2001', 'student_01', 'sec_CSI106_SE2001', 'ENROLLED', NOW()),
+('enr_student_01_sec_CEA201_SE2001', 'student_01', 'sec_CEA201_SE2001', 'ENROLLED', NOW()),
+('enr_student_01_sec_PRF192_SE2001', 'student_01', 'sec_PRF192_SE2001', 'ENROLLED', NOW()),
+('enr_student_01_sec_PRO192_SE2001', 'student_01', 'sec_PRO192_SE2001', 'ENROLLED', NOW());
 DELETE FROM weekly_reflections WHERE student_id = 'student_01';
 DELETE FROM weekly_plans WHERE student_id = 'student_01';
 INSERT INTO weekly_plans (id,student_id,week_number,goals,study_hours_allocated) VALUES
