@@ -21,6 +21,7 @@ from src.api.admin_student360 import router as admin_student360_router
 from src.api.audit import router as audit_router
 from src.api.auth import router as auth_router
 from src.api.cursus_chat import router as cursus_chat_router
+from src.api.class_schedule import admin_router as admin_class_schedule_router, instructor_router as instructor_class_schedule_router, student_router as student_class_schedule_router
 
 # canvas_router import intentionally disabled — see include_router call below
 # for why (PROJECT_CONTEXT.md mục 6.6/9).
@@ -113,6 +114,7 @@ app.include_router(cursus_chat_router, prefix="/api/v1")
 app.include_router(plans_router, prefix="/api/v1")
 app.include_router(qa_router, prefix="/api/v1")
 app.include_router(instructor_router, prefix="/api/v1")
+app.include_router(instructor_class_schedule_router, prefix="/api/v1")
 # canvas_router disabled 2026-08-20 (Phase 2b security cleanup, branch
 # cleanup/repo-audit-20260820): exposed real Cursus PII (emails, grades,
 # submissions) via Canvas-shaped JSON, gated only by Cursus's own admin
@@ -136,6 +138,7 @@ app.include_router(admin_settings_router, prefix="/api/v1")
 app.include_router(admin_overview_router, prefix="/api/v1")
 app.include_router(admin_people_router, prefix="/api/v1")
 app.include_router(admin_sections_router, prefix="/api/v1")
+app.include_router(admin_class_schedule_router, prefix="/api/v1")
 app.include_router(admin_ai_usage_router, prefix="/api/v1")
 app.include_router(public_router, prefix="/api/v1")
 app.include_router(demo_router, prefix="/api/v1")
@@ -144,6 +147,7 @@ app.include_router(self_study_router, prefix="/api/v1")
 app.include_router(practice_student_router, prefix="/api/v1")
 app.include_router(practice_instructor_router, prefix="/api/v1")
 app.include_router(student_quizzes_router, prefix="/api/v1")
+app.include_router(student_class_schedule_router, prefix="/api/v1")
 app.include_router(lecture_plan_router, prefix="/api/v1")
 
 
