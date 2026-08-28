@@ -1093,6 +1093,82 @@ section[id] {
   line-height: 1.7 !important;
 }
 
+/* Cursus Assistant can return rich Markdown. Scope its editorial rules so
+   headings, lists and code do not inherit unrelated global styles or make a
+   normal explanation look like a terminal transcript. */
+.cursus-chat-markdown {
+  overflow-wrap: anywhere;
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.65;
+}
+
+.cursus-chat-markdown > :first-child { margin-top: 0; }
+.cursus-chat-markdown > :last-child { margin-bottom: 0; }
+.cursus-chat-markdown > * + * { margin-top: 0.625rem; }
+
+.cursus-chat-markdown h1,
+.cursus-chat-markdown h2,
+.cursus-chat-markdown h3,
+.cursus-chat-markdown h4 {
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+}
+
+.cursus-chat-markdown h1 { font-size: 1.125rem; }
+.cursus-chat-markdown h2 { font-size: 1.0625rem; }
+.cursus-chat-markdown strong { font-weight: 700; }
+.cursus-chat-markdown em { color: var(--text-secondary); }
+
+.cursus-chat-markdown ul,
+.cursus-chat-markdown ol {
+  margin-left: 1.125rem;
+  padding-left: 0.25rem;
+}
+
+.cursus-chat-markdown ul { list-style: disc; }
+.cursus-chat-markdown ol { list-style: decimal; }
+.cursus-chat-markdown li + li { margin-top: 0.25rem; }
+
+.cursus-chat-markdown blockquote {
+  border-left: 3px solid var(--accent);
+  color: var(--text-secondary);
+  padding-left: 0.75rem;
+}
+
+.cursus-chat-markdown code {
+  border-radius: 4px;
+  background: var(--bg-elevated);
+  padding: 0.1rem 0.25rem;
+  color: var(--text-primary);
+  font-family: 'Geist Mono', 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+  font-size: 0.8125em;
+}
+
+.cursus-chat-markdown pre {
+  overflow-x: auto;
+  border: 1px solid var(--border-ui);
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  padding: 0.75rem;
+  line-height: 1.55;
+}
+
+.cursus-chat-markdown pre code {
+  display: block;
+  padding: 0;
+  background: transparent;
+  font-size: 0.8125rem;
+  white-space: pre;
+}
+
 .citation-label-custom {
   font-family: 'Inter', -apple-system, sans-serif;
   font-size: 12px !important;

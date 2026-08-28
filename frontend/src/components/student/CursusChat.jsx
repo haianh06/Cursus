@@ -512,7 +512,12 @@ export default function CursusChat({ user }) {
                       : 'mr-4 rounded-2xl rounded-bl-sm border border-line bg-surface-card p-3 text-sm text-fg shadow-sm'
                   }
                 >
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{shownText || 'Đang soạn câu trả lời…'}</ReactMarkdown>
+                  <ReactMarkdown
+                    className="cursus-chat-markdown"
+                    remarkPlugins={[remarkGfm]}
+                  >
+                    {shownText || 'Đang soạn câu trả lời…'}
+                  </ReactMarkdown>
                   {/* Citations only appear once the reply has finished "typing" out,
                       so they don't jump in mid-animation. */}
                   {doneTyping && item.citations?.length > 0 && (
