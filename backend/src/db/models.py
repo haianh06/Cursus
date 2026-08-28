@@ -477,6 +477,80 @@ class CalendarEvent(Base):
         String, ForeignKey("semester_setups.id", ondelete="CASCADE"), nullable=True
     )
 
+
+# Institutional teaching calendar.  These records deliberately live apart
+# from CalendarEvent: a fixed meeting is a weekly rule with a time snapshot,
+# while CalendarEvent is an individual occurrence imported from Canvas/demo.
+class TermStudySlot(Base):
+    __tablename__ = "term_study_slots"
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    organization_id: Mapped[str] = mapped_column(
+        String, ForeignKey("organizations.id", ondelete="CASCADE"), index=True
+    )
+    term_name: Mapped[str] = mapped_column(String, index=True)
+    name: Mapped[str] = mapped_column(String)
+    start_minute: Mapped[int] = mapped_column(Integer)
+    end_minute: Mapped[int] = mapped_column(Integer)
+    display_order: Mapped[int] = mapped_column(Integer)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+
+
+class FixedClassSchedule(Base):
+    __tablename__ = "fixed_class_schedules"
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    section_id: Mapped[str] = mapped_column(
+        String, ForeignKey("course_sections.id", ondelete="CASCADE"), index=True
+    )
+    slot_id: Mapped[str] = mapped_column(
+        String, ForeignKey("term_study_slots.id", ondelete="RESTRICT")
+    )
+    weekday: Mapped[int] = mapped_column(Integer)  # Monday=0 … Sunday=6
+    # Snapshot the slot timing so later slot configuration changes never move
+    # a meeting that has already been scheduled.
+    start_minute: Mapped[int] = mapped_column(Integer)
+    end_minute: Mapped[int] = mapped_column(Integer)
+    room: Mapped[str | None] = mapped_column(String, nullable=True)
+    note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    effective_from: Mapped[date] = mapped_column(Date)
+    effective_to: Mapped[date] = mapped_column(Date)
+    created_by: Mapped[str] = mapped_column(String, ForeignKey("users.id"))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class ClassScheduleException(Base):
+    __tablename__ = "class_schedule_exceptions"
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    schedule_id: Mapped[str | None] = mapped_column(
+        String, ForeignKey("fixed_class_schedules.id", ondelete="CASCADE"), nullable=True, index=True
+    )
+    section_id: Mapped[str] = mapped_column(
+        String, ForeignKey("course_sections.id", ondelete="CASCADE"), index=True
+    )
+    kind: Mapped[str] = mapped_column(String)  # CANCELLED | MAKEUP
+    event_date: Mapped[date] = mapped_column(Date, index=True)
+    start_minute: Mapped[int] = mapped_column(Integer)
+    end_minute: Mapped[int] = mapped_column(Integer)
+    room: Mapped[str | None] = mapped_column(String, nullable=True)
+    note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    reason: Mapped[str] = mapped_column(Text)
+    created_by: Mapped[str] = mapped_column(String, ForeignKey("users.id"))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class ClassScheduleNotification(Base):
+    __tablename__ = "class_schedule_notifications"
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    recipient_id: Mapped[str] = mapped_column(
+        String, ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
+    exception_id: Mapped[str] = mapped_column(
+        String, ForeignKey("class_schedule_exceptions.id", ondelete="CASCADE"), index=True
+    )
+    title: Mapped[str] = mapped_column(String)
+    body: Mapped[str] = mapped_column(Text)
+    read_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
 class AssessmentType(enum.Enum):
     LAB = "LAB"
     ASSIGNMENT = "ASSIGNMENT"
