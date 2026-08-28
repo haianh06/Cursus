@@ -13,5 +13,10 @@ export default defineConfig({
     setupFiles: ['./vitest.setup.js'],
     exclude: ['node_modules', 'e2e/**'],
     globals: true,
+    // The default forked-process pool has been unreliable on this Windows
+    // dev machine (worker start times out under load) -- threads are
+    // lighter-weight to spin up and just as isolated for this test suite's
+    // needs.
+    pool: 'threads',
   },
 });
