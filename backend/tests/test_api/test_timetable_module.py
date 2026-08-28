@@ -255,6 +255,19 @@ async def test_timetable_rejects_overlap_between_self_study_plans(client):
     assert overlap.status_code == 400, overlap.text
     assert "overlap" in overlap.json()["detail"].lower()
 
+    second = await client.post(
+        "/api/v1/plans/timetable/blocks",
+        headers=headers,
+        json={"title": "Focus B", "start": monday.replace(hour=19).isoformat(), "end": monday.replace(hour=20).isoformat()},
+    )
+    assert second.status_code == 201, second.text
+    move_into_conflict = await client.patch(
+        f"/api/v1/plans/timetable/blocks/{second.json()['id']}",
+        headers=headers,
+        json={"start": monday.replace(hour=18, minute=30).isoformat(), "end": monday.replace(hour=19, minute=30).isoformat()},
+    )
+    assert move_into_conflict.status_code == 400, move_into_conflict.text
+
 
 @pytest.mark.asyncio
 async def test_timetable_shows_exam_block_and_semester_meta(client):
