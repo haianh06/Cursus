@@ -13,6 +13,10 @@ services:
         value: production
       - key: APP_PORT
         value: "8000"
+      # Render routes traffic to PORT (10000 by default). Keep this explicit
+      # so the container's listener and Render proxy cannot drift apart.
+      - key: PORT
+        value: "10000"
       - key: APP_HOST
         value: 0.0.0.0
       - key: LOG_LEVEL
