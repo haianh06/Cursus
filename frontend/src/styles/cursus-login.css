@@ -792,41 +792,47 @@
 /* ================================================================
    MAN HINH THAP — reference 1672x941 gia dinh vien trinh duyet cao it
    nhat 941px, nhung laptop pho thong (1366x768, 1440x900, hoac 1920x1080
-   voi thanh cong cu/bookmark) thuong chi con 700-860px chieu cao noi dung
-   thuc te -> trang phai cuon doc [phan anh 28/08]. Media nay ap dung theo
-   CHIEU CAO, doc lap voi cac breakpoint chieu rong o tren, va thu deu
-   ~20-25% cac khoang the doc lon nhat (hero, card, cac field) de vua
-   trong vung ~760-820px ma khong dung transform: scale() (van giu dung
-   quy tac o dau file). Khong dong den bo cuc ngang. */
-@media (max-height: 880px) {
-  .clp-header { padding-top: 12px; }
-  .clp-logo__img { width: 172px; }
+   voi thanh cong cu/bookmark) thuong chi con 700-950px chieu cao noi dung
+   thuc te -> trang phai cuon doc [phan anh 28/08, tang nguong + thu sau
+   hon lan 2 vi ban dau (max-height:880px) van con cuon tren laptop that].
+   Nguong 1080px de bat gan het man laptop pho thong (chi 4K/2K doc that
+   su moi thoat khoi media nay); cac con so thu sau hon muc can cho dung
+   970px de con du dem cho man ~1000px, chu khong chi vua khit 880px nhu
+   truoc. Khong dung transform: scale() (dung quy tac o dau file). Khong
+   dong den bo cuc ngang. */
+@media (max-height: 1080px) {
+  .clp-header { padding-top: 8px; }
+  .clp-logo__img { width: 150px; }
 
-  .clp-main { padding-top: 14px; padding-bottom: 18px; }
+  .clp-main { padding-top: 8px; padding-bottom: 10px; }
 
-  .clp-hero { width: 490px; height: 295px; margin: 14px 0 0 14px; }
-  .clp-hero__img { left: -17px; top: -23px; width: 550px; }
+  .clp-hero { width: 380px; height: 229px; margin: 8px 0 0 10px; }
+  .clp-hero__img { left: -13px; top: -18px; width: 426px; }
 
-  .clp-heading { margin-top: 12px; font-size: 30px; }
-  .clp-sub { margin-top: 10px; }
-  .clp-stages { margin-top: 10px; }
-  .clp-stage { height: 84px; padding: 10px 12px; }
+  .clp-heading { margin-top: 8px; font-size: 26px; }
+  .clp-sub { margin-top: 6px; font-size: 15px; }
+  .clp-stages { margin-top: 6px; }
+  .clp-stage { height: 70px; padding: 8px 10px; }
+  .clp-stage__name { font-size: 14.5px; }
+  .clp-stage__text { font-size: 12.5px; }
 
-  .clp-card { min-height: 0; margin-top: 0; padding: 32px 40px; }
-  .clp-peek { width: 190px; top: 6px; }
+  .clp-card { min-height: 0; margin-top: 0; padding: 22px 30px; }
+  .clp-peek { width: 150px; top: 4px; }
 
-  .clp-google { height: 68px; margin-top: 24px; }
-  .clp-divider { margin-top: 24px; }
-  .clp-form { margin-top: 14px; }
-  .clp-field + .clp-field { margin-top: 18px; }
-  .clp-input { height: 52px; }
-  .clp-forgotrow { margin-top: 18px; }
-  .clp-submit { height: 56px; margin-top: 16px; }
-  .clp-sandbox { margin-top: 18px; padding-top: 16px; }
+  .clp-google { height: 58px; margin-top: 16px; }
+  .clp-divider { margin-top: 16px; height: 16px; }
+  .clp-form { margin-top: 10px; }
+  .clp-field + .clp-field { margin-top: 12px; }
+  .clp-label { margin-bottom: 5px; }
+  .clp-input { height: 46px; }
+  .clp-forgotrow { margin-top: 10px; }
+  .clp-submit { height: 48px; margin-top: 10px; font-size: 17px; }
+  .clp-sandbox { margin-top: 10px; padding-top: 10px; }
+  .clp-sandbox__icon { width: 40px; height: 40px; }
 }
 
 /* Man hinh vua ngan vua hep (vd laptop 13" cua so khong toi da) -- can ca
    hai media cung luc, chu khong chi mot. */
-@media (max-height: 880px) and (max-width: 1199px) {
-  .clp-card { padding: 26px 32px; }
+@media (max-height: 1080px) and (max-width: 1199px) {
+  .clp-card { padding: 22px 26px; }
 }

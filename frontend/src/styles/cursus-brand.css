@@ -718,3 +718,38 @@
   .cb-badge { height: auto; min-height: 42px; padding-block: 8px; white-space: normal; text-align: center; }
   .cb-hero { margin-top: 24px; }
 }
+
+/* ================================================================
+   MAN HINH THAP — cung ly do va cach lam nhu cursus-login.css: thiet ke
+   pixel-match theo anh tham chieu 941px (xem comment o .cb-hero), khong co
+   breakpoint theo chieu cao truoc do nen laptop pho thong bi cuon doc
+   [phan anh 30/08]. Ap dung theo CHIEU CAO, doc lap voi cac breakpoint
+   chieu rong o tren; thu deu khoang the card role (phan chiem nhieu khong
+   gian nhat) va cac khoang cach doc quanh no. Khong dung transform:
+   scale(). */
+@media (max-height: 1080px) and (min-width: 768px) {
+  .cb-header { min-height: 64px; padding-block: 6px; }
+  .cb-hero { margin-top: 16px; }
+  .cb-badge { height: 34px; }
+  .cb-h1 { margin-top: 12px; font-size: 32px; }
+  .cb-sub { margin-top: 8px; font-size: 16px; }
+  .cb-role-grid { margin-top: 24px; }
+
+  .cb-role-card {
+    height: 310px;
+    padding: 18px;
+    grid-template-rows: 94px auto minmax(56px, 1fr) auto auto;
+  }
+  .cb-role-mascot { height: 94px; }
+  .cursus-brand-scope--student .cb-role-mascot__img { --cb-mascot-h: 94px; }
+  .cursus-brand-scope--instructor .cb-role-mascot__img { --cb-mascot-h: 74px; --cb-mascot-dy: -5px; }
+  .cursus-brand-scope--admin .cb-role-mascot__img { --cb-mascot-h: 73px; --cb-mascot-dy: -3px; }
+
+  .cb-role-title { margin-top: 8px; font-size: 21px; }
+  .cb-role-desc { margin-top: 5px; font-size: 14px; }
+  .cb-role-benefit { height: 38px; font-size: 14px; }
+  .cb-role-cta { margin-top: 8px; height: 38px; font-size: 15px; }
+
+  .cb-org-cta { margin-top: 14px; }
+  .cb-pager { margin-top: 4px; }
+}
