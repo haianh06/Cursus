@@ -124,7 +124,18 @@ def ensure_extra_users(db) -> bool:
     from src.security.passwords import hash_password
     from src.services.mock.real_curriculum_service import _sandbox_organization_id
 
-    if db.query(models.User).filter_by(email=ACCOUNTS[0]["email"]).first() is not None:
+    # Was: only checked ACCOUNTS[0], then inserted all 4 unconditionally --
+    # fine as long as every prior run either fully succeeded or fully never
+    # ran, but a partial prior run (e.g. this container crashed between
+    # inserts, or --once was interrupted) leaves some accounts present and
+    # some missing. ACCOUNTS[0] missing + a later one present then crashed
+    # the whole boot on a UniqueViolation (28/08 incident) even though the
+    # app itself was otherwise healthy. Check each account individually.
+    missing = [
+        account for account in ACCOUNTS
+        if db.query(models.User).filter_by(email=account["email"]).first() is None
+    ]
+    if not missing:
         logger.info("extra_users_already_seeded")
         return False
 
@@ -132,7 +143,7 @@ def ensure_extra_users(db) -> bool:
     password_hash = hash_password(PASSWORD)
     organization_id = _sandbox_organization_id(db)
 
-    for account in ACCOUNTS:
+    for account in missing:
         db.add(
             models.User(
                 id=account["id"],
@@ -147,6 +158,17 @@ def ensure_extra_users(db) -> bool:
             )
         )
     db.flush()
+
+    # The rest of this function (section/enrollments/assignment/plan
+    # tree/risk signal below) was never guarded either -- fine as long as
+    # it only ever ran once, but now that missing-user detection is
+    # per-account, this could re-run and hit the exact same class of
+    # UniqueViolation on "sec_ssa101_custom". Use the section as the
+    # existence marker for "did the rest of this already happen".
+    if db.query(models.CourseSection).filter_by(id="sec_ssa101_custom").first() is not None:
+        db.commit()
+        logger.info("extra_users_partial_seed count=%s", len(missing))
+        return True
 
     course = db.query(models.Course).filter_by(code="SSA101").first()
     if course is None:
