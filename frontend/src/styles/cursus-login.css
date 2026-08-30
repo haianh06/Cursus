@@ -125,6 +125,20 @@
    width — height tu suy ra — nen ty le khong the bi ep meo. */
 .clp-logo__img { width: 201px; height: auto; object-fit: contain; object-position: center; display: block; }
 
+/* Logo cu (chu "C" khoi, LandingLogoMark) — dung rieng cho AuthCardLayout
+   (Forgot/Reset Password), KHONG dung logo lockup con Curi o day theo yeu
+   cau rieng 30/08. */
+.clp-logo-old { gap: 10px; }
+.clp-logomark-stroke { color: var(--clp-navy-strong); }
+.clp-logomark-dot { fill: var(--clp-teal); }
+.clp-logo-old__text {
+  font-family: var(--clp-font);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--clp-navy-strong);
+}
+
 .clp-header__controls { margin-left: auto; margin-top: 2px; display: flex; align-items: center; gap: 14px; }
 
 /* Bo chon ngon ngu: dung UI theo reference (globe + "Tieng Viet" + chevron)
@@ -422,6 +436,42 @@
 .clp-peek__img { width: 100%; height: auto; object-fit: contain; object-position: center; display: block; }
 
 .clp-card > *:not(.clp-peek) { position: relative; z-index: 1; }
+
+/* Dung cho Forgot/Reset Password (AuthCardLayout) — card cua Login khong
+   can tieu de rieng vi "Dang nhap" da nam trong .clp-heading ben trai, con
+   2 man nay can 1 dong tieu de ro trong chinh card ben phai. */
+.clp-cardheading {
+  margin-top: 22px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--clp-navy-strong);
+}
+
+.clp-cardsub {
+  margin-top: 8px;
+  font-size: 15.5px;
+  line-height: 1.55;
+  color: var(--clp-muted);
+}
+
+.clp-successicon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin: 4px auto 0;
+  border-radius: 999px;
+  background: var(--clp-teal-soft);
+  color: var(--clp-teal-strong);
+}
+
+.clp-successicon--error {
+  background: #FDF0EF;
+  color: #A22C25;
+}
+.dark .clp-successicon--error { background: rgba(240, 121, 111, 0.14); color: #F5A29B; }
 
 .clp-alert {
   margin-top: 18px;

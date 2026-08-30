@@ -24,9 +24,11 @@ const STAGES = [
  *
  * KHONG dung AuthLayout nua: AuthLayout la mot split 1280px voi the 460px,
  * khong the tao ra card 709px canh mot illustration 660px ma khong viet lai
- * — ma viet lai no se keo theo /register, /forgot-password,
- * /reset-password, /onboarding, /accept-invite va /request-access. Cac man
- * do giu AuthLayout nguyen ven.
+ * rieng. /forgot-password va /reset-password da chuyen sang cung he clp-*
+ * nay qua AuthCardLayout.jsx (30/08, dung logo "C" cu thay vi lockup Curi —
+ * xem comment trong file do). /onboarding, /accept-invite, /request-access,
+ * /email-verification van con dung AuthLayout nguyen ven — chua co yeu cau
+ * doi UI cho cac man do.
  *
  * Toan bo phan xac thuc ben duoi duoc giu y nguyen: validate, lam sach
  * `returnTo`, thong bao het phien, thong bao rate limit, va login() goi
