@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Check, Building2 } from 'lucide-react';
-import AuthCardLayout from './AuthCardLayout';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, ArrowRight, Check, Building2 } from 'lucide-react';
+import AuthLayout from './AuthLayout';
 import { requestOrgAccess } from '../../lib/authClient';
 import { useLanguage } from '../../context/LanguageContext';
 
@@ -51,137 +51,104 @@ export default function RequestAccessScreen() {
   }
 
   return (
-    <AuthCardLayout
-      heroTitle={lang === 'vi' ? 'Triển khai Cursus cho trường của bạn' : 'Bring Cursus to your school'}
-      heroSub={lang === 'vi'
+    <AuthLayout
+      title={lang === 'vi' ? 'Triển khai Cursus cho trường của bạn' : 'Bring Cursus to your school'}
+      subtitle={lang === 'vi'
         ? 'Đội ngũ Cursus sẽ liên hệ để thiết lập tổ chức, tài khoản quản trị viên đầu tiên và mời giảng viên/sinh viên.'
         : 'Our team will reach out to set up your organization, the first admin account, and invite your teachers/students.'}
+      cardWidth={480}
     >
-      {success ? (
-        <div className="text-center" style={{ padding: '8px 0' }}>
-          <div className="clp-successicon">
-            <Check size={26} strokeWidth={2.5} aria-hidden="true" />
-          </div>
-          <h2 className="clp-cardheading">
-            {lang === 'vi' ? 'Đã gửi yêu cầu!' : 'Request sent!'}
-          </h2>
-          <p className="clp-cardsub">
-            {lang === 'vi'
-              ? 'Cảm ơn bạn. Chúng tôi sẽ phản hồi sớm qua email đã cung cấp.'
-              : "Thanks — we'll follow up at the email address you provided."}
-          </p>
-          <button type="button" onClick={() => navigate('/')} className="clp-submit" style={{ marginTop: 28 }}>
+      <div className="p-8 rounded-[var(--radius-lg)] border border-line bg-surface-card shadow-elevation-3 relative">
+        <div className="mb-6">
+          <Link to="/" className="link-auth-secondary hover:underline group text-fg-secondary">
+            <ArrowLeft size={16} className="icon-arrow" />
             {lang === 'vi' ? 'Về trang chủ' : 'Back to home'}
-          </button>
+          </Link>
         </div>
-      ) : (
-        <>
-          <h2 className="clp-cardheading">
-            {lang === 'vi' ? 'Yêu cầu quyền truy cập cho tổ chức' : 'Request access for your organization'}
-          </h2>
 
-          {errors.form && <div role="alert" className="clp-alert">{errors.form}</div>}
-
-          <form onSubmit={handleSubmit} className="clp-form" noValidate>
-            <div className="clp-field">
-              <label htmlFor="ra-institution" className="clp-label">
-                {lang === 'vi' ? 'Tên trường / tổ chức' : 'Institution name'}
-              </label>
-              <div className="clp-inputwrap">
-                <span className="clp-inputicon"><Building2 size={18} strokeWidth={2} aria-hidden="true" /></span>
-                <input
-                  id="ra-institution"
-                  type="text"
-                  className="clp-input"
-                  value={form.institutionName}
-                  disabled={loading}
-                  aria-invalid={!!errors.institutionName}
-                  onChange={update('institutionName')}
-                  autoFocus
-                />
-              </div>
-              {errors.institutionName && <p className="clp-fielderr">{errors.institutionName}</p>}
+        {success ? (
+          <div className="text-center space-y-4 py-4">
+            <div className="w-14 h-14 rounded-full bg-success-soft text-success flex items-center justify-center mx-auto">
+              <Check size={26} />
             </div>
-
-            <div className="clp-field">
-              <label htmlFor="ra-name" className="clp-label">
-                {lang === 'vi' ? 'Họ tên người liên hệ' : 'Contact name'}
-              </label>
-              <input
-                id="ra-name"
-                type="text"
-                className="clp-input clp-input--noicon"
-                value={form.contactName}
-                disabled={loading}
-                aria-invalid={!!errors.contactName}
-                onChange={update('contactName')}
-              />
-              {errors.contactName && <p className="clp-fielderr">{errors.contactName}</p>}
-            </div>
-
-            <div className="clp-field">
-              <label htmlFor="ra-email" className="clp-label">Email</label>
-              <input
-                id="ra-email"
-                type="email"
-                className="clp-input clp-input--noicon"
-                value={form.email}
-                disabled={loading}
-                aria-invalid={!!errors.email}
-                onChange={update('email')}
-              />
-              {errors.email && <p className="clp-fielderr">{errors.email}</p>}
-            </div>
-
-            <div className="clp-field">
-              <label htmlFor="ra-role" className="clp-label">
-                {lang === 'vi' ? 'Vai trò của bạn' : 'Your role'}
-              </label>
-              <select
-                id="ra-role"
-                className="clp-select"
-                value={form.roleInterested}
-                disabled={loading}
-                onChange={update('roleInterested')}
-              >
-                {ROLES.map((r) => (
-                  <option key={r.value} value={r.value}>{lang === 'vi' ? r.labelVi : r.labelEn}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="clp-field">
-              <label htmlFor="ra-message" className="clp-label">
-                {lang === 'vi' ? 'Ghi chú (không bắt buộc)' : 'Message (optional)'}
-              </label>
-              <textarea
-                id="ra-message"
-                rows={3}
-                className="clp-textarea"
-                value={form.message}
-                disabled={loading}
-                onChange={update('message')}
-              />
-            </div>
-
-            <button type="submit" className="clp-submit" disabled={loading}>
-              {loading ? (
-                <>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="spin">
-                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4" />
-                  </svg>
-                  {lang === 'vi' ? 'Đang gửi…' : 'Sending…'}
-                </>
-              ) : (
-                <>
-                  {lang === 'vi' ? 'Gửi yêu cầu' : 'Send request'}
-                  <ArrowRight size={18} strokeWidth={2} aria-hidden="true" />
-                </>
-              )}
+            <h2 className="font-display text-lg font-bold text-fg">
+              {lang === 'vi' ? 'Đã gửi yêu cầu!' : 'Request sent!'}
+            </h2>
+            <p className="text-sm text-fg-secondary">
+              {lang === 'vi'
+                ? 'Cảm ơn bạn. Chúng tôi sẽ phản hồi sớm qua email đã cung cấp.'
+                : 'Thanks — we\'ll follow up at the email address you provided.'}
+            </p>
+            <button type="button" onClick={() => navigate('/')} className="btn-auth-primary mt-2" style={{ width: '100%' }}>
+              {lang === 'vi' ? 'Về trang chủ' : 'Back to home'}
             </button>
-          </form>
-        </>
-      )}
-    </AuthCardLayout>
+          </div>
+        ) : (
+          <>
+            {errors.form && (
+              <div role="alert" className="p-3.5 rounded-xl bg-danger/10 border border-danger/20 text-sm font-semibold text-danger mb-4">
+                {errors.form}
+              </div>
+            )}
+            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+              <div>
+                <label htmlFor="ra-institution" className="block text-sm font-semibold mb-2 text-fg-secondary">
+                  {lang === 'vi' ? 'Tên trường / tổ chức' : 'Institution name'}
+                </label>
+                <div className="relative">
+                  <Building2 size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-fg-muted" />
+                  <input id="ra-institution" type="text" className="w-full h-[52px] bg-surface border border-line rounded-xl pl-11 pr-4 text-sm text-fg outline-none input-auth-field"
+                    value={form.institutionName} disabled={loading} onChange={update('institutionName')} />
+                </div>
+                {errors.institutionName && <p className="text-sm mt-1.5 font-semibold text-danger">{errors.institutionName}</p>}
+              </div>
+
+              <div>
+                <label htmlFor="ra-name" className="block text-sm font-semibold mb-2 text-fg-secondary">
+                  {lang === 'vi' ? 'Họ tên người liên hệ' : 'Contact name'}
+                </label>
+                <input id="ra-name" type="text" className="w-full h-[52px] bg-surface border border-line rounded-xl px-4 text-sm text-fg outline-none input-auth-field"
+                  value={form.contactName} disabled={loading} onChange={update('contactName')} />
+                {errors.contactName && <p className="text-sm mt-1.5 font-semibold text-danger">{errors.contactName}</p>}
+              </div>
+
+              <div>
+                <label htmlFor="ra-email" className="block text-sm font-semibold mb-2 text-fg-secondary">Email</label>
+                <input id="ra-email" type="email" className="w-full h-[52px] bg-surface border border-line rounded-xl px-4 text-sm text-fg outline-none input-auth-field"
+                  value={form.email} disabled={loading} onChange={update('email')} />
+                {errors.email && <p className="text-sm mt-1.5 font-semibold text-danger">{errors.email}</p>}
+              </div>
+
+              <div>
+                <label htmlFor="ra-role" className="block text-sm font-semibold mb-2 text-fg-secondary">
+                  {lang === 'vi' ? 'Vai trò của bạn' : 'Your role'}
+                </label>
+                <select id="ra-role" className="w-full h-[52px] bg-surface border border-line rounded-xl px-4 text-sm text-fg outline-none cursor-pointer"
+                  value={form.roleInterested} disabled={loading} onChange={update('roleInterested')}>
+                  {ROLES.map((r) => (
+                    <option key={r.value} value={r.value}>{lang === 'vi' ? r.labelVi : r.labelEn}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="ra-message" className="block text-sm font-semibold mb-2 text-fg-secondary">
+                  {lang === 'vi' ? 'Ghi chú (không bắt buộc)' : 'Message (optional)'}
+                </label>
+                <textarea id="ra-message" rows={3} className="w-full bg-surface border border-line rounded-xl px-4 py-3 text-sm text-fg outline-none input-auth-field resize-none"
+                  value={form.message} disabled={loading} onChange={update('message')} />
+              </div>
+
+              <button type="submit" className="btn-auth-primary mt-2" disabled={loading} style={{ width: '100%' }}>
+                <span className="flex items-center gap-2">
+                  {lang === 'vi' ? 'Gửi yêu cầu' : 'Send request'}
+                  <ArrowRight size={16} className="icon-arrow" />
+                </span>
+              </button>
+            </form>
+          </>
+        )}
+      </div>
+    </AuthLayout>
   );
 }

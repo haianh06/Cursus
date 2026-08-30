@@ -1,55 +1,18 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import {
-  Mail, Lock, Eye, EyeOff, ArrowLeft, Sun, Moon, Target, ListChecks, RefreshCcw,
-} from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowLeft, ArrowRight } from 'lucide-react';
+import AuthLayout from './AuthLayout';
 import { login } from '../../lib/authClient';
 import { useLanguage } from '../../context/LanguageContext';
-import { useTheme } from '../../context/ThemeContext';
-import LoginLanguageSelect from './LoginLanguageSelect';
-import LandingLogoMark from '../landing/LandingLogoMark';
 
 function isValidEmail(e) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); 
 }
 
-/** Dung ba the, dung thu tu, moi the mot accent — khong bao gio the thu tu. */
-const STAGES = [
-  { key: 'plan', Icon: Target, name: 'auth.stagePlanName', l1: 'auth.stagePlanL1', l2: 'auth.stagePlanL2' },
-  { key: 'do', Icon: ListChecks, name: 'auth.stageDoName', l1: 'auth.stageDoL1', l2: 'auth.stageDoL2' },
-  { key: 'reflect', Icon: RefreshCcw, name: 'auth.stageReflectName', l1: 'auth.stageReflectL1', l2: 'auth.stageReflectL2' },
-];
-
-/**
- * Man dang nhap, dung lai theo screenshot tham chieu o 1672x941.
- *
- * KHONG dung AuthLayout nua: AuthLayout la mot split 1280px voi the 460px,
- * khong the tao ra card 709px canh mot illustration 660px ma khong viet lai
- * rieng. /forgot-password, /reset-password, /request-access da chuyen sang
- * cung he clp-* nay qua AuthCardLayout.jsx (30/08). /onboarding,
- * /accept-invite, /email-verification van con dung AuthLayout nguyen ven —
- * chua co yeu cau doi UI cho cac man do.
- *
- * Logo header (30/08, phien ban 2): dung LandingLogoMark ("C" khoi) + chu
- * "Cursus" — DUNG Y HET logo Landing Page (xem LandingNavbar.jsx) — thay vi
- * anh lockup Curi (/brand/cursus-logo-horizontal.png) dung truoc do. Yeu
- * cau rieng: logo header phai giong Landing Page tren moi man, con
- * illustration Curi lam mascot (hero ben duoi, peek trong card) khong bi
- * anh huong — do la trang tri, khac voi logo.
- *
- * Toan bo phan xac thuc ben duoi duoc giu y nguyen: validate, lam sach
- * `returnTo`, thong bao het phien, thong bao rate limit, va login() goi
- * POST /auth/login voi credentials: 'include' (phien bang cookie HttpOnly,
- * khong bao gio luu JWT vao localStorage). Day la ban dung lai giao dien,
- * khong phai thay doi cach dang nhap hoat dong.
- */
 export default function LoginScreen() {
   const navigate = useNavigate();
   const location = useLocation();
   const { t, lang } = useLanguage();
-  const { theme, toggleTheme } = useTheme();
-  const vi = lang === 'vi';
-  const isDark = theme === 'dark';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -67,7 +30,9 @@ export default function LoginScreen() {
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [mascotState, setMascotState] = useState('idle');
 
+  // Parse redirect target
   const query = new URLSearchParams(location.search);
   const returnToParam = query.get('returnTo') || '';
 
@@ -101,6 +66,8 @@ export default function LoginScreen() {
 
   function onLoginSuccess(data) {
     setSuccess(true);
+    setMascotState('success');
+
     setTimeout(() => {
       if (safeRedirectPath) {
         navigate(safeRedirectPath, { replace: true });
@@ -115,16 +82,15 @@ export default function LoginScreen() {
 
   async function handleSubmit(ev) {
     ev.preventDefault();
-    // Chan gui lap: dang gui hoac da thanh cong thi bo qua.
-    if (loading || success) return;
-
     const e = validate();
     if (Object.keys(e).length) {
       setErrors(e);
+      setMascotState('error');
       return;
     }
 
     setLoading(true);
+    setMascotState('loading');
     setErrors({});
 
     try {
@@ -132,255 +98,201 @@ export default function LoginScreen() {
       onLoginSuccess(data);
     } catch (err) {
       console.error(err);
+      setMascotState('error');
+      
       let errMsg = err.message || t('auth.invalidCredentialsError');
+      
       if (err.message && err.message.toLowerCase().includes('rate limit')) {
-        errMsg = vi
+        errMsg = lang === 'vi' 
           ? 'Quá nhiều yêu cầu đăng nhập. Vui lòng thử lại sau.'
           : 'Too many login requests. Please try again later.';
       }
+      
       setErrors({ form: errMsg });
       setLoading(false);
     }
   }
 
-  const backLink = (extraClass) => (
-    <Link to="/" className={`clp-back${extraClass ? ` ${extraClass}` : ''}`}>
-      <ArrowLeft size={20} strokeWidth={2} aria-hidden="true" />
-      {t('auth.backToHome')}
-    </Link>
-  );
 
   return (
-    <div className="cursus-login-page">
-      {/* Glow teal + luoi cham: thuan trang tri, nam duoi cung, khong nhan chuot. */}
-      <div className="clp-bg" aria-hidden="true" />
+    <AuthLayout
+      title={t('auth.loginHeading')}
+      subtitle={t('auth.loginDesc')}
+      mascotState={mascotState}
+    >
+      <div className="p-8 rounded-[var(--radius-lg)] border border-line bg-surface-card shadow-elevation-3 relative">
 
-      <div className="clp-shell">
-        <header className="clp-header">
-          <Link to="/" className="clp-logo clp-logo-old" aria-label={vi ? 'Cursus — về trang chủ' : 'Cursus — back to home'}>
-            <LandingLogoMark size={32} strokeClassName="clp-logomark-stroke" dotClassName="clp-logomark-dot" />
-            <span className="clp-logo-old__text">Cursus</span>
+        {/* Back to Homepage Link */}
+        <div className="mb-6">
+          <Link to="/" className="link-auth-secondary hover:underline group text-fg-secondary">
+            <ArrowLeft size={16} className="icon-arrow" />
+            {t('auth.backToHome')}
           </Link>
+        </div>
 
-          <div className="clp-header__controls">
-            <LoginLanguageSelect />
-            <button
-              type="button"
-              className="clp-theme"
-              onClick={toggleTheme}
-              aria-pressed={isDark}
-              aria-label={isDark ? t('landing.themeToggleToLight') : t('landing.themeToggleToDark')}
-              title={isDark ? t('landing.themeToggleToLight') : t('landing.themeToggleToDark')}
-            >
-              {isDark
-                ? <Moon size={22} strokeWidth={1.9} aria-hidden="true" />
-                : <Sun size={22} strokeWidth={1.9} aria-hidden="true" />}
-            </button>
+        {errors.form && (
+          <div role="alert" aria-live="assertive" className="p-3.5 rounded-xl bg-danger/10 border border-danger/20 text-sm font-semibold text-danger mb-4 animate-scale-in">
+            {errors.form}
           </div>
-        </header>
+        )}
 
-        <main className="clp-main">
-          {/* ── Cot trai: cau chuyen thuong hieu ── */}
-          <section className="clp-brand">
-            {/* Reference co HAI nut quay lai (mot ngoai, mot trong card) va do
-                la chu dich. Ban ngoai bi an duoi 1200px de mobile chi con mot. */}
-            {backLink('clp-back--outside')}
+        {/* Google OAuth login is not wired up in this deployment (Supabase
+            Free Tier config) -- rendered honestly disabled with a "coming
+            soon" label instead of a clickable button that always resulted
+            in an error, which looked like a bug rather than an unbuilt
+            feature. */}
+        <button
+          type="button"
+          disabled
+          aria-disabled="true"
+          title={t('auth.googleLoginComingSoon')}
+          className="w-full h-[48px] rounded-xl text-sm font-bold mb-4 flex items-center justify-center gap-2.5 border border-line bg-surface text-fg-muted opacity-60 cursor-not-allowed select-none outline-none"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" opacity="0.7">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+          {t('auth.googleLogin')}
+          <span className="text-[10px] font-bold uppercase tracking-widest text-fg-muted">
+            · {t('auth.googleLoginComingSoon')}
+          </span>
+        </button>
 
-            <div className="clp-hero">
-              <img
-                src="/brand/login-curi-study-hero.png"
-                alt=""
-                aria-hidden="true"
-                className="clp-hero__img"
-                draggable="false"
+        {/* Separator */}
+        <div className="relative flex py-2 items-center mb-4">
+          <div className="flex-grow border-t border-line"></div>
+          <span className="flex-shrink mx-4 text-[10px] text-fg-muted font-bold uppercase tracking-widest">{t('auth.orEmail')}</span>
+          <div className="flex-grow border-t border-line"></div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+          {/* Email input field */}
+          <div>
+            <label htmlFor="login-email" className="block text-sm font-semibold mb-2 text-fg-secondary">
+              Email
+            </label>
+            <div className="relative">
+              <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-fg-muted" />
+              <input
+                id="login-email"
+                type="email"
+                autoComplete="username"
+                autoFocus
+                className="w-full h-[52px] bg-surface border border-line rounded-xl pl-11 pr-4 text-sm text-fg placeholder-fg-muted outline-none input-auth-field"
+                placeholder={t('auth.emailPlaceholder')}
+                value={email}
+                disabled={loading}
+                aria-invalid={!!errors.email}
+                aria-describedby={errors.email ? 'login-email-error' : undefined}
+                onFocus={() => setMascotState('typing-email')}
+                onBlur={() => setMascotState('idle')}
+                onChange={e => { 
+                  setEmail(e.target.value); 
+                  setErrors(p => ({...p,email:undefined,form:undefined})); 
+                  if (mascotState !== 'typing-email') setMascotState('typing-email');
+                }}
               />
             </div>
-
-            <h1 className="clp-heading">
-              {t('auth.loginHeroLine1')}
-              <br />
-              {t('auth.loginHeroLine2')}
-            </h1>
-
-            <p className="clp-sub">{t('auth.loginHeroDesc')}</p>
-
-            <div className="clp-stages">
-              {STAGES.map(({ key, Icon, name, l1, l2 }) => (
-                <div key={key} className={`clp-stage clp-stage--${key}`}>
-                  <span className="clp-stage__icon">
-                    <Icon size={20} strokeWidth={2} aria-hidden="true" />
-                  </span>
-                  <span style={{ minWidth: 0 }}>
-                    <span className="clp-stage__name">{t(name)}</span>
-                    <span className="clp-stage__text">{t(l1)}<br />{t(l2)}</span>
-                  </span>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* ── Cot phai: card dang nhap ── */}
-          <section className="clp-card">
-            {/* Curi tho dau — trang tri thuan tuy, duoi noi dung, click xuyen qua. */}
-            <div className="clp-peek" aria-hidden="true">
-              <img
-                src="/brand/login-curi-peek.png"
-                alt=""
-                aria-hidden="true"
-                className="clp-peek__img"
-                draggable="false"
-              />
-            </div>
-
-            {backLink()}
-
-            <div aria-live="polite">
-              {errors.form && !success && (
-                <div role="alert" className="clp-alert">{errors.form}</div>
-              )}
-              {success && (
-                <div className="clp-alert clp-alert--ok">
-                  {vi ? 'Đăng nhập thành công. Đang chuyển bạn vào Cursus…' : 'Signed in. Taking you into Cursus…'}
-                </div>
-              )}
-            </div>
-
-            {/* Google OAuth chua duoc noi trong ban trien khai nay (cau hinh
-                Supabase free tier). Hien o trang thai vo hieu mot cach trung
-                thuc thay vi mot nut bam duoc ma luon bao loi — cai do doc ra
-                nhu mot bug chu khong phai mot tinh nang chua lam. */}
-            <button
-              type="button"
-              disabled
-              aria-disabled="true"
-              className="clp-google"
-              title={t('auth.googleLoginComingSoon')}
-            >
-              <span className="clp-google__icon" aria-hidden="true">
-                <svg width="27" height="27" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05" />
-                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-                </svg>
-              </span>
-              <span className="clp-google__body">
-                <span className="clp-google__label">{t('auth.loginGoogleCta')}</span>
-                <span className="clp-google__soon">{t('auth.googleLoginComingSoon')}</span>
-              </span>
-            </button>
-
-            <div className="clp-divider">
-              <span>{t('auth.orEmail')}</span>
-            </div>
-
-            <form className="clp-form" onSubmit={handleSubmit} noValidate>
-              <div className="clp-field">
-                <label htmlFor="login-email" className="clp-label">Email</label>
-                <div className="clp-inputwrap">
-                  <span className="clp-inputicon" aria-hidden="true">
-                    <Mail size={21} strokeWidth={1.9} />
-                  </span>
-                  <input
-                    id="login-email"
-                    type="email"
-                    autoComplete="email"
-                    className="clp-input"
-                    placeholder={t('auth.loginEmailPlaceholder')}
-                    value={email}
-                    disabled={loading || success}
-                    aria-invalid={errors.email ? 'true' : undefined}
-                    aria-describedby={errors.email ? 'login-email-error' : undefined}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      setErrors((p) => ({ ...p, email: undefined, form: undefined }));
-                    }}
-                  />
-                </div>
-                {errors.email && <p id="login-email-error" className="clp-fielderr">{errors.email}</p>}
-              </div>
-
-              <div className="clp-field">
-                <label htmlFor="login-password" className="clp-label">{t('auth.passwordLabel')}</label>
-                <div className="clp-inputwrap">
-                  <span className="clp-inputicon" aria-hidden="true">
-                    <Lock size={21} strokeWidth={1.9} />
-                  </span>
-                  <input
-                    id="login-password"
-                    type={showPass ? 'text' : 'password'}
-                    autoComplete="current-password"
-                    className="clp-input clp-input--pw"
-                    placeholder={t('auth.loginPasswordPlaceholder')}
-                    value={password}
-                    disabled={loading || success}
-                    aria-invalid={errors.password ? 'true' : undefined}
-                    aria-describedby={errors.password ? 'login-password-error' : undefined}
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                      setErrors((p) => ({ ...p, password: undefined, form: undefined }));
-                    }}
-                  />
-                  {/* type="button" la bat buoc: mot <button> khong co type nam
-                      trong <form> mac dinh la submit, tuc bam con mat se gui form. */}
-                  <button
-                    type="button"
-                    className="clp-eye"
-                    aria-label={showPass ? t('auth.hidePass') : t('auth.showPass')}
-                    aria-pressed={showPass}
-                    onClick={() => setShowPass((v) => !v)}
-                  >
-                    {showPass ? <EyeOff size={21} strokeWidth={1.9} /> : <Eye size={21} strokeWidth={1.9} />}
-                  </button>
-                </div>
-                {errors.password && <p id="login-password-error" className="clp-fielderr">{errors.password}</p>}
-              </div>
-
-              <div className="clp-forgotrow">
-                <Link to="/forgot-password" className="clp-forgot">{t('auth.forgotPassword')}</Link>
-              </div>
-
-              <button
-                id="login-submit"
-                type="submit"
-                className={`clp-submit${success ? ' clp-submit--ok' : ''}`}
-                disabled={loading || success}
-              >
-                {success ? (
-                  <>
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                    {vi ? 'Đăng nhập thành công' : 'Signed in'}
-                  </>
-                ) : loading ? (
-                  <>
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="clp-spin" aria-hidden="true">
-                      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4" />
-                    </svg>
-                    {t('auth.loadingText')}
-                  </>
-                ) : (
-                  t('auth.loginCta')
-                )}
-              </button>
-            </form>
-
-            {/* Thong tin, khong phai CTA canh tranh: khong nut to, nam duoi
-                mot duong ke mo. */}
-            <div className="clp-sandbox">
-              <span className="clp-sandbox__icon" aria-hidden="true">
-                <img src="/brand/curi-neutral-icon.png" alt="" aria-hidden="true" className="clp-sandbox__img" draggable="false" />
-              </span>
-              <p className="clp-sandbox__text">
-                {t('auth.sandboxNoteLead')}
-                <Link to="/demo/select-role">{t('auth.sandboxNoteLink')}</Link>
-                {t('auth.sandboxNoteTail')}
+            {errors.email && (
+              <p id="login-email-error" className="text-sm mt-1.5 font-semibold text-danger">
+                {errors.email}
               </p>
+            )}
+          </div>
+
+          {/* Password input field */}
+          <div>
+            <div className="flex justify-between items-center mb-2">
+              <label htmlFor="login-password" className="block text-sm font-semibold text-fg-secondary">
+                {t('auth.passwordLabel')}
+              </label>
+              <Link to="/forgot-password" className="text-xs font-semibold text-fg-secondary hover:text-brand-blue dark:hover:text-brand-blue-text-dark transition-colors">
+                {t('auth.forgotPassword')}
+              </Link>
             </div>
-          </section>
-        </main>
+            <div className="relative">
+              <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-fg-muted" />
+              <input
+                id="login-password"
+                type={showPass ? 'text' : 'password'}
+                autoComplete="current-password"
+                className="w-full h-[52px] bg-surface border border-line rounded-xl pl-11 pr-11 text-sm text-fg placeholder-fg-muted outline-none input-auth-field"
+                placeholder={t('auth.passwordPlaceholder')}
+                value={password}
+                disabled={loading}
+                aria-invalid={!!errors.password}
+                aria-describedby={errors.password ? 'login-password-error' : undefined}
+                onFocus={() => setMascotState('typing-password')}
+                onBlur={() => setMascotState('idle')}
+                onChange={e => { 
+                  setPassword(e.target.value); 
+                  setErrors(p => ({...p,password:undefined,form:undefined})); 
+                  if (mascotState !== 'typing-password') setMascotState('typing-password');
+                }}
+              />
+              <button 
+                type="button" 
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-fg-muted hover:text-fg transition-colors outline-none rounded"
+                aria-label={showPass ? t('auth.hidePass') : t('auth.showPass')}
+                onClick={() => setShowPass(v=>!v)}
+              >
+                {showPass ? <EyeOff size={16}/> : <Eye size={16}/>}
+              </button>
+            </div>
+            {errors.password && (
+              <p id="login-password-error" className="text-sm mt-1.5 font-semibold text-danger">
+                {errors.password}
+              </p>
+            )}
+          </div>
+
+          {/* Primary Action CTA */}
+          <button
+            id="login-submit"
+            type="submit"
+            className="btn-auth-primary btn-brand-cta mt-2"
+            disabled={loading}
+            style={{ width: '100%' }}
+          >
+            {success ? (
+              <span className="flex items-center gap-2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-white">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                {lang === 'vi' ? 'Đăng nhập thành công' : 'Signed In'}
+              </span>
+            ) : loading ? (
+              <span className="flex items-center gap-2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="spin">
+                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4" />
+                </svg>
+                {t('auth.loadingText')}
+              </span>
+            ) : (
+              <span className="flex items-center gap-2">
+                {t('auth.loginCta')}
+                <ArrowRight size={16} className="icon-arrow" />
+              </span>
+            )}
+          </button>
+        </form>
+
+        {/* No public registration — try the sandbox, or request org access */}
+        <div className="pt-4 mt-4 border-t border-line text-center space-y-2">
+          <Link
+            to="/demo/select-role"
+            className="block text-sm font-semibold text-fg-secondary hover:text-brand-blue dark:hover:text-brand-blue-text-dark transition-colors"
+          >
+            {t('auth.newAccountLink')}
+          </Link>
+          <Link to="/request-access" className="text-xs text-fg-muted hover:text-brand-blue dark:hover:text-brand-blue-text-dark transition-colors">
+            {t('auth.staffAccountNote')}
+          </Link>
+        </div>
+
       </div>
-    </div>
+    </AuthLayout>
   );
 }
