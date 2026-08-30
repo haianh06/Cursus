@@ -7,6 +7,7 @@ import { login } from '../../lib/authClient';
 import { useLanguage } from '../../context/LanguageContext';
 import { useTheme } from '../../context/ThemeContext';
 import LoginLanguageSelect from './LoginLanguageSelect';
+import LandingLogoMark from '../landing/LandingLogoMark';
 
 function isValidEmail(e) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
@@ -24,11 +25,17 @@ const STAGES = [
  *
  * KHONG dung AuthLayout nua: AuthLayout la mot split 1280px voi the 460px,
  * khong the tao ra card 709px canh mot illustration 660px ma khong viet lai
- * rieng. /forgot-password va /reset-password da chuyen sang cung he clp-*
- * nay qua AuthCardLayout.jsx (30/08, dung logo "C" cu thay vi lockup Curi —
- * xem comment trong file do). /onboarding, /accept-invite, /request-access,
- * /email-verification van con dung AuthLayout nguyen ven — chua co yeu cau
- * doi UI cho cac man do.
+ * rieng. /forgot-password, /reset-password, /request-access da chuyen sang
+ * cung he clp-* nay qua AuthCardLayout.jsx (30/08). /onboarding,
+ * /accept-invite, /email-verification van con dung AuthLayout nguyen ven —
+ * chua co yeu cau doi UI cho cac man do.
+ *
+ * Logo header (30/08, phien ban 2): dung LandingLogoMark ("C" khoi) + chu
+ * "Cursus" — DUNG Y HET logo Landing Page (xem LandingNavbar.jsx) — thay vi
+ * anh lockup Curi (/brand/cursus-logo-horizontal.png) dung truoc do. Yeu
+ * cau rieng: logo header phai giong Landing Page tren moi man, con
+ * illustration Curi lam mascot (hero ben duoi, peek trong card) khong bi
+ * anh huong — do la trang tri, khac voi logo.
  *
  * Toan bo phan xac thuc ben duoi duoc giu y nguyen: validate, lam sach
  * `returnTo`, thong bao het phien, thong bao rate limit, va login() goi
@@ -150,13 +157,9 @@ export default function LoginScreen() {
 
       <div className="clp-shell">
         <header className="clp-header">
-          <Link to="/" className="clp-logo" aria-label={vi ? 'Cursus — về trang chủ' : 'Cursus — back to home'}>
-            <img
-              src="/brand/cursus-logo-horizontal.png"
-              alt="Cursus · Plan · Do · Reflect"
-              className="clp-logo__img"
-              draggable="false"
-            />
+          <Link to="/" className="clp-logo clp-logo-old" aria-label={vi ? 'Cursus — về trang chủ' : 'Cursus — back to home'}>
+            <LandingLogoMark size={32} strokeClassName="clp-logomark-stroke" dotClassName="clp-logomark-dot" />
+            <span className="clp-logo-old__text">Cursus</span>
           </Link>
 
           <div className="clp-header__controls">

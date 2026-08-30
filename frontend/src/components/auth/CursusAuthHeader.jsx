@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, LogIn } from 'lucide-react';
-import CursusLogo from '../brand/CursusLogo';
+import LandingLogoMark from '../landing/LandingLogoMark';
 import ThemeToggle from '../shared/ThemeToggle';
 import LanguageToggle from '../shared/LanguageToggle';
 import { useLanguage } from '../../context/LanguageContext';
@@ -12,9 +12,10 @@ import { useLanguage } from '../../context/LanguageContext';
  * the noi. Moi thu tren cung mot duong tam doc, khong phan tu nao duoc
  * xuong dong.
  *
- * Kich thuoc logo (210 / 180 / 150px) do CSS quyet dinh chu khong phai
- * matchMedia trong JS: CursusLogo la mot <img> thuong, nen mot media query
- * la du va tranh mot lan render lai sau khi mount.
+ * Logo (30/08, phien ban 2): dung LandingLogoMark ("C" khoi) + chu "Cursus"
+ * — DUNG Y HET logo Landing Page (xem LandingNavbar.jsx) — thay vi
+ * CursusLogo (anh lockup Curi) dung truoc do. Yeu cau rieng: logo header
+ * phai giong Landing Page tren moi man.
  */
 export default function CursusAuthHeader({ showBackLink = false, showLoginLink = false }) {
   const { lang } = useLanguage();
@@ -25,10 +26,11 @@ export default function CursusAuthHeader({ showBackLink = false, showLoginLink =
       <div className="cb-header__left">
         <Link
           to="/"
-          className="cb-logo"
+          className="cb-logo cb-logo-old"
           aria-label={vi ? 'Cursus — về trang chủ' : 'Cursus — back to home'}
         >
-          <CursusLogo className="cb-logo__img" />
+          <LandingLogoMark size={30} strokeClassName="cb-logomark-stroke" dotClassName="cb-logomark-dot" />
+          <span className="cb-logo-old__text">Cursus</span>
         </Link>
         {showBackLink && (
           <Link to="/" className="cb-backlink">

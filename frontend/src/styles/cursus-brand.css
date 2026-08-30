@@ -235,6 +235,19 @@
 @media (max-width: 1199px) { .cb-logo__img.brand-asset-missing { height: 62px; } }
 @media (max-width: 767px) { .cb-logo__img.brand-asset-missing { height: 52px; } }
 
+/* Logo cu (chu "C" khoi, LandingLogoMark) — dung y het logo Landing Page,
+   thay cho anh lockup Curi o tren [phan anh 30/08]. */
+.cb-logo-old { gap: 10px; }
+.cb-logomark-stroke { color: var(--cb-text-primary); }
+.cb-logomark-dot { fill: var(--cb-primary); }
+.cb-logo-old__text {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--cb-text-primary);
+}
+@media (max-width: 767px) { .cb-logo-old__text { font-size: 19px; } }
+
 .cb-backlink {
   display: inline-flex;
   align-items: center;

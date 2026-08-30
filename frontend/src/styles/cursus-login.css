@@ -616,6 +616,47 @@
 .clp-input:disabled { background: #F7F9FB; color: var(--clp-muted); cursor: not-allowed; }
 .dark .clp-input:disabled { background: rgba(255, 255, 255, 0.04); }
 .clp-input--pw { padding-right: 60px; }
+/* Truong khong co icon trai (vd RequestAccessScreen: ten lien he, email). */
+.clp-input--noicon { padding-left: 20px; }
+
+/* Dung cho RequestAccessScreen (vai tro + ghi chu) — cung ngon ngu thi
+   giac voi .clp-input nhung select can con tro pointer, textarea can cao
+   theo noi dung thay vi mot dong co dinh. */
+.clp-select {
+  width: 100%;
+  height: 60px;
+  padding-inline: 20px;
+  border: 1px solid var(--clp-border);
+  border-radius: 13px;
+  background: var(--clp-surface);
+  color: var(--clp-navy);
+  font-family: inherit;
+  font-size: 16px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+.clp-select:hover:not(:disabled) { border-color: color-mix(in srgb, var(--clp-teal) 40%, transparent); }
+.clp-select:focus { border-color: var(--clp-teal); box-shadow: 0 0 0 3px color-mix(in srgb, var(--clp-teal) 20%, transparent); }
+
+.clp-textarea {
+  width: 100%;
+  min-height: 96px;
+  padding: 16px 20px;
+  border: 1px solid var(--clp-border);
+  border-radius: 13px;
+  background: var(--clp-surface);
+  color: var(--clp-navy);
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1.5;
+  outline: none;
+  resize: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+.clp-textarea::placeholder { color: #9AA9BA; }
+.clp-textarea:hover:not(:disabled) { border-color: color-mix(in srgb, var(--clp-teal) 40%, transparent); }
+.clp-textarea:focus { border-color: var(--clp-teal); box-shadow: 0 0 0 3px color-mix(in srgb, var(--clp-teal) 20%, transparent); }
 
 /* Chrome ve de mau vang/xanh cua no len o da autofill tru khi gia nen bang
    mot inset shadow phu kin o. */
