@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* Cream/teal brand surface cho /demo/select-role. Scope duoi
+   .cursus-brand-scope — xem header file de biet vi sao khong dat global. */
+@import "./styles/cursus-brand.css";
+
+/* Man dang nhap. Scope duoi .cursus-login-page, khong selector global. */
+@import "./styles/cursus-login.css";
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* Theme-token aliases: lets JSX use bg-surface / text-fg / border-default
@@ -1887,7 +1894,7 @@ section[id] {
   .mascot-arm-wave, .think-dot-1, .think-dot-2, .think-dot-3,
   .orbit-container-1, .orbit-container-2, .orbit-container-3,
   .orbit-icon-1, .orbit-icon-2, .orbit-icon-3,
-  .bubble-breathe-anim, .shadow-pulse-anim,
+  .bubble-breathe-anim, .shadow-pulse-anim, .landing-chat-launcher-pop-anim,
   .curi-mouth-talk-anim,
   .curi-icon-float-1-anim, .curi-icon-float-2-anim, .curi-icon-float-3-anim,
   .curi-breath-anim, .curi-float-slow-anim, .curi-sparkle-anim {
@@ -2238,6 +2245,20 @@ input:-webkit-autofill:active {
 }
 .bubble-breathe-anim {
   animation: bubble-breathe 4s ease-in-out infinite;
+}
+
+/* Landing chat launcher: swells past 1.0 then settles on every click (the
+   "phình to" bounce) -- re-triggers because the component keys this class
+   with a click counter, since re-adding an identical class name doesn't
+   restart a CSS animation on its own. */
+@keyframes landing-chat-launcher-pop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.28); }
+  75% { transform: scale(0.93); }
+  100% { transform: scale(1); }
+}
+.landing-chat-launcher-pop-anim {
+  animation: landing-chat-launcher-pop 480ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes shadow-pulse-custom {
@@ -3122,4 +3143,397 @@ input:-webkit-autofill:active {
   .api-error-screen__status-dot {
     animation: none !important;
   }
+}
+/* ================================================================
+   GV-UI — he thiet ke cho khu vuc Giang vien (theo spec + anh mau).
+   Dat trong mot scope rieng (.gv-ui) thay vi sua token toan cuc, de
+   man Sinh vien/Admin giu nguyen giao dien hien tai cho toi khi tung
+   man duoc chuyen doi. Cac man GV con lai se dung lai chinh khoi nay.
+
+   Font: spec ghi Poppins, nhung Poppins KHONG co subset `vietnamese`
+   (chi latin / latin-ext / devanagari — da kiem tra tren chinh css2 API).
+   Dung Poppins cho giao dien tieng Viet se lap lai dung loi cua Sora:
+   chu co dau roi sang font khac ngay giua tu. Be Vietnam Pro la font
+   geometric gan Poppins nhat ma co bo dau ve rieng, nen giu lam font
+   tieu de o day.
+   ================================================================ */
+.gv-ui {
+  --gv-bg: #FAF9F5;
+  --gv-card: #FFFFFF;
+  --gv-border: #E6E2D8;
+  --gv-text: #15181C;
+  --gv-text-2: #5B5647;
+  --gv-teal: #0FA8A0;
+  --gv-teal-hover: #0C8880;
+  --gv-teal-soft: #E1F5F3;
+  --gv-amber: #D97706;
+  --gv-amber-soft: #FEF3C7;
+  --gv-success: #059669;
+  --gv-danger: #DC2626;
+  --gv-danger-soft: #FEF2F2;
+
+  --gv-r-card: 14px;
+  --gv-r-panel: 18px;
+  --gv-r-btn: 10px;
+
+  color: var(--gv-text);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+/* Che do toi: spec chi dinh nghia bang sang. Anh xa lai sang token toi
+   san co cua app de nut chuyen che do khong lam vo man hinh. */
+.dark .gv-ui {
+  --gv-bg: var(--bg-app);
+  --gv-card: var(--bg-card);
+  --gv-border: var(--border-strong);
+  --gv-text: var(--text-primary);
+  --gv-text-2: var(--text-secondary);
+  --gv-teal-soft: rgba(15, 168, 160, 0.16);
+  --gv-amber-soft: rgba(217, 119, 6, 0.18);
+  --gv-danger-soft: rgba(220, 38, 38, 0.16);
+}
+
+/* --- Chu --- */
+.gv-ui .gv-page-title { font-size: 30px; font-weight: 800; line-height: 1.25; letter-spacing: -0.01em; }
+.gv-ui .gv-section-title { font-size: 19px; font-weight: 700; line-height: 1.25; }
+.gv-ui .gv-card-title { font-size: 16px; font-weight: 600; line-height: 1.3; }
+.gv-ui .gv-body { font-size: 15px; line-height: 1.45; }
+.gv-ui .gv-body-sm { font-size: 14px; line-height: 1.45; }
+.gv-ui .gv-meta { font-size: 13px; line-height: 1.4; color: var(--gv-text-2); }
+.gv-ui .gv-kpi-value { font-size: 34px; font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; }
+.gv-ui .gv-muted { color: var(--gv-text-2); }
+
+/* --- Khoi --- */
+.gv-ui .gv-card {
+  background: var(--gv-card);
+  border: 1px solid var(--gv-border);
+  border-radius: var(--gv-r-card);
+}
+.gv-ui .gv-panel {
+  background: var(--gv-card);
+  border: 1px solid var(--gv-border);
+  border-radius: var(--gv-r-panel);
+}
+
+/* --- Nut --- */
+.gv-ui .gv-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px 16px; border-radius: var(--gv-r-btn);
+  font-size: 14px; font-weight: 600; line-height: 1.2;
+  border: 1px solid transparent; cursor: pointer; white-space: nowrap;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+.gv-ui .gv-btn:disabled { opacity: .55; cursor: not-allowed; }
+.gv-ui .gv-btn--teal { background: var(--gv-teal); color: #fff; }
+.gv-ui .gv-btn--teal:hover:not(:disabled) { background: var(--gv-teal-hover); }
+.gv-ui .gv-btn--amber { background: var(--gv-amber); color: #fff; }
+.gv-ui .gv-btn--amber:hover:not(:disabled) { background: #B45309; }
+.gv-ui .gv-btn--ghost {
+  background: var(--gv-card); color: var(--gv-text); border-color: var(--gv-border);
+}
+.gv-ui .gv-btn--ghost:hover:not(:disabled) { border-color: var(--gv-teal); color: var(--gv-teal); }
+
+/* --- Select --- */
+.gv-ui .gv-select {
+  appearance: none;
+  background: var(--gv-card);
+  border: 1px solid var(--gv-border);
+  border-radius: var(--gv-r-btn);
+  padding: 10px 34px 10px 12px;
+  font-size: 14px; font-weight: 500; color: var(--gv-text);
+  line-height: 1.3; cursor: pointer; width: 100%;
+}
+.gv-ui .gv-select:focus-visible { outline: 2px solid var(--gv-teal); outline-offset: 1px; }
+.gv-ui .gv-field-label { font-size: 13px; font-weight: 500; color: var(--gv-text-2); margin-bottom: 6px; display: block; }
+
+/* --- Badge --- */
+.gv-ui .gv-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 11px; border-radius: 999px;
+  font-size: 13px; font-weight: 600; line-height: 1.3; white-space: nowrap;
+}
+.gv-ui .gv-badge--danger { background: var(--gv-danger-soft); color: var(--gv-danger); }
+.gv-ui .gv-badge--amber { background: var(--gv-amber-soft); color: #B45309; }
+.gv-ui .gv-badge--teal { background: var(--gv-teal-soft); color: var(--gv-teal-hover); }
+.gv-ui .gv-badge--neutral { background: #F2EFE7; color: var(--gv-text-2); }
+.dark .gv-ui .gv-badge--neutral { background: rgba(255,255,255,.07); }
+
+/* Badge trong cot hep (danh sach su kien lop): "Progress Test" rong 108px
+   trong cot 104px nen tran ra ngoai. Giu nguyen co chu 13px — khong ha duoi
+   nguong metadata — chi giam padding ngang, va cat bang ellipsis neu van con
+   thieu cho. Call site phai kem title de doc duoc day du. */
+.gv-ui .gv-badge--tight {
+  display: inline-block; max-width: 100%;
+  padding-left: 8px; padding-right: 8px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* --- Vong tron icon cua KPI --- */
+.gv-ui .gv-kpi-icon {
+  width: 52px; height: 52px; border-radius: 999px;
+  display: flex; align-items: center; justify-content: center; flex: 0 0 auto;
+}
+
+/* --- Link "Xem tat ca" --- */
+.gv-ui .gv-link {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 14px; font-weight: 600; color: var(--gv-teal);
+  cursor: pointer; background: none; border: 0; padding: 0;
+}
+.gv-ui .gv-link:hover { color: var(--gv-teal-hover); }
+
+/* --- Bang --- */
+.gv-ui .gv-th {
+  font-size: 13px; font-weight: 600; color: var(--gv-text-2);
+  text-align: left; padding: 0 0 10px;
+}
+.gv-ui .gv-td { padding: 12px 0; vertical-align: middle; font-size: 14px; }
+.gv-ui .gv-row + .gv-row .gv-td { border-top: 1px solid var(--gv-border); }
+
+/* --- O thao tac nhanh --- */
+.gv-ui .gv-quick {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  padding: 16px 8px; min-height: 92px;
+  background: var(--gv-card); border: 1px solid var(--gv-border);
+  border-radius: var(--gv-r-card);
+  font-size: 13px; font-weight: 600; color: var(--gv-text);
+  text-align: center; cursor: pointer; line-height: 1.35;
+  transition: border-color .15s ease, color .15s ease;
+}
+.gv-ui .gv-quick:hover:not(:disabled) { border-color: var(--gv-teal); color: var(--gv-teal); }
+.gv-ui .gv-quick:disabled { opacity: .5; cursor: not-allowed; }
+
+/* Sidebar rieng cho vai tro Giang vien — gradient rung sam + ban rong hon
+   theo spec (238-245px). Cac vai tro khac giu nguyen sidebar cu. */
+.sidebar[data-role="instructor"] {
+  background: linear-gradient(180deg, #0A1F12 0%, #123321 100%) !important;
+  border-right-color: rgba(255, 255, 255, 0.08) !important;
+}
+.sidebar[data-role="instructor"] .nav-item { font-size: 15px; font-weight: 500; }
+
+/* ---- GV-UI: thanh bo loc, the case, drawer chi tiet ----
+   Dung chung cho 3 man co master-detail: Rui ro, Bai tap nop, Guardrail. */
+.gv-ui .gv-filterbar {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px;
+  background: var(--gv-card); border: 1px solid var(--gv-border);
+  border-radius: var(--gv-r-card); padding: 14px 16px;
+}
+.gv-ui .gv-filterbar label { display: block; }
+
+.gv-ui .gv-case {
+  background: var(--gv-card); border: 1px solid var(--gv-border);
+  border-radius: var(--gv-r-card); padding: 16px;
+  display: flex; flex-direction: column; gap: 10px;
+  cursor: pointer; text-align: left; width: 100%;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.gv-ui .gv-case:hover { border-color: var(--gv-teal); }
+.gv-ui .gv-case--selected { border-color: var(--gv-teal); box-shadow: 0 0 0 1px var(--gv-teal); }
+/* Case da xu ly: giam do noi, khong to ca the mau nguy hiem. */
+.gv-ui .gv-case--done { opacity: .82; }
+
+.gv-ui .gv-drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 40;
+  width: 410px; max-width: 100vw;
+  background: var(--gv-card); border-left: 1px solid var(--gv-border);
+  display: flex; flex-direction: column;
+  box-shadow: -12px 0 32px rgba(21, 24, 28, .10);
+}
+.gv-ui .gv-drawer__head {
+  padding: 18px 20px; border-bottom: 1px solid var(--gv-border); flex: 0 0 auto;
+}
+/* Drawer tu cuon rieng — khong keo dai ca trang theo spec. */
+.gv-ui .gv-drawer__body { padding: 18px 20px; overflow-y: auto; flex: 1 1 auto; }
+.gv-ui .gv-drawer__foot {
+  padding: 14px 20px; border-top: 1px solid var(--gv-border); flex: 0 0 auto;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.gv-ui .gv-drawer__scrim { position: fixed; inset: 0; z-index: 39; background: rgba(21, 24, 28, .28); }
+
+.gv-ui .gv-sec-label {
+  font-size: 13px; font-weight: 700; letter-spacing: .02em;
+  color: var(--gv-text-2); text-transform: uppercase; margin-bottom: 8px;
+}
+.gv-ui .gv-note {
+  background: var(--gv-amber-soft); border: 1px solid rgba(217, 119, 6, .28);
+  border-radius: 12px; padding: 12px 14px; font-size: 14px; line-height: 1.45;
+}
+.gv-ui .gv-quote {
+  background: var(--gv-bg); border: 1px solid var(--gv-border);
+  border-radius: 12px; padding: 12px 14px; font-size: 14px; line-height: 1.5;
+  font-style: italic;
+}
+.gv-ui .gv-stat {
+  background: var(--gv-bg); border: 1px solid var(--gv-border);
+  border-radius: 12px; padding: 12px 14px;
+}
+.gv-ui .gv-btn--danger-outline {
+  background: var(--gv-card); color: var(--gv-danger); border-color: var(--gv-danger);
+}
+.gv-ui .gv-btn--danger-outline:hover:not(:disabled) { background: var(--gv-danger-soft); }
+.gv-ui .gv-btn--teal-outline {
+  background: var(--gv-card); color: var(--gv-teal-hover); border-color: var(--gv-teal);
+}
+.gv-ui .gv-btn--teal-outline:hover:not(:disabled) { background: var(--gv-teal-soft); }
+.gv-ui .gv-textarea {
+  width: 100%; background: var(--gv-card); color: var(--gv-text);
+  border: 1px solid var(--gv-border); border-radius: 10px;
+  padding: 10px 12px; font-size: 14px; line-height: 1.45; resize: vertical;
+  font-family: inherit;
+}
+.gv-ui .gv-textarea:focus-visible { outline: 2px solid var(--gv-teal); outline-offset: 1px; }
+
+/* ================================================================
+   GV-UI — THANH DINH (STICKY), PHAN TRANG, DONG NHAT CHIEU CAO CONTROL
+   ================================================================ */
+
+.gv-ui {
+  /* Mot chieu cao duy nhat cho moi control tren thanh tieu de / bo loc.
+     Truoc day: .gv-select cao 40.2px, .gv-btn 38.8px, nut mui tui tuan
+     (inline padding 9) 34px -> ba chieu cao trong cung mot hang, nhin ra
+     ngay la "chu cao chu thap". */
+  --gv-h-ctl: 40px;
+  --gv-pad-page: 26px;
+}
+
+/* --- Dong nhat chieu cao + can giua theo chieu doc --- */
+/* Cao co dinh + padding doc = 0: chu trong select duoc trinh duyet can giua
+   theo chieu cao, khong con phu thuoc line-height. */
+.gv-ui .gv-select { height: var(--gv-h-ctl); padding-top: 0; padding-bottom: 0; }
+
+/* Dung cho control tren thanh tieu de/bo loc. Khong dat truc tiep vao .gv-btn:
+   con nhieu nut icon nho trong the/hang bang dung .gv-btn voi padding 7-8px,
+   ep chung cao 40px se thanh nut cao ma hep. */
+.gv-ui .gv-ctl { min-height: var(--gv-h-ctl); padding-top: 0; padding-bottom: 0; }
+.gv-ui .gv-ctl--icon {
+  width: var(--gv-h-ctl); min-width: var(--gv-h-ctl);
+  padding-left: 0; padding-right: 0;
+}
+
+/* Tieu de nam cung hang voi control: boc trong khung cao bang control de chu
+   can giua theo control thay vi tut xuong duoi so voi nhan cua select. */
+.gv-ui .gv-title-inline { display: flex; align-items: center; min-height: var(--gv-h-ctl); }
+
+/* Cum so lieu KPI: so lon va ti le nho phai chung mot duong chan. */
+.gv-ui .gv-kpi-line { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+
+/* --- Thanh tieu de + bo loc ghim khi cuon ---
+   Vung cuon cua app la <main id="main-content"> (App.jsx: flex-1
+   overflow-y-auto), nen top:0 ghim ngay duoi Topbar. Khong duoc de bat ky
+   to tien nao giua .gv-sticky va <main> co overflow khac visible, vi vay
+   .gv-page bo lop wrapper "flex flex-col" cu va tu quan padding. */
+.gv-ui.gv-page { padding: 0; }
+
+.gv-ui .gv-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: var(--gv-pad-page) var(--gv-pad-page) 14px;
+  /* Trong suot khi chua ghim -> giu nguyen nen luoi cham nhu hien tai;
+     chi to nen dac khi da ghim de noi dung khong troi xuyen qua thanh. */
+  background: transparent;
+  transition: background-color .15s ease, box-shadow .15s ease, border-color .15s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.gv-ui .gv-sticky--pinned {
+  background: var(--gv-bg);
+  border-bottom-color: var(--gv-border);
+  box-shadow: 0 10px 22px rgba(21, 24, 28, .06);
+}
+.dark .gv-ui .gv-sticky--pinned { box-shadow: 0 10px 22px rgba(0, 0, 0, .35); }
+
+/* Moc do "da ghim chua": nam ngay tren .gv-sticky, cao 1px va bi keo lai bang
+   margin am nen khong chiem cho. */
+.gv-ui .gv-sticky-sentinel { height: 1px; margin-bottom: -1px; }
+
+.gv-ui .gv-page__body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 2px var(--gv-pad-page) var(--gv-pad-page);
+}
+
+/* --- Danh sach dai: cuon trong khung --- */
+.gv-ui .gv-scrollbox {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* Chua sticky nao ben trong nen overflow o day khong pha thanh ghim. */
+}
+.gv-ui .gv-scrollbox::-webkit-scrollbar { width: 10px; }
+.gv-ui .gv-scrollbox::-webkit-scrollbar-track { background: transparent; }
+.gv-ui .gv-scrollbox::-webkit-scrollbar-thumb {
+  background: var(--gv-border); border-radius: 999px;
+  border: 3px solid transparent; background-clip: content-box;
+}
+.gv-ui .gv-scrollbox::-webkit-scrollbar-thumb:hover { background-color: var(--gv-text-2); }
+
+/* --- Phan trang --- */
+.gv-ui .gv-pager {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+  margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid var(--gv-border);
+}
+.gv-ui .gv-pager__info { font-size: 13px; line-height: 1.4; color: var(--gv-text-2); }
+.gv-ui .gv-pager__nav { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.gv-ui .gv-pager__btn {
+  height: 34px; min-width: 34px; padding: 0 10px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--gv-border); border-radius: 9px;
+  background: var(--gv-card); color: var(--gv-text);
+  font-size: 13px; font-weight: 600; line-height: 1; cursor: pointer;
+  transition: border-color .15s ease, color .15s ease, background-color .15s ease;
+}
+.gv-ui .gv-pager__btn:hover:not(:disabled) { border-color: var(--gv-teal); color: var(--gv-teal); }
+.gv-ui .gv-pager__btn:focus-visible { outline: 2px solid var(--gv-teal); outline-offset: 1px; }
+.gv-ui .gv-pager__btn:disabled { opacity: .45; cursor: not-allowed; }
+.gv-ui .gv-pager__btn[aria-current="page"] {
+  background: var(--gv-teal); border-color: var(--gv-teal); color: #fff;
+}
+.gv-ui .gv-pager__gap { font-size: 13px; color: var(--gv-text-2); padding-inline: 2px; }
+
+/* --- The lua chon nhieu dong ---
+   Truoc day hai the "Giu chan" / "Cong bo cau tra loi" dung .gv-btn, ma class
+   do co white-space: nowrap -> dong mo ta khong xuong hang, nut rong 269px
+   trong cot 178px va chu tran ra ngoai drawer. Day la class rieng cho dang
+   the co tieu de + dong giai thich. */
+.gv-ui .gv-choice {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+  width: 100%; min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--gv-border); border-radius: var(--gv-r-btn);
+  background: var(--gv-card); color: var(--gv-text);
+  font-size: 14px; font-weight: 600; line-height: 1.3;
+  text-align: left; white-space: normal; overflow-wrap: anywhere;
+  cursor: pointer;
+  transition: border-color .15s ease, background-color .15s ease, color .15s ease;
+}
+.gv-ui .gv-choice__title { display: flex; align-items: center; gap: 8px; }
+.gv-ui .gv-choice__hint {
+  font-size: 13px; font-weight: 400; line-height: 1.45; color: var(--gv-text-2);
+}
+.gv-ui .gv-choice:hover { border-color: var(--gv-teal); }
+.gv-ui .gv-choice:focus-visible { outline: 2px solid var(--gv-teal); outline-offset: 1px; }
+.gv-ui .gv-choice--keep[aria-pressed="true"] {
+  border-color: var(--gv-danger); box-shadow: 0 0 0 1px var(--gv-danger);
+  background: var(--gv-danger-soft); color: var(--gv-danger);
+}
+.gv-ui .gv-choice--unblock[aria-pressed="true"] {
+  border-color: var(--gv-teal); box-shadow: 0 0 0 1px var(--gv-teal);
+  background: var(--gv-teal-soft); color: var(--gv-teal-hover);
+}
+
+@media (max-width: 900px) {
+  .gv-ui { --gv-pad-page: 16px; }
+}
+
+/* Nguoi dung tat hieu ung: thanh ghim van ghim (day la chuc nang, khong phai
+   trang tri), chi bo phan chuyen mau. */
+@media (prefers-reduced-motion: reduce) {
+  .gv-ui .gv-sticky { transition: none; }
 }

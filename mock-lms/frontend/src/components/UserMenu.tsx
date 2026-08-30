@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, ArrowLeft } from 'lucide-react';
 import type { Identity } from '../types';
 import { useLanguage } from '../context/LanguageContext';
+import { handleBackToCursusClick } from '../lib/backToCursus';
 
 function initialsOf(name: string): string {
   const parts = name.trim().split(/\s+/);
@@ -69,6 +70,7 @@ export function UserMenu({ identity, roleLabel, cursusUrl }: { identity: Identit
           </div>
           <a
             href={cursusUrl}
+            onClick={(e) => handleBackToCursusClick(e, cursusUrl)}
             role="menuitem"
             className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
           >

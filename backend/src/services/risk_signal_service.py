@@ -118,6 +118,34 @@ def class_weekly_completion(db: Session, student_ids: list[str]) -> list[float]:
     ]
 
 
+def class_weekly_completion_points(db: Session, student_ids: list[str]) -> list[dict]:
+    """Nhu class_weekly_completion nhung GIU LAI so tuan.
+
+    `classAvgCompletionByWeek` la mot mang tran, khong mang theo week_number,
+    nen bieu do buoc phai danh nhan "Tuan 1..N" theo vi tri — sai ngay khi du
+    lieu bat dau tu mot tuan khac 1. Ham nay tra ve kem so tuan de bieu do ghi
+    dung nhan; giu ham cu nguyen ven cho cac ben goi hien tai."""
+    if not student_ids:
+        return []
+
+    plans = db.query(models.WeeklyPlan).filter(
+        models.WeeklyPlan.student_id.in_(student_ids)
+    ).all()
+    completion_by_plan = _weekly_plan_completion_batch(db, [p.id for p in plans])
+
+    rates_by_week: dict[int, list[float]] = {}
+    for plan in plans:
+        completed, total = completion_by_plan.get(plan.id, (0, 0))
+        if total == 0:
+            continue
+        rates_by_week.setdefault(plan.week_number, []).append(completed / total)
+
+    return [
+        {"week": week, "rate": round(sum(rates) / len(rates), 4)}
+        for week, rates in sorted(rates_by_week.items())
+    ]
+
+
 def student_recent_weekly_rates(db: Session, student_id: str, limit: int) -> list[tuple[int, float]]:
     """`limit` cap ty le hoan thanh gan nhat cua 1 SV, moi nhat truoc, chi
     tinh cac tuan THAT SU co task (bo qua tuan rong)."""

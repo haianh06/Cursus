@@ -665,3 +665,91 @@ async def test_stream_dedups_citations_from_the_same_document(client, monkeypatc
     assert titles, "expected at least one citation for a clearly-matching question"
     assert titles.count(f"{code} Syllabus") == 1
     assert len(titles) == len(set(titles))
+
+
+@pytest.mark.asyncio
+async def test_greeting_gets_canned_answer_without_calling_ai_service(client, monkeypatch):
+    """A bare 'Hi' used to still run full retrieval (one live Gemini
+    embedding call per enrolled course) before ever reaching the LLM --
+    dominant cost behind the reported 15-20s latency on a plain greeting.
+    Canned answers (chat_cache_service.py) must short-circuit before any of
+    that, and before ai-service is called at all."""
+    import src.api.cursus_chat as cursus_chat_module
+
+    async def _fail_if_called(**kwargs):
+        raise AssertionError("generate_chat_stream must not be called for a canned greeting")
+        yield  # pragma: no cover - generator, never reached
+
+    monkeypatch.setattr(cursus_chat_module, "generate_chat_stream", _fail_if_called)
+
+    org_id = ensure_org(f"cc-greet-{uuid.uuid4().hex[:6]}", "cc-greet")
+    student_email = f"cc.greet.{uuid.uuid4().hex}@example.test"
+    ensure_user(email=student_email, org_id=org_id, role=models.UserRole.STUDENT)
+
+    token = await login(client, student_email)
+    async with client.stream(
+        "POST", "/api/v1/student/cursus/stream", headers=auth_headers(token),
+        json={"message": "Hi"},
+    ) as response:
+        assert response.status_code == 200
+        events = await _parse_sse(response)
+
+    kinds = [kind for kind, _ in events]
+    assert kinds == ["meta", "delta", "done"]
+    delta_text = next(data["text"] for kind, data in events if kind == "delta")
+    assert delta_text  # a real greeting reply, not empty
+
+
+@pytest.mark.asyncio
+async def test_semantic_cache_hit_skips_ai_service_on_repeat_question(client, monkeypatch):
+    """Second, near-identical question from a student enrolled in the exact
+    same course set must be served from the semantic cache -- generate_chat_
+    stream must fire exactly once (the first turn), never on the second."""
+    import src.api.cursus_chat as cursus_chat_module
+    from src.services.rag import embedding_service as embedding_service_module
+
+    call_count = {"n": 0}
+
+    async def _fake_generate_chat_stream(**kwargs):
+        call_count["n"] += 1
+        yield {"type": "delta", "text": "Cached-worthy answer."}
+        yield {"type": "done"}
+
+    monkeypatch.setattr(cursus_chat_module, "generate_chat_stream", _fake_generate_chat_stream)
+    # Embedding backend is disabled in tests (placeholder google_api_key) --
+    # fake a fixed, stable vector so the semantic-cache codepath actually runs.
+    monkeypatch.setattr(embedding_service_module, "has_embedding_backend", lambda: True)
+    monkeypatch.setattr(cursus_chat_module.embedding_service, "embed_query", lambda text: [1.0, 0.0, 0.0])
+
+    org_id = ensure_org(f"cc-cache-{uuid.uuid4().hex[:6]}", "cc-cache")
+    instructor_id = ensure_user(email=f"cc.cachei.{uuid.uuid4().hex}@example.test", org_id=org_id, role=models.UserRole.INSTRUCTOR)
+    student_email = f"cc.caches.{uuid.uuid4().hex}@example.test"
+    student_id = ensure_user(email=student_email, org_id=org_id, role=models.UserRole.STUDENT)
+    code = _code("CCC")
+    course_id = ensure_course(code=code, org_id=org_id)
+    enroll_student(student_id=student_id, course_id=course_id, instructor_id=instructor_id)
+    _seed_chunk(course_id, code, text=f"{code} noi dung bai giang co ban ve kien truc he thong.")
+
+    token = await login(client, student_email)
+    headers = auth_headers(token)
+
+    async with client.stream(
+        "POST", "/api/v1/student/cursus/stream", headers=headers,
+        json={"message": f"Cho em hoi noi dung mon {code} co gi?"},
+    ) as response:
+        first_events = await _parse_sse(response)
+    assert call_count["n"] == 1
+    assert any(kind == "delta" for kind, _ in first_events)
+
+    async with client.stream(
+        "POST", "/api/v1/student/cursus/stream", headers=headers,
+        json={"message": f"Cho em hoi noi dung mon {code} co gi vay?"},
+    ) as response:
+        second_events = await _parse_sse(response)
+
+    # generate_chat_stream must NOT have fired a second time -- served from cache.
+    assert call_count["n"] == 1
+    second_meta = next(data for kind, data in second_events if kind == "meta")
+    assert second_meta.get("cached") is True
+    second_delta = next(data["text"] for kind, data in second_events if kind == "delta")
+    assert second_delta == "Cached-worthy answer."

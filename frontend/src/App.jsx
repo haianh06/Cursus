@@ -139,7 +139,7 @@ function Sidebar({ user, onLogout, open, setOpen, activeSection }) {
         transition-transform duration-300 ease-out
         ${open ? 'translate-x-0' : '-translate-x-full'}
         lg:relative lg:translate-x-0 lg:z-auto
-      `} style={{ width: 220 }}>
+      `} data-role={user.role} style={{ width: user.role === 'instructor' ? 240 : 220 }}>
 
         {/* Brand Logo — same LandingLogoMark used everywhere else in the app
             (landing, auth, error screen). The sidebar itself is always dark
@@ -450,17 +450,30 @@ function Topbar({ user, setSidebarOpen }) {
           `/sso/refresh` (không phải `/courses` thẳng) -- EduSync cache
           session riêng tới 1 giờ; đi qua đây trước đảm bảo mỗi lần bấm vào
           đều lấy đúng danh tính Cursus HIỆN TẠI, không bị dính role cũ sau
-          khi đổi demo role hoặc đổi tài khoản trong cùng trình duyệt. */}
-      <a
-        href={`${import.meta.env.VITE_MOCK_LMS_URL || 'http://localhost:9000'}/sso/refresh?next=/courses`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="btn-ghost hidden sm:flex min-h-10 items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-fg-secondary hover:text-fg"
-        title={lang === 'vi' ? 'Mở hệ thống môn học ngoài (EduSync) ở tab mới' : 'Open the external course platform (EduSync) in a new tab'}
-      >
-        <ExternalLink size={13} />
-        EduSync
-      </a>
+          khi đổi demo role hoặc đổi tài khoản trong cùng trình duyệt.
+          Ẩn hẳn nút này khi VITE_MOCK_LMS_URL không được set lúc build (vd.
+          bản deploy prod chưa cấu hình biến này) -- fallback localhost:9000
+          rơi vào dead link với người dùng thật, còn tệ hơn là không hiện.
+          rel="opener" (cố ý, không phải "noopener noreferrer") -- Chrome coi
+          MỌI link target="_blank" khác-origin là không có opener trừ khi khai
+          báo rõ rel="opener". EduSync là code tự viết trong cùng monorepo
+          (không phải bên thứ ba), nên giữ window.opener có chủ đích: "Về
+          Cursus" bên EduSync (mock-lms/frontend/src/lib/backToCursus.ts)
+          dùng nó để đóng thẳng tab EduSync thay vì tải lại Cursus từ đầu.
+          Rủi ro đánh đổi duy nhất là reverse-tabnabbing nếu chính code
+          EduSync bị chèn mã độc. */}
+      {import.meta.env.VITE_MOCK_LMS_URL && (
+        <a
+          href={`${import.meta.env.VITE_MOCK_LMS_URL}/sso/refresh?next=/courses`}
+          target="_blank"
+          rel="opener"
+          className="btn-ghost hidden sm:flex min-h-10 items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-fg-secondary hover:text-fg"
+          title={lang === 'vi' ? 'Mở hệ thống môn học ngoài (EduSync) ở tab mới' : 'Open the external course platform (EduSync) in a new tab'}
+        >
+          <ExternalLink size={13} />
+          EduSync
+        </a>
+      )}
 
       {user.role === 'admin' ? (
         <div className="flex flex-1 justify-center px-2 lg:px-6">

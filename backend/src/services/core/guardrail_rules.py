@@ -9,8 +9,15 @@ matrix): ask_knowledge, ask_hint, feedback-on-own-work, graded_deliverable,
 out_of_scope, prompt_injection. ask_knowledge/ask_hint/feedback-on-own-work
 are affirmatively-answered intents (nothing to block), so only the remaining
 three show up here as blocking rule groups: graded_deliverable is covered by
-HOMEWORK_VI / FULL_CODE / HOMEWORK_EN, and PROMPT_INJECTION / OUT_OF_SCOPE
-were added to cover the last two rows.
+HOMEWORK_VI / FULL_CODE / HOMEWORK_EN / ROLEPLAY_JAILBREAK, and
+PROMPT_INJECTION / OUT_OF_SCOPE were added to cover the last two rows.
+
+Patterns below are written WITHOUT Vietnamese diacritics wherever possible.
+``GuardrailService._candidates()`` (guardrail_service.py) already matches
+every pattern here against an accent-stripped ("folded") copy of the
+question alongside the original, so an unaccented pattern alone already
+catches both "đóng vai" and "dong vai" -- no need for the raw/folded pattern
+pairs older groups below still carry.
 """
 
 from __future__ import annotations
@@ -90,8 +97,8 @@ RULE_GROUPS: tuple[GuardrailRuleGroup, ...] = (
             "xin dữ liệu của người học khác."
         ),
         patterns=_compile(
-            r"\bb[oỏ]\s+(qua\s+)?(m[oọ]i\s+)?(lu[aậ]t|quy\s*t[aắ]c|rule)",
-            r"\bbo\s+qua\s+(moi\s+)?(luat|quy\s*tac|rule)",
+            r"\bb[oỏ]\s+(qua\s+)?(m[oọ]i\s+)?(lu[aậ]t|quy\s*t[aắ]c|rule|guardrail)",
+            r"\bbo\s+qua\s+(moi\s+)?(luat|quy\s*tac|rule|guardrail)",
             r"\bignore\s+(all\s+)?(previous|prior|above)\s+(instruction|rule|prompt)",
             r"\bsystem\s+prompt\b",
             r"\bin\s+ra\s+prompt\b",
@@ -101,6 +108,38 @@ RULE_GROUPS: tuple[GuardrailRuleGroup, ...] = (
             r"\bdu\s*lieu\s+(lop|sinh\s*vien)\s+khac\b",
             r"\bother\s+students?'?\s+data\b",
             r"\bapi[_\s-]?key\b",
+            r"\bdeveloper\s+mode\b",
+            r"\bjailbreak\b",
+            # Indirect injection: a course document/chunk itself contains a
+            # fake directive ("SYSTEM: ...", "AI: hãy đóng vai admin") and the
+            # student is asking whether the assistant follows it -- the
+            # planted instruction text still needs to be caught even though
+            # it arrives quoted inside a normal question, not as a direct
+            # command from the student.
+            r"\b(system|ai)\s*:\s*.{0,80}?\b(dong\s+vai|bo\s+guardrail|ignore|bypass)\b",
+        ),
+    ),
+    GuardrailRuleGroup(
+        code="ROLEPLAY_JAILBREAK",
+        name_vi="Chặn đóng vai để lách guardrail",
+        description_vi=(
+            "Chặn yêu cầu AI đóng vai giảng viên/quản trị/\"không luật lệ\" để "
+            "moi đáp án hoặc bài giải hoàn chỉnh thay vì hỏi thẳng."
+        ),
+        patterns=_compile(
+            # Persona-switch phrasing ("đóng vai", "pretend/act as", "giả sử
+            # bạn là") is common in legitimate case-study prompts too, so
+            # these only fire when a deliverable-seeking word also shows up
+            # nearby (same proximity-window approach as HOMEWORK_EN below).
+            r"\bdong\s+vai\b.{0,100}?\b(dap\s*an|giai\s*(het|toan\s*bo)?|code|bai\s*(lam|giai)|full|complete|solution|answer)\b",
+            r"\bpretend\b.{0,20}?\byou\s+are\b.{0,100}?\b(answer|solution|code|full|complete)\b",
+            r"\bact\s+as\b.{0,60}?\b(instructor|teacher|admin|giao\s*vien|giang\s*vien|tro\s*giang)\b.{0,100}?\b(dap\s*an|giai|code|answer|solution)\b",
+            r"\bgia\s*su\s+ban\s+la\b.{0,100}?\b(dap\s*an|giai|code|answer|solution)\b",
+            r"\btuong\s+tuong\b.{0,100}?\b(dap\s*an|giai\s*(het)?|doc\s*luon|chep)\b",
+            # "AI with no rules at all, solve X for me" -- self-contained
+            # enough to fire without a nearby-deliverable check.
+            r"\bkhong\s+co\s+luat\s*(gi)?\s*(ca)?\b",
+            r"\bno\s+rules?\s+(at\s+all\s+)?(ai|assistant)\b",
         ),
     ),
     GuardrailRuleGroup(
@@ -108,7 +147,8 @@ RULE_GROUPS: tuple[GuardrailRuleGroup, ...] = (
         name_vi="Chặn câu hỏi ngoài phạm vi tài liệu môn học",
         description_vi=(
             "Chặn câu hỏi về điểm số, học phí, lịch thi toàn trường, thời tiết, "
-            "hoặc dữ liệu khác không nằm trong tài liệu môn học."
+            "danh sách/liên hệ/mật khẩu của người khác, hoặc dữ liệu khác "
+            "không nằm trong tài liệu môn học."
         ),
         patterns=_compile(
             r"\b[đd]i[eể]m\s+(m[oô]n\s+kh[aá]c|c[uủ]a\s+b[aạ]n)\b",
@@ -121,6 +161,17 @@ RULE_GROUPS: tuple[GuardrailRuleGroup, ...] = (
             r"\btuition\s+fee\b",
             r"\bth[oờ]i\s+ti[eế]t\b",
             r"\bweather\b",
+            # Other students' identity / roster / contact / credentials --
+            # none of this lives in course-document RAG data, so it's a
+            # boundary case (out_of_scope), not a graded-deliverable one.
+            r"\bdanh\s*sach\b.{0,30}?\bsinh\s*vien\b",
+            r"\blist\s+of\s+students?\b",
+            r"\bthong\s*tin\s+lien\s*he\b.{0,40}?\b(giang\s*vien|gv|instructor)\b",
+            r"\bcontact\s+info(rmation)?\s+of\b.{0,40}?\binstructor\b",
+            r"\bmat\s*khau\b",
+            r"\bpassword\b",
+            r"\bbai\s*(lam|nop)\s+cua\s+(sinh\s*vien|ban)\s+khac\b",
+            r"\b(email|so\s*dien\s*thoai|phone\s*number)\s+(ca\s*nhan\s+)?(cua\s+)?(giang\s*vien|gv|instructor)\b",
         ),
     ),
 )

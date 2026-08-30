@@ -1,0 +1,790 @@
+/* ================================================================
+   CURSUS — MAN DANG NHAP
+   Dung lai theo screenshot tham chieu o 1672x941. Moi toa do trong file
+   nay deu lay tu reference roi kiem lai bang screenshot comparison.
+
+   Toan bo style nam duoi namespace `.cursus-login-page`. Khong co selector
+   global (h1/p/button/input) o day: man Chon vai tro va cac man auth khac
+   dung chung index.css, mot selector tran ra ngoai la vo chung.
+   ================================================================ */
+
+.cursus-login-page {
+  /* Mot ho chu duy nhat. Poppins da bi loai khoi du an vi khong co subset
+     `vietnamese` (khong co glyph U+1EA0-U+1EF9), gay hien tuong mot tu hai
+     kieu chu. Xem ghi chu trong cursus-brand.css. */
+  --clp-font: 'Be Vietnam Pro', sans-serif;
+
+  --clp-bg: #FAF9F5;
+  --clp-surface: #FFFFFF;
+  --clp-navy: #0B3553;
+  --clp-navy-strong: #082444;
+  --clp-muted: #536B82;
+  --clp-teal: #0099A5;
+  --clp-teal-strong: #007A83;
+  --clp-teal-bright: #009EA8;
+  --clp-teal-soft: #E4F6F6;
+  /* #2F6BE0 do duoc 4.38:1 tren nen the #EDF3FD (truoc day the mau trang
+     nen no van dat). #2A63D4 dua len 4.92:1. */
+  --clp-blue: #2A63D4;
+  --clp-blue-soft: #EDF3FF;
+  /* Tuong tu: 4.33:1 tren nen the #FDF5E8 -> #986206 cho 4.75:1. */
+  --clp-amber: #986206;
+  --clp-amber-soft: #FDF3E0;
+  --clp-border: #E3E8EE;
+  --clp-border-soft: #EDF1F5;
+  --clp-shadow-card: 0 12px 34px rgba(11, 53, 83, 0.05);
+  --clp-shadow-soft: 0 3px 10px rgba(11, 53, 83, 0.04);
+
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: clip;
+  font-family: var(--clp-font);
+  color: var(--clp-navy);
+  background: var(--clp-bg);
+}
+
+.dark .cursus-login-page {
+  --clp-bg: #0E1621;
+  --clp-surface: #16212E;
+  --clp-navy: #EAF2FB;
+  --clp-navy-strong: #F3F8FF;
+  --clp-muted: #AFC1D6;
+  --clp-teal: #35CFCC;
+  --clp-teal-strong: #6FE0DD;
+  --clp-teal-bright: #48DAD6;
+  --clp-teal-soft: rgba(53, 207, 204, 0.14);
+  --clp-blue: #6FA8FF;
+  --clp-blue-soft: rgba(111, 168, 255, 0.14);
+  --clp-amber: #F8BE55;
+  --clp-amber-soft: rgba(248, 190, 85, 0.14);
+  --clp-border: #28384C;
+  --clp-border-soft: #223146;
+  --clp-shadow-card: 0 18px 50px rgba(0, 0, 0, 0.42);
+  --clp-shadow-soft: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+
+/* --- Lop trang tri: glow teal rat nhe hai goc duoi + luoi cham mo goc trai.
+       Nam duoi cung, khong nhan chuot, khong bao gio phu len chu. --- */
+.clp-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    /* Song cream nhe bat dau tu khoang giua trang di xuong. */
+    linear-gradient(180deg, transparent 46%, rgba(244, 240, 230, 0.55) 78%, rgba(240, 235, 223, 0.72) 100%),
+    /* Glow teal nhat o day trai va day phai — nhat hon ban truoc de gradient
+       khong lan len vung chu. */
+    radial-gradient(42% 34% at 4% 103%, rgba(0, 153, 165, 0.13), transparent 70%),
+    radial-gradient(40% 34% at 99% 101%, rgba(0, 153, 165, 0.12), transparent 72%);
+}
+
+.clp-bg::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 380px;
+  height: 340px;
+  background-image: radial-gradient(currentColor 1.1px, transparent 1.2px);
+  background-size: 22px 22px;
+  color: rgba(0, 153, 165, 0.16);
+  -webkit-mask-image: radial-gradient(70% 70% at 0% 100%, #000, transparent 72%);
+  mask-image: radial-gradient(70% 70% at 0% 100%, #000, transparent 72%);
+}
+
+.dark .clp-bg::after { color: rgba(255, 255, 255, 0.07); }
+
+.clp-shell {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  /* Khoa be rong khung o dung viewport tham chieu roi canh giua: o man rong
+     hon 1672 bo cuc khong con dinh sang trai va de lai mang trang ben phai. */
+  max-width: 1672px;
+  margin-inline: auto;
+}
+
+/* --- Header ---------------------------------------------------------
+   Padding phai la 48px de cum dieu khien ket thuc o x=1624; padding trai
+   71px de logo bat dau dung x=71 nhu reference. */
+.clp-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 24px 48px 0 68px;
+}
+
+.clp-logo { display: inline-flex; align-items: center; border-radius: 12px; outline: none; }
+.clp-logo:focus-visible { box-shadow: 0 0 0 2px var(--clp-teal); }
+
+/* File logo da duoc cat het le trong suot (1309x465, ti le 2.815). Chi dat
+   width — height tu suy ra — nen ty le khong the bi ep meo. */
+.clp-logo__img { width: 201px; height: auto; object-fit: contain; object-position: center; display: block; }
+
+.clp-header__controls { margin-left: auto; margin-top: 2px; display: flex; align-items: center; gap: 14px; }
+
+/* Bo chon ngon ngu: dung UI theo reference (globe + "Tieng Viet" + chevron)
+   nhung dieu khien dung LanguageContext san co — khong dung mot he i18n moi. */
+.clp-lang { position: relative; }
+
+.clp-lang__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: 174px;
+  height: 52px;
+  padding-inline: 16px;
+  border: 1px solid var(--clp-border);
+  border-radius: 999px;
+  background: var(--clp-surface);
+  box-shadow: var(--clp-shadow-soft);
+  color: var(--clp-navy);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 160ms ease;
+}
+
+.clp-lang__btn:hover { border-color: color-mix(in srgb, var(--clp-teal) 45%, transparent); }
+.clp-lang__btn:focus-visible { outline: 2px solid var(--clp-teal); outline-offset: 2px; }
+.clp-lang__name { flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; }
+.clp-lang__chev { transition: transform 160ms ease; flex-shrink: 0; }
+.clp-lang__btn[aria-expanded='true'] .clp-lang__chev { transform: rotate(180deg); }
+
+.clp-lang__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 30;
+  min-width: 174px;
+  padding: 6px;
+  border: 1px solid var(--clp-border);
+  border-radius: 14px;
+  background: var(--clp-surface);
+  box-shadow: var(--clp-shadow-card);
+  list-style: none;
+  margin: 0;
+}
+
+.clp-lang__opt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  height: 42px;
+  padding-inline: 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--clp-navy);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.clp-lang__opt:hover { background: var(--clp-teal-soft); }
+.clp-lang__opt:focus-visible { outline: 2px solid var(--clp-teal); outline-offset: -2px; }
+.clp-lang__opt[aria-selected='true'] { color: var(--clp-teal-strong); font-weight: 600; }
+
+.clp-theme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 53px;
+  height: 52px;
+  border: 1px solid var(--clp-border);
+  border-radius: 999px;
+  background: var(--clp-surface);
+  box-shadow: var(--clp-shadow-soft);
+  color: var(--clp-navy);
+  cursor: pointer;
+  transition: border-color 160ms ease, color 160ms ease;
+}
+
+.clp-theme:hover { border-color: color-mix(in srgb, var(--clp-teal) 45%, transparent); color: var(--clp-teal-strong); }
+.clp-theme:focus-visible { outline: 2px solid var(--clp-teal); outline-offset: 2px; }
+
+/* --- Bo cuc hai cot ---------------------------------------------------
+   71 + 776 = 847 -> canh trai card dung vi tri reference.
+   847 + 709 = 1556, cong padding phai 116 = 1672. */
+.clp-main {
+  display: grid;
+  /* 72 + 684 + 91 + 710 = 1557 = canh phai cua card. Cot trai 684 va gap 91
+     thay cho cach viet cu (776 + 0): cung hinh hoc, nhung khop dung cach
+     reference phan ra. */
+  grid-template-columns: 684px 710px;
+  column-gap: 91px;
+  align-items: start;
+  padding: 26px 115px 31px 72px;
+}
+
+/* --- Cot trai --------------------------------------------------------- */
+.clp-brand { width: 660px; margin-left: 22px; }
+
+.clp-back {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 11px;
+  /* min-height: 44px cho vung cham lam hop cao 44 trong khi chu chi 20, va vi
+     chu duoc can giua nen no roi thap hon reference 12px. Padding + margin am
+     giu nguyen vung cham 44px nhung dua hop dong chay ve bang dung hop chu,
+     nho vay vi tri chu chinh la vi tri layout. */
+  padding: 12px 4px;
+  margin: -12px -4px;
+  border-radius: 10px;
+  color: var(--clp-teal-strong);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 160ms ease;
+}
+
+/* Chi ban ngoai card moi keo trai: cot brand bat dau o x=94, reference dat
+   nut nay o x=74. Ban trong card phai theo dung mep padding cua card. */
+.clp-back--outside { margin-left: -24px; }
+.clp-back:hover { color: var(--clp-teal); }
+.clp-back:focus-visible { outline: 2px solid var(--clp-teal); outline-offset: 2px; }
+.clp-back svg { transition: transform 160ms ease; flex-shrink: 0; }
+.clp-back:hover svg { transform: translateX(-3px); }
+
+/* Khung danh rieng cho illustration. Anh 1536x1024, vung ve 1372x825 tai
+   (47,65) — nen khung phai rong hon vung ve de vung ve ra dung 660x397. */
+/* Anh 1536x1024 nhung vung ve chi la 1372x825 tai (47,65) — le trong suot
+   chiem 28% khung. Neu de anh chay theo luong thi heading bi day xuong ~64px
+   boi phan le duoi. Nen khung nay CHINH LA hop muc (660x397), con anh duoc
+   dat tuyet doi va keo lech de vung ve trung khit hop. */
+/* Vung ve 650x391 dat tai x=105 cho canh phai dung 755 nhu reference.
+   Khong the vua rong 650-660 VUA cao 380-385: ty le vung ve cua file la
+   1.663 con khoang reference ngu y 1.715 — ep ca hai se lam meo anh. */
+.clp-hero { position: relative; width: 643px; height: 387px; margin: 35px 0 0 18px; }
+.clp-hero__img {
+  position: absolute;
+  left: -22.0px;
+  top: -30.5px;
+  width: 720px;
+  /* max-width: none la BAT BUOC: preflight cua Tailwind dat
+     `img { max-width: 100% }`, ma khung cha chi rong 660px — no kep anh ve
+     660 va vung ve co lai con 590px thay vi 660px. */
+  max-width: none;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+.clp-heading {
+  margin-top: 25px;
+  max-width: 540px;
+  margin-inline: auto;
+  font-size: 39px;
+  font-weight: 800;
+  line-height: 1.17;
+  letter-spacing: -0.01em;
+  text-align: center;
+  color: var(--clp-navy-strong);
+}
+
+.clp-sub {
+  margin: 15px auto 0;
+  /* 528, khong phai 560: o 560 dong mot keo them chu "quan"; reference ngat
+     ngay sau "muc tieu,". */
+  max-width: 528px;
+  font-size: 16.5px;
+  font-weight: 400;
+  line-height: 1.55;
+  text-align: center;
+  color: var(--clp-muted);
+}
+
+/* --- Plan / Do / Reflect ---------------------------------------------- */
+.clp-stages {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.clp-stage {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  /* Chieu cao co dinh 106px theo reference — ba the phai bang nhau tuyet doi
+     du do dai chu khac nhau. */
+  height: 105px;
+  padding: 13px 12px;
+  border: 1px solid var(--clp-stage-border);
+  border-radius: 22px;
+  background: var(--clp-stage-card);
+  box-shadow: var(--clp-shadow-soft);
+  text-align: left;
+}
+
+.clp-stage__icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Chip dac, glyph trang. Day la icon trang tri di kem tieu de va mo ta —
+     no khong phai vat mang nghia duy nhat, nen khong bi rang buoc 3:1 cua
+     WCAG 1.4.11; giu dung mau tuoi cua reference. */
+  background: var(--clp-stage-icon);
+  color: #FFFFFF;
+}
+
+.clp-stage__name {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--clp-stage);
+}
+
+.clp-stage__text {
+  display: block;
+  margin-top: 2px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--clp-muted);
+}
+
+.clp-stage--plan {
+  --clp-stage: var(--clp-teal-strong);
+  --clp-stage-icon: #0F9EA8;
+  --clp-stage-card: #F6FBFA;
+  --clp-stage-border: #E4F1EF;
+}
+.clp-stage--do {
+  --clp-stage: var(--clp-blue);
+  --clp-stage-icon: #2F6BE0;
+  --clp-stage-card: #F7FAFE;
+  --clp-stage-border: #E6EEFB;
+}
+.clp-stage--reflect {
+  --clp-stage: var(--clp-amber);
+  --clp-stage-icon: #F0A93B;
+  --clp-stage-card: #FEFBF4;
+  --clp-stage-border: #F4EBDA;
+}
+.dark .clp-stage--plan { --clp-stage-card: rgba(53, 207, 204, 0.10); --clp-stage-border: rgba(53, 207, 204, 0.22); }
+.dark .clp-stage--do { --clp-stage-card: rgba(111, 168, 255, 0.10); --clp-stage-border: rgba(111, 168, 255, 0.22); }
+.dark .clp-stage--reflect { --clp-stage-card: rgba(248, 190, 85, 0.10); --clp-stage-border: rgba(248, 190, 85, 0.22); }
+
+/* --- Card dang nhap --------------------------------------------------- */
+.clp-card {
+  position: relative;
+  width: 710px;
+  /* min-height, khong phai height co dinh: o trang thai mac dinh nhip doc ben
+     trong da duoc tinh de cho ra dung 784px, nhung khi hien thong bao loi
+     (moi o them ~28px) noi dung phai duoc phep day card cao ra. Voi height
+     co dinh, phan du tran ra ngoai mep bo tron va dong Sandbox loi han khoi
+     card. */
+  min-height: 784px;
+  /* Card bat dau o y=126 con cot brand o y=121, nen bu 5px o day thay vi
+     lam lech ca hang luoi. */
+  margin-top: 5px;
+  /* Card 710 co vien 1px moi ben -> padding-inline 47 cho be rong noi dung
+     dung 614px va moi control bat dau o x=895.
+     padding-top 48 dat chu cua nut quay lai o y=174. */
+  padding: 46px 47px 45px;
+  border: 1px solid var(--clp-border-soft);
+  border-radius: 29px;
+  background: var(--clp-surface);
+  box-shadow: var(--clp-shadow-card);
+}
+
+/* Curi tho dau o goc tren phai. Nam duoi noi dung (z-index 0) va khong
+   nhan chuot, nen khong the chan tuong tac voi nut Google ben duoi. */
+.clp-peek {
+  position: absolute;
+  top: 11px;
+  right: 5px;
+  width: 243px;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.clp-peek__img { width: 100%; height: auto; object-fit: contain; object-position: center; display: block; }
+
+.clp-card > *:not(.clp-peek) { position: relative; z-index: 1; }
+
+.clp-alert {
+  margin-top: 18px;
+  padding: 13px 16px;
+  border: 1px solid color-mix(in srgb, #C4372F 35%, transparent);
+  border-radius: 12px;
+  background: #FDF0EF;
+  color: #A22C25;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.dark .clp-alert { background: rgba(240, 121, 111, 0.14); border-color: rgba(240, 121, 111, 0.4); color: #F5A29B; }
+
+.clp-alert--ok {
+  border-color: color-mix(in srgb, var(--clp-teal) 40%, transparent);
+  background: var(--clp-teal-soft);
+  color: var(--clp-teal-strong);
+}
+
+/* --- Nut Google (chua kha dung) --------------------------------------- */
+.clp-google {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  height: 79px;
+  margin-top: 53px;
+  padding-inline: 22px;
+  border: 1px solid var(--clp-border);
+  border-radius: 15px;
+  background: #F5F5F8;
+  font-family: inherit;
+  cursor: not-allowed;
+  text-align: left;
+}
+
+.dark .clp-google { background: rgba(255, 255, 255, 0.03); }
+
+/* Opacity dat len NOI DUNG chu khong len ca nut, de vien va nen van doc
+   duoc — trang thai "chua ra mat" phai ro nhung khong mo den muc mo ho. */
+.clp-google__icon, .clp-google__label { opacity: 0.72; }
+.clp-google__icon { flex-shrink: 0; display: flex; }
+
+/* Nhan can giua, pill "Sap ra mat" day sat phai. */
+.clp-google__body { flex: 1; min-width: 0; display: flex; align-items: center; gap: 16px; }
+
+.clp-google__label {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--clp-navy);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.clp-google__soon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding-inline: 15px;
+  border-radius: 999px;
+  background: #F1F0F6;
+  color: #63616F;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.dark .clp-google__soon { background: rgba(255, 255, 255, 0.08); color: var(--clp-muted); }
+
+/* --- Divider ---------------------------------------------------------- */
+.clp-divider { display: flex; align-items: center; gap: 18px; height: 20px; margin-top: 40px; }
+
+.clp-divider::before,
+.clp-divider::after {
+  content: '';
+  /* flex-basis 0 + cung he so grow = hai duong luon dai bang nhau, khong
+     phu thuoc be rong cua chu o giua. */
+  flex: 1 1 0;
+  height: 1px;
+  background: var(--clp-border);
+}
+
+.clp-divider span { flex-shrink: 0; font-size: 15px; color: var(--clp-muted); }
+
+/* --- Truong nhap ------------------------------------------------------ */
+.clp-form { margin-top: 20px; }
+.clp-field + .clp-field { margin-top: 28px; }
+
+.clp-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--clp-navy-strong);
+}
+
+.clp-inputwrap { position: relative; }
+
+.clp-inputicon {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  color: #9AA9BA;
+  pointer-events: none;
+}
+
+.clp-input {
+  width: 100%;
+  height: 60px;
+  padding-left: 54px;
+  padding-right: 20px;
+  border: 1px solid var(--clp-border);
+  border-radius: 13px;
+  background: var(--clp-surface);
+  color: var(--clp-navy);
+  font-family: inherit;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.clp-input::placeholder { color: #9AA9BA; }
+.clp-input:hover:not(:disabled) { border-color: color-mix(in srgb, var(--clp-teal) 40%, transparent); }
+
+/* Focus dung box-shadow chu khong doi do day vien, nen khong xe dich layout. */
+.clp-input:focus {
+  border-color: var(--clp-teal);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--clp-teal) 20%, transparent);
+}
+
+.clp-input[aria-invalid='true'] { border-color: #C4372F; }
+.clp-input[aria-invalid='true']:focus { box-shadow: 0 0 0 3px rgba(196, 55, 47, 0.18); }
+.clp-input:disabled { background: #F7F9FB; color: var(--clp-muted); cursor: not-allowed; }
+.dark .clp-input:disabled { background: rgba(255, 255, 255, 0.04); }
+.clp-input--pw { padding-right: 60px; }
+
+/* Chrome ve de mau vang/xanh cua no len o da autofill tru khi gia nen bang
+   mot inset shadow phu kin o. */
+.clp-input:-webkit-autofill,
+.clp-input:-webkit-autofill:hover,
+.clp-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--clp-navy);
+  -webkit-box-shadow: 0 0 0 100px var(--clp-surface) inset;
+  caret-color: var(--clp-navy);
+  transition: background-color 9999s ease-out 0s;
+}
+
+.clp-eye {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #9AA9BA;
+  cursor: pointer;
+  transition: color 160ms ease, background-color 160ms ease;
+}
+
+.clp-eye:hover { color: var(--clp-navy); background: #F3F6F9; }
+.dark .clp-eye:hover { background: rgba(255, 255, 255, 0.06); }
+.clp-eye:focus-visible { outline: 2px solid var(--clp-teal); outline-offset: -2px; }
+
+.clp-fielderr { margin-top: 8px; font-size: 14px; font-weight: 600; color: #A22C25; line-height: 1.45; }
+.dark .clp-fielderr { color: #F5A29B; }
+
+.clp-forgotrow { display: flex; justify-content: flex-end; margin-top: 28px; }
+
+.clp-forgot {
+  display: inline-flex;
+  align-items: center;
+  /* Cung ky thuat nhu .clp-back: vung cham 44px, hop dong chay bang chu. */
+  padding: 12px 4px;
+  margin: -12px -4px;
+  border-radius: 8px;
+  color: var(--clp-teal-strong);
+  font-size: 15.5px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.clp-forgot:hover { text-decoration: underline; }
+.clp-forgot:focus-visible { outline: 2px solid var(--clp-teal); outline-offset: 2px; }
+
+/* --- Nut dang nhap ---------------------------------------------------- */
+.clp-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  height: 67px;
+  margin-top: 22px;
+  border: 0;
+  border-radius: 13px;
+  background: linear-gradient(180deg, var(--clp-teal-bright) 0%, var(--clp-teal-strong) 100%);
+  box-shadow: 0 8px 18px rgba(0, 153, 165, 0.18);
+  color: #FFFFFF;
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: filter 160ms ease, box-shadow 160ms ease, transform 110ms ease;
+}
+
+.dark .clp-submit { color: #041018; }
+.clp-submit:hover:not(:disabled) { filter: brightness(1.05); box-shadow: 0 12px 28px rgba(0, 153, 165, 0.3); }
+.clp-submit:active:not(:disabled) { transform: translateY(1px); filter: brightness(0.98); }
+.clp-submit:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--clp-surface), 0 0 0 6px var(--clp-teal); }
+/* Disabled/loading khong duoc doi kich thuoc — nut giu nguyen hop de khong
+   xe dich phan duoi. */
+.clp-submit:disabled { cursor: not-allowed; opacity: 0.72; box-shadow: none; }
+.clp-submit--ok { background: linear-gradient(180deg, #22B77F 0%, #128C60 100%); box-shadow: 0 10px 24px rgba(18, 140, 96, 0.24); }
+
+/* --- Sandbox ---------------------------------------------------------- */
+.clp-sandbox {
+  display: flex;
+  /* Can giua theo khoi chu: chu o day luon 2 dong nen neo len dinh (flex-start)
+     lam vong tron treo cao hon tam khoi chu khoang 10px. */
+  align-items: center;
+  gap: 15px;
+  /* 22 + 24 (thay vi 26 + 26): tong chieu cao card phai bang dung 784px nhu
+     reference, va day la cho co the thu lai ma khong day nut Dang nhap ra
+     khoi vi tri y=695 cua no. */
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid var(--clp-border-soft);
+}
+
+.clp-sandbox__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: var(--clp-teal-soft);
+  overflow: hidden;
+}
+
+.clp-sandbox__img {
+  position: absolute;
+  left: 5.46px;
+  top: 10.53px;
+  width: 30px;
+  max-width: none;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+.clp-sandbox__text {
+  /* 487px: reference ngat dong ngay sau "o che do"; de khung keo het be
+     ngang con lai thi "Sandbox" bi keo len dong mot. */
+  max-width: 487px;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--clp-muted);
+}
+
+.clp-sandbox__text a {
+  color: var(--clp-teal-strong);
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 6px;
+  /* Padding tren mot phan tu inline mo rong vung bam ma khong pha luong chu
+     — cach duy nhat cho mot link nam giua cau co vung cham du lon. */
+  padding-block: 11px;
+}
+
+.clp-sandbox__text a:hover { text-decoration: underline; }
+.clp-sandbox__text a:focus-visible { outline: 2px solid var(--clp-teal); outline-offset: 2px; }
+
+.clp-spin { animation: clp-spin 900ms linear infinite; }
+@keyframes clp-spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .cursus-login-page *,
+  .cursus-login-page *::before,
+  .cursus-login-page *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .clp-spin { animation: clp-spin 1.2s linear infinite !important; }
+}
+
+/* ================================================================
+   RESPONSIVE — bo cuc desktop duoc dung o 1672x941 roi NOI LONG dan
+   xuong. Khong bao gio dung transform: scale() de thu nho ca trang.
+   ================================================================ */
+
+@media (max-width: 1671px) {
+  /* Duoi be rong tham chieu, hai cot chuyen sang do rong linh hoat de khong
+     tran ngang; card giu nguyen ty le. */
+  .clp-main {
+    grid-template-columns: minmax(0, 1fr) 709px;
+    column-gap: 56px;
+    padding-inline: 56px;
+  }
+  .clp-brand { width: 100%; max-width: 660px; margin-inline: auto; }
+  .clp-hero { width: 100%; max-width: 739px; margin-inline: auto; }
+}
+
+@media (max-width: 1439px) {
+  .clp-main { grid-template-columns: minmax(0, 1fr) 640px; column-gap: 40px; padding-inline: 40px; }
+  .clp-card { width: 100%; min-height: 0; padding: 40px; }
+  .clp-heading { font-size: 35px; }
+}
+
+@media (max-width: 1199px) {
+  /* Card la thu chinh: mot cot, form len tren, phan ke chuyen ve duoi. */
+  .clp-main {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 34px;
+    padding-inline: 32px;
+    justify-items: center;
+  }
+  .clp-card { order: 1; max-width: 640px; }
+  .clp-brand { order: 2; max-width: 620px; }
+  /* Chi giu MOT nut quay lai duoi desktop — nut trong card. */
+  .clp-back--outside { display: none; }
+  .clp-heading { font-size: 32px; }
+  .clp-peek { width: 200px; right: 10px; }
+}
+
+@media (max-width: 767px) {
+  .clp-header { padding: 16px 16px 0; gap: 12px; flex-wrap: wrap; }
+  .clp-logo__img { width: 168px; }
+  .clp-lang__btn { width: auto; min-width: 132px; height: 48px; padding-inline: 13px; font-size: 14px; }
+  .clp-theme { width: 48px; height: 48px; }
+  .clp-main { padding-inline: 16px; row-gap: 26px; }
+  .clp-card { padding: 22px; border-radius: 24px; }
+  .clp-peek { width: 128px; right: 4px; top: 2px; }
+  .clp-google { height: auto; min-height: 76px; margin-top: 34px; gap: 12px; padding: 14px 16px; align-items: center; }
+  /* O 390px, nhan + icon + pill khong the chung mot hang: pill xuong dong
+     thu hai BEN TRONG nut, con nhan giu nguyen mot dong. */
+  .clp-google__body { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; flex: 1; min-width: 0; }
+  .clp-google__label { font-size: 15px; text-align: left; width: 100%; }
+  .clp-google__soon { height: 28px; padding-inline: 12px; font-size: 13px; }
+  .clp-input { height: 56px; padding-left: 48px; }
+  .clp-inputicon { left: 16px; }
+  .clp-submit { height: 56px; font-size: 18px; }
+  .clp-heading { font-size: 27px; }
+  .clp-sub { font-size: 15px; }
+  .clp-hero { max-width: 380px; }
+  .clp-stages { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .clp-stage { min-height: 0; padding: 14px; border-radius: 20px; }
+}

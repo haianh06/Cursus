@@ -177,6 +177,7 @@ function ActionProposalCard({ proposal, onConfirm, onCancel, busy }) {
 export default function CursusChat({ user }) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [popCount, setPopCount] = useState(0);
   const [messages, setMessages] = useState([]);
   const [value, setValue] = useState('');
   const [conversationId, setConversationId] = useState(null);
@@ -437,14 +438,23 @@ export default function CursusChat({ user }) {
 
   return (
     <>
+      {/* Launcher styling kept in sync with LandingChatWidget.jsx's launcher
+          (same card-circle + border + online dot + breathe/pop animations)
+          -- the two widgets should read as the same control everywhere in
+          the product, not a different design pre- vs. post-login. */}
       {!open && (
         <button
           aria-label="Mở Cursus"
-          onClick={() => setOpen(true)}
-          style={{ background: HEADER_GRADIENT }}
-          className="fixed bottom-5 right-5 z-[90] flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+          onClick={() => { setOpen(true); setPopCount((c) => c + 1); }}
+          className="group fixed bottom-5 right-5 z-[90] flex h-16 w-16 items-center justify-center rounded-full border border-line bg-surface-card shadow-xl transition-transform hover:scale-105 active:scale-95 bubble-breathe-anim focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
         >
-          <CursusMascot size="launcher" />
+          <span key={popCount} className="landing-chat-launcher-pop-anim relative flex h-16 w-16 items-center justify-center">
+            <CursusMascot size="launcher" state="idle" />
+            <span
+              aria-hidden="true"
+              className="absolute bottom-0.5 right-0.5 h-3.5 w-3.5 rounded-full border-2 border-surface-card bg-success"
+            />
+          </span>
         </button>
       )}
       {open && (
@@ -512,12 +522,11 @@ export default function CursusChat({ user }) {
                       : 'mr-4 rounded-2xl rounded-bl-sm border border-line bg-surface-card p-3 text-sm text-fg shadow-sm'
                   }
                 >
-                  <ReactMarkdown
-                    className="cursus-chat-markdown"
-                    remarkPlugins={[remarkGfm]}
-                  >
-                    {shownText || 'Đang soạn câu trả lời…'}
-                  </ReactMarkdown>
+                  <div className="cursus-chat-markdown">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {shownText || 'Đang soạn câu trả lời…'}
+                    </ReactMarkdown>
+                  </div>
                   {/* Citations only appear once the reply has finished "typing" out,
                       so they don't jump in mid-animation. */}
                   {doneTyping && item.citations?.length > 0 && (

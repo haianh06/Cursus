@@ -172,7 +172,7 @@ export default function AdminAcademicPanel() {
       <section className="grid min-w-0 gap-4 xl:grid-cols-[15rem_minmax(0,1fr)_18rem]" aria-label={lang === 'vi' ? 'Tổng quan học kỳ và lịch thi' : 'Term and exam overview'}>
         <article className="card p-5">
           <div className="flex items-center justify-between gap-2">
-            <h2 className="font-display text-lg font-bold text-fg">{term?.name || termForm.name || '—'}</h2>
+            <h2 className="font-display text-lg font-bold text-fg">{term?.name || termForm.name || (lang === 'vi' ? 'Chưa thiết lập học kỳ' : 'No term set up yet')}</h2>
             {term && <span className="badge badge-success text-[9px] font-bold">{lang === 'vi' ? 'Đang hoạt động' : 'Active'}</span>}
           </div>
           <dl className="mt-5 space-y-4 text-xs">

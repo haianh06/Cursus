@@ -30,6 +30,7 @@ from src.services.core.audit_service import AuditService
 from src.services.core.notification_service import NotificationService
 from src.services.quiz_service import QuizService
 from src.services.risk_signal_service import (
+    class_weekly_completion_points,
     compute_class_metrics,
     detect_declining_completion_risks,
     is_risk_overdue,
@@ -139,6 +140,14 @@ def get_instructor_dashboard(
         "courses": courses,
         "classSize": metrics["classSize"],
         "classAvgCompletionByWeek": metrics["classAvgCompletionByWeek"],
+        # Cung so lieu nhung kem so tuan, de bieu do khong phai danh nhan
+        # "Tuan 1..N" theo vi tri (sai khi du lieu khong bat dau tu tuan 1).
+        "classCompletionPoints": class_weekly_completion_points(
+            db, sorted({e.student_id for e in db.query(models.Enrollment).filter(
+                models.Enrollment.section_id.in_(section_ids),
+                models.Enrollment.status == models.EnrollmentStatus.ENROLLED.value,
+            ).all()})
+        ) if section_ids else [],
     }
 
 @router.get("/dashboard/export")
@@ -278,7 +287,13 @@ def get_instructor_risks(
         models.RiskSignal.section_id.in_(section_ids)
     ).order_by(models.RiskSignal.generated_at.desc()).all()
 
-    return [_serialize_risk_row(db, r) for r in risks]
+    # 27/08: orphaned seed data (RiskSignal.student_id pointing at a User
+    # row that no longer exists) was surfacing as a dead-end "Unknown
+    # Student" row the instructor could click into -> 404 on
+    # /students/{id}/profile. Drop those here rather than showing a link
+    # that can never resolve to anything actionable.
+    rows = [_serialize_risk_row(db, r) for r in risks]
+    return [row for row in rows if row["studentAlias"] != "Unknown Student"]
 
 @router.get("/risks/{risk_id}")
 def get_risk_detail(
@@ -552,10 +567,17 @@ def get_instructor_kudos(
 DIGEST_DEFAULT_DAYS = 7
 
 
-def _build_instructor_digest(db: Session, current_user: models.User, days: int) -> dict:
+def _build_instructor_digest(
+    db: Session, current_user: models.User, days: int, course_id: str | None = None
+) -> dict:
     """Dung chung boi ca man xem trong app va email — 1 nguon du lieu duy
-    nhat, tranh hai noi lech so voi nhau."""
+    nhat, tranh hai noi lech so voi nhau.
+
+    `course_id` cho phep man Digest loc theo lop giong cac man GV khac; None
+    hoac "ALL" nghia la gop het cac lop dang day."""
     all_sections = db.query(models.CourseSection).filter_by(instructor_id=current_user.id).all()
+    if course_id and course_id != "ALL":
+        all_sections = [s for s in all_sections if s.course_id == course_id]
     section_ids = [s.id for s in all_sections]
     detect_declining_completion_risks(db, section_ids)
 
@@ -574,13 +596,15 @@ def _build_instructor_digest(db: Session, current_user: models.User, days: int) 
         )
 
     cutoff_naive = cutoff.replace(tzinfo=None)
-    guardrail_events = _visible_guardrail_events(db, current_user, limit=200)
+    guardrail_events = _visible_guardrail_events(
+        db, current_user, only_section_ids=section_ids, limit=200
+    )
     new_guardrail = [
         item for item in guardrail_events
         if item.get("createdAt") and datetime.fromisoformat(item["createdAt"]) >= cutoff_naive
     ]
 
-    kudos_payload = get_instructor_kudos(course_id=None, current_user=current_user, db=db)
+    kudos_payload = get_instructor_kudos(course_id=course_id, current_user=current_user, db=db)
     kudos = kudos_payload.get("kudos", [])
 
     return {
@@ -600,6 +624,7 @@ def _build_instructor_digest(db: Session, current_user: models.User, days: int) 
 @router.get("/digest")
 def get_instructor_digest(
     days: int = Query(default=DIGEST_DEFAULT_DAYS, ge=1, le=90),
+    course_id: str | None = None,
     current_user: models.User = Depends(get_current_user_from_token),
     db: Session = Depends(get_db),
 ):
@@ -607,7 +632,7 @@ def get_instructor_digest(
     (khong luu bang rieng, giong Kudos). Khong co scheduler/cron gui dinh
     ky tu dong — GV tu mo xem hoac tu bam gui email khi can (xem endpoint
     ben duoi), vi du an nay chua co ha tang lich hen nen."""
-    return _build_instructor_digest(db, current_user, days)
+    return _build_instructor_digest(db, current_user, days, course_id)
 
 
 @router.post("/digest/email")
@@ -684,6 +709,7 @@ def _visible_guardrail_events(
     current_user: models.User,
     *,
     student_id: str | None = None,
+    only_section_ids: list[str] | None = None,
     limit: int = 100,
 ) -> list[dict]:
     """Loi cua list_guardrail_reviews, tach ra de dung lai cho ho so SV (A1) —
@@ -699,6 +725,11 @@ def _visible_guardrail_events(
     if not is_admin:
         sections = db.query(models.CourseSection).filter_by(instructor_id=current_user.id).all()
         section_ids = {s.id for s in sections}
+    # Bo loc theo mon (digest co chon lop): thu hep them chu KHONG bao gio
+    # mo rong quyen doc — luon giao voi tap section ma giang vien so huu.
+    if only_section_ids is not None:
+        narrowed = set(only_section_ids)
+        section_ids = narrowed if section_ids is None else (section_ids & narrowed)
 
     events = (
         db.query(models.GuardrailEvent)

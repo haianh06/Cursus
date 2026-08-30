@@ -1,7 +1,27 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { AlertCircle, CheckCircle2, ChevronRight, FileClock, History, Search, ShieldAlert, XCircle } from 'lucide-react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { AlertCircle, CheckCircle2, ChevronRight, FileClock, History, KeyRound, Search, Settings2, ShieldAlert, ShieldCheck, XCircle } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { getAuditEvents } from '../../lib/api';
+
+// A demo/test org that gets clicked through repeatedly generates a LOGIN_
+// SUCCESS/LOGOUT/DEMO_SESSION_STARTED for every single visit -- on a young
+// org this routine session noise can outnumber every real admin action
+// 10-to-1, which is exactly what buries the log an Admin actually needs to
+// scan (found via a live screenshot: 9 of the newest 10 rows were session
+// churn). Categorizing by pattern (not an exhaustive map -- new event types
+// keep landing, same reasoning as KNOWN_EVENT_TYPES below) lets the UI mute
+// the routine category by default instead of hiding it outright.
+function categorizeEvent(eventType) {
+  if (/^(LOGIN_|LOGOUT|REGISTER_|EMAIL_|PASSWORD_|MFA_|DEMO_SESSION)/.test(eventType)) {
+    return 'auth';
+  }
+  if (/^admin_|^guardrail_rule_updated$|^risk_policy_|^mock_lms_sync_|^UPDATE_USER_STATUS$/.test(eventType)) {
+    return 'admin';
+  }
+  return 'oversight';
+}
+
+const CATEGORY_ICON = { auth: KeyRound, admin: Settings2, oversight: ShieldCheck };
 
 function formatTimestamp(iso, lang) {
   try {
@@ -43,10 +63,18 @@ export default function AdminAudit() {
   const [eventTypeFilter, setEventTypeFilter] = useState('');
   const [appliedFilter, setAppliedFilter] = useState('');
   const [selectedId, setSelectedId] = useState(null);
+  const [category, setCategory] = useState('all');
 
   const load = useCallback((eventType) => {
     setError('');
-    return getAuditEvents({ eventType: eventType || null })
+    // 100 (the old default) is exactly the size of a burst of routine
+    // session churn -- on a demo/test org a handful of minutes of
+    // logging in and out can push every real admin action outside the
+    // window entirely (found while adding the category filter below: an
+    // admin_settings_updated from days ago wasn't just visually buried,
+    // it plain wasn't in the response). 500 is the server's own cap
+    // (src/api/audit.py).
+    return getAuditEvents({ eventType: eventType || null, limit: 500 })
       .then(setEvents)
       .catch((err) => setError(err.message || String(err)));
   }, []);
@@ -60,10 +88,27 @@ export default function AdminAudit() {
     setAppliedFilter(eventTypeFilter.trim());
   }
 
-  const selectedEvent = events?.find((event) => event.id === selectedId) || events?.[0] || null;
+  const categoryCounts = useMemo(() => {
+    const counts = { auth: 0, admin: 0, oversight: 0 };
+    for (const event of events || []) counts[categorizeEvent(event.event_type)] += 1;
+    return counts;
+  }, [events]);
+  const visibleEvents = useMemo(
+    () => (category === 'all' ? events : (events || []).filter((event) => categorizeEvent(event.event_type) === category)),
+    [events, category],
+  );
+
+  const selectedEvent = visibleEvents?.find((event) => event.id === selectedId) || visibleEvents?.[0] || null;
   const allowedCount = events?.filter((event) => event.decision === 'ALLOW').length || 0;
   const deniedCount = events?.filter((event) => event.decision !== 'ALLOW').length || 0;
   const warningCount = events?.filter((event) => /FAILED|ROLLBACK|LOCK/i.test(event.event_type)).length || 0;
+
+  const CATEGORY_CHIPS = [
+    { key: 'all', label: t('admin.auditCategoryAll'), count: events?.length || 0 },
+    { key: 'admin', label: t('admin.auditCategoryAdmin'), count: categoryCounts.admin },
+    { key: 'oversight', label: t('admin.auditCategoryOversight'), count: categoryCounts.oversight },
+    { key: 'auth', label: t('admin.auditCategoryAuth'), count: categoryCounts.auth },
+  ];
 
   return (
     <section className="space-y-4 text-left" aria-labelledby="audit-title">
@@ -87,6 +132,26 @@ export default function AdminAudit() {
         <h2 id="audit-title" className="text-sm font-bold text-fg flex items-center gap-2">
           <History size={16} className="text-accent" /> {t('admin.auditTitle')}
         </h2>
+        {events && events.length > 0 && (
+          <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label={t('admin.auditFilterLabel')}>
+            {CATEGORY_CHIPS.map(({ key, label, count }) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setCategory(key)}
+                aria-pressed={category === key}
+                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-semibold cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+                  category === key
+                    ? 'border-accent bg-accent-soft text-accent'
+                    : 'border-line text-fg-secondary hover:text-fg hover:border-fg-muted'
+                }`}
+              >
+                {label}
+                <span className={`mono ${category === key ? '' : 'text-fg-muted'}`}>{count}</span>
+              </button>
+            ))}
+          </div>
+        )}
         <form onSubmit={submitFilter} className="flex items-center gap-2">
           <label htmlFor="audit-event-type-filter" className="sr-only">
             {t('admin.auditFilterLabel')}
@@ -131,6 +196,8 @@ export default function AdminAudit() {
         <p className="text-xs text-fg-muted">{t('admin.loading')}</p>
       ) : events.length === 0 ? (
         <p className="text-xs text-fg-muted">{t('admin.auditEmpty')}</p>
+      ) : visibleEvents.length === 0 ? (
+        <p className="text-xs text-fg-muted">{t('admin.auditEmpty')}</p>
       ) : (
         <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
           <div className="overflow-x-auto rounded-lg border border-line bg-surface-card">
@@ -146,8 +213,16 @@ export default function AdminAudit() {
               </tr>
             </thead>
             <tbody>
-              {events.map((event) => (
-                    <tr key={event.id} className={selectedEvent?.id === event.id ? 'admin-selected-row' : ''}>
+              {visibleEvents.map((event) => {
+                    const eventCategory = categorizeEvent(event.event_type);
+                    const CategoryIcon = CATEGORY_ICON[eventCategory];
+                    // Routine session churn (auth) is real but rarely what an
+                    // Admin is scanning for -- dim it rather than hide it, so
+                    // the eye lands on admin/oversight rows first without any
+                    // row actually disappearing out from under a "Tất cả" view.
+                    const isNoise = eventCategory === 'auth' && category === 'all';
+                    return (
+                    <tr key={event.id} className={`${selectedEvent?.id === event.id ? 'admin-selected-row' : ''} ${isNoise ? 'opacity-60' : ''}`}>
                       <td>
                         <button
                           type="button"
@@ -159,7 +234,12 @@ export default function AdminAudit() {
                         </button>
                       </td>
                       <td className="text-fg-muted whitespace-nowrap">{formatTimestamp(event.created_at, lang)}</td>
-                      <td className="mono text-fg font-semibold">{event.event_type}</td>
+                      <td className={`mono font-semibold ${isNoise ? 'text-fg-secondary' : 'text-fg'}`}>
+                        <span className="inline-flex items-center gap-1.5">
+                          <CategoryIcon size={12} className="shrink-0 text-fg-muted" aria-hidden="true" />
+                          {event.event_type}
+                        </span>
+                      </td>
                       <td className="max-w-48 truncate text-fg-secondary">{event.actor_user_id || '—'}</td>
                       <td className="hidden text-fg-secondary 2xl:table-cell">
                         {event.resource_type ? `${event.resource_type}${event.resource_id ? ` · ${event.resource_id}` : ''}` : '—'}
@@ -170,7 +250,8 @@ export default function AdminAudit() {
                         </span>
                       </td>
                     </tr>
-              ))}
+                    );
+              })}
             </tbody>
           </table>
           </div>

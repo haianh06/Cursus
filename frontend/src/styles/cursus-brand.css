@@ -1,0 +1,720 @@
+/* ================================================================
+   CURSUS — SANDBOX ROLE SELECTION
+   Dung lai theo screenshot tham chieu 1672x941. Screenshot la nguon su
+   that cao nhat: moi gia tri o day deu duoc do lai bang screenshot
+   comparison, khong phai chon theo cam tinh.
+
+   Vi sao scope duoi `.cursus-brand-scope` thay vi sua token toan cuc:
+   phan con lai cua app chay tren bo token "Ink & Citrine" cu (--bg-app,
+   --accent, --brand-blue...). Doi chung sang bang mau cream/teal nay se
+   ve lai toan bo dashboard. Scope giu day la mot be mat doc lap.
+   ================================================================ */
+
+.cursus-brand-scope {
+  /* MOT ho chu duy nhat cho ca man — khong de trinh duyet tron hai font
+     trong cung mot cau.
+     Poppins bi loai sau khi do dac: no chi phat hanh subset
+     devanagari/latin/latin-ext (kiem tra tren chinh API css2), khong co
+     glyph cho U+1EA0-U+1EF9. Voi <html lang="vi"> thi "Chon vai tro de
+     trai nghiem" render Poppins cho chu khong dau va font khac cho
+     o. e^' a? e^. — hai kieu chu trong mot tu. Do khong phai gia thuyet:
+     o vong calibration truoc, ba the role lech baseline vi thuoc do dong
+     khac nhau giua hai font. Be Vietnam Pro la font geometric gan Poppins
+     nhat co bo dau ve rieng cho ho chu. */
+  --cb-font: 'Be Vietnam Pro', sans-serif;
+
+  --cb-background: #FAF9F5;
+  --cb-surface: #FFFFFF;
+  --cb-surface-soft: #F7FBFA;
+
+  --cb-text-primary: #071D3B;
+  --cb-text-secondary: #455B78;
+  --cb-text-muted: #8491A3;
+
+  --cb-primary: #08A7AA;
+  --cb-primary-dark: #078789;
+  --cb-primary-soft: #E5F7F5;
+  /* Teal rieng cho CHU tren nen sang. #078789 do duoc 3.92:1 tren
+     #E5F7F5, 4.12:1 tren nen cream va 4.34:1 tren trang — deu duoi nguong
+     4.5:1. #067B7D dat 4.58 / 4.82 / 5.08 va lech mau gan nhu khong nhan
+     ra. --cb-primary giu nguyen cho vien, icon va focus ring, noi chi can
+     3:1. */
+  --cb-primary-ink: #067B7D;
+  /* Nen CTA teal. Chu trang tren #08A7AA chi duoc 2.95:1. #07807F dua len
+     4.77:1. Day la mot sai lech CO Y so voi bang mau trong contract: cung
+     contract do yeu cau "contrast text dat yeu cau", va hai dieu nay khong
+     the cung dung. CTA xanh duong va tim khong can sua (5.06 va 6.97). */
+  --cb-primary-cta: #07807F;
+
+  --cb-blue: #1F67E8;
+  --cb-blue-soft: #EEF4FF;
+
+  --cb-purple: #5130EE;
+  --cb-purple-soft: #F2EEFF;
+
+  --cb-border: #E5E7EB;
+  --cb-divider: #EDEFF2;
+
+  --cb-danger: #C4372F;
+  --cb-danger-soft: #FDF0EF;
+
+  --cb-shadow: 0 8px 30px rgba(7, 29, 59, 0.07);
+  --cb-shadow-hover: 0 14px 38px rgba(7, 29, 59, 0.11);
+
+  /* Accent theo role — chi CTA va benefit strip doc no. Curi giu mau teal
+     canonical o ca ba card; do la thu giu ba card khac accent van doc ra
+     la mot san pham chu khong phai ba. */
+  --cb-accent: var(--cb-primary);
+  --cb-accent-dark: var(--cb-primary-dark);
+  --cb-accent-soft: var(--cb-primary-soft);
+
+  font-family: var(--cb-font);
+  color: var(--cb-text-primary);
+  /* Nen cream + mot vung teal cuc nhat o goc duoi phai, dung nhu anh goc.
+     Khong dung screenshot lam background, khong blur manh hon reference. */
+  background:
+    radial-gradient(circle at 88% 96%, rgba(8, 167, 170, 0.09), transparent 36%),
+    var(--cb-background);
+}
+
+/* index.css co rule toan cuc `h1, h2, ... { font-family: 'Be Vietnam Pro' }`
+   trong @layer base; no de len font-family thua ke tu .cursus-brand-scope,
+   nen tieu de van ra Be Vietnam Pro du bien --cb-font dat Poppins len dau.
+   Khai bao lai o day de ca man that su dung mot bo font. */
+.cursus-brand-scope h1,
+.cursus-brand-scope h2,
+.cursus-brand-scope h3,
+.cursus-brand-scope h4,
+.cursus-brand-scope p,
+.cursus-brand-scope span,
+.cursus-brand-scope a,
+.cursus-brand-scope button,
+.cursus-brand-scope input {
+  font-family: var(--cb-font);
+}
+
+/* Anh tham chieu chi co bang sang, nhung man nay co nut doi che do — nen
+   bo mau toi la bat buoc. Teal/blue/purple duoc nang sang va giam bao hoa
+   de van du 4.5:1 khi lam chu tren nen toi. */
+.dark .cursus-brand-scope {
+  --cb-background: #0E1621;
+  --cb-surface: #16212E;
+  --cb-surface-soft: #1A2836;
+
+  --cb-text-primary: #EAF2FB;
+  --cb-text-secondary: #AFC1D6;
+  --cb-text-muted: #8497AC;
+
+  --cb-primary: #35CFCC;
+  --cb-primary-dark: #6FE0DD;
+  --cb-primary-soft: rgba(53, 207, 204, 0.14);
+  /* Tren nen toi, "ink" phai SANG hon, va CTA giu teal tuoi vi chu tren no
+     la mau toi. Da do: toan bo chu o che do toi deu dat nguong. */
+  --cb-primary-ink: #7FE7E4;
+  --cb-primary-cta: var(--cb-primary);
+
+  --cb-blue: #6FA8FF;
+  --cb-blue-soft: rgba(111, 168, 255, 0.14);
+
+  --cb-purple: #A392FF;
+  --cb-purple-soft: rgba(163, 146, 255, 0.16);
+
+  --cb-border: #28384C;
+  --cb-divider: #223146;
+
+  --cb-danger: #F0796F;
+  --cb-danger-soft: rgba(240, 121, 111, 0.14);
+
+  --cb-shadow: 0 8px 30px rgba(0, 0, 0, 0.42);
+  --cb-shadow-hover: 0 14px 38px rgba(0, 0, 0, 0.52);
+
+  background:
+    radial-gradient(circle at 88% 96%, rgba(53, 207, 204, 0.11), transparent 36%),
+    var(--cb-background);
+}
+
+.cursus-brand-scope--student {
+  --cb-accent: var(--cb-primary);
+  --cb-accent-dark: var(--cb-primary-ink);
+  --cb-accent-soft: var(--cb-primary-soft);
+  --cb-accent-cta: var(--cb-primary-cta);
+}
+.cursus-brand-scope--instructor {
+  --cb-accent: var(--cb-blue);
+  --cb-accent-dark: #1652C4;
+  --cb-accent-soft: var(--cb-blue-soft);
+}
+.cursus-brand-scope--admin {
+  --cb-accent: var(--cb-purple);
+  --cb-accent-dark: #3D21C9;
+  --cb-accent-soft: var(--cb-purple-soft);
+}
+/* Tren nen toi, --cb-accent-dark la dau SANG hon: no dung lam mau chu va
+   mau hover, nen phai tang do sang chu khong giam. */
+.dark .cursus-brand-scope--instructor { --cb-accent-dark: #A8CBFF; }
+.dark .cursus-brand-scope--admin { --cb-accent-dark: #C6BCFF; }
+
+/* ── Khung trang ─────────────────────────────────────────────── */
+
+.cb-page {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: clip;
+}
+
+.cb-shell {
+  width: 100%;
+  max-width: 1620px;
+  margin-inline: auto;
+  padding-inline: 26px;
+}
+
+.cb-content { position: relative; z-index: 1; }
+.cb-main { position: relative; z-index: 1; padding-bottom: 20px; }
+
+/* ── Lop trang tri ───────────────────────────────────────────── */
+
+/* Luon nam duoi noi dung, khong bao gio nhan chuot. */
+.cb-decor {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Curi chao don. Do lai tren anh tham chieu: than cu nam gon trong khung
+   nhin (khong tran ra mep trai), day cua no cham dung mep tren cua luoi
+   card. 230px nam trong khoang 210-270px. */
+/* Muc trong file la 1060x1126 tai (160,90) cua khung 1254x1254. De muc
+   nam dung cho anh tham chieu (x~190..378, y~195..395) thi khung phai
+   rong 223px, dat tai (162,179). */
+.cb-decor--curi { left: 162px; top: 173px; width: 223px; }
+
+/* Toa nha dai hoc: 470px trong khoang 430-520px, ty le 1040x680 nen cao
+   ~307px. top: 52 dat day cua no o ~359px — ngay tren mep tren cua luoi
+   card (~366px), dung nhu anh tham chieu noi hai vung vua cham nhau chu
+   khong chong len. Mep phai co the bi viewport cat, do la co y. */
+/* Muc la 1600x520 tai (37,289) cua khung 1672x941 — toa nha nam o dai
+   giua, tren no la 289px trong suot. Khung 498px dat mep phai -11px cho
+   muc cham dung mep phai khung nhin nhu anh tham chieu. */
+.cb-decor--campus { right: -11px; top: 79px; width: 498px; }
+
+/* ── Header ──────────────────────────────────────────────────── */
+
+.cb-header {
+  position: relative;
+  z-index: 2;
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  row-gap: 12px;
+  padding-block: 12px;
+}
+
+.cb-header__left,
+.cb-header__right { display: flex; align-items: center; min-width: 0; }
+.cb-header__left { gap: 44px; }
+.cb-header__right { margin-left: auto; gap: 14px; }
+
+.cb-logo { display: inline-flex; align-items: center; border-radius: 12px; outline: none; flex-shrink: 0; }
+.cb-logo:focus-visible { box-shadow: 0 0 0 2px var(--cb-primary); }
+
+/* object-fit: contain theo contract — khong bao gio cover, khong crop bang
+   CSS, va chi dat width de height tu suy ra, nen ty le mascot/wordmark
+   khong the bi ep meo. */
+.cb-logo__img { width: 190px; height: auto; object-fit: contain; display: block; }
+@media (max-width: 1199px) { .cb-logo__img { width: 168px; } }
+@media (max-width: 767px) { .cb-logo__img { width: 146px; } }
+/* Placeholder cua logo can mot chieu cao that vi <img> that co height:auto. */
+.cb-logo__img.brand-asset-missing { height: 72px; }
+@media (max-width: 1199px) { .cb-logo__img.brand-asset-missing { height: 62px; } }
+@media (max-width: 767px) { .cb-logo__img.brand-asset-missing { height: 52px; } }
+
+.cb-backlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding-inline: 4px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--cb-text-secondary);
+  text-decoration: none;
+  transition: color 180ms ease;
+  white-space: nowrap;
+}
+.cb-backlink:hover { color: var(--cb-primary-dark); }
+.cb-backlink:focus-visible { outline: 2px solid var(--cb-primary); outline-offset: 2px; }
+.cb-backlink svg { transition: transform 180ms ease; }
+.cb-backlink:hover svg { transform: translateX(-3px); }
+
+/* Nut dang nhap dang the noi: nen trang, border manh, shadow rat nhe. */
+.cb-header-login {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 46px;
+  padding-inline: 18px;
+  border: 1px solid var(--cb-border);
+  border-radius: 999px;
+  background: var(--cb-surface);
+  box-shadow: var(--cb-shadow);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--cb-text-secondary);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 180ms ease, border-color 180ms ease;
+}
+.cb-header-login:hover {
+  color: var(--cb-primary-dark);
+  border-color: color-mix(in srgb, var(--cb-primary) 45%, transparent);
+}
+.cb-header-login:focus-visible { outline: 2px solid var(--cb-primary); outline-offset: 2px; }
+
+/* LanguageToggle/ThemeToggle doc mau tu cac bien --landing-* chi ton tai
+   trong `.landing-page-scope`; khoi nay skin lai chung sang bo cream/teal
+   ma khong phai fork component. */
+.cb-toggles {
+  --landing-border: var(--cb-border);
+  --landing-border-hover: color-mix(in srgb, var(--cb-primary) 45%, transparent);
+  --landing-surface: var(--cb-surface);
+  --landing-surface-elevated: var(--cb-surface-soft);
+  --landing-text: var(--cb-text-primary);
+  --landing-text-secondary: var(--cb-text-secondary);
+  /* #8491A3 tren trang do duoc 3.2:1 — day la nhan cua mot control that
+     su bam duoc, khong phai chu phu, nen phai dat 4.5:1. */
+  --landing-text-muted: var(--cb-text-secondary);
+  --landing-bg: var(--cb-surface);
+  --accent: var(--cb-primary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+/* Ca hai toggle mac dinh 38x36 va 40x40 — duoi nguong hit target 44px va
+   duoi chieu cao control 42-46px cua thiet ke nay. Sua o day trong scope
+   thay vi trong component, vi component con dung o landing va dashboard
+   noi kich thuoc da duoc tinh chinh rieng. */
+.cb-toggles [role='radiogroup'] > button { height: 42px; }
+.cb-toggles > button { width: 44px; height: 44px; }
+
+/* ── Hero ────────────────────────────────────────────────────── */
+
+.cb-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  /* 32, khong phai 40: tong chieu cao trang phai vua khung 941px cua anh
+     tham chieu ma khong sinh thanh cuon. */
+  margin-top: 44px;
+}
+
+.cb-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 42px;
+  padding-inline: 20px;
+  border: 1.5px solid color-mix(in srgb, var(--cb-primary) 55%, transparent);
+  border-radius: 999px;
+  background: var(--cb-surface);
+  color: var(--cb-primary-ink);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cb-h1 {
+  margin-top: 24px;
+  max-width: 900px;
+  /* 46px: do lai sau khi chot Be Vietnam Pro. O 45px chuoi tieu de rong
+     589px, anh tham chieu ~598px; 46px cho ~602px — sat hon va van nam
+     trong khoang 45-49px. (Con so nay phu thuoc font, nen no da phai do
+     lai mot lan khi bo Poppins.) */
+  font-size: 46px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--cb-text-primary);
+}
+
+.cb-sub {
+  margin-top: 16px;
+  /* 670px (day duoi cua khoang 670-760px): o 730px dong mot keo den
+     "... — mot to", con anh tham chieu ngat ngay sau dau nhay dong cua
+     "Cursus Sandbox University". 670px dua diem ngat ve dung cho do. */
+  max-width: 670px;
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--cb-text-secondary);
+}
+
+.cb-hero-alert { max-width: 730px; margin: 22px auto 0; text-align: center; }
+
+/* Chi ep ngat dong o desktop; duoi 1200px de cau tu xuong dong theo be
+   rong that su co. */
+@media (max-width: 1199px) { .cb-sub__br { display: none; } }
+
+.cb-form-alert {
+  padding: 14px 16px;
+  border: 1px solid color-mix(in srgb, var(--cb-danger) 35%, transparent);
+  border-radius: 12px;
+  background: var(--cb-danger-soft);
+  color: var(--cb-danger);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* ── Luoi role card ──────────────────────────────────────────── */
+
+.cb-role-grid {
+  /* 1168 - 2*26 gap = 1116 / 3 = 372px moi card, nam trong khoang
+     365-375px do tu anh tham chieu. */
+  width: min(1168px, calc(100vw - 48px));
+  margin: 58px auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 26px;
+}
+
+.cb-role-card {
+  position: relative;
+  display: grid;
+  /* Track co dinh, khong phai `auto`: do la thu giu illustration / title /
+     description / benefit / CTA thang hang tuyet doi giua ba card, du ba
+     mo ta dai ngan khac nhau. Card KHONG duoc doi chieu cao vi mo ta
+     xuong them mot dong.
+     Track thu ba la minmax(0, 1fr) chu khong phai 1fr: `1fr` tran co
+     auto-minimum, nen no phinh theo min-content cua tung mo ta va lam
+     benefit strip + CTA cua the thu ba cao hon hai the kia 4px (da do
+     duoc). minmax(0, ...) bo cai san do di. */
+  /* Hang mascot 132px (do tu anh tham chieu: vung minh hoa cao ~129px),
+     va hang mo ta co san toi thieu 86px — ba dong 16px/1.55 can 74.4px
+     cong 10px margin. O 144px, hang fr chi con 76.9px va dong thu ba cua
+     mo ta chay xuong duoi benefit strip. */
+  grid-template-rows: 134px auto minmax(86px, 1fr) auto auto;
+  /* 434px, do tu anh tham chieu (card chay tu y=390 den y=824). */
+  height: 434px;
+  padding: 26px;
+  border: 1px solid var(--cb-border);
+  border-radius: 18px;
+  background: var(--cb-surface);
+  box-shadow: var(--cb-shadow);
+  text-align: center;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.cb-role-card:not(.cb-role-card--off):hover {
+  transform: translateY(-1px);
+  box-shadow: var(--cb-shadow-hover);
+  border-color: color-mix(in srgb, var(--cb-accent) 55%, transparent);
+}
+
+/* Ring ve bang box-shadow, khong bao gio bang border doi do day — focus
+   khong duoc lam xe dich luoi. CTA la phan tu duy nhat nhan focus ben
+   trong nen :focus-within chinh la trang thai focus cua card. */
+.cb-role-card:focus-within {
+  box-shadow: var(--cb-shadow-hover), 0 0 0 2px var(--cb-surface), 0 0 0 4px var(--cb-accent);
+}
+
+.cb-role-card--off { cursor: not-allowed; }
+/* Chi cac card KHONG duoc mo moi mo di — card dang mo giu nguyen do ro de
+   spinner cua no la tam nhin chinh. */
+.cb-role-card--off:not(.cb-role-card--busy) { opacity: 0.55; }
+
+.cb-role-card--recommended {
+  border-color: color-mix(in srgb, var(--cb-primary) 62%, transparent);
+}
+
+/* Absolute nen badge khong the them mot hang va lam xe dich bo cuc card. */
+.cb-role-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding-inline: 12px;
+  border-radius: 999px;
+  background: var(--cb-primary-soft);
+  color: var(--cb-primary-dark);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cb-role-mascot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 134px;
+  min-width: 0;
+}
+
+/* Ba file mascot co ty le "muc / khung" khac nhau — do tu chinh file:
+     curi-student      muc 708x1011 trong 1254x1254, le duoi 146
+     curi-instructor   muc 887x1052 trong 1254x1254, le duoi  99
+     curi-admin        muc 973x 940 trong 1254x1254, le duoi 144
+   Neu ca ba cung dat height: 100% thi chieu cao CON CU nhin thay se la
+   108 / 111 / 99px — lech 12px, vi pham yeu cau "ba mascot phai bang nhau
+   ve mat thi giac". --cb-mascot-h bu lai phan le trong suot rieng cua tung
+   file de muc cao deu 100px, va --cb-mascot-dy keo chan ca ba ve cung mot
+   duong. Khong file nao bi sua; day thuan tuy la bu tru bang CSS. */
+.cb-role-mascot__img {
+  width: auto;
+  height: var(--cb-mascot-h, 134px);
+  object-fit: contain;
+  transform: translate(var(--cb-mascot-dx, 0), var(--cb-mascot-dy, 0));
+}
+/* Ba the phai cho ra con cu TO BANG NHAU va o dung tam.
+   Khong the can bang bang hop bao: mu tot nghiep cua Sinh vien va cay but
+   chi cua Giang vien lam hop bao cao them, nen cung chieu cao hop bao thi
+   con cu lai to nho khac nhau. Cung khong can duoc theo trong tam khoi
+   luong: dao cu lech mot ben keo trong tam di, day than cu sang phia kia.
+   Moc do thuc te la BE NGANG DAU tai dung tam mat — lay dai pixel LIEN MACH
+   chua khuon mat, nen but chi/khien nam tach roi khong bi tinh vao. Do
+   duoc: dau rong 601 / 767 / 771px trong khung 1254px, nen ba chieu cao
+   render duoi day cho ra dau deu 64.2px.
+   --cb-mascot-dx dua tam dau ve dung tam card; --cb-mascot-dy dua chan ca
+   ba ve cung mot duong. */
+.cursus-brand-scope--student .cb-role-mascot__img { --cb-mascot-h: 134px; --cb-mascot-dy: 0; --cb-mascot-dx: -1px; }
+.cursus-brand-scope--instructor .cb-role-mascot__img { --cb-mascot-h: 105px; --cb-mascot-dy: -7px; --cb-mascot-dx: -1px; }
+.cursus-brand-scope--admin .cb-role-mascot__img { --cb-mascot-h: 104px; --cb-mascot-dy: -4px; --cb-mascot-dx: 4px; }
+
+.cb-role-title {
+  margin-top: 14px;
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--cb-text-primary);
+}
+
+.cb-role-desc {
+  /* align-self: start — o tren la track fr co du cho, khong duoc keo gian
+     mo ta ra cho no cao bang track. */
+  align-self: start;
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--cb-text-secondary);
+}
+
+.cb-role-benefit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 50px;
+  padding-inline: 14px;
+  border-radius: 12px;
+  background: var(--cb-accent-soft);
+  color: var(--cb-accent-dark);
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.cb-role-benefit span { overflow: hidden; text-overflow: ellipsis; }
+
+.cb-role-cta {
+  margin-top: 14px;
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: none;
+  border-radius: 12px;
+  /* --cb-accent-cta chi duoc dat o role nao can nen dam hon de chu trang
+     du tuong phan; cac role khac roi ve --cb-accent nhu cu. */
+  background: var(--cb-accent-cta, var(--cb-accent));
+  color: #FFFFFF;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: inherit;
+  transition: background-color 180ms ease;
+}
+.dark .cb-role-cta { color: #071522; }
+.cb-role-cta:focus-visible { outline: none; }
+
+.cb-role-card:not(.cb-role-card--off):hover .cb-role-cta { background: var(--cb-accent-dark); }
+.dark .cb-role-card:not(.cb-role-card--off):hover .cb-role-cta {
+  background: var(--cb-accent); filter: brightness(1.08);
+}
+.cb-role-cta svg { transition: transform 180ms ease; }
+.cb-role-card:not(.cb-role-card--off):hover .cb-role-cta svg { transform: translateX(3px); }
+
+/* ── Organization CTA + cham ket ─────────────────────────────── */
+
+.cb-org-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+  font-size: 15px;
+  color: var(--cb-text-secondary);
+  text-align: center;
+}
+.cb-org-cta a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--cb-primary-ink);
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 8px;
+}
+.cb-org-cta a:hover { text-decoration: underline; }
+.cb-org-cta a:focus-visible { outline: 2px solid var(--cb-primary); outline-offset: 3px; }
+
+.cb-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 20px;
+  margin-top: 8px;
+}
+.cb-pager i {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--cb-text-muted) 45%, transparent);
+}
+
+.cb-spin { animation: cb-spin 900ms linear infinite; }
+@keyframes cb-spin { to { transform: rotate(360deg); } }
+
+/* ── Placeholder cho asset con thieu ─────────────────────────────
+   Co chu dich la trong "chua xong": khung net dut, chu mono, nhan canh
+   bao. Khong duoc trong giong mot thiet ke hoan chinh, va tuyet doi khong
+   mo phong Curi. */
+.brand-asset-missing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  border: 2px dashed color-mix(in srgb, var(--cb-text-muted) 60%, transparent);
+  border-radius: 14px;
+  background: repeating-linear-gradient(
+    45deg,
+    color-mix(in srgb, var(--cb-text-muted) 7%, transparent) 0 8px,
+    transparent 8px 16px
+  );
+  color: var(--cb-text-muted);
+  text-align: center;
+  overflow: hidden;
+}
+.brand-asset-missing__tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  color: #A16207;
+}
+.brand-asset-missing__file {
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--cb-text-secondary);
+  overflow-wrap: anywhere;
+}
+.brand-asset-missing__dim,
+.brand-asset-missing__note {
+  font-size: 10px;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursus-brand-scope *,
+  .cursus-brand-scope *::before,
+  .cursus-brand-scope *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .cb-spin { animation: cb-spin 1.2s linear infinite !important; }
+}
+
+/* ================================================================
+   RESPONSIVE
+   Bo cuc desktop duoc dung o 1672x941 roi NOI LONG dan xuong: gutter va
+   decoration nho lai truoc, be rong doc duoc cua card sau cung. Khong bao
+   gio dung transform: scale() de thu nho ca giao dien.
+   ================================================================ */
+
+/* >=1440: giu nguyen bo cuc tham chieu. */
+
+@media (max-width: 1439px) {
+  .cb-decor--curi { width: 210px; top: 250px; }
+  .cb-decor--campus { width: 430px; }
+  .cb-h1 { font-size: 45px; }
+}
+
+@media (max-width: 1279px) {
+  .cb-shell { padding-inline: 20px; }
+  .cb-role-grid { width: min(1100px, calc(100vw - 40px)); gap: 24px; }
+  .cb-role-card { height: 452px; padding: 22px; }
+  .cb-role-title { font-size: 26px; }
+}
+
+/* <1200: decoration bi bo TRUOC khi hy sinh be rong card. */
+@media (max-width: 1199px) {
+  .cb-decor { display: none; }
+  .cb-role-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: min(780px, calc(100vw - 40px));
+  }
+  /* Card le ra chiem ca hai cot thay vi dung nua hang trong tro. */
+  .cb-role-grid > *:nth-child(3) { grid-column: span 2; }
+  .cb-h1 { font-size: 40px; }
+  .cb-sub { font-size: 18px; }
+}
+
+@media (max-width: 767px) {
+  .cb-shell { padding-inline: 16px; }
+  .cb-header { min-height: 76px; }
+  .cb-header__left { gap: 18px; width: 100%; }
+  .cb-header__right { width: 100%; margin-left: 0; justify-content: space-between; }
+  .cb-role-grid {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(420px, calc(100vw - 32px));
+    margin-top: 32px;
+  }
+  .cb-role-grid > *:nth-child(3) { grid-column: span 1; }
+  /* Chieu cao co dinh la thu thuat cua bo cuc desktop — mot cot thi moi
+     card tu cao theo noi dung cua no. */
+  .cb-role-card { height: auto; grid-template-rows: none; }
+  .cb-h1 { font-size: 32px; }
+  .cb-sub { font-size: 16px; }
+  .cb-badge { height: auto; min-height: 42px; padding-block: 8px; white-space: normal; text-align: center; }
+  .cb-hero { margin-top: 24px; }
+}

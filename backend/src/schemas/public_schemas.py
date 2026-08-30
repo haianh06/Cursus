@@ -11,3 +11,12 @@ class CreateAccessRequestRequest(BaseModel):
 
 class AccessRequestAck(BaseModel):
     status: str = "received"
+
+
+class LandingChatRequest(BaseModel):
+    question: str = Field(..., min_length=1, max_length=500)
+
+
+class LandingChatReply(BaseModel):
+    answer: str
+    generated_by_llm: bool

@@ -15,13 +15,22 @@ import logging
 import math
 from pathlib import Path
 
+from src import paths
 from src.config import get_settings
 
 logger = logging.getLogger(__name__)
 
 GEMINI_EMBED_MODEL = "models/gemini-embedding-001"
 MAX_EMBED_CHARS = 2500
-CACHE_DIR = Path("data/rag_cache")
+# Absolute, cwd-independent -- a bare relative Path("data/rag_cache") resolved
+# differently depending on whether the process was launched from the repo
+# root or from backend/, silently splitting the cache into two directories
+# (data/rag_cache/ vs backend/data/rag_cache/) that never saw each other's
+# entries. src.paths already solves exactly this (backend/data/ preferred,
+# falls back to repo-root data/ or the Docker /app/data mount) but was never
+# wired up anywhere -- use it here instead of hand-rolling another
+# parents[N] path.
+CACHE_DIR = paths.rag_cache_dir()
 
 _PLACEHOLDER_KEYS = {"test-key", "changeme", "your-api-key", ""}
 
@@ -114,6 +123,10 @@ def _gemini_embedder():
     return GoogleGenerativeAIEmbeddings(
         model=GEMINI_EMBED_MODEL,
         google_api_key=settings.google_api_key,
+        # No timeout here previously -- a slow/hanging Gemini call could
+        # block retrieval indefinitely (see config.py's
+        # embedding_request_timeout_seconds docstring for the incident).
+        request_options={"timeout": settings.embedding_request_timeout_seconds},
     )
 
 

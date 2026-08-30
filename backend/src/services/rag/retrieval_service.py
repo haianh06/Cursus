@@ -81,6 +81,9 @@ _STOPWORDS = frozenset(
 )
 
 
+_UNSET = object()
+
+
 @dataclass(frozen=True)
 class RetrievedChunk:
     chunk: ChunkRecord
@@ -105,7 +108,16 @@ class RetrievalService:
         subject_code: str,
         question: str,
         student_id: str | None = None,
+        query_vector: list[float] | None | object = _UNSET,
     ) -> list[RetrievedChunk]:
+        """``query_vector``: pass the question's embedding already computed
+        by the caller (see cursus_chat.py's ``_context()``) so it isn't
+        re-embedded once per enrolled course -- each call used to make its
+        own live Gemini API round trip for the exact same question text,
+        which was the dominant contributor to Cursus Chat's latency for a
+        student enrolled in several courses. Pass ``None`` explicitly to
+        force lexical-only scoring (embedding backend skipped); omit the
+        argument to let this method compute it itself (back-compat)."""
         chunks = self._repository.list_chunks_for_course(
             subject_code=subject_code,
             student_id=student_id,
@@ -121,7 +133,9 @@ class RetrievalService:
             return []
 
         lexical_by_chunk = {chunk.chunk_id: score_chunk(query_tokens, chunk) for chunk in chunks}
-        similarity_by_chunk = self._embedding_similarities(subject_code=subject_code, question=question, chunks=chunks)
+        similarity_by_chunk = self._embedding_similarities(
+            subject_code=subject_code, question=question, chunks=chunks, query_vector=query_vector,
+        )
 
         scored: list[RetrievedChunk] = []
         for chunk in chunks:
@@ -140,11 +154,13 @@ class RetrievalService:
         subject_code: str,
         question: str,
         chunks: list[ChunkRecord],
+        query_vector: list[float] | None | object = _UNSET,
     ) -> dict[str, float]:
         """Cosine similarity per chunk_id, or {} when the embedding backend is off/unavailable."""
         if not embedding_service.has_embedding_backend():
             return {}
-        query_vector = embedding_service.embed_query(question)
+        if query_vector is _UNSET:
+            query_vector = embedding_service.embed_query(question)
         if not query_vector:
             return {}
         items = [(chunk.chunk_id, f"{chunk.doc_title}\n{chunk.section or ''}\n{chunk.text}") for chunk in chunks]

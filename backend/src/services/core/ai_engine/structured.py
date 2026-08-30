@@ -57,6 +57,7 @@ def generate_structured_sync(
                 "type": "json_schema",
                 "json_schema": {"name": schema_name, "schema": json_schema, "strict": False},
             },
+            max_tokens=settings.llm_max_output_tokens,
         )
     except Exception as exc:
         record_llm_call(

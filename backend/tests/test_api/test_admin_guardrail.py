@@ -77,8 +77,14 @@ async def _student_headers(client) -> dict[str, str]:
 async def test_admin_lists_five_rules_enabled_by_default(client):
     """Blueprint §4.2 has 6 guardrail matrix rows; 3 are affirmatively-answered
     intents (ask_knowledge/ask_hint/feedback-on-own-work, nothing to block),
-    leaving 5 blocking rule groups: graded_deliverable (HOMEWORK_VI/FULL_CODE/
-    HOMEWORK_EN) plus prompt_injection and out_of_scope."""
+    leaving blocking rule groups: graded_deliverable (HOMEWORK_VI/FULL_CODE/
+    HOMEWORK_EN/ROLEPLAY_JAILBREAK) plus prompt_injection and out_of_scope.
+
+    ROLEPLAY_JAILBREAK added after a guardrail-quality review found roleplay/
+    persona-switch framing ("đóng vai giáo viên", "pretend you are the
+    instructor") completely unmatched by any existing group — it maps to the
+    same graded_deliverable intent as the other three (see
+    guardrail_service.py's _GRADED_DELIVERABLE_CODES)."""
     response = await client.get("/api/v1/admin/guardrail-rules", headers=await _admin_headers(client))
 
     assert response.status_code == 200
@@ -88,13 +94,17 @@ async def test_admin_lists_five_rules_enabled_by_default(client):
         "FULL_CODE",
         "HOMEWORK_EN",
         "PROMPT_INJECTION",
+        "ROLEPLAY_JAILBREAK",
         "OUT_OF_SCOPE",
     ]
     # HOMEWORK_EN grew from 6 to 9 patterns 15/08/2026 after a live guardrail
     # audit found English "do it for me" phrasing that didn't say "for me"
     # right next to the verb (e.g. "...so I can submit it") slipping through —
-    # see docs/PROJECT_CONTEXT.md mục 14.2.
-    assert [rule["pattern_count"] for rule in data["rules"]] == [12, 5, 9, 11, 10]
+    # see docs/PROJECT_CONTEXT.md mục 14.2. PROMPT_INJECTION/OUT_OF_SCOPE grew
+    # again (developer-mode/jailbreak/quoted-fake-directive, and student
+    # roster/contact/credential requests) after the same kind of review found
+    # roleplay-jailbreak and out-of-scope-privacy phrasing slipping through.
+    assert [rule["pattern_count"] for rule in data["rules"]] == [12, 5, 9, 14, 7, 18]
     assert data["any_disabled"] is False
 
 

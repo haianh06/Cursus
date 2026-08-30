@@ -181,7 +181,17 @@ def _ensure_visible_course(db: Session, code: str) -> models.Course:
             organization_id=_demo_organization_id(db),
         )
         db.add(course)
-        db.flush()
+        # `get_db` never auto-commits (see src/db/connection.py) -- callers
+        # of this helper that don't do their own commit afterward (the read
+        # -only /documents, /documents/{id}/content GET routes) were losing
+        # this row the moment the request ended: the course "appeared" for
+        # that one response then vanished, so an admin had to re-trigger it
+        # every single time they opened the tab. 27/08, found while trying
+        # to bulk-ingest the real catalog to match the live deploy's course
+        # count -- committing here (not just flushing) makes every caller
+        # persist it exactly once, the same as the write routes already do.
+        db.commit()
+        db.refresh(course)
     return course
 
 

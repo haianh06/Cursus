@@ -48,10 +48,10 @@ INTENT_BLOCKED = "graded_deliverable"
 INTENT_OUT_OF_SCOPE = "out_of_scope"
 INTENT_INJECTION = "prompt_injection"
 
-GUARDRAIL_VERSION = "guardrail_rules_v3"
+GUARDRAIL_VERSION = "guardrail_rules_v4"
 
 # Rule-group codes (from guardrail_rules.RULE_GROUPS) that map to each intent.
-_GRADED_DELIVERABLE_CODES = ("HOMEWORK_VI", "FULL_CODE", "HOMEWORK_EN")
+_GRADED_DELIVERABLE_CODES = ("HOMEWORK_VI", "FULL_CODE", "HOMEWORK_EN", "ROLEPLAY_JAILBREAK")
 _INJECTION_CODES = ("PROMPT_INJECTION",)
 _OUT_OF_SCOPE_CODES = ("OUT_OF_SCOPE",)
 

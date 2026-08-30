@@ -13,14 +13,18 @@ import LandingLecturerHITL from '../landing/LandingLecturerHITL';
 import LandingPrivacy from '../landing/LandingPrivacy';
 import LandingFAQ from '../landing/LandingFAQ';
 import LandingFooter from '../landing/LandingFooter';
+import LandingChatWidget from '../landing/LandingChatWidget';
 
-const SECTION_IDS = ['home', 'product', 'how-it-works', 'grounded', 'for-instructors', 'academic-integrity', 'try-it'];
+const SECTION_IDS = ['home', 'product', 'how-it-works', 'grounded', 'for-instructors', 'academic-integrity'];
 // Ids the navbar actually has a link for — `grounded` (and the unlabeled
 // Bento feature section between how-it-works and grounded) are real scroll
 // stops but aren't nav destinations, so passing through them must not clear
 // the navbar's highlight (verified live: without this filter, scrolling
 // through that stretch leaves every nav link unhighlighted for ~1200px).
-const NAV_SECTION_IDS = new Set(['home', 'product', 'how-it-works', 'for-instructors', 'academic-integrity', 'try-it']);
+// `try-it` is NOT a scroll section at all — that nav item opens
+// LandingChatWidget instead (see handleNavClick below), there's no
+// matching `id="try-it"` element to scroll to or observe.
+const NAV_SECTION_IDS = new Set(['home', 'product', 'how-it-works', 'for-instructors', 'academic-integrity']);
 
 export default function LandingPage() {
   const { t, lang } = useLanguage();
@@ -48,6 +52,10 @@ export default function LandingPage() {
 
   const handleNavClick = (e, id) => {
     e.preventDefault();
+    if (id === 'try-it') {
+      window.dispatchEvent(new Event('landing-chat:open'));
+      return;
+    }
     const target = document.getElementById(id);
     if (!target) return;
     // replaceState (not pushState): section jumps are a single logical
@@ -66,6 +74,12 @@ export default function LandingPage() {
       window.history.scrollRestoration = 'manual';
     }
     const hash = window.location.hash.replace('#', '');
+    if (hash === 'try-it') {
+      window.dispatchEvent(new Event('landing-chat:open'));
+      window.history.replaceState(null, '', window.location.pathname);
+      window.scrollTo(0, 0);
+      return;
+    }
     if (hash && SECTION_IDS.includes(hash) && hash !== 'home') {
       const target = document.getElementById(hash);
       if (target) {
@@ -183,6 +197,8 @@ export default function LandingPage() {
         <LandingFAQ />
         <LandingFooter />
       </main>
+
+      <LandingChatWidget />
     </div>
   );
 }

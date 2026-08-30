@@ -59,6 +59,7 @@ async def generate_chat_stream(
             # `usage` van None va ta ghi 0 token -- so lan goi va do tre van
             # dung, chi rieng token la thieu (xem Known Limitations).
             stream_options={"include_usage": True},
+            max_tokens=settings.llm_max_output_tokens,
         )
         usage = None
         async for chunk in stream:

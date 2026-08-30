@@ -1,54 +1,176 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
-  AlertTriangle, Lock, RefreshCw, Check, ShieldOff, Clock, FileText, Eye,
-  UserCircle2,
+  AlertTriangle, Check, ShieldOff, Eye, UserCircle2, RefreshCw, Download, Users,
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import {
-  bulkReviewAlerts, getInstructorAlerts, getInstructorDashboard, reviewAlert,
+  exportInstructorReport, getInstructorAlerts, getInstructorDashboard,
+  reviewAlert, userFacingApiError,
 } from '../../lib/api';
+import { riskLevelLabel, riskTypeLabel, formatDetectedAt } from '../../lib/riskLabels';
 import RiskCaseDrawer from './RiskCaseDrawer';
-import { riskLevelLabel, riskTypeLabel, isHighRisk, formatDetectedAt } from '../../lib/riskLabels';
+import { GvStickyHeader, GvPager, usePaged } from './GvChrome';
 
-/** Tach rieng tu InstructorHome.jsx (dashboard chi con so lieu thong ke +
- *  thong bao gon) — trang nay giu nguyen toan bo logic HITL (F5/B1/B2). */
+/**
+ * Rui ro & Canh bao — man quan ly CASE, khong phai danh sach sinh vien.
+ *
+ * Bo cuc: header + mot thanh bo loc duy nhat + hai cot "Chua xu ly" /
+ * "Da xu ly". The case chi mang thong tin tom tat (ten, lop, muc rui ro,
+ * qua han, MOT dong ly do, sparkline 3 tuan); toan bo bang chung day du
+ * nam trong drawer ben phai. Mau do chi dung cho muc cao va qua han —
+ * khong to ca the mau nguy hiem.
+ */
+
+function riskTone(level) {
+  const value = String(level || '').toUpperCase();
+  if (value === 'HIGH') return 'danger';
+  if (value === 'MEDIUM') return 'amber';
+  return 'teal';
+}
+
+const SPARK_W = 260;
+const SPARK_H = 62;
+
+/** Sparkline 3 diem tuan tren the case — chi 3 diem theo spec. */
+function CaseSparkline({ rates }) {
+  if (!rates || rates.length < 2) return null;
+  const padX = 20;
+  const padY = 16;
+  const innerW = SPARK_W - padX * 2;
+  const innerH = SPARK_H - padY * 2;
+  const x = (i) => padX + (i * innerW) / (rates.length - 1);
+  const y = (v) => padY + innerH - (Math.max(0, Math.min(100, v)) / 100) * innerH;
+  const falling = rates[rates.length - 1] < rates[0];
+  const stroke = falling ? 'var(--gv-danger)' : 'var(--gv-teal)';
+
+  return (
+    // Khong dung `w-full`: keo gian viewBox se phong to luon chu ben trong
+    // (12.5px -> ~29px o the case rong 600px), lam vo thang chu va de chu.
+    <svg viewBox={`0 0 ${SPARK_W} ${SPARK_H}`} width={SPARK_W} height={SPARK_H}
+      preserveAspectRatio="xMinYMid meet"
+      style={{ maxWidth: '100%', display: 'block' }} aria-hidden="true">
+      <path
+        d={rates.map((r, i) => `${i === 0 ? 'M' : 'L'} ${x(i)} ${y(r)}`).join(' ')}
+        fill="none" stroke={stroke} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"
+      />
+      {rates.map((r, i) => {
+        const anchor = i === 0 ? 'start' : i === rates.length - 1 ? 'end' : 'middle';
+        const lx = x(i) + (i === 0 ? -4 : i === rates.length - 1 ? 4 : 0);
+        return (
+          <g key={i}>
+            <circle cx={x(i)} cy={y(r)} r="3" fill="var(--gv-card)" stroke={stroke} strokeWidth="1.75" />
+            <text x={lx} y={y(r) - 7} textAnchor={anchor} fontSize="12.5" fontWeight="600" fill={stroke}>
+              {Math.round(r)}%
+            </text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+function CaseCard({ risk, resolved, selected, onOpen, onDecide, busy, t, lang, courseCode }) {
+  const rates = Array.isArray(risk.evidence?.completionRates) ? risk.evidence.completionRates : null;
+
+  return (
+    <div className={`gv-case ${selected ? 'gv-case--selected' : ''} ${resolved ? 'gv-case--done' : ''}`}>
+      <div className="flex items-start justify-between gap-3">
+        <button type="button" className="flex items-center gap-2.5 min-w-0 text-left cursor-pointer"
+          onClick={onOpen}>
+          <UserCircle2 size={30} style={{ color: 'var(--gv-text-2)', flex: '0 0 auto' }} />
+          <span className="min-w-0">
+            <span className="block gv-card-title truncate">{risk.studentAlias}</span>
+            <span className="block gv-meta truncate">
+              {riskTypeLabel(t, risk.riskType, lang)} · {courseCode || '—'}
+            </span>
+          </span>
+        </button>
+        <div className="flex flex-col items-end gap-1.5 shrink-0">
+          <span className={`gv-badge gv-badge--${riskTone(risk.riskLevel)}`}>
+            {riskLevelLabel(t, risk.riskLevel)}
+          </span>
+          {!resolved && risk.isOverdue && (
+            <span className="gv-meta" style={{ color: 'var(--gv-danger)', fontWeight: 600 }}>
+              {t('instructor.riskOverdueLabel')} {risk.daysOpen} {t('instructor.daysOpenUnit')}
+            </span>
+          )}
+          {resolved && (
+            <span className="gv-meta">{formatDetectedAt(risk.generatedAt, lang)}</span>
+          )}
+        </div>
+      </div>
+
+      {/* Mot dong ly do chinh — bang chung day du o drawer */}
+      <p className="gv-body-sm" style={{
+        display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+      }}>
+        {risk.evidence?.reason || risk.assignmentTitle || '—'}
+      </p>
+
+      {rates && rates.length >= 2 && (
+        <div>
+          <p className="gv-meta">{t('instructor.riskTrend3w')}</p>
+          <CaseSparkline rates={rates} />
+        </div>
+      )}
+
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <button type="button" className="gv-link" onClick={onOpen}>
+          <Eye size={15} /> {t('instructor.riskViewDetail')}
+        </button>
+
+        {resolved ? (
+          <span className="gv-meta">{t('instructor.riskHandledBy')}</span>
+        ) : (
+          <span className="flex items-center gap-2">
+            <button type="button" className="gv-btn gv-btn--teal" style={{ padding: '8px 12px' }}
+              disabled={busy} onClick={() => onDecide(risk, 'APPROVE')}>
+              <Check size={15} /> {t('instructor.markInterveneBtn')}
+            </button>
+            <button type="button" className="gv-btn gv-btn--ghost" style={{ padding: '8px 12px' }}
+              disabled={busy} onClick={() => onDecide(risk, 'REJECT')}>
+              <ShieldOff size={15} /> {t('instructor.dismissAlertBtn')}
+            </button>
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function InstructorRiskPage() {
   const { t, lang } = useLanguage();
 
+  const [alerts, setAlerts] = useState([]);
   const [courses, setCourses] = useState([]);
   const [selectedCourseId, setSelectedCourseId] = useState('ALL');
-  const [alerts, setAlerts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
-  const [actionError, setActionError] = useState(null);
-  const [decisionErrors, setDecisionErrors] = useState({});
-  const [pendingAction, setPendingAction] = useState(null);
-  const [sessionDecisions, setSessionDecisions] = useState({});
-  const [openRiskId, setOpenRiskId] = useState(null);
-  const [selectedRiskIds, setSelectedRiskIds] = useState(() => new Set());
-  const [bulkNote, setBulkNote] = useState('');
-  const [isBulkSubmitting, setIsBulkSubmitting] = useState(null);
-  const [bulkError, setBulkError] = useState(null);
 
-  const load = async ({ silent = false } = {}) => {
-    if (!silent) setIsLoading(true);
+  const [levelFilter, setLevelFilter] = useState('ALL');
+  const [typeFilter, setTypeFilter] = useState('ALL');
+  const [timeFilter, setTimeFilter] = useState('7');
+  const [sortBy, setSortBy] = useState('SEVERITY');
+
+  const [openRiskId, setOpenRiskId] = useState(null);
+  const [busyId, setBusyId] = useState(null);
+  const [decisionError, setDecisionError] = useState(null);
+  const [isExporting, setIsExporting] = useState(false);
+
+  const load = async () => {
+    setIsLoading(true);
     setLoadError(null);
-    setActionError(null);
     try {
-      const [dashboard, alertData] = await Promise.all([
-        getInstructorDashboard(selectedCourseId),
+      const [rows, dashboard] = await Promise.all([
         getInstructorAlerts(selectedCourseId),
+        getInstructorDashboard(selectedCourseId).catch(() => ({ courses: [] })),
       ]);
-      setCourses(dashboard.courses);
-      // Bare array from GET /instructor/risks (_serialize_risk_row shape),
-      // not the retired /instructor/alerts endpoint's {alerts: [...]}.
-      setAlerts(Array.isArray(alertData) ? alertData : []);
+      setAlerts(rows || []);
+      setCourses(dashboard.courses || []);
     } catch (err) {
-      if (silent) setActionError(err.message);
-      else setLoadError(err.message);
+      setLoadError(userFacingApiError(err));
     } finally {
-      if (!silent) setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -57,352 +179,246 @@ export default function InstructorRiskPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCourseId]);
 
-  const viewState = isLoading ? 'loading' : loadError ? 'error' : 'success';
+  // `studentAlias`/`courseId` tu API la ID tho — doi sang ma lop cho de doc.
+  const courseCodeById = useMemo(
+    () => new Map(courses.map((c) => [c.id, c.code])),
+    [courses]
+  );
 
-  const pendingAlertCount = alerts.filter(
-    item => item.status === 'INTERVENTION_PENDING' && !sessionDecisions[item.id]
-  ).length;
+  const riskTypes = useMemo(
+    () => [...new Set(alerts.map((row) => row.riskType).filter(Boolean))],
+    [alerts]
+  );
 
-  const anyDecisionPending = Boolean(pendingAction);
+  const filtered = useMemo(() => {
+    const now = Date.now();
+    const windowMs = timeFilter === 'ALL' ? null : Number(timeFilter) * 86400e3;
+    const rank = { HIGH: 2, MEDIUM: 1, LOW: 0 };
 
-  const submitDecision = async (riskId, decision, note) => {
-    if (!riskId || pendingAction) return;
-    setDecisionErrors(prev => {
-      const next = { ...prev };
-      delete next[riskId];
-      return next;
-    });
-    setPendingAction({ riskId, decision });
+    return alerts
+      .filter((row) => levelFilter === 'ALL' || String(row.riskLevel).toUpperCase() === levelFilter)
+      .filter((row) => typeFilter === 'ALL' || row.riskType === typeFilter)
+      .filter((row) => {
+        if (!windowMs) return true;
+        const at = new Date(row.generatedAt).getTime();
+        return Number.isNaN(at) ? true : now - at <= windowMs;
+      })
+      .sort((a, b) => {
+        if (sortBy === 'NEWEST') return new Date(b.generatedAt || 0) - new Date(a.generatedAt || 0);
+        if (sortBy === 'OVERDUE') return (b.daysOpen || 0) - (a.daysOpen || 0);
+        if (Boolean(b.isOverdue) !== Boolean(a.isOverdue)) {
+          return Boolean(b.isOverdue) - Boolean(a.isOverdue);
+        }
+        return (rank[b.riskLevel] || 0) - (rank[a.riskLevel] || 0);
+      });
+  }, [alerts, levelFilter, typeFilter, timeFilter, sortBy]);
+
+  const unresolved = filtered.filter((row) => row.status === 'INTERVENTION_PENDING');
+  const resolved = filtered.filter((row) => row.status !== 'INTERVENTION_PENDING');
+  const openRisk = alerts.find((row) => row.id === openRiskId) || null;
+
+  // Hai cot phan trang doc lap — "chua xu ly" thuong dai gap nhieu lan "da
+  // xu ly", ep chung mot chi so trang se lam cot ngan nhay trang trong.
+  const unresolvedPage = usePaged(unresolved, 5);
+  const resolvedPage = usePaged(resolved, 5);
+
+  const decide = async (risk, decision, note = null) => {
+    setBusyId(risk.id);
+    setDecisionError(null);
     try {
-      await reviewAlert(riskId, decision, note);
-      setSessionDecisions(prev => ({ ...prev, [riskId]: decision }));
-      await load({ silent: true });
+      await reviewAlert(risk.id, decision, note || null);
+      setOpenRiskId(null);
+      await load();
     } catch (err) {
-      setDecisionErrors(prev => ({ ...prev, [riskId]: err.message }));
+      setDecisionError(userFacingApiError(err));
     } finally {
-      setPendingAction(null);
+      setBusyId(null);
     }
   };
 
-  const toggleRiskSelected = (riskId) => {
-    setSelectedRiskIds(prev => {
-      const next = new Set(prev);
-      if (next.has(riskId)) next.delete(riskId);
-      else next.add(riskId);
-      return next;
-    });
-  };
-
-  const submitBulkDecision = async (decision) => {
-    if (selectedRiskIds.size === 0 || isBulkSubmitting || anyDecisionPending) return;
-    setIsBulkSubmitting(decision);
-    setBulkError(null);
+  const handleExport = async () => {
+    setIsExporting(true);
     try {
-      const result = await bulkReviewAlerts(Array.from(selectedRiskIds), decision, bulkNote || undefined);
-      if (result.failedCount > 0) {
-        setBulkError(t('instructor.bulkPartialFailure', { count: result.failedCount }));
-      }
-      setSelectedRiskIds(new Set());
-      setBulkNote('');
-      await load({ silent: true });
+      const { blob, filename } = await exportInstructorReport(selectedCourseId);
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
     } catch (err) {
-      setBulkError(err.message);
+      setDecisionError(userFacingApiError(err));
     } finally {
-      setIsBulkSubmitting(null);
+      setIsExporting(false);
     }
   };
 
-  if (viewState === 'loading') {
+  if (isLoading) {
     return (
-      <div className="space-y-6 animate-pulse p-6">
-        <div className="h-20 bg-[#15181C] dark:bg-[#1C1A16] rounded-2xl border border-slate-700 dark:border-[#3A352C]" />
-        <div className="h-96 bg-white dark:bg-[#1C1A16] rounded-2xl border border-slate-200 dark:border-[#3A352C]" />
+      <div className="gv-ui p-7 space-y-4 animate-pulse">
+        <div className="gv-panel" style={{ height: 92 }} />
+        <div className="gv-card" style={{ height: 74 }} />
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <div className="gv-panel" style={{ height: 300 }} />
+          <div className="gv-panel" style={{ height: 300 }} />
+        </div>
       </div>
     );
   }
 
-  if (viewState === 'error') {
+  if (loadError) {
     return (
-      <div className="p-12 text-center space-y-4 max-w-lg mx-auto bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/60 rounded-2xl my-8 shadow-xl">
-        <AlertTriangle className="w-12 h-12 text-red-600 dark:text-red-400 mx-auto" />
-        <h3 className="text-lg font-black text-red-900 dark:text-red-200 font-serif-heading">{t('states.errorTitle')}</h3>
-        <p className="text-xs text-red-800 dark:text-red-300/90 font-medium">{t('states.errorDesc')}</p>
-        {loadError && (
-          <p className="text-[11px] text-red-700 dark:text-red-400/90 font-mono-code break-words">{loadError}</p>
-        )}
-        <button
-          onClick={() => load()}
-          className="px-4 py-2 bg-danger-ink hover:bg-[#7F2F2A] text-white text-xs font-bold rounded-xl inline-flex items-center gap-2 cursor-pointer shadow-md"
-        >
-          <RefreshCw className="w-4 h-4" /> {t('states.retryBtn')}
-        </button>
+      <div className="gv-ui p-7">
+        <div className="gv-panel p-8 text-center max-w-lg mx-auto space-y-4">
+          <AlertTriangle size={40} style={{ color: 'var(--gv-danger)' }} className="mx-auto" />
+          <h2 className="gv-section-title">{t('states.errorTitle')}</h2>
+          <p className="gv-body-sm gv-muted">{loadError}</p>
+          <button type="button" className="gv-btn gv-btn--teal mx-auto" onClick={load}>
+            <RefreshCw size={16} /> {t('states.retryBtn')}
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 pb-12">
-      <div className="bg-surface-elevated border border-line rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="space-y-1 min-w-0">
-          <h1 className="text-2xl font-black text-fg font-serif-heading">{t('instructor.atRiskStudents')}</h1>
-          <p className="text-xs text-fg-muted font-medium">{t('instructor.pageSubtitle')}</p>
-        </div>
-        {courses.length > 1 && (
-          <label className="flex items-center gap-2 text-xs font-bold text-fg shrink-0">
-            <span className="sr-only">{t('instructor.filterLabel')}</span>
-            <select
-              value={selectedCourseId}
-              onChange={(event) => { setSelectedCourseId(event.target.value); setOpenRiskId(null); }}
-              className="bg-surface border border-line rounded-xl px-3 py-1.5 text-xs font-bold text-fg cursor-pointer"
-            >
-              <option value="ALL">{t('instructor.allCourses')}</option>
-              {courses.map((course) => (
-                <option key={course.id} value={course.id}>{course.code}</option>
+    <div className="gv-ui gv-page">
+      {/* Tieu de va thanh bo loc ghim cung nhau: bo loc la thu giang vien
+          doi lien tuc khi doc danh sach dai, cuon mat no la mat luon ngu canh. */}
+      <GvStickyHeader>
+        <header className="gv-panel px-6 py-5 flex flex-col xl:flex-row xl:items-end gap-4">
+          <div className="min-w-0 flex-1">
+            <h1 className="gv-page-title">{t('instructor.riskPageTitle')}</h1>
+            <p className="gv-body-sm gv-muted mt-1.5">{t('instructor.riskPageSubtitle')}</p>
+          </div>
+          <label className="block shrink-0" style={{ width: 260 }}>
+            <span className="gv-field-label">{t('instructor.dashClassField')}</span>
+            <span className="relative flex items-center">
+              <Users size={15} className="absolute left-3 pointer-events-none" style={{ color: 'var(--gv-text-2)' }} />
+              <select className="gv-select" style={{ paddingLeft: 34 }}
+                value={selectedCourseId} onChange={(e) => setSelectedCourseId(e.target.value)}>
+                <option value="ALL">{t('instructor.allCourses')}</option>
+                {courses.map((c) => <option key={c.id} value={c.id}>{c.code} — {c.name}</option>)}
+              </select>
+            </span>
+          </label>
+        </header>
+
+        {/* Mot thanh bo loc duy nhat */}
+        <div className="gv-filterbar">
+          <label style={{ width: 170 }}>
+            <span className="gv-field-label">{t('instructor.riskFilterLevel')}</span>
+            <select className="gv-select" value={levelFilter} onChange={(e) => setLevelFilter(e.target.value)}>
+              <option value="ALL">{t('instructor.riskFilterAll')}</option>
+              <option value="HIGH">{riskLevelLabel(t, 'HIGH')}</option>
+              <option value="MEDIUM">{riskLevelLabel(t, 'MEDIUM')}</option>
+              <option value="LOW">{riskLevelLabel(t, 'LOW')}</option>
+            </select>
+          </label>
+
+          <label style={{ width: 190 }}>
+            <span className="gv-field-label">{t('instructor.riskFilterType')}</span>
+            <select className="gv-select" value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
+              <option value="ALL">{t('instructor.riskFilterAll')}</option>
+              {riskTypes.map((type) => (
+                <option key={type} value={type}>{riskTypeLabel(t, type, lang)}</option>
               ))}
             </select>
           </label>
-        )}
-      </div>
 
-      <div className="card p-6 space-y-4">
-        <div className="flex items-center justify-between border-b border-line pb-3">
-          <h2 className="text-base font-black text-fg flex items-center gap-2 font-serif-heading">
-            <AlertTriangle className="w-5 h-5 text-accent" />
-            <span>{t('instructor.atRiskStudents')}</span>
-          </h2>
-          <span className="text-xs text-amber-700 dark:text-amber-400 font-extrabold font-mono-code">
-            {t('instructor.alertsPending', { count: pendingAlertCount })}
-          </span>
+          <label style={{ width: 160 }}>
+            <span className="gv-field-label">{t('instructor.riskFilterTime')}</span>
+            <select className="gv-select" value={timeFilter} onChange={(e) => setTimeFilter(e.target.value)}>
+              <option value="7">{t('instructor.riskTime7')}</option>
+              <option value="30">{t('instructor.riskTime30')}</option>
+              <option value="ALL">{t('instructor.riskTimeAll')}</option>
+            </select>
+          </label>
+
+          <label style={{ width: 230 }}>
+            <span className="gv-field-label">{t('instructor.riskFilterSort')}</span>
+            <select className="gv-select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+              <option value="SEVERITY">{t('instructor.riskSortSeverity')}</option>
+              <option value="NEWEST">{t('instructor.riskSortNewest')}</option>
+              <option value="OVERDUE">{t('instructor.riskSortOverdue')}</option>
+            </select>
+          </label>
+
+          <button type="button" className="gv-btn gv-btn--ghost gv-ctl" style={{ marginLeft: 'auto' }}
+            onClick={handleExport} disabled={isExporting}>
+            <Download size={16} /> {t('instructor.exportBtn')}
+          </button>
         </div>
+      </GvStickyHeader>
 
-        {actionError && (
-          <div className="p-3 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/60 rounded-xl flex items-start gap-2">
-            <AlertTriangle className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0 mt-px" />
-            <span className="text-[11px] font-bold text-red-900 dark:text-red-300">{actionError}</span>
-          </div>
+      <div className="gv-page__body">
+        {decisionError && !openRisk && (
+          <p className="gv-body-sm" style={{ color: 'var(--gv-danger)' }}>{decisionError}</p>
         )}
 
-        {selectedRiskIds.size > 0 && (
-          <div className="p-3 rounded-xl border border-accent/40 bg-accent-soft space-y-2">
-            <p className="text-xs font-black text-fg">
-              {t('instructor.bulkSelectedCount', { count: selectedRiskIds.size })}
-            </p>
-            <textarea
-              className="input text-xs w-full min-h-[52px]"
-              placeholder={t('instructor.notePlaceholder')}
-              value={bulkNote}
-              onChange={(event) => setBulkNote(event.target.value)}
-              disabled={Boolean(isBulkSubmitting)}
-            />
-            <div className="flex items-center gap-2 flex-wrap">
-              <button
-                type="button"
-                onClick={() => submitBulkDecision('APPROVE')}
-                disabled={Boolean(isBulkSubmitting) || anyDecisionPending}
-                className="px-3 py-1.5 rounded-xl text-xs font-black bg-accent hover:bg-accent-hover text-white shadow-xs transition-all cursor-pointer disabled:opacity-60 disabled:cursor-wait"
-              >
-                {isBulkSubmitting === 'APPROVE' ? t('instructor.sending') : t('instructor.bulkApproveBtn')}
-              </button>
-              <button
-                type="button"
-                onClick={() => submitBulkDecision('REJECT')}
-                disabled={Boolean(isBulkSubmitting) || anyDecisionPending}
-                className="px-3 py-1.5 rounded-xl text-xs font-black border border-line-strong text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer disabled:opacity-60 disabled:cursor-wait"
-              >
-                {isBulkSubmitting === 'REJECT' ? t('instructor.sending') : t('instructor.bulkDismissBtn')}
-              </button>
-              <button
-                type="button"
-                onClick={() => { setSelectedRiskIds(new Set()); setBulkNote(''); }}
-                disabled={Boolean(isBulkSubmitting)}
-                className="text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
-              >
-                {t('instructor.bulkClearSelection')}
-              </button>
+        {/* Chua xu ly | Da xu ly */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 items-start" style={{ gap: 16 }}>
+          <section className="gv-panel p-5 min-w-0">
+            <div className="flex items-center gap-2 mb-4">
+              <h2 className="gv-section-title">{t('instructor.riskColUnresolved')}</h2>
+              <span className="gv-badge gv-badge--danger">{unresolved.length}</span>
             </div>
-            {bulkError && (
-              <p className="text-[11px] font-bold text-red-700 dark:text-red-400">{bulkError}</p>
+            {unresolved.length === 0 ? (
+              <p className="gv-body-sm gv-muted py-8 text-center">{t('instructor.riskNoUnresolved')}</p>
+            ) : (
+              <div className="flex flex-col" style={{ gap: 12 }}>
+                {unresolvedPage.slice.map((risk) => (
+                  <CaseCard
+                    key={risk.id} risk={risk} resolved={false}
+                    selected={openRiskId === risk.id}
+                    onOpen={() => { setDecisionError(null); setOpenRiskId(risk.id); }}
+                    onDecide={decide} busy={busyId === risk.id} t={t} lang={lang}
+                    courseCode={courseCodeById.get(risk.courseId)}
+                  />
+                ))}
+              </div>
             )}
-          </div>
-        )}
+            <GvPager {...unresolvedPage} onChange={unresolvedPage.setPage}
+              label={t('instructor.riskColUnresolved')} />
+          </section>
 
-        {alerts.length === 0 ? (
-          <div className="p-6 text-center text-xs text-slate-500 dark:text-slate-400 bg-surface-elevated border border-line rounded-xl font-medium">
-            {t('instructor.alertsEmpty')}
-          </div>
-        ) : (
-          <div className="space-y-3">
-            <p className="text-[11px] text-slate-600 dark:text-slate-400 font-medium flex items-start gap-1.5">
-              <Lock className="w-3 h-3 shrink-0 mt-0.5" />
-              <span>{t('instructor.noNotificationNote')}</span>
-            </p>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 max-h-[36rem] overflow-y-auto pr-1 content-start">
-              {alerts.map(alertItem => {
-                const riskId = alertItem.id;
-                // `status` only distinguishes resolved-vs-pending (both
-                // APPROVE and REJECT set it to INTERVENTION_APPROVED) --
-                // resolutionType is what tells the two apart. Prefer a
-                // same-session decision (just clicked) over the backend's
-                // resolutionType so the badge updates instantly.
-                const backendDecision =
-                  alertItem.resolutionType === 'INSTRUCTOR_REJECTED' ? 'REJECT'
-                  : (alertItem.resolutionType === 'INSTRUCTOR_APPROVE' || alertItem.resolutionType === 'INSTRUCTOR_EDIT') ? 'APPROVE'
-                  : null;
-                const decision = sessionDecisions[riskId] || backendDecision;
-                const resolved = alertItem.status !== 'INTERVENTION_PENDING' || Boolean(decision);
-                const busyDecision = pendingAction?.riskId === riskId ? pendingAction.decision : null;
-                const decisionError = decisionErrors[riskId];
-                const isHigh = isHighRisk(alertItem.riskLevel);
-                const levelLabel = riskLevelLabel(t, alertItem.riskLevel);
-                const typeLabel = riskTypeLabel(t, alertItem.riskType);
-                const detectedAt = formatDetectedAt(alertItem.generatedAt, lang);
-
-                let cardTone = 'bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-700/60 border-l-4 border-l-amber-500 shadow-xs';
-                if (resolved && decision === 'APPROVE') {
-                  cardTone = 'bg-success-soft dark:bg-emerald-950/30 border-emerald-300 dark:border-emerald-700/60 border-l-4 border-l-success-ink';
-                } else if (resolved) {
-                  cardTone = 'bg-slate-100 dark:bg-slate-900/50 border-slate-300 dark:border-slate-700 border-l-4 border-l-slate-400';
-                } else if (isHigh) {
-                  cardTone = 'bg-danger-soft dark:bg-red-950/30 border-red-300 dark:border-red-800/60 border-l-4 border-l-danger-ink shadow-xs';
-                }
-
-                return (
-                  <div key={riskId} className={`p-3.5 rounded-2xl border transition-all space-y-1.5 flex flex-col ${cardTone}`}>
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-start gap-2.5 min-w-0">
-                        {!resolved && (
-                          <input
-                            type="checkbox"
-                            aria-label={t('instructor.bulkSelectOne')}
-                            checked={selectedRiskIds.has(riskId)}
-                            onChange={() => toggleRiskSelected(riskId)}
-                            className="mt-1 w-3.5 h-3.5 accent-[color:var(--accent)] cursor-pointer shrink-0"
-                          />
-                        )}
-                        <div className="space-y-1 min-w-0">
-                          <Link
-                            to={`/instructor/students/${alertItem.studentId}`}
-                            className="font-black text-sm text-fg flex items-center gap-1 truncate hover:text-accent transition-colors w-fit"
-                          >
-                            <UserCircle2 className="w-3.5 h-3.5 shrink-0 opacity-60" />
-                            <span className="truncate">{alertItem.studentAlias}</span>
-                          </Link>
-                          <div className="flex flex-wrap items-center gap-2">
-                            {typeLabel && (
-                              <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300">{typeLabel}</span>
-                            )}
-                            {!resolved && alertItem.isOverdue && (
-                              <span className="px-2 py-0.5 rounded-md text-[10px] font-black font-mono-code uppercase bg-danger-soft text-danger-ink">
-                                {t('instructor.overdueBadge', { days: alertItem.daysOpen })}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Muc do rui ro luon o goc tren-phai cua the, khong deo theo do dai ten. */}
-                      {levelLabel && (
-                        <span className={`shrink-0 px-2 py-0.5 rounded-md text-[10px] font-black font-mono-code uppercase ${isHigh
-                            ? 'bg-danger-soft text-danger-ink'
-                            : 'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300'
-                          }`}>
-                          {levelLabel}
-                        </span>
-                      )}
-                    </div>
-
-                    {decisionError && (
-                      <div className="p-2.5 bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-800/60 rounded-xl flex items-start gap-2" role="alert">
-                        <AlertTriangle className="w-3.5 h-3.5 text-red-600 dark:text-red-400 shrink-0 mt-px" />
-                        <span className="text-[11px] font-bold text-red-900 dark:text-red-200 break-words">{decisionError}</span>
-                      </div>
-                    )}
-
-                    <p className="text-xs text-[#15181C] dark:text-slate-100 font-extrabold leading-snug line-clamp-2">
-                      {t('instructor.reasonLabel')}: {typeLabel || alertItem.riskType}
-                    </p>
-                    <p className="text-xs text-slate-700 dark:text-slate-300 font-medium leading-snug line-clamp-2">
-                      {t('instructor.actionLabel')}: {alertItem.recommendedIntervention}
-                    </p>
-
-                    {(alertItem.assignmentTitle || detectedAt) && (
-                      <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                        {alertItem.assignmentTitle && (
-                          <span className="inline-flex items-center gap-1 min-w-0 max-w-full">
-                            <FileText className="w-3 h-3 shrink-0" />
-                            <span className="truncate">{alertItem.assignmentTitle}</span>
-                          </span>
-                        )}
-                        {detectedAt && (
-                          <span className="inline-flex items-center gap-1 font-mono-code shrink-0">
-                            <Clock className="w-3 h-3 shrink-0" />
-                            {detectedAt}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                    {/* Tinh trang xu ly (hoac 2 nut hanh dong khi chua xu ly) luon o
-                        goc duoi-phai, chi rong bang noi dung — khong keo dai het the. */}
-                    <div className="flex items-center justify-between gap-2 mt-auto pt-1">
-                      <button
-                        type="button"
-                        onClick={() => setOpenRiskId(riskId)}
-                        className="text-[11px] font-black text-accent hover:text-accent-hover inline-flex items-center gap-1 cursor-pointer shrink-0"
-                      >
-                        <Eye className="w-3 h-3" />
-                        {t('instructor.detailBtn')}
-                      </button>
-
-                      {resolved ? (
-                        <span className={`px-3 py-1 rounded-xl text-xs font-black flex items-center gap-1 shrink-0 ${decision === 'APPROVE'
-                            ? 'bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300 text-emerald-900 dark:text-[#A7D4B0]'
-                            : 'bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200'
-                          }`}>
-                          {decision === 'REJECT' ? <ShieldOff className="w-3.5 h-3.5" /> : <Check className="w-3.5 h-3.5" />}
-                          <span>
-                            {decision === 'APPROVE' && t('instructor.intervenedBadge')}
-                            {decision === 'REJECT' && t('instructor.dismissedBadge')}
-                            {!decision && t('instructor.resolvedBadge')}
-                          </span>
-                        </span>
-                      ) : (
-                        <div className="flex items-center gap-2 shrink-0">
-                          <button
-                            onClick={() => submitDecision(riskId, 'APPROVE')}
-                            disabled={anyDecisionPending}
-                            className="px-3 py-1 rounded-xl text-xs font-black bg-accent hover:bg-accent-hover text-white shadow-xs transition-all cursor-pointer disabled:opacity-60 disabled:cursor-wait"
-                          >
-                            {busyDecision === 'APPROVE' ? t('instructor.sending') : t('instructor.interveneBtn')}
-                          </button>
-                          <button
-                            onClick={() => submitDecision(riskId, 'REJECT')}
-                            disabled={anyDecisionPending}
-                            className="px-3 py-1 rounded-xl text-xs font-black border border-line-strong text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer disabled:opacity-60 disabled:cursor-wait"
-                          >
-                            {busyDecision === 'REJECT' ? t('instructor.sending') : t('instructor.dismissBtn')}
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+          <section className="gv-panel p-5 min-w-0">
+            <div className="flex items-center gap-2 mb-4">
+              <h2 className="gv-section-title">{t('instructor.riskColResolved')}</h2>
+              <span className="gv-badge gv-badge--neutral">{resolved.length}</span>
             </div>
-          </div>
-        )}
+            {resolved.length === 0 ? (
+              <p className="gv-body-sm gv-muted py-8 text-center">{t('instructor.riskNoResolved')}</p>
+            ) : (
+              <div className="flex flex-col" style={{ gap: 12 }}>
+                {resolvedPage.slice.map((risk) => (
+                  <CaseCard
+                    key={risk.id} risk={risk} resolved
+                    selected={openRiskId === risk.id}
+                    onOpen={() => { setDecisionError(null); setOpenRiskId(risk.id); }}
+                    onDecide={decide} busy={busyId === risk.id} t={t} lang={lang}
+                    courseCode={courseCodeById.get(risk.courseId)}
+                  />
+                ))}
+              </div>
+            )}
+            <GvPager {...resolvedPage} onChange={resolvedPage.setPage}
+              label={t('instructor.riskColResolved')} />
+          </section>
+        </div>
       </div>
 
-      <RiskCaseDrawer
-        riskId={openRiskId}
-        open={Boolean(openRiskId)}
-        onClose={() => setOpenRiskId(null)}
-        decision={openRiskId ? sessionDecisions[openRiskId] : undefined}
-        onDecision={submitDecision}
-        anyDecisionPending={anyDecisionPending}
-        busyDecision={pendingAction?.riskId === openRiskId ? pendingAction.decision : null}
-        decisionError={openRiskId ? decisionErrors[openRiskId] : null}
-      />
+      {openRisk && (
+        <RiskCaseDrawer
+          risk={openRisk}
+          onClose={() => setOpenRiskId(null)}
+          onDecide={(decision, note) => decide(openRisk, decision, note)}
+          isSubmitting={busyId === openRisk.id}
+          decisionError={decisionError}
+        />
+      )}
     </div>
   );
 }

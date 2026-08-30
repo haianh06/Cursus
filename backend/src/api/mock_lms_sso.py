@@ -88,10 +88,7 @@ _LOGIN_REQUIRED_PAGE = """<!doctype html>
       </svg>
     </div>
     <h1>Cần đăng nhập Cursus trước</h1>
-    <p>
-      EduSync dùng chung danh tính với Cursus — không có tài khoản riêng.
-      Đăng nhập Cursus xong, quay lại mở EduSync lần nữa (từ Admin Console, hoặc link đã đưa bạn tới đây).
-    </p>
+    <p>Đăng nhập vào Cursus để tiếp tục sử dụng EduSync.</p>
     <a class="cta" href="{login_url}">Đăng nhập Cursus &rarr;</a>
   </div>
 </body>

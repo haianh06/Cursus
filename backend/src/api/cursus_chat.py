@@ -28,6 +28,7 @@ from src.services.academic.academic_calendar import current_week_for_student
 from src.services.ai.plan_builder import resolve_current_plan, serialize_plan
 from src.services.core.ai_engine.chat_stream import generate_chat_stream
 from src.services.core.ai_service_client import generate_structured
+from src.services.core import chat_cache_service
 from src.services.core.audit_service import AuditService
 from src.services.core.crisis_safety_service import evaluate as evaluate_crisis
 from src.services.core.email_provider import build_email_service
@@ -36,6 +37,7 @@ from src.services.core.llm import has_configured_llm
 from src.services.core.llm_budget_service import check_and_increment_async
 from src.services.core.notification_service import NotificationService
 from src.services.core.rate_limiter import allow as rate_limit_allow
+from src.services.rag import embedding_service
 from src.services.rag.document_content_validator import scan_for_suspicious_patterns
 from src.services.rag.retrieval_service import RetrievalService
 
@@ -106,12 +108,27 @@ def _conversation(db: Session, student_id: str, conversation_id: str | None) -> 
     return row
 
 
-def _context(db: Session, student_id: str, question: str) -> list[dict[str, str]]:
-    codes = [r[0] for r in db.query(models.Course.code).join(models.CourseSection).join(models.Enrollment).filter(models.Enrollment.student_id == student_id, models.Enrollment.status == models.EnrollmentStatus.ENROLLED.value).all()]
+def _enrolled_course_codes(db: Session, student_id: str) -> list[str]:
+    return [r[0] for r in db.query(models.Course.code).join(models.CourseSection).join(models.Enrollment).filter(models.Enrollment.student_id == student_id, models.Enrollment.status == models.EnrollmentStatus.ENROLLED.value).all()]
+
+
+def _context(
+    db: Session,
+    student_id: str,
+    question: str,
+    course_codes: list[str],
+    query_vector: list[float] | None,
+) -> list[dict[str, str]]:
     repo = ChunkRepository(db)
     hits = []
-    for code in codes:
-        hits.extend(RetrievalService(repo, top_k=3).retrieve(subject_code=code, question=question, student_id=student_id))
+    for code in course_codes:
+        # `query_vector` is computed ONCE by the caller and threaded through
+        # here instead of each RetrievalService.retrieve() call re-embedding
+        # the exact same question -- that used to fire one live Gemini API
+        # round trip per enrolled course (sequential, no timeout of its own),
+        # which was the dominant latency cost for every chat turn, greetings
+        # included. See retrieval_service.py's retrieve() docstring.
+        hits.extend(RetrievalService(repo, top_k=3).retrieve(subject_code=code, question=question, student_id=student_id, query_vector=query_vector))
     hits.sort(key=lambda hit: hit.score, reverse=True)
 
     sources: list[dict[str, str]] = []
@@ -151,12 +168,25 @@ def _context(db: Session, student_id: str, question: str) -> list[dict[str, str]
     return sources
 
 
-def _intent(question: str, sources: list[dict[str, str]]) -> str:
+def _personalized_intent(question: str) -> str | None:
+    """The two intents below only look at the raw question text, never at
+    retrieved `sources` -- split out from `_intent()` so callers can check
+    this BEFORE running retrieval/the semantic cache lookup. Both intents
+    read/act on the asking student's own live task list or reflection state,
+    so neither one is safe to answer from a shared cache."""
     lowered = question.lower()
     if any(word in lowered for word in ("kế hoạch", "plan", "tạo task", "sửa task")):
         return "plan_action"
     if any(word in lowered for word in ("reflection", "phản tư")):
         return "reflection_navigation"
+    return None
+
+
+def _intent(question: str, sources: list[dict[str, str]]) -> str:
+    personalized = _personalized_intent(question)
+    if personalized is not None:
+        return personalized
+    lowered = question.lower()
     if any(word in lowered for word in ("tính năng", "chức năng", "cách dùng")):
         return "product_help"
     return "course_fact" if len(sources) <= 2 else "course_complex"
@@ -368,18 +398,67 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
             conversation_id=conversation.id, extra={"reason": decision.reason, "intent": decision.intent},
         )
 
+    # Tier 1: canned answers -- exact-match small talk (greetings, thanks),
+    # zero embedding/DB/LLM cost. Covers the reported "even 'Hi' takes
+    # 15-20s" case outright, since every message used to run full retrieval
+    # regardless of content.
+    canned = chat_cache_service.canned_answer(payload.message)
+    if canned is not None:
+        await _audit_chat_decision(
+            db, event_type="CHAT_CANNED_ANSWER", decision="ALLOW", student_id=current_user.id,
+            conversation_id=conversation.id, extra={},
+        )
+        return _single_event_stream(conversation_id=conversation.id, text=canned)
+
+    # plan_action/reflection_navigation read/act on the student's own live
+    # task list or reflection state -- never safe to serve from a shared
+    # cache, so skip embedding/cache lookup entirely for these and go
+    # straight through the normal retrieval+LLM path below.
+    wants_personalized = _personalized_intent(payload.message) is not None
+
+    course_codes = await asyncio.to_thread(_enrolled_course_codes, db, current_user.id)
+    query_vector = None
+    cached = None
+    if not wants_personalized:
+        try:
+            # Same embedding call retrieval would make anyway (see
+            # _context()) -- computed here so a Tier-2 cache hit/miss check
+            # costs no *extra* network round trip either way, and a hit
+            # skips retrieval AND the LLM call entirely.
+            query_vector = await asyncio.to_thread(embedding_service.embed_query, payload.message)
+        except Exception:
+            logger.exception("cursus_chat_query_embed_failed student_id=%s", current_user.id)
+        if query_vector:
+            cached = await chat_cache_service.find_similar(course_codes, query_vector)
+
+    if cached is not None:
+        await _audit_chat_decision(
+            db, event_type="CHAT_SEMANTIC_CACHE_HIT", decision="ALLOW", student_id=current_user.id,
+            conversation_id=conversation.id, extra={"similarity": round(cached.similarity, 4)},
+        )
+
+        async def relay_cached():
+            yield f"event: meta\ndata: {json.dumps({'conversationId': conversation.id, 'intent': 'course_fact', 'cached': True})}\n\n"
+            yield f"event: delta\ndata: {json.dumps({'text': cached.answer})}\n\n"
+            if cached.citations:
+                yield f"event: citation\ndata: {json.dumps({'items': cached.citations})}\n\n"
+            yield "event: done\ndata: {}\n\n"
+
+        return StreamingResponse(relay_cached(), media_type="text/event-stream", headers=_SSE_HEADERS)
+
     try:
-        # _context() calls Gemini embeddings synchronously (once per
-        # enrolled course) with no timeout of its own -- on a rate-limited
-        # key it can block for tens of seconds retrying before giving up.
-        # This handler is `async def` (it streams), so with Render's
-        # single worker (WEB_CONCURRENCY=1) a blocking call here freezes
-        # the *entire* process for every other request too, /health
-        # included -- looked exactly like a cold start from the outside
-        # (27/08 incident) when the server was actually just stuck on one
-        # slow embedding retry. asyncio.to_thread moves it off the event
-        # loop so the rest of the app keeps responding while it waits.
-        sources = await asyncio.to_thread(_context, db, current_user.id, payload.message)
+        # _context() calls Gemini embeddings synchronously with no timeout
+        # of its own -- on a rate-limited key it can block for tens of
+        # seconds retrying before giving up. This handler is `async def`
+        # (it streams), so with Render's single worker (WEB_CONCURRENCY=1)
+        # a blocking call here freezes the *entire* process for every other
+        # request too, /health included -- looked exactly like a cold start
+        # from the outside (27/08 incident) when the server was actually
+        # just stuck on one slow embedding retry. asyncio.to_thread moves it
+        # off the event loop so the rest of the app keeps responding while
+        # it waits; embedding_request_timeout_seconds (config.py) now also
+        # bounds the retry itself instead of relying on the SDK default.
+        sources = await asyncio.to_thread(_context, db, current_user.id, payload.message, course_codes, query_vector)
     except Exception:
         logger.exception("cursus_chat_retrieval_error student_id=%s", current_user.id)
         return _error_stream(code="DB_ERROR", message="Không thể truy xuất tài liệu môn học, vui lòng thử lại sau.")
@@ -407,10 +486,19 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
                 elif event["type"] == "error":
                     yield f"event: error\ndata: {json.dumps({'code': event['code']})}\n\n"
                     return
-            if sources:
-                yield f"event: citation\ndata: {json.dumps({'items': [{'id': item['id'], 'chunkId': item['id'], 'title': item['title'], 'document': item['title'], 'section': item['section'], 'isMock': item['isMock']} for item in sources]})}\n\n"
+            citation_items = [
+                {"id": item["id"], "chunkId": item["id"], "title": item["title"], "document": item["title"], "section": item["section"], "isMock": item["isMock"]}
+                for item in sources
+            ]
+            if citation_items:
+                yield f"event: citation\ndata: {json.dumps({'items': citation_items})}\n\n"
             db.add(models.ChatMessage(id=str(uuid4()), conversation_id=conversation.id, role="assistant", content=answer, metadata_info={"citations": sources, "intent": intent}))
             conversation.updated_at = datetime.utcnow(); conversation.expires_at = datetime.utcnow() + _TTL; db.commit()
+
+            if query_vector and intent not in ("plan_action", "reflection_navigation"):
+                # Fire-and-forget-ish: caching is a pure optimization, never
+                # let it block or fail the response already sent above.
+                await chat_cache_service.store(course_codes, payload.message, query_vector, answer, citation_items)
 
             if intent in ("plan_action", "reflection_navigation"):
                 # Same blocking-call-inside-async-generator hazard as

@@ -1,244 +1,430 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
-  Mail, AlertTriangle, ShieldAlert, Award, RefreshCw, Send, Eye, EyeOff, Loader2,
+  AlertTriangle, RefreshCw, Send, Users, ChevronRight, Trophy, Lightbulb,
+  Check, ShieldAlert, ShieldOff, UserCircle2,
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import { GvStickyHeader } from './GvChrome';
 import {
-  blockReasonLabel, formatDetectedAt, isHighRisk, riskLevelLabel, riskTypeLabel,
-} from '../../lib/riskLabels';
-import { getInstructorDigest, sendInstructorDigestEmail, userFacingApiError } from '../../lib/api';
+  getInstructorDashboard, getInstructorDigest, getInstructorAlerts,
+  getGuardrailReviewQueue, sendInstructorDigestEmail, userFacingApiError,
+} from '../../lib/api';
+import { riskLevelLabel, formatDetectedAt } from '../../lib/riskLabels';
 
-const DAY_OPTIONS = [7, 14, 30];
+/**
+ * Digest tuan — ban tom tat dieu hanh, KHONG phai dashboard thu hai.
+ *
+ * Dung 3 KPI, moi khoi tom tat toi da 3 muc, khong co bang dai.
+ *
+ * Sparkline duoc dung tu CHINH payload digest: moi case deu co moc thoi gian
+ * (`generatedAt` / `createdAt`), nen chi can goi mot lan voi cua so gap doi
+ * roi gom theo ngay o client — khong phai goi API nhieu lan, cung khong bia
+ * ra chuoi so.
+ */
 
-/** C1 — tom tat case moi phat sinh trong N ngay gan nhat, tinh on-demand
- *  (khong co scheduler/cron gui dinh ky tu dong — GV tu mo trang nay hoac tu
- *  bam gui email khi can). */
+const SPARK_W = 150;
+const SPARK_H = 46;
+
+/** Gom moc thoi gian theo ngay thanh chuoi `days` diem, cu nhat truoc. */
+function dailySeries(timestamps, days) {
+  const buckets = new Array(days).fill(0);
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  timestamps.forEach((iso) => {
+    if (!iso) return;
+    const at = new Date(iso);
+    if (Number.isNaN(at.getTime())) return;
+    const dayDiff = Math.floor((startOfToday - new Date(at).setHours(0, 0, 0, 0)) / 86400e3);
+    const index = days - 1 - dayDiff;
+    if (index >= 0 && index < days) buckets[index] += 1;
+  });
+  return buckets;
+}
+
+function Sparkline({ values, color }) {
+  if (!values.length) return null;
+  const max = Math.max(1, ...values);
+  const x = (i) => (i * SPARK_W) / Math.max(1, values.length - 1);
+  const y = (v) => SPARK_H - 4 - (v / max) * (SPARK_H - 10);
+  const line = values.map((v, i) => `${i === 0 ? 'M' : 'L'} ${x(i)} ${y(v)}`).join(' ');
+  const area = `${line} L ${SPARK_W} ${SPARK_H} L 0 ${SPARK_H} Z`;
+  return (
+    <svg viewBox={`0 0 ${SPARK_W} ${SPARK_H}`} style={{ width: SPARK_W, height: SPARK_H }} aria-hidden="true">
+      <path d={area} fill={color} opacity="0.12" />
+      <path d={line} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      {values.map((v, i) => (
+        <circle key={i} cx={x(i)} cy={y(v)} r="2.2" fill={color} />
+      ))}
+    </svg>
+  );
+}
+
+function DigestKpi({ label, value, delta, values, color, t }) {
+  const up = delta !== null && delta > 0;
+  return (
+    <div className="gv-card p-5 flex items-start justify-between gap-4 min-w-0">
+      <div className="min-w-0">
+        <p className="gv-body-sm gv-muted" style={{ fontWeight: 500 }}>{label}</p>
+        <p className="gv-kpi-value mt-1">{value}</p>
+        {delta === null || delta === 0 ? (
+          <p className="gv-meta mt-1.5">{t('instructor.dashNoTrend')}</p>
+        ) : (
+          <p className="gv-meta mt-1.5 flex items-center gap-1.5">
+            <span style={{ color: up ? 'var(--gv-amber)' : 'var(--gv-success)', fontWeight: 600 }}>
+              {up ? '↑' : '↓'} {Math.abs(delta)}%
+            </span>
+            {t('instructor.dashVsLastWeek')}
+          </p>
+        )}
+      </div>
+      <div className="shrink-0"><Sparkline values={values} color={color} /></div>
+    </div>
+  );
+}
+
 export default function InstructorDigestPage() {
   const { t, lang } = useLanguage();
+  const navigate = useNavigate();
+
   const [days, setDays] = useState(7);
+  const [courses, setCourses] = useState([]);
+  const [selectedCourseId, setSelectedCourseId] = useState('ALL');
+
   const [digest, setDigest] = useState(null);
+  const [wideDigest, setWideDigest] = useState(null);
+  const [dashboard, setDashboard] = useState(null);
+  const [allAlerts, setAllAlerts] = useState([]);
+  const [guardrailQueue, setGuardrailQueue] = useState([]);
+
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
-  const [expandedGuardrailId, setExpandedGuardrailId] = useState(null);
-  const [isSendingEmail, setIsSendingEmail] = useState(false);
-  const [emailResult, setEmailResult] = useState(null);
+  const [isSending, setIsSending] = useState(false);
+  const [sendResult, setSendResult] = useState(null);
 
-  const load = useCallback(async () => {
+  const load = async () => {
     setIsLoading(true);
     setLoadError(null);
     try {
-      setDigest(await getInstructorDigest(days));
+      const [main, wide, dash, alerts, queue] = await Promise.all([
+        getInstructorDigest(days, selectedCourseId),
+        // Cua so gap doi: vua de ve sparkline theo ngay, vua de tinh delta
+        // "so voi ky truoc" ma khong can them endpoint nao.
+        getInstructorDigest(days * 2, selectedCourseId),
+        getInstructorDashboard(selectedCourseId).catch(() => null),
+        getInstructorAlerts(selectedCourseId).catch(() => []),
+        getGuardrailReviewQueue().catch(() => []),
+      ]);
+      setDigest(main);
+      setWideDigest(wide);
+      setDashboard(dash);
+      setAllAlerts(alerts || []);
+      setGuardrailQueue(queue || []);
     } catch (err) {
-      setLoadError(userFacingApiError(err, lang).message || t('instructor.digestLoadError'));
+      setLoadError(userFacingApiError(err));
     } finally {
       setIsLoading(false);
     }
-  }, [days, lang, t]);
+  };
 
   useEffect(() => {
     load();
-  }, [load]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [days, selectedCourseId]);
 
-  const handleSendEmail = async () => {
-    setIsSendingEmail(true);
-    setEmailResult(null);
+  useEffect(() => {
+    if (dashboard?.courses) setCourses(dashboard.courses);
+  }, [dashboard]);
+
+  const series = useMemo(() => {
+    const riskStamps = (wideDigest?.newRiskCases || []).map((r) => r.generatedAt);
+    const guardStamps = (wideDigest?.newGuardrailCases || []).map((g) => g.createdAt);
+    return {
+      risk: dailySeries(riskStamps, days),
+      guardrail: dailySeries(guardStamps, days),
+    };
+  }, [wideDigest, days]);
+
+  /** Delta % giua ky nay va ky lien truoc, dua tren cung mot payload. */
+  const deltaOf = (current, wide) => {
+    const previous = (wide ?? 0) - (current ?? 0);
+    if (!previous) return current ? 100 : null;
+    return Math.round(((current - previous) / previous) * 100);
+  };
+
+  const summary = digest?.summary || { newRiskCount: 0, newGuardrailCount: 0, kudosCount: 0 };
+  const wideSummary = wideDigest?.summary || summary;
+
+  const highRiskPending = allAlerts.filter(
+    (a) => a.status === 'INTERVENTION_PENDING' && String(a.riskLevel).toUpperCase() === 'HIGH'
+  ).length;
+  const overduePending = allAlerts.filter((a) => a.status === 'INTERVENTION_PENDING' && a.isOverdue).length;
+  const resolvedCount = allAlerts.filter((a) => a.status !== 'INTERVENTION_PENDING').length;
+  const guardrailPending = guardrailQueue.filter((g) => (g.reviewStatus || 'PENDING') === 'PENDING').length;
+
+  const weeklyRates = dashboard?.classAvgCompletionByWeek || [];
+  const latestCompletion = weeklyRates.length
+    ? Math.round(weeklyRates[weeklyRates.length - 1] * 100) : null;
+
+  const fill = (key, n) => t(`instructor.${key}`).replace('{n}', n);
+
+  // Ca hai khoi duoi deu suy ra tu so lieu that, khong phai cau viet san.
+  const highlights = [
+    latestCompletion !== null ? fill('digHlCompletion', latestCompletion) : null,
+    resolvedCount > 0 ? fill('digHlResolved', resolvedCount) : null,
+    summary.kudosCount > 0 ? fill('digHlKudos', summary.kudosCount) : null,
+  ].filter(Boolean).slice(0, 3);
+
+  const suggestions = [
+    highRiskPending > 0 ? fill('digSgHighRisk', highRiskPending) : null,
+    guardrailPending > 0 ? fill('digSgGuardrail', guardrailPending) : null,
+    overduePending > 0 ? fill('digSgOverdue', overduePending) : null,
+  ].filter(Boolean).slice(0, 3);
+
+  const handleSend = async () => {
+    setIsSending(true);
+    setSendResult(null);
     try {
-      const result = await sendInstructorDigestEmail(days);
-      setEmailResult({ ok: true, to: result.to });
+      await sendInstructorDigestEmail(days);
+      setSendResult({ tone: 'ok', text: t('instructor.digSent') });
     } catch (err) {
-      setEmailResult({ ok: false, message: userFacingApiError(err, lang).message });
+      setSendResult({ tone: 'error', text: userFacingApiError(err) });
     } finally {
-      setIsSendingEmail(false);
+      setIsSending(false);
     }
   };
 
   if (isLoading) {
     return (
-      <div className="space-y-6 animate-pulse p-6">
-        <div className="h-20 bg-[#15181C] dark:bg-[#1C1A16] rounded-2xl border border-slate-700 dark:border-[#3A352C]" />
-        <div className="h-40 bg-white dark:bg-[#1C1A16] rounded-2xl border border-slate-200 dark:border-[#3A352C]" />
+      <div className="gv-ui p-7 space-y-4 animate-pulse">
+        <div className="gv-panel" style={{ height: 88 }} />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {[0, 1, 2].map((i) => <div key={i} className="gv-card" style={{ height: 120 }} />)}
+        </div>
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <div className="gv-panel" style={{ height: 280 }} />
+          <div className="gv-panel" style={{ height: 280 }} />
+        </div>
       </div>
     );
   }
 
-  if (loadError || !digest) {
+  if (loadError) {
     return (
-      <div className="p-12 text-center space-y-4 max-w-lg mx-auto bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/60 rounded-2xl my-8 shadow-xl">
-        <AlertTriangle className="w-12 h-12 text-red-600 dark:text-red-400 mx-auto" />
-        <h3 className="text-lg font-black text-red-900 dark:text-red-200 font-serif-heading">{t('states.errorTitle')}</h3>
-        <p className="text-xs text-red-800 dark:text-red-300/90 font-medium">{loadError || t('states.errorDesc')}</p>
-        <button
-          onClick={load}
-          className="px-4 py-2 bg-danger-ink hover:bg-[#7F2F2A] text-white text-xs font-bold rounded-xl inline-flex items-center gap-2 cursor-pointer shadow-md"
-        >
-          <RefreshCw className="w-4 h-4" /> {t('states.retryBtn')}
-        </button>
+      <div className="gv-ui p-7">
+        <div className="gv-panel p-8 text-center max-w-lg mx-auto space-y-4">
+          <AlertTriangle size={40} style={{ color: 'var(--gv-danger)' }} className="mx-auto" />
+          <h2 className="gv-section-title">{t('states.errorTitle')}</h2>
+          <p className="gv-body-sm gv-muted">{loadError}</p>
+          <button type="button" className="gv-btn gv-btn--teal mx-auto" onClick={load}>
+            <RefreshCw size={16} /> {t('states.retryBtn')}
+          </button>
+        </div>
       </div>
     );
   }
-
-  const { summary, newRiskCases, newGuardrailCases, kudos } = digest;
 
   return (
-    <div className="space-y-6 pb-12">
-      <div className="bg-surface-elevated border border-line rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="space-y-1 min-w-0">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-surface border border-line rounded-full text-xs font-extrabold text-accent font-mono-code">
-            <Mail className="w-3.5 h-3.5 text-accent" />
-            <span>{t('instructor.digestSince', { date: digest.sinceDate })}</span>
-          </div>
-          <h1 className="text-2xl font-black text-fg font-serif-heading">{t('instructor.digestTitle')}</h1>
-          <p className="text-xs text-fg-muted font-medium">{t('instructor.digestSubtitle')}</p>
-        </div>
+    <div className="gv-ui gv-page">
+      <GvStickyHeader>
+        {/* Header mot hang: tieu de | khoang thoi gian | lop | gui email */}
+        <header className="gv-panel px-6 py-4 flex flex-wrap items-end gap-3">
+          <h1 className="gv-page-title gv-title-inline mr-2" style={{ flex: '0 0 auto' }}>
+            {t('instructor.digPageTitle')}
+          </h1>
 
-        <div className="flex items-center gap-2">
-          <select
-            value={days}
-            onChange={(event) => setDays(Number(event.target.value))}
-            className="bg-surface border border-line rounded-xl px-3 py-1.5 text-xs font-bold text-fg cursor-pointer"
-          >
-            {DAY_OPTIONS.map((d) => (
-              <option key={d} value={d}>{t('instructor.digestDaysOption', { days: d })}</option>
-            ))}
-          </select>
-        </div>
-      </div>
+          <label style={{ width: 175 }}>
+            <span className="gv-field-label">{t('instructor.digRange')}</span>
+            <select className="gv-select" value={days} onChange={(e) => setDays(Number(e.target.value))}>
+              <option value={7}>{t('instructor.digRange7')}</option>
+              <option value={14}>{t('instructor.digRange14')}</option>
+              <option value={30}>{t('instructor.digRange30')}</option>
+            </select>
+          </label>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {[
-          { key: 'risk', label: t('instructor.digestNewRisk'), value: summary.newRiskCount, danger: true },
-          { key: 'guardrail', label: t('instructor.digestNewGuardrail'), value: summary.newGuardrailCount, danger: true },
-          { key: 'kudos', label: t('instructor.digestKudosCount'), value: summary.kudosCount, danger: false },
-        ].map((metric) => (
-          <div key={metric.key} className="card p-5 space-y-1">
-            <span className="text-xs font-black text-fg">{metric.label}</span>
-            <div className={`text-3xl font-black font-mono-code ${metric.danger && metric.value > 0 ? 'text-danger-ink dark:text-red-400' : 'text-accent'}`}>
-              {metric.value}
-            </div>
-          </div>
-        ))}
-      </div>
+          <label style={{ width: 260 }}>
+            <span className="gv-field-label">{t('instructor.dashClassField')}</span>
+            <span className="relative flex items-center">
+              <Users size={15} className="absolute left-3 pointer-events-none" style={{ color: 'var(--gv-text-2)' }} />
+              <select className="gv-select" style={{ paddingLeft: 34 }}
+                value={selectedCourseId} onChange={(e) => setSelectedCourseId(e.target.value)}>
+                <option value="ALL">{t('instructor.allCourses')}</option>
+                {courses.map((c) => <option key={c.id} value={c.id}>{c.code} — {c.name}</option>)}
+              </select>
+            </span>
+          </label>
 
-      <div className="space-y-1.5">
-        <button
-          type="button"
-          onClick={handleSendEmail}
-          disabled={isSendingEmail}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border border-line-strong text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer disabled:opacity-60 disabled:cursor-wait"
-        >
-          {isSendingEmail ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
-          {isSendingEmail ? t('instructor.digestSending') : t('instructor.digestSendEmailBtn')}
-        </button>
-        {emailResult?.ok && (
-          <p className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400">
-            {t('instructor.digestSendSuccess', { email: emailResult.to })}
+          <button type="button" className="gv-btn gv-btn--teal-outline gv-ctl"
+            style={{ marginLeft: 'auto' }} onClick={handleSend} disabled={isSending}>
+            <Send size={16} /> {t('instructor.digSendEmail')}
+          </button>
+        </header>
+      </GvStickyHeader>
+
+      <div className="gv-page__body">
+
+        {sendResult && (
+          <p className="gv-body-sm"
+            style={{ color: sendResult.tone === 'ok' ? 'var(--gv-success)' : 'var(--gv-danger)' }}>
+            {sendResult.text}
           </p>
         )}
-        {emailResult && !emailResult.ok && (
-          <p className="text-[11px] font-bold text-red-700 dark:text-red-400">{emailResult.message}</p>
-        )}
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-        <div className="card p-6 space-y-4">
-          <h2 className="text-base font-black text-fg font-serif-heading flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-accent" /> {t('instructor.digestNewRisk')}
-          </h2>
-          {newRiskCases.length === 0 ? (
-            <p className="text-xs text-slate-500 dark:text-slate-400">{t('instructor.digestNoNewRisk')}</p>
-          ) : (
-            <div className="space-y-2 max-h-[26rem] overflow-y-auto pr-1">
-              {newRiskCases.map((risk) => {
-                const high = isHighRisk(risk.riskLevel);
-                return (
-                  <div key={risk.id} className="p-3 rounded-xl border border-line space-y-1">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="font-black text-xs text-fg truncate">{risk.studentAlias}</span>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono-code shrink-0">
-                        {formatDetectedAt(risk.generatedAt, lang)}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className={`px-2 py-0.5 rounded-md text-[10px] font-black font-mono-code uppercase ${
-                        high ? 'bg-danger-soft text-danger-ink' : 'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300'
-                      }`}>
-                        {riskLevelLabel(t, risk.riskLevel)}
-                      </span>
-                      <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300">
-                        {riskTypeLabel(t, risk.riskType)}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+        {/* Dung 3 KPI */}
+        <div className="grid grid-cols-1 sm:grid-cols-3" style={{ gap: 16 }}>
+          <DigestKpi
+            label={t('instructor.digKpiRisk')} value={summary.newRiskCount}
+            delta={deltaOf(summary.newRiskCount, wideSummary.newRiskCount)}
+            values={series.risk} color="var(--gv-amber)" t={t}
+          />
+          <DigestKpi
+            label={t('instructor.digKpiGuardrail')} value={summary.newGuardrailCount}
+            delta={deltaOf(summary.newGuardrailCount, wideSummary.newGuardrailCount)}
+            values={series.guardrail} color="var(--gv-teal)" t={t}
+          />
+          <DigestKpi
+            label={t('instructor.digKpiKudos')} value={summary.kudosCount}
+            delta={deltaOf(summary.kudosCount, wideSummary.kudosCount)}
+            values={[]} color="var(--gv-success)" t={t}
+          />
         </div>
 
-        <div className="card p-6 space-y-4">
-          <h2 className="text-base font-black text-fg font-serif-heading flex items-center gap-2">
-            <ShieldAlert className="w-4 h-4 text-danger-ink" /> {t('instructor.digestNewGuardrail')}
-          </h2>
-          {newGuardrailCases.length === 0 ? (
-            <p className="text-xs text-slate-500 dark:text-slate-400">{t('instructor.digestNoNewGuardrail')}</p>
-          ) : (
-            <div className="space-y-2 max-h-[26rem] overflow-y-auto pr-1">
-              {newGuardrailCases.map((item) => {
-                const isExpanded = expandedGuardrailId === item.id;
-                return (
-                  <div key={item.id} className="p-3 bg-surface-elevated border border-line rounded-xl space-y-2">
-                    <div className="flex items-center justify-between gap-2 text-xs">
-                      <span className="font-black text-fg truncate">{item.studentAlias}</span>
-                      <span className="text-slate-500 dark:text-slate-400 font-mono-code text-[10px] shrink-0">
-                        {formatDetectedAt(item.createdAt, lang)}
-                      </span>
-                    </div>
-                    <span className="inline-block px-2 py-0.5 rounded-md bg-danger-soft dark:bg-red-950/60 text-danger-ink dark:text-red-300 text-[10px] font-black font-mono-code uppercase">
-                      {blockReasonLabel(t, item.blockReason)}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setExpandedGuardrailId(isExpanded ? null : item.id)}
-                      className="text-[11px] font-black text-accent hover:text-accent-hover inline-flex items-center gap-1 cursor-pointer block"
-                    >
-                      {isExpanded ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-                      {isExpanded ? t('guardrail.hideContent') : t('guardrail.showContent')}
-                    </button>
-                    {isExpanded && (
-                      <div className="p-2.5 bg-white dark:bg-[#1C1A16] border border-line rounded-lg text-xs text-slate-800 dark:text-slate-200 italic">
-                        "{item.question}"
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {kudos.length > 0 && (
-        <div className="card p-5 space-y-3 border-l-4 border-l-success-ink">
-          <div className="flex items-center gap-2">
-            <Award className="w-5 h-5 text-success-ink dark:text-emerald-400" />
-            <h2 className="text-sm font-black text-fg font-serif-heading">
-              {t('instructor.kudosTitle')}
-            </h2>
-          </div>
-          <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto pr-1">
-            {kudos.map((item) => (
-              <span
-                key={item.studentId}
-                title={item.note}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-success-soft dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-700/60 text-xs font-bold text-emerald-900 dark:text-[#A7D4B0]"
-              >
-                <Award className="w-3.5 h-3.5 shrink-0" />
-                {item.displayName}
+        {/* Case rui ro moi | Luot chan guardrail moi — moi ben toi da 3 muc */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 items-start" style={{ gap: 16 }}>
+          <section className="gv-panel p-6 min-w-0">
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <span className="flex items-center gap-2.5">
+                <AlertTriangle size={19} style={{ color: 'var(--gv-amber)' }} />
+                <h2 className="gv-section-title">{t('instructor.digNewRisk')}</h2>
               </span>
-            ))}
-          </div>
+              <button type="button" className="gv-link" onClick={() => navigate('/instructor/risks')}>
+                {t('instructor.dashViewAll')} ({summary.newRiskCount}) <ChevronRight size={15} />
+              </button>
+            </div>
+
+            {(digest?.newRiskCases || []).length === 0 ? (
+              <p className="gv-body-sm gv-muted py-8 text-center">{t('instructor.digNoRisk')}</p>
+            ) : (
+              <ul className="flex flex-col" style={{ gap: 12 }}>
+                {digest.newRiskCases.slice(0, 3).map((row) => (
+                  <li key={row.id}>
+                    <button type="button" className="gv-case"
+                      onClick={() => navigate('/instructor/risks')}>
+                      <span className="flex items-start justify-between gap-3 w-full">
+                        <span className="flex items-start gap-2.5 min-w-0">
+                          <UserCircle2 size={30} style={{ color: 'var(--gv-text-2)', flex: '0 0 auto' }} />
+                          <span className="min-w-0">
+                            <span className="block gv-card-title truncate">{row.studentAlias}</span>
+                            <span className="block gv-body-sm gv-muted" style={{
+                              display: '-webkit-box', WebkitLineClamp: 2,
+                              WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                            }}>
+                              {row.evidence?.reason || row.assignmentTitle}
+                            </span>
+                            <span className="block gv-meta mt-1">
+                              {t('instructor.digDetectedAt')}: {formatDetectedAt(row.generatedAt, lang)}
+                            </span>
+                          </span>
+                        </span>
+                        <span className={`gv-badge gv-badge--${
+                          String(row.riskLevel).toUpperCase() === 'HIGH' ? 'danger'
+                            : String(row.riskLevel).toUpperCase() === 'MEDIUM' ? 'amber' : 'teal'} shrink-0`}>
+                          {riskLevelLabel(t, row.riskLevel)}
+                        </span>
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          <section className="gv-panel p-6 min-w-0">
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <span className="flex items-center gap-2.5">
+                <ShieldAlert size={19} style={{ color: 'var(--gv-teal)' }} />
+                <h2 className="gv-section-title">{t('instructor.digNewGuardrail')}</h2>
+              </span>
+              <button type="button" className="gv-link"
+                onClick={() => navigate('/instructor/guardrail-reviews')}>
+                {t('instructor.dashViewAll')} ({summary.newGuardrailCount}) <ChevronRight size={15} />
+              </button>
+            </div>
+
+            {(digest?.newGuardrailCases || []).length === 0 ? (
+              <p className="gv-body-sm gv-muted py-8 text-center">{t('instructor.digNoGuardrail')}</p>
+            ) : (
+              <ul className="flex flex-col" style={{ gap: 12 }}>
+                {digest.newGuardrailCases.slice(0, 3).map((row) => (
+                  <li key={row.id}>
+                    <button type="button" className="gv-case"
+                      onClick={() => navigate('/instructor/guardrail-reviews')}>
+                      <span className="flex items-center justify-between gap-3 w-full">
+                        <span className="flex items-center gap-2.5 min-w-0">
+                          <span className="gv-kpi-icon shrink-0"
+                            style={{ width: 38, height: 38, background: 'var(--gv-teal-soft)' }}>
+                            <ShieldOff size={17} style={{ color: 'var(--gv-teal)' }} />
+                          </span>
+                          <span className="min-w-0">
+                            <span className="block gv-card-title truncate">{row.studentAlias}</span>
+                            <span className="block gv-meta truncate">
+                              {formatDetectedAt(row.createdAt, lang)}
+                            </span>
+                          </span>
+                        </span>
+                        <span className={`gv-badge gv-badge--${
+                          (row.reviewStatus || 'PENDING') === 'PENDING' ? 'amber' : 'neutral'} shrink-0`}>
+                          {(row.reviewStatus || 'PENDING') === 'PENDING'
+                            ? t('guardrail.pendingBadge')
+                            : row.reviewStatus === 'UNBLOCKED'
+                              ? t('guardrail.unblockedState') : t('guardrail.keptState')}
+                        </span>
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
         </div>
-      )}
+
+        {/* Diem sang | Goi y hanh dong — moi ben toi da 3 gach dau dong */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 items-start" style={{ gap: 16 }}>
+          <section className="gv-panel p-6 min-w-0">
+            <div className="flex items-center gap-2.5 mb-4">
+              <Trophy size={19} style={{ color: 'var(--gv-amber)' }} />
+              <h2 className="gv-section-title">{t('instructor.digHighlights')}</h2>
+            </div>
+            {highlights.length === 0 ? (
+              <p className="gv-body-sm gv-muted">{t('instructor.digNoHighlight')}</p>
+            ) : (
+              <ul className="flex flex-col" style={{ gap: 12 }}>
+                {highlights.map((text) => (
+                  <li key={text} className="flex items-start gap-2.5 gv-body-sm">
+                    <Check size={16} className="mt-0.5 shrink-0" style={{ color: 'var(--gv-success)' }} />
+                    <span>{text}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          <section className="gv-panel p-6 min-w-0">
+            <div className="flex items-center gap-2.5 mb-4">
+              <Lightbulb size={19} style={{ color: 'var(--gv-amber)' }} />
+              <h2 className="gv-section-title">{t('instructor.digSuggestions')}</h2>
+            </div>
+            <ul className="flex flex-col" style={{ gap: 12 }}>
+              {(suggestions.length ? suggestions : [t('instructor.digSgAllClear')]).map((text) => (
+                <li key={text} className="flex items-start gap-2.5 gv-body-sm">
+                  <Check size={16} className="mt-0.5 shrink-0" style={{ color: 'var(--gv-teal)' }} />
+                  <span>{text}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
+      </div>
     </div>
   );
 }

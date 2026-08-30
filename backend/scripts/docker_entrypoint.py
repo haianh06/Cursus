@@ -20,26 +20,6 @@ logger = logging.getLogger("docker-entrypoint")
 _SEEDABLE_ENVS = frozenset({"development", "test"})
 
 
-def _bootstrap_demo_data_enabled() -> bool:
-    """Return whether one-off demo bootstrap work may run during startup.
-
-    The Render service sleeps on the free tier.  Re-running curriculum ingest
-    and demo-data provisioning on every wake-up delays Uvicorn long enough for
-    the frontend's session probe to time out.  Production data is provisioned
-    through the explicit migration/bootstrap workflow, so this work is only
-    appropriate for local development and tests.
-    """
-    app_env = os.getenv("APP_ENV", "development").strip().lower()
-    if app_env not in _SEEDABLE_ENVS:
-        return False
-    return os.getenv("BOOTSTRAP_DEMO_DATA_ON_START", "true").strip().lower() not in {
-        "0",
-        "false",
-        "no",
-        "",
-    }
-
-
 def _run(cmd: list[str], *, check: bool = True) -> int:
     logger.info("running: %s", " ".join(cmd))
     completed = subprocess.run(cmd, check=False)
@@ -312,16 +292,13 @@ def main() -> None:
 
     _wait_for_database()
     _alembic_upgrade()
-    if _bootstrap_demo_data_enabled():
-        _ensure_demo_sandbox()
-        _ensure_academic_term()
-        _seed_if_needed()
-        _seed_curriculum()
-        _ingest_real_curriculum()
-        _seed_extra_users()
-        _provision("student.demo@example.test")
-    else:
-        logger.info("demo_bootstrap_skipped app_env=production")
+    _ensure_demo_sandbox()
+    _ensure_academic_term()
+    _seed_if_needed()
+    _seed_curriculum()
+    _ingest_real_curriculum()
+    _seed_extra_users()
+    _provision("student.demo@example.test")
 
     cmd = [
         sys.executable,
@@ -331,9 +308,7 @@ def main() -> None:
         "--host",
         "0.0.0.0",
         "--port",
-        # Render routes traffic to $PORT (10000 by default).  APP_PORT is a
-        # local-compose fallback so developers can keep using port 8000.
-        os.getenv("PORT", os.getenv("APP_PORT", "8000")),
+        "8000",
     ]
     if os.getenv("APP_ENV", "development").strip().lower() == "development":
         # Scoped to backend/src (not the whole /app/backend tree) so unrelated

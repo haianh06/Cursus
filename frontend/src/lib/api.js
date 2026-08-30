@@ -292,6 +292,16 @@ export function requestOrgAccess({ institutionName, contactName, email, roleInte
   });
 }
 
+/** Public landing-page chat bubble (bottom-right, no auth) -- pre-login
+ * product demo, same pattern as Intercom/Drift's marketing-site chat. */
+export function askLandingChat(question) {
+  return request('/public/landing-chat', {
+    method: 'POST',
+    auth: false,
+    body: { question },
+  });
+}
+
 /** Admin-only invite management (see AdminConsole's Invites tab). */
 export function createInvite({ email, fullName, role, sectionId = null }) {
   return request('/admin/invites', {
@@ -793,10 +803,13 @@ export function getGuardrailReviewQueue() {
 }
 
 /** `decision` is 'KEEP' (stay blocked) or 'UNBLOCK' (approve the answer). */
-export function resolveGuardrailReview(caseId, decision) {
+export function resolveGuardrailReview(caseId, decision, note = null) {
+  // Backend (GuardrailReviewDecision) da nhan `note` va ghi vao
+  // reviewer_note; truoc day helper nay khong gui nen ly do bo chan khong
+  // bao gio duoc luu lai du man review co bat buoc nhap.
   return request(`/instructor/guardrail-reviews/${encodeURIComponent(caseId)}`, {
     method: 'POST',
-    body: { decision },
+    body: { decision, note },
   });
 }
 
@@ -1380,8 +1393,9 @@ export async function getClassComparison() {
 
 /* ── Instructor: digest ────────────────────────────────────────────────── */
 
-export function getInstructorDigest(days = 7) {
-  return request(`/instructor/digest?days=${encodeURIComponent(days)}`);
+export function getInstructorDigest(days = 7, courseId = null) {
+  const scope = courseId && courseId !== 'ALL' ? `&course_id=${encodeURIComponent(courseId)}` : '';
+  return request(`/instructor/digest?days=${encodeURIComponent(days)}${scope}`);
 }
 
 export function sendInstructorDigestEmail(days = 7) {

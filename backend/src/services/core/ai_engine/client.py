@@ -40,11 +40,19 @@ def _base_url(settings: Settings) -> str:
 
 
 def openai_client(settings: Settings) -> OpenAI:
-    return OpenAI(api_key=settings.openai_api_key or "", base_url=_base_url(settings))
+    return OpenAI(
+        api_key=settings.openai_api_key or "",
+        base_url=_base_url(settings),
+        timeout=settings.llm_request_timeout_seconds,
+    )
 
 
 def async_openai_client(settings: Settings) -> AsyncOpenAI:
-    return AsyncOpenAI(api_key=settings.openai_api_key or "", base_url=_base_url(settings))
+    return AsyncOpenAI(
+        api_key=settings.openai_api_key or "",
+        base_url=_base_url(settings),
+        timeout=settings.llm_request_timeout_seconds,
+    )
 
 
 def model_for_route(route: ModelRoute, settings: Settings) -> str:

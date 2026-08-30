@@ -56,6 +56,36 @@ class Settings(BaseSettings):
     openai_base_url: str | None = None
     openai_strong_model: str = "pro/gpt-5.6-terra"
     openai_light_model: str = "pro/gpt-5.6-luna"
+    # 29/08 gap found via audit: neither `openai_client()`/`async_openai_client()`
+    # nor any `.chat.completions.create()` call site set `timeout`/`max_tokens`
+    # -- every call relied on the SDK's own default (600s client timeout, no
+    # output cap at all beyond the model's own max). One slow/huge response
+    # could tie up a sync worker thread for 10 minutes or burn an outsized
+    # share of the $/day budget. 45s covers every real call site here (none
+    # of them are long-running batch jobs); 2000 output tokens is generous
+    # for a single JSON plan/quiz/reflection payload or one chat turn's
+    # markdown reply (this app's answers are conversational, not essays) --
+    # both are ordinary judgment calls, not something with real usage data to
+    # tune against yet, so treat these as an approximate starting cap, not a
+    # value with real load-testing behind it.
+    llm_request_timeout_seconds: float = Field(default=45.0, gt=0)
+    llm_max_output_tokens: int = Field(default=2000, ge=1)
+    # Gemini embedding calls (backend/src/services/rag/embedding_service.py)
+    # had NO timeout at all until 30/08 -- a slow/hanging call blocked
+    # Cursus Chat's retrieval step for tens of seconds per enrolled course
+    # (once per course, since each RetrievalService.retrieve() re-embedded
+    # the same question). Kept short: embeddings are a single small call,
+    # nothing like the LLM's own budget above.
+    embedding_request_timeout_seconds: float = Field(default=8.0, gt=0)
+
+    # Cursus Chat semantic answer cache (Redis-backed, in-memory fallback --
+    # same pattern as rate_limiter.py). Scoped per exact enrolled-course-set
+    # (see chat_cache_service.py) so a cache hit's citations can never
+    # reference a course the asking student isn't enrolled in.
+    chat_cache_enabled: bool = True
+    chat_cache_similarity_threshold: float = Field(default=0.93, ge=0.0, le=1.0)
+    chat_cache_max_entries_per_key: int = Field(default=200, ge=1)
+    chat_cache_ttl_seconds: int = Field(default=14 * 24 * 3600, ge=60)
 
     # Web search (used to augment retrieval when local context is insufficient)
     web_search_enabled: bool = True

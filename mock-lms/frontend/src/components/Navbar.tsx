@@ -6,6 +6,7 @@ import { ThemeToggle } from './ThemeToggle';
 import { LanguageToggle } from './LanguageToggle';
 import { EduSyncMark } from './EduSyncMark';
 import { UserMenu } from './UserMenu';
+import { handleBackToCursusClick } from '../lib/backToCursus';
 
 // FLM/EduSync is opened from Cursus in a new tab (frontend/src/App.jsx's
 // EduSync Topbar link, target="_blank"), so the browser Back button has no
@@ -63,6 +64,7 @@ export function Navbar({
 
           <a
             href={CURSUS_URL}
+            onClick={(e) => handleBackToCursusClick(e, CURSUS_URL)}
             title={t('nav.backToCursusTitle')}
             className="hidden sm:flex items-center gap-2 shrink-0 whitespace-nowrap text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
           >
@@ -131,6 +133,7 @@ export function Navbar({
         >
           <a
             href={CURSUS_URL}
+            onClick={(e) => handleBackToCursusClick(e, CURSUS_URL)}
             className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-500 hover:bg-slate-100 rounded-[var(--radius-sm)] transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />

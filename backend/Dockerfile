@@ -47,10 +47,10 @@ COPY --chown=appuser:appuser docs/planning/v2/data ./docs/planning/v2/data
 
 USER appuser
 
-EXPOSE 10000
+EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
-    CMD ["python", "-c", "import os, urllib.request; urllib.request.urlopen('http://localhost:' + os.getenv('PORT', '8000') + '/health')"]
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" || exit 1
 
 # The entrypoint waits for Postgres, applies migrations, seeds the local
 # demo dataset when requested, and only then starts Uvicorn. Keeping this in

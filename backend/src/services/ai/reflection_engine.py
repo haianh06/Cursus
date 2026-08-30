@@ -380,7 +380,7 @@ class ReflectionEngine:
         deterministic = self.build_summary(facts=facts, answers=answers, adjustments=confirmed, lang=lang)
 
         if not has_configured_llm():
-            raise ReflectionAiUnavailableError("AI Tự đánh giá chưa được cấu hình.")
+            return deterministic, {"llm_attempted": False, "llm_success": False, "retrieval_empty": False}
 
         try:
             system_prompt = REFLECTION_PROMPT_PATH.read_text(encoding="utf-8")
@@ -401,10 +401,11 @@ class ReflectionEngine:
             summary = payload.summary.strip()
             if summary:
                 return summary, {"llm_attempted": True, "llm_success": True, "retrieval_empty": False}
-            raise ReflectionAiUnavailableError("AI chưa tạo được nhận xét đáng tin cậy.")
+            logger.warning("llm_reflection_summary_blank plan_week=%s", facts.get("weekNumber"))
         except Exception:
             logger.exception("llm_reflection_summary_failed plan_week=%s", facts.get("weekNumber"))
-            raise ReflectionAiUnavailableError("AI Tự đánh giá tạm thời không khả dụng.") from None
+
+        return deterministic, {"llm_attempted": True, "llm_success": False, "retrieval_empty": False}
 
     def preview(self, plan: models.WeeklyPlan, lang: str = "vi") -> dict:
         facts = self.facts_for_plan(plan)
