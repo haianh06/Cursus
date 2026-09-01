@@ -1,12 +1,5 @@
 @import "tailwindcss";
 
-/* Cream/teal brand surface cho /demo/select-role. Scope duoi
-   .cursus-brand-scope — xem header file de biet vi sao khong dat global. */
-@import "./styles/cursus-brand.css";
-
-/* Man dang nhap. Scope duoi .cursus-login-page, khong selector global. */
-@import "./styles/cursus-login.css";
-
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* Theme-token aliases: lets JSX use bg-surface / text-fg / border-default
