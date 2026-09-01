@@ -587,23 +587,41 @@ def seed_current_week_plan(db) -> None:
     week for whichever week is actually current *right now*, so this
     doesn't keep recurring as the calendar moves on -- safe to re-run:
     skips a student who already has a WeeklyPlan for that exact week
-    number (organic or previously seeded)."""
+    number *with at least one real task under it* (organic or previously
+    seeded). A WeeklyPlan row existing with zero DailyPlan/StudyTask
+    children still reads as "No plan yet" on screen, so an existence-only
+    check would have wrongly treated that as already handled -- populate
+    the existing empty row's day tree in that case instead of skipping or
+    inserting a colliding duplicate WeeklyPlan.id."""
     from src.db import models
     from src.services.academic.academic_calendar import current_week_for_student
 
     for student_id in (STUDENT_A, STUDENT_B, STUDENT_C):
         week_number = current_week_for_student(db, student_id)
-        if db.query(models.WeeklyPlan).filter_by(student_id=student_id, week_number=week_number).first():
-            continue
-
-        plan_id = f"plan_g3_{student_id}_currentweek_{week_number}"
-        plan = models.WeeklyPlan(
-            id=plan_id, student_id=student_id, week_number=week_number,
-            goals={"statement": "Hoàn thành bài tập và ôn tập theo lịch tuần này."},
-            study_hours_allocated=12.0,
+        existing_plan = (
+            db.query(models.WeeklyPlan).filter_by(student_id=student_id, week_number=week_number).first()
         )
-        db.add(plan)
-        db.flush()
+        if existing_plan is not None:
+            has_task = (
+                db.query(models.StudyTask)
+                .join(models.ScheduleBlock, models.ScheduleBlock.id == models.StudyTask.schedule_block_id)
+                .join(models.DailyPlan, models.DailyPlan.id == models.ScheduleBlock.daily_plan_id)
+                .filter(models.DailyPlan.weekly_plan_id == existing_plan.id)
+                .first()
+            )
+            if has_task:
+                continue
+            plan = existing_plan
+            plan_id = plan.id
+        else:
+            plan_id = f"plan_g3_{student_id}_currentweek_{week_number}"
+            plan = models.WeeklyPlan(
+                id=plan_id, student_id=student_id, week_number=week_number,
+                goals={"statement": "Hoàn thành bài tập và ôn tập theo lịch tuần này."},
+                study_hours_allocated=12.0,
+            )
+            db.add(plan)
+            db.flush()
 
         monday = _monday_on_or_before(date.today())
         today_index = date.today().weekday()  # 0=Mon .. 6=Sun
