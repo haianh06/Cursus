@@ -77,6 +77,31 @@ _STOPWORDS = frozenset(
         "hãy",
         "giúp",
         "về",
+        # Common Vietnamese function words/connectors -- no content signal on
+        # their own, but frequent enough in ordinary prose (e.g. "nay" in
+        # "hiện nay") that a query built almost entirely from them (a plain
+        # emotional/conversational sentence like "Nay tôi buồn") could still
+        # exact-match one of these in nearly any document chunk and clear
+        # score_chunk()'s min_score, surfacing an unrelated citation for a
+        # question that never asked about course content.
+        "nay",
+        "đã",
+        "đang",
+        "sẽ",
+        "rất",
+        "vì",
+        "nên",
+        "nếu",
+        "khi",
+        "mà",
+        "cũng",
+        "chỉ",
+        "còn",
+        "lại",
+        "rồi",
+        "hay",
+        "nhưng",
+        "vậy",
     }
 )
 
