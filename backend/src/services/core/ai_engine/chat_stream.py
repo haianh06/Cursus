@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 import time
 from collections.abc import AsyncIterator
 
@@ -97,11 +98,20 @@ async def generate_chat_stream(
 
 _FOLLOWUP_INSTRUCTIONS = (
     "Given a student's question and the answer they just received, suggest up "
-    "to 3 short, natural follow-up questions the student might ask next -- in "
-    "the same language as the question. Reply with ONLY a JSON array of "
-    "strings, nothing else, e.g. [\"...\", \"...\"]. If nothing sensible "
-    "follows, reply with []."
+    "to 3 short, natural follow-up questions the student might ask next -- "
+    "written ENTIRELY in the same single language as the question (Vietnamese "
+    "stays 100% Vietnamese script -- quoc ngu with Latin letters and diacritics "
+    "only, never mix in Chinese/Japanese/Korean characters or any other "
+    "language mid-sentence). Reply with ONLY a JSON array of strings, nothing "
+    "else, e.g. [\"...\", \"...\"]. If nothing sensible follows, reply with []."
 )
+
+# Vietnamese (and English) never legitimately contain CJK characters -- a
+# light model occasionally code-switches mid-sentence into Chinese despite
+# the instruction above (e.g. "tự安抚 mình" instead of "tự an ủi mình"). Belt-
+# and-suspenders filter: drop any suggestion containing one, rather than
+# show a garbled chip in the UI.
+_CJK_RE = re.compile(r"[一-鿿぀-ヿ가-힯]")
 
 
 async def generate_followup_suggestions(
@@ -124,6 +134,12 @@ async def generate_followup_suggestions(
                 {"role": "user", "content": f"Question: {message}\n\nAnswer: {answer}"},
             ],
             max_tokens=150,
+            # Low temperature -- this is a small formatting/language-fidelity
+            # task (pick 3 on-topic follow-ups, stay in one script), not one
+            # that benefits from the model's default creative sampling; a
+            # lower temperature made mid-sentence script code-switching
+            # (Vietnamese text drifting into Chinese characters) rarer.
+            temperature=0.3,
         )
         record_llm_call(
             feature="chat_followup_suggestions",
@@ -142,7 +158,8 @@ async def generate_followup_suggestions(
         items = json.loads(raw)
         if not isinstance(items, list):
             return []
-        return [str(item).strip() for item in items if str(item).strip()][:3]
+        cleaned = [str(item).strip() for item in items if str(item).strip()]
+        return [item for item in cleaned if not _CJK_RE.search(item)][:3]
     except Exception:
         logger.exception("chat_followup_suggestions_failed intent=%s", intent)
         return []
