@@ -19,7 +19,6 @@ function QuickReplies({ onPick, disabled, t }) {
     t('landing.chatWidget.quickReply1'),
     t('landing.chatWidget.quickReply2'),
     t('landing.chatWidget.quickReply3'),
-    t('landing.chatWidget.quickReply4'),
   ];
   return (
     <div className="flex flex-wrap gap-2">

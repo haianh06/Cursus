@@ -46,19 +46,21 @@ function messageForErrorCode(code) {
  * lives in one place — reuses the same tokens as .btn-accent in index.css. */
 const HEADER_GRADIENT = 'linear-gradient(135deg, var(--accent-cta-bg) 0%, var(--accent-cta-bg-hover) 100%)';
 
+/** Static starter FAQ chips (only shown before the first message, in
+ * WelcomeCard) -- kept to 3 broadly useful discovery prompts. Post-answer
+ * follow-up chips are dynamic instead (see the `suggestions` field on each
+ * assistant message, populated from the backend's `suggestions` SSE event),
+ * falling back to this same list when the backend returns none. */
 const QUICK_REPLIES = [
   'Hôm nay mình nên học gì trước?',
   'Tóm tắt syllabus môn này giúp mình',
   'Kế hoạch học tập của mình đang thế nào?',
-  'Chào Cursus, cậu giúp được mình những gì?',
-  'Dạo này mình học hơi đuối, cho mình xin ít lời khuyên',
-  'Mình đang stress vì bài vở, phải làm sao đây?',
 ];
 
-function QuickReplies({ onPick, disabled }) {
+function QuickReplies({ items = QUICK_REPLIES, onPick, disabled }) {
   return (
     <div className="flex flex-wrap gap-2">
-      {QUICK_REPLIES.map((text) => (
+      {items.map((text) => (
         <button
           key={text}
           type="button"
@@ -401,7 +403,7 @@ export default function CursusChat({ user }) {
     const text = rawText.trim();
     if (!text || loading) return;
     setValue('');
-    setMessages((items) => [...items, { role: 'user', text }, { role: 'assistant', text: '', citations: [], displayedLength: 0 }]);
+    setMessages((items) => [...items, { role: 'user', text }, { role: 'assistant', text: '', citations: [], suggestions: null, displayedLength: 0 }]);
     setLoading(true);
     try {
       // Skip the extra round-trip when the background ping from mount (or
@@ -423,6 +425,7 @@ export default function CursusChat({ user }) {
           if (type === 'meta') setConversationId(data.conversationId);
           if (type === 'delta') setMessages((items) => items.map((item, i) => (i === items.length - 1 ? { ...item, text: item.text + data.text } : item)));
           if (type === 'citation') setMessages((items) => items.map((item, i) => (i === items.length - 1 ? { ...item, citations: data.items } : item)));
+          if (type === 'suggestions') setMessages((items) => items.map((item, i) => (i === items.length - 1 ? { ...item, suggestions: data.items } : item)));
           if (type === 'action_proposal') setMessages((items) => items.map((item, i) => (i === items.length - 1 ? { ...item, actionProposal: { ...data, resolved: false } } : item)));
           if (type === 'error') setMessages((items) => items.map((item, i) => (i === items.length - 1 ? { ...item, text: messageForErrorCode(data.code) } : item)));
         },
@@ -545,11 +548,16 @@ export default function CursusChat({ user }) {
                     />
                   )}
                   {/* Suggested follow-up questions after each finished bot reply —
-                      nudges toward reusing a common question instead of freeform
-                      retyping, which cuts down on redundant LLM calls. */}
+                      dynamic chips generated from the answer just given (backend's
+                      `suggestions` SSE event) when available, falling back to the
+                      static starter FAQ chips when the backend returned none. */}
                   {isAssistant && isLast && doneTyping && !loading && (
                     <div className="mt-3 border-t border-line pt-2">
-                      <QuickReplies onPick={sendMessage} disabled={loading} />
+                      <QuickReplies
+                        items={item.suggestions?.length ? item.suggestions : QUICK_REPLIES}
+                        onPick={sendMessage}
+                        disabled={loading}
+                      />
                     </div>
                   )}
                 </article>

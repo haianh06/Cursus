@@ -1397,8 +1397,7 @@ export const en = {
       disclaimer: "Cursus can make mistakes; double-check anything important.",
       quickReply1: "How does Cursus work?",
       quickReply2: "Who is Cursus for?",
-      quickReply3: "Does it do my homework for me?",
-      quickReply4: "Is my data safe?"
+      quickReply3: "Does it do my homework for me?"
     },
     menuOpenLabel: "Open menu",
     menuCloseLabel: "Close menu",

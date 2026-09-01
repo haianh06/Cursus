@@ -8,13 +8,17 @@ events.
 """
 from __future__ import annotations
 
+import json
+import logging
 import time
 from collections.abc import AsyncIterator
 
 from src.config import Settings
 from src.services.core.ai_engine.client import async_openai_client, error_code_for, model_for_route
-from src.services.core.ai_engine.routing import select_model
+from src.services.core.ai_engine.routing import ModelRoute, select_model
 from src.services.core.ai_usage_recorder import record_llm_call, tokens_from_openai_usage
+
+logger = logging.getLogger(__name__)
 
 _INSTRUCTIONS = (
     "You are Cursus, a warm academic companion. Answer in Vietnamese unless the user writes another language. "
@@ -89,3 +93,56 @@ async def generate_chat_stream(
             success=False,
         )
         yield {"type": "error", "code": error_code_for(exc)}
+
+
+_FOLLOWUP_INSTRUCTIONS = (
+    "Given a student's question and the answer they just received, suggest up "
+    "to 3 short, natural follow-up questions the student might ask next -- in "
+    "the same language as the question. Reply with ONLY a JSON array of "
+    "strings, nothing else, e.g. [\"...\", \"...\"]. If nothing sensible "
+    "follows, reply with []."
+)
+
+
+async def generate_followup_suggestions(
+    *, settings: Settings, message: str, answer: str, intent: str
+) -> list[str]:
+    """Cheap, non-streamed follow-up chip generation run *after* the main
+    answer has already been fully delivered -- always OPENAI_LIGHT_MODEL
+    regardless of the main answer's route, since this never needs the strong
+    model's reasoning. Never raises: a failure here must not take down an
+    otherwise-successful chat turn, so callers get an empty list instead."""
+    route = ModelRoute("OPENAI_LIGHT_MODEL", "followup-suggestions")
+    model = model_for_route(route, settings)
+    client = async_openai_client(settings)
+    started = time.perf_counter()
+    try:
+        response = await client.chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "system", "content": _FOLLOWUP_INSTRUCTIONS},
+                {"role": "user", "content": f"Question: {message}\n\nAnswer: {answer}"},
+            ],
+            max_tokens=150,
+        )
+        record_llm_call(
+            feature="chat_followup_suggestions",
+            model=model,
+            input_tokens=response.usage.prompt_tokens if response.usage else 0,
+            output_tokens=response.usage.completion_tokens if response.usage else 0,
+            latency_ms=int((time.perf_counter() - started) * 1000),
+            success=True,
+        )
+        raw = (response.choices[0].message.content or "").strip()
+        # Models sometimes wrap the array in a ```json fence despite the
+        # "ONLY a JSON array" instruction -- strip fences before parsing
+        # rather than failing the whole call over formatting noise.
+        if raw.startswith("```"):
+            raw = raw.strip("`").removeprefix("json").strip()
+        items = json.loads(raw)
+        if not isinstance(items, list):
+            return []
+        return [str(item).strip() for item in items if str(item).strip()][:3]
+    except Exception:
+        logger.exception("chat_followup_suggestions_failed intent=%s", intent)
+        return []

@@ -753,3 +753,79 @@ async def test_semantic_cache_hit_skips_ai_service_on_repeat_question(client, mo
     assert second_meta.get("cached") is True
     second_delta = next(data["text"] for kind, data in second_events if kind == "delta")
     assert second_delta == "Cached-worthy answer."
+
+
+@pytest.mark.asyncio
+async def test_smalltalk_semantic_bypass_skips_ai_service_for_paraphrase(client, monkeypatch):
+    """A greeting paraphrase not in chat_cache_service's exact-match
+    `_CANNED_ANSWERS` dict (e.g. "Chào bạn, khỏe không?") must still
+    short-circuit via smalltalk_service's semantic bank match, before RAG
+    retrieval or the LLM are ever reached."""
+    import src.api.cursus_chat as cursus_chat_module
+    from src.services.core import smalltalk_service as smalltalk_service_module
+    from src.services.rag import embedding_service as embedding_service_module
+
+    async def _fail_if_called(**kwargs):
+        raise AssertionError("generate_chat_stream must not be called for a smalltalk semantic hit")
+        yield  # pragma: no cover - generator, never reached
+
+    monkeypatch.setattr(cursus_chat_module, "generate_chat_stream", _fail_if_called)
+    monkeypatch.setattr(embedding_service_module, "has_embedding_backend", lambda: True)
+    monkeypatch.setattr(cursus_chat_module.embedding_service, "embed_query", lambda text: [1.0, 0.0, 0.0])
+    # Skip the real embed-the-whole-bank path (and its disk cache) -- inject
+    # a pre-embedded bank directly so the fixed query vector above scores a
+    # perfect match against it.
+    monkeypatch.setattr(smalltalk_service_module, "_bank", [([1.0, 0.0, 0.0], "Chào bạn, mình là Cursus đây!")])
+
+    org_id = ensure_org(f"cc-small-{uuid.uuid4().hex[:6]}", "cc-small")
+    student_email = f"cc.small.{uuid.uuid4().hex}@example.test"
+    ensure_user(email=student_email, org_id=org_id, role=models.UserRole.STUDENT)
+
+    token = await login(client, student_email)
+    async with client.stream(
+        "POST", "/api/v1/student/cursus/stream", headers=auth_headers(token),
+        json={"message": "Chào bạn, khỏe không?"},
+    ) as response:
+        assert response.status_code == 200
+        events = await _parse_sse(response)
+
+    kinds = [kind for kind, _ in events]
+    assert kinds == ["meta", "delta", "done"]
+    delta_text = next(data["text"] for kind, data in events if kind == "delta")
+    assert delta_text == "Chào bạn, mình là Cursus đây!"
+
+
+@pytest.mark.asyncio
+async def test_stream_emits_dynamic_followup_suggestions(client, monkeypatch):
+    """Follow-up chips shown after an answer come from the new `suggestions`
+    SSE event (chat_stream.generate_followup_suggestions, generated from the
+    answer just given) rather than the frontend's fixed starter list."""
+    _patch_ai_service(monkeypatch)
+    import src.api.cursus_chat as cursus_chat_module
+
+    monkeypatch.setattr(cursus_chat_module, "has_configured_llm", lambda: True)
+
+    async def _fake_followups(**kwargs):
+        return ["Follow-up 1?", "Follow-up 2?"]
+
+    monkeypatch.setattr(cursus_chat_module, "generate_followup_suggestions", _fake_followups)
+
+    org_id = ensure_org(f"cc-followup-{uuid.uuid4().hex[:6]}", "cc-followup")
+    instructor_id = ensure_user(email=f"cc.followupi.{uuid.uuid4().hex}@example.test", org_id=org_id, role=models.UserRole.INSTRUCTOR)
+    student_email = f"cc.followups.{uuid.uuid4().hex}@example.test"
+    student_id = ensure_user(email=student_email, org_id=org_id, role=models.UserRole.STUDENT)
+    code = _code("CCF")
+    course_id = ensure_course(code=code, org_id=org_id)
+    enroll_student(student_id=student_id, course_id=course_id, instructor_id=instructor_id)
+    _seed_chunk(course_id, code, text=f"{code} noi dung bai giang co ban ve kien truc he thong.")
+
+    token = await login(client, student_email)
+    async with client.stream(
+        "POST", "/api/v1/student/cursus/stream", headers=auth_headers(token),
+        json={"message": f"Cho em hoi noi dung mon {code} co gi?"},
+    ) as response:
+        assert response.status_code == 200
+        events = await _parse_sse(response)
+
+    suggestions_event = next(data for kind, data in events if kind == "suggestions")
+    assert suggestions_event["items"] == ["Follow-up 1?", "Follow-up 2?"]

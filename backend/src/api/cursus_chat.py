@@ -26,9 +26,9 @@ from src.repositories.ownership_repository import OwnershipRepository
 from src.security.authorization import require_roles
 from src.services.academic.academic_calendar import current_week_for_student
 from src.services.ai.plan_builder import resolve_current_plan, serialize_plan
-from src.services.core.ai_engine.chat_stream import generate_chat_stream
+from src.services.core.ai_engine.chat_stream import generate_chat_stream, generate_followup_suggestions
 from src.services.core.ai_service_client import generate_structured
-from src.services.core import chat_cache_service
+from src.services.core import chat_cache_service, smalltalk_service
 from src.services.core.audit_service import AuditService
 from src.services.core.crisis_safety_service import evaluate as evaluate_crisis
 from src.services.core.email_provider import build_email_service
@@ -429,6 +429,18 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
         except Exception:
             logger.exception("cursus_chat_query_embed_failed student_id=%s", current_user.id)
         if query_vector:
+            # Tier 1.5: semantic small-talk bypass -- catches paraphrases of
+            # greetings/thanks/etc. that Tier 1's exact-match dict misses
+            # (see smalltalk_service.py). Reuses the embedding just computed
+            # above, so a miss costs nothing extra before falling through to
+            # the Tier-2 cache lookup below.
+            smalltalk_reply = smalltalk_service.match(query_vector)
+            if smalltalk_reply is not None:
+                await _audit_chat_decision(
+                    db, event_type="CHAT_SMALLTALK_HIT", decision="ALLOW", student_id=current_user.id,
+                    conversation_id=conversation.id, extra={},
+                )
+                return _single_event_stream(conversation_id=conversation.id, text=smalltalk_reply)
             cached = await chat_cache_service.find_similar(course_codes, query_vector)
 
     if cached is not None:
@@ -442,6 +454,8 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
             yield f"event: delta\ndata: {json.dumps({'text': cached.answer})}\n\n"
             if cached.citations:
                 yield f"event: citation\ndata: {json.dumps({'items': cached.citations})}\n\n"
+            if cached.suggestions:
+                yield f"event: suggestions\ndata: {json.dumps({'items': cached.suggestions})}\n\n"
             yield "event: done\ndata: {}\n\n"
 
         return StreamingResponse(relay_cached(), media_type="text/event-stream", headers=_SSE_HEADERS)
@@ -492,13 +506,29 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
             ]
             if citation_items:
                 yield f"event: citation\ndata: {json.dumps({'items': citation_items})}\n\n"
-            db.add(models.ChatMessage(id=str(uuid4()), conversation_id=conversation.id, role="assistant", content=answer, metadata_info={"citations": sources, "intent": intent}))
+
+            # Dynamic, contextual follow-up chips -- generated from the
+            # answer just given instead of the frontend's fixed 3-item
+            # starter list (see chat_stream.py's generate_followup_
+            # suggestions). Runs after the visible answer is already fully
+            # streamed, so it only delays "done" slightly, never the
+            # perceived answer latency. Never raises -- an empty list here
+            # just means the frontend falls back to its static chips.
+            suggestions: list[str] = []
+            if has_configured_llm():
+                suggestions = await generate_followup_suggestions(
+                    settings=settings, message=payload.message, answer=answer, intent=intent,
+                )
+            if suggestions:
+                yield f"event: suggestions\ndata: {json.dumps({'items': suggestions})}\n\n"
+
+            db.add(models.ChatMessage(id=str(uuid4()), conversation_id=conversation.id, role="assistant", content=answer, metadata_info={"citations": sources, "intent": intent, "suggestions": suggestions}))
             conversation.updated_at = datetime.utcnow(); conversation.expires_at = datetime.utcnow() + _TTL; db.commit()
 
             if query_vector and intent not in ("plan_action", "reflection_navigation"):
                 # Fire-and-forget-ish: caching is a pure optimization, never
                 # let it block or fail the response already sent above.
-                await chat_cache_service.store(course_codes, payload.message, query_vector, answer, citation_items)
+                await chat_cache_service.store(course_codes, payload.message, query_vector, answer, citation_items, suggestions)
 
             if intent in ("plan_action", "reflection_navigation"):
                 # Same blocking-call-inside-async-generator hazard as

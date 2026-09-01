@@ -1397,8 +1397,7 @@ export const vi = {
       disclaimer: "Cursus có thể nhầm; hãy kiểm tra lại thông tin quan trọng.",
       quickReply1: "Cursus hoạt động thế nào?",
       quickReply2: "Cursus dùng cho ai?",
-      quickReply3: "Có làm hộ bài tập không?",
-      quickReply4: "Dữ liệu của tôi có an toàn không?"
+      quickReply3: "Có làm hộ bài tập không?"
     },
     menuOpenLabel: "Mở menu",
     menuCloseLabel: "Đóng menu",

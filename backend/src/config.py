@@ -87,6 +87,14 @@ class Settings(BaseSettings):
     chat_cache_max_entries_per_key: int = Field(default=200, ge=1)
     chat_cache_ttl_seconds: int = Field(default=14 * 24 * 3600, ge=60)
 
+    # Small-talk semantic bypass (smalltalk_service.py): catches paraphrases
+    # of greetings/thanks/"who are you" that chat_cache_service's exact-match
+    # _CANNED_ANSWERS dict misses (e.g. "chao ban khoe khong"). Stricter than
+    # chat_cache_similarity_threshold above -- a false positive here silently
+    # replaces a real question with a small-talk reply instead of just
+    # missing a cache hit, so it needs a higher bar.
+    smalltalk_similarity_threshold: float = Field(default=0.86, ge=0.0, le=1.0)
+
     # Web search (used to augment retrieval when local context is insufficient)
     web_search_enabled: bool = True
     web_search_provider: Literal["ddg", "tavily"] = "ddg"

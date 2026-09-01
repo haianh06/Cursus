@@ -92,6 +92,7 @@ class CachedAnswer:
     answer: str
     citations: list[dict]
     similarity: float
+    suggestions: list[str]
 
 
 def _cache_key(course_codes: list[str]) -> str:
@@ -174,6 +175,7 @@ async def find_similar(
             answer=best_entry["answer"],
             citations=best_entry.get("citations") or [],
             similarity=best_similarity,
+            suggestions=best_entry.get("suggestions") or [],
         )
     return None
 
@@ -184,6 +186,7 @@ async def store(
     query_vector: list[float] | None,
     answer: str,
     citations: list[dict],
+    suggestions: list[str] | None = None,
 ) -> None:
     settings = get_settings()
     if not settings.chat_cache_enabled or not query_vector or not course_codes or not answer:
@@ -193,6 +196,7 @@ async def store(
         "embedding": query_vector,
         "answer": answer,
         "citations": citations,
+        "suggestions": suggestions or [],
         "cached_at": time.time(),
     }
     try:
