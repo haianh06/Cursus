@@ -27,6 +27,7 @@ Usage (inside the backend container):
 
 from __future__ import annotations
 
+import hashlib
 import logging
 import sys
 import uuid
@@ -42,33 +43,67 @@ logger = logging.getLogger("seed-gap-fill-demo")
 
 ORG_ID = "org_cursus_demo"
 
-# Re-verified 25/08 by reading this exact Supabase project directly (read-only)
-# -- the IDs below (an earlier draft of this script guessed at, from a
-# different environment) did not match a single row here: 0 of the section/
-# assignment/plan IDs existed, and 2 of the 3 demo-account IDs were wrong too.
-# See scripts/sql/sync_schema_before_deploy.sql history for the same class of
-# gap on this DB. Every constant below was looked up by email/course-code/
-# title against production before being pasted in.
-STUDENT_A = "user_49d39d8389344420ba4b626f4996fae8"   # demo.student@cursusdemo.local
-STUDENT_B = "student_haianh"                          # studenthaianh@example.com
-STUDENT_C = "student_haidang"                         # studenthaidang@example.com
-INSTRUCTOR = "user_940824b10da6420183f101e6d7659482"  # demo.instructor@cursusdemo.local
-ADMIN = "user_97d787e9a4ab4154af12504d86eb63a1"       # demo.admin@cursusdemo.local
+# These accounts' ids were previously hardcoded from a one-time 25/08
+# read-only lookup against production -- but STUDENT_A/INSTRUCTOR/ADMIN come
+# from `/auth/demo-session`'s auto-provisioned `user_<hash>` accounts, whose
+# ids are NOT stable (re-provisioning the sandbox, e.g. one of the "protect
+# hosted demo dataset" incidents, generates new random ids for the same
+# emails) -- exactly what broke on 01/09 (`LookupError: Student not found`,
+# a hardcoded id that no longer existed). Resolved by email at runtime in
+# main() instead now (see `_resolve_accounts()`); the module-level names
+# below are placeholders reassigned via `global` before any other function
+# reads them. STUDENT_B/STUDENT_C use the literal, stable ids
+# scripts/seed_extra_users.py always creates them with -- no drift risk.
+STUDENT_A = ""                        # demo.student@cursusdemo.local (resolved at runtime)
+STUDENT_B = "student_haianh"          # studenthaianh@example.com
+STUDENT_C = "student_haidang"         # studenthaidang@example.com
+INSTRUCTOR = ""                       # demo.instructor@cursusdemo.local (resolved at runtime)
+ADMIN = ""                            # demo.admin@cursusdemo.local (resolved at runtime)
 
 # STUDENT_A's own private per-student sections (see
 # StudentMockDataService._ensure_student_sections -- deterministic
-# sha256(student_id)[:8] suffix, one section per non-SSA101 course).
-SEC_CEA201 = "section_mock_cea201_43ae07ae"
-SEC_CSI106 = "section_mock_csi106_43ae07ae"
-SEC_PRF192 = "section_mock_prf192_43ae07ae"
+# sha256(student_id)[:8] suffix, one section per non-SSA101 course). Also
+# resolved at runtime once STUDENT_A's real id is known -- these depend on
+# it directly, so a stale hardcoded STUDENT_A would silently point them at
+# the wrong (or nonexistent) sections too.
+SEC_CEA201 = ""
+SEC_CSI106 = ""
+SEC_PRF192 = ""
 # SSA101 is the one shared Gate-2 class (Gate2DemoService) -- this is the
 # section the real "SSA101 Group Project -- Part 1" assignment belongs to,
-# confirmed via GET /student/dashboard on production.
+# confirmed via GET /student/dashboard on production. Fixed regardless of
+# which student -- every student shares this one section.
 SEC_SSA101 = "section_gate2_ssa101_se_k20"
 
-ASG_LAB02 = "asg_mock_section_mock_prf192_43ae07ae_lab02"
-ASG_CPU = "asg_mock_section_mock_cea201_43ae07ae_worksheet_cpu"
-ASG_ALGO = "asg_mock_section_mock_csi106_43ae07ae_algo_worksheet"
+ASG_LAB02 = ""
+ASG_CPU = ""
+ASG_ALGO = ""
+
+
+def _resolve_accounts(db) -> None:
+    """Reassigns the STUDENT_A/INSTRUCTOR/ADMIN/SEC_*/ASG_* module globals
+    from the accounts' *current* real ids (looked up by email) instead of
+    the stale hardcoded ones -- see the constants' own docstring above."""
+    global STUDENT_A, INSTRUCTOR, ADMIN, SEC_CEA201, SEC_CSI106, SEC_PRF192, ASG_LAB02, ASG_CPU, ASG_ALGO
+    from src.db import models
+
+    def _id_for(email: str) -> str:
+        user = db.query(models.User).filter_by(email=email).first()
+        if user is None:
+            raise LookupError(f"Demo account not found: {email}")
+        return user.id
+
+    STUDENT_A = _id_for("demo.student@cursusdemo.local")
+    INSTRUCTOR = _id_for("demo.instructor@cursusdemo.local")
+    ADMIN = _id_for("demo.admin@cursusdemo.local")
+
+    suffix = hashlib.sha256(STUDENT_A.encode("utf-8")).hexdigest()[:8]
+    SEC_CEA201 = f"section_mock_cea201_{suffix}"
+    SEC_CSI106 = f"section_mock_csi106_{suffix}"
+    SEC_PRF192 = f"section_mock_prf192_{suffix}"
+    ASG_LAB02 = f"asg_mock_section_mock_prf192_{suffix}_lab02"
+    ASG_CPU = f"asg_mock_section_mock_cea201_{suffix}_worksheet_cpu"
+    ASG_ALGO = f"asg_mock_section_mock_csi106_{suffix}_algo_worksheet"
 
 
 def _now() -> datetime:
@@ -819,6 +854,7 @@ def main() -> int:
 
     db = SessionLocal()
     try:
+        _resolve_accounts(db)
         seed_enrollments(db)
         seed_academic_term_and_exams(db)
         seed_class_activities(db)

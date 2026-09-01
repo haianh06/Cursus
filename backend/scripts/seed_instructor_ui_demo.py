@@ -421,7 +421,23 @@ def main() -> None:
             bump("submission")
 
         # --- Tin hieu rui ro ---
-        for suffix, level, rtype, reason, rates, days_open, resolution in RISKS:
+        # RiskSignal.policy_version is a real FK into risk_policies -- the
+        # hardcoded `1` here assumed migration 20260823's baseline row was
+        # always present, but on this DB it currently isn't (01/09
+        # incident: risk_signals_policy_version_fkey violation). Use
+        # whatever policy version actually exists instead of a guessed
+        # constant; skip risk-signal seeding entirely (rest of the screens
+        # still get their data) if none exists at all rather than crash.
+        current_policy = (
+            db.query(models.RiskPolicy)
+            .order_by(models.RiskPolicy.policy_version.desc())
+            .first()
+        )
+        if current_policy is None:
+            print("[ui-demo] Khong co RiskPolicy nao trong DB. Bo qua seed risk signals.")
+        for suffix, level, rtype, reason, rates, days_open, resolution in (
+            RISKS if current_policy is not None else []
+        ):
             rid = f"{P}risk_{suffix}"
             existing_risk = _get(db, models.RiskSignal, id=rid)
             if existing_risk is not None:
@@ -456,7 +472,7 @@ def main() -> None:
                 resolved_at=_d(-max(days_open - 2, 0)) if resolution else None,
                 resolved_by=instructor.id if resolution else None,
                 resolution_type=resolution,
-                policy_version=1,
+                policy_version=current_policy.policy_version,
             ))
             bump("risk")
 
