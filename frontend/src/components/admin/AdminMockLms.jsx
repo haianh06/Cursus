@@ -7,6 +7,7 @@ import {
   publishMockLmsSync,
   rollbackMockLmsSync,
 } from '../../lib/api';
+import Button from '../shared/Button';
 
 export default function AdminMockLms() {
   const { t, lang } = useLanguage();
@@ -96,24 +97,26 @@ export default function AdminMockLms() {
       </label>
 
       <div className="flex flex-wrap gap-3 mt-2">
-        <button
-          type="button"
+        <Button
+          variant="outline"
+          busy={busy === 'preview'}
           disabled={Boolean(busy)}
           onClick={runPreview}
-          className="btn btn-outline min-h-10 px-5 text-xs font-bold cursor-pointer transition-all hover:bg-surface-elevated hover:text-fg disabled:opacity-40"
+          className="font-bold shadow-sm hover:shadow-md"
         >
           {busy === 'preview' ? <RotateCcw size={14} className="inline mr-2 animate-spin" /> : null}
           {busy === 'preview' ? t('admin.loading') : t('admin.mockLmsPreview')}
-        </button>
-        <button
-          type="button"
+        </Button>
+        <Button
+          variant="primary"
+          busy={busy === 'publish'}
           disabled={!reasonValid || !preview || Boolean(busy)}
           onClick={publish}
-          className="btn btn-accent min-h-10 px-6 text-xs font-bold cursor-pointer transition-all shadow-sm hover:shadow-md disabled:opacity-40"
+          className="font-bold shadow-sm hover:shadow-md"
         >
           {busy === 'publish' ? <RotateCcw size={14} className="inline mr-2 animate-spin" /> : null}
           {busy === 'publish' ? t('admin.saving') : t('admin.mockLmsPublish')}
-        </button>
+        </Button>
       </div>
       {!preview && (
         <p className="text-[11px] text-fg-muted">{t('admin.mockLmsPreviewRequiredHint')}</p>
@@ -163,7 +166,7 @@ export default function AdminMockLms() {
         {history.map((item) => (
           <div
             key={item.syncVersion}
-            className="group flex flex-col gap-3 rounded-xl border border-line bg-surface-card hover:bg-surface-elevated hover:border-fg/20 p-4 transition-all duration-200 sm:flex-row sm:items-center sm:justify-between shadow-sm hover:shadow-md"
+            className="group flex flex-col gap-3 rounded-[var(--radius-md)] border border-line bg-surface-card hover:bg-surface-elevated hover:border-fg/20 p-4 transition-all duration-200 sm:flex-row sm:items-center sm:justify-between shadow-sm hover:shadow-md"
           >
             <div className="min-w-0">
               <p className="mono text-xs font-bold text-fg">
@@ -180,15 +183,17 @@ export default function AdminMockLms() {
               </p>
             </div>
             {item.syncVersion !== current?.syncVersion && (
-              <button
-                type="button"
+              <Button
+                variant="outline"
+                size="sm"
+                busy={busy === `rollback-${item.syncVersion}`}
                 disabled={Boolean(busy)}
                 onClick={() => rollback(item.syncVersion)}
-                className="btn btn-outline flex min-h-9 shrink-0 items-center justify-center gap-2 px-4 text-xs font-semibold cursor-pointer transition-all hover:border-danger hover:text-danger disabled:opacity-40"
+                className="shrink-0 gap-2 font-semibold hover:border-danger hover:text-danger"
               >
                 <RotateCcw size={13} className={busy === `rollback-${item.syncVersion}` ? 'animate-spin' : ''} />
                 {busy === `rollback-${item.syncVersion}` ? t('admin.saving') : t('admin.mockLmsRollback')}
-              </button>
+              </Button>
             )}
           </div>
         ))}

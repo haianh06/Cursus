@@ -9,6 +9,7 @@ import {
 } from '../../lib/api';
 import { useLanguage } from '../../context/LanguageContext';
 import ConfirmDialog from '../shared/ConfirmDialog';
+import Button from '../shared/Button';
 
 const EXAM_KINDS = ['MIDTERM', 'PROGRESS_TEST', 'FINAL'];
 
@@ -164,7 +165,7 @@ export default function AdminAcademicPanel() {
   return (
     <div className="flex flex-col gap-6 text-left">
       {error && (
-        <div className="p-3.5 rounded-xl bg-danger-soft border border-danger/20 text-xs text-danger">
+        <div className="p-3.5 rounded-[var(--radius-md)] bg-danger-soft border border-danger/20 text-xs text-danger">
           {error.message}
         </div>
       )}
@@ -183,9 +184,14 @@ export default function AdminAcademicPanel() {
               <div className="rounded-md border border-line bg-surface-elevated p-3"><dt className="text-[9px] uppercase text-fg-muted">{lang === 'vi' ? 'Tuần thi' : 'Exams'}</dt><dd className="mono mt-1 text-lg font-bold text-accent">{term?.exam_weeks || termForm.examWeeks}</dd></div>
             </div>
           </dl>
-          <button type="button" className="btn btn-outline mt-5 min-h-10 w-full text-xs" onClick={() => document.getElementById('term-config')?.scrollIntoView({ behavior: 'smooth' })}>
+          <Button
+            variant="outline"
+            size="md"
+            className="mt-5 w-full"
+            onClick={() => document.getElementById('term-config')?.scrollIntoView({ behavior: 'smooth' })}
+          >
             {lang === 'vi' ? 'Chỉnh sửa học kỳ' : 'Edit term'}
-          </button>
+          </Button>
         </article>
 
         <article className="card min-w-0 p-5">
@@ -258,14 +264,14 @@ export default function AdminAcademicPanel() {
             {term.exam_start && ` · ${lang === 'vi' ? 'Thi' : 'Exams'}: ${term.exam_start} → ${term.exam_end}`}
           </p>
         )}
-        <button
-          type="button"
-          className="btn btn-accent text-xs px-4 py-2 rounded-lg cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+        <Button
+          variant="primary"
+          size="md"
           disabled={!termForm.name.trim() || !termForm.startDate || savingTerm}
           onClick={handleSaveTerm}
         >
           <Save size={13} /> {savingTerm ? (lang === 'vi' ? 'Đang lưu…' : 'Saving…') : (lang === 'vi' ? 'Lưu học kỳ' : 'Save term')}
-        </button>
+        </Button>
       </div>
 
       {/* Course exams */}
@@ -314,21 +320,21 @@ export default function AdminAcademicPanel() {
                   </button>
                 </div>
               ))}
-              <button type="button" className="btn btn-outline text-xs px-3 py-1.5 rounded-lg cursor-pointer flex items-center gap-1.5" onClick={addSession}>
+              <Button variant="outline" size="sm" onClick={addSession}>
                 <Plus size={13} /> {lang === 'vi' ? 'Thêm ca thi' : 'Add session'}
-              </button>
+              </Button>
             </div>
 
             {examError && <p className="text-[11px] text-danger mb-2">{examError.message}</p>}
 
-            <button
-              type="button"
-              className="btn btn-accent text-xs px-4 py-2 rounded-lg cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+            <Button
+              variant="primary"
+              size="md"
               disabled={!examForm.courseId || savingExam}
               onClick={handleSaveExam}
             >
               <Save size={13} /> {savingExam ? (lang === 'vi' ? 'Đang lưu…' : 'Saving…') : (lang === 'vi' ? 'Lưu lịch thi' : 'Save exam')}
-            </button>
+            </Button>
 
             <div className="mt-4 overflow-x-auto">
               <table className="data-table">

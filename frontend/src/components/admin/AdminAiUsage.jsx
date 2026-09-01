@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { AlertCircle, Coins } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { getAdminAiUsage, userFacingApiError } from '../../lib/api';
+import Button from '../shared/Button';
 
 const WINDOWS = [7, 30, 90];
 
@@ -67,7 +68,7 @@ function DailyCostChart({ series, label, emptyLabel, formatUsd, formatInt }) {
                 y={height - barHeight}
                 width={barWidth}
                 height={barHeight}
-                className="fill-[var(--accent)]"
+                className="fill-accent"
               >
                 <title>{`${row.date} — ${formatUsd(value)} · ${formatInt(row.calls)}`}</title>
               </rect>
@@ -118,13 +119,14 @@ export default function AdminAiUsage() {
     return (
       <div className="flex flex-wrap items-center gap-3 text-xs text-danger" role="alert">
         <span className="flex items-center gap-2"><AlertCircle size={14} />{error.message}</span>
-        <button
-          type="button"
+        <Button
+          variant="outline"
+          size="lg"
           onClick={() => setRequestVersion((version) => version + 1)}
-          className="min-h-11 rounded-lg border border-line px-3 font-semibold text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          className="font-semibold"
         >
           {t('common.retry')}
-        </button>
+        </Button>
       </div>
     );
   }
@@ -163,7 +165,7 @@ export default function AdminAiUsage() {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-x-8 gap-y-2 rounded-lg border border-line bg-[var(--bg-elevated)] px-4 py-3">
+      <div className="flex flex-wrap items-center gap-x-8 gap-y-2 rounded-lg border border-line bg-surface-elevated px-4 py-3">
         <Stat label={t('admin.aiUsageTotalCalls')} value={formatInt(totals.calls)} />
         <Stat
           label={t('admin.aiUsageTotalCost')}

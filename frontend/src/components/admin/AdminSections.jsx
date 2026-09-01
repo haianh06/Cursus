@@ -2,8 +2,9 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { AlertCircle, Plus, Trash2, Users, X } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import ConfirmDialog from '../shared/ConfirmDialog';
+import Modal from '../shared/Modal';
+import Button from '../shared/Button';
 import AdminAsyncRegion from './AdminAsyncRegion';
-import { focusFirstInDialog, trapModalFocus } from './modalFocus';
 import {
   addAdminSectionStudent,
   createAdminSection,
@@ -101,13 +102,9 @@ export default function AdminSections() {
       <h2 className="sr-only">{t('admin.sectionsTitle')}</h2>
 
       <div className="flex flex-wrap items-center justify-end gap-3">
-        <button
-          type="button"
-          className="btn btn-accent text-xs px-4 py-2 cursor-pointer"
-          onClick={() => setShowCreateModal(true)}
-        >
+        <Button variant="primary" size="sm" onClick={() => setShowCreateModal(true)}>
           <Plus size={14} /> {t('admin.sectionsCreate')}
-        </button>
+        </Button>
       </div>
 
       <AdminAsyncRegion
@@ -247,14 +244,11 @@ function useModalFocusTrap(onClose) {
 
   useEffect(() => {
     restoreRef.current = document.activeElement;
-    focusFirstInDialog(panelRef.current);
     function onKeyDown(event) {
       if (event.key === 'Escape') {
         event.preventDefault();
         onClose();
-        return;
       }
-      trapModalFocus(event, panelRef.current);
     }
     document.addEventListener('keydown', onKeyDown);
     return () => {
@@ -275,7 +269,6 @@ function CreateSectionModal({ courses, instructors, onClose, onCreated }) {
   const [instructorId, setInstructorId] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  const panelRef = useModalFocusTrap(onClose);
 
   function submit(event) {
     event.preventDefault();
@@ -294,121 +287,95 @@ function CreateSectionModal({ courses, instructors, onClose, onCreated }) {
   }
 
   return (
-    <>
-      <div className="fixed inset-0 z-[90] bg-black/50 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
-      <div
-        ref={panelRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="create-section-modal-title"
-        className="fixed z-[95] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] max-w-md rounded-2xl border shadow-panel animate-scale-in bg-surface-card border-line"
-      >
-        <div className="flex items-center justify-between px-5 py-4 border-b border-line">
-          <h2 id="create-section-modal-title" className="font-display text-sm font-bold text-fg">
-            {t('admin.sectionsModalTitle')}
-          </h2>
-          <button
-            type="button"
-            className="btn-ghost w-10 h-10 inline-flex items-center justify-center rounded-lg cursor-pointer text-fg-muted hover:text-fg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent"
-            onClick={onClose}
-            aria-label={t('admin.cancelBtn')}
+    <Modal open onClose={onClose} title={t('admin.sectionsModalTitle')} lang={lang}>
+      <form onSubmit={submit} className="space-y-4">
+        {error && (
+          <p className="flex items-center gap-2 text-xs text-danger" role="alert">
+            <AlertCircle size={14} className="shrink-0" />
+            {error}
+          </p>
+        )}
+        <div>
+          <label htmlFor="section-course" className="text-[11px] font-bold uppercase tracking-widest block mb-1.5 text-fg-muted">
+            {t('admin.sectionsModalCourseLabel')}
+          </label>
+          <select
+            id="section-course"
+            required
+            className="input text-[13px] w-full"
+            value={courseId}
+            onChange={(event) => setCourseId(event.target.value)}
           >
-            <X size={15} />
-          </button>
+            <option value="">{t('admin.sectionsModalCourseSelect')}</option>
+            {courses.map((course) => (
+              <option key={course.id} value={course.id}>
+                {course.code} — {course.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="section-code" className="text-[11px] font-bold uppercase tracking-widest block mb-1.5 text-fg-muted">
+            {t('admin.sectionsModalSectionCodeLabel')}
+          </label>
+          <input
+            id="section-code"
+            type="text"
+            required
+            maxLength={32}
+            className="input text-[13px] w-full"
+            value={sectionCode}
+            onChange={(event) => setSectionCode(event.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="section-term" className="text-[11px] font-bold uppercase tracking-widest block mb-1.5 text-fg-muted">
+            {t('admin.sectionsModalTermLabel')}
+          </label>
+          <input
+            id="section-term"
+            type="text"
+            required
+            maxLength={32}
+            className="input text-[13px] w-full"
+            value={term}
+            onChange={(event) => setTerm(event.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="section-instructor" className="text-[11px] font-bold uppercase tracking-widest block mb-1.5 text-fg-muted">
+            {t('admin.sectionsModalInstructorLabel')}
+          </label>
+          <select
+            id="section-instructor"
+            className="input text-[13px] w-full"
+            value={instructorId}
+            onChange={(event) => setInstructorId(event.target.value)}
+          >
+            <option value="">{t('admin.sectionsAssignPlaceholder')}</option>
+            {instructors.map((instructor) => (
+              <option key={instructor.id} value={instructor.id}>
+                {instructor.full_name}
+              </option>
+            ))}
+          </select>
         </div>
 
-        <form onSubmit={submit} className="p-5 space-y-4 text-left">
-          {error && (
-            <p className="flex items-center gap-2 text-xs text-danger" role="alert">
-              <AlertCircle size={14} className="shrink-0" />
-              {error}
-            </p>
-          )}
-          <div>
-            <label htmlFor="section-course" className="text-[11px] font-bold uppercase tracking-widest block mb-1.5 text-fg-muted">
-              {t('admin.sectionsModalCourseLabel')}
-            </label>
-            <select
-              id="section-course"
-              required
-              className="input text-[13px] w-full"
-              value={courseId}
-              onChange={(event) => setCourseId(event.target.value)}
-            >
-              <option value="">{t('admin.sectionsModalCourseSelect')}</option>
-              {courses.map((course) => (
-                <option key={course.id} value={course.id}>
-                  {course.code} — {course.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="section-code" className="text-[11px] font-bold uppercase tracking-widest block mb-1.5 text-fg-muted">
-              {t('admin.sectionsModalSectionCodeLabel')}
-            </label>
-            <input
-              id="section-code"
-              type="text"
-              required
-              maxLength={32}
-              className="input text-[13px] w-full"
-              value={sectionCode}
-              onChange={(event) => setSectionCode(event.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="section-term" className="text-[11px] font-bold uppercase tracking-widest block mb-1.5 text-fg-muted">
-              {t('admin.sectionsModalTermLabel')}
-            </label>
-            <input
-              id="section-term"
-              type="text"
-              required
-              maxLength={32}
-              className="input text-[13px] w-full"
-              value={term}
-              onChange={(event) => setTerm(event.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="section-instructor" className="text-[11px] font-bold uppercase tracking-widest block mb-1.5 text-fg-muted">
-              {t('admin.sectionsModalInstructorLabel')}
-            </label>
-            <select
-              id="section-instructor"
-              className="input text-[13px] w-full"
-              value={instructorId}
-              onChange={(event) => setInstructorId(event.target.value)}
-            >
-              <option value="">{t('admin.sectionsAssignPlaceholder')}</option>
-              {instructors.map((instructor) => (
-                <option key={instructor.id} value={instructor.id}>
-                  {instructor.full_name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex justify-end gap-2 pt-2">
-            <button
-              type="button"
-              className="btn btn-outline text-[13px] px-4 min-h-10 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-accent"
-              onClick={onClose}
-            >
-              {t('admin.cancelBtn')}
-            </button>
-            <button
-              type="submit"
-              className="btn btn-accent text-[13px] px-4 min-h-10 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed outline-none focus-visible:ring-2 focus-visible:ring-accent"
-              disabled={busy || !courseId || !sectionCode.trim() || !term.trim()}
-            >
-              {busy ? t('admin.sectionsModalSubmittingBtn') : t('admin.sectionsModalSubmitBtn')}
-            </button>
-          </div>
-        </form>
-      </div>
-    </>
+        <div className="flex justify-end gap-2 pt-2">
+          <Button type="button" variant="outline" size="md" onClick={onClose}>
+            {t('admin.cancelBtn')}
+          </Button>
+          <Button
+            type="submit"
+            variant="primary"
+            size="md"
+            disabled={busy || !courseId || !sectionCode.trim() || !term.trim()}
+          >
+            {busy ? t('admin.sectionsModalSubmittingBtn') : t('admin.sectionsModalSubmitBtn')}
+          </Button>
+        </div>
+      </form>
+    </Modal>
   );
 }
 
@@ -499,7 +466,7 @@ function SectionRosterModal({ section, onClose }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="roster-modal-title"
-        className="fixed z-[95] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl border shadow-panel animate-scale-in bg-surface-card border-line"
+        className="fixed z-[95] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] max-w-2xl max-h-[85vh] overflow-y-auto rounded-[var(--radius-lg)] border shadow-panel animate-scale-in bg-surface-card border-line"
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-line">
           <h2 id="roster-modal-title" className="font-display text-sm font-bold text-fg">
@@ -535,9 +502,9 @@ function SectionRosterModal({ section, onClose }) {
                   }
                 }}
               />
-              <button type="button" className="btn btn-outline text-[13px] px-3" onClick={searchStudents}>
+              <Button type="button" variant="outline" size="md" className="px-3" onClick={searchStudents}>
                 {t('admin.peopleSearchAction')}
-              </button>
+              </Button>
             </div>
             <div className="flex flex-wrap gap-2">
               <select
@@ -553,13 +520,9 @@ function SectionRosterModal({ section, onClose }) {
                   </option>
                 ))}
               </select>
-              <button
-                type="submit"
-                className="btn btn-accent text-[13px] px-4 disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!selectedStudentId || adding}
-              >
+              <Button type="submit" variant="primary" size="md" disabled={!selectedStudentId || adding}>
                 {t('admin.sectionsRosterAddBtn')}
-              </button>
+              </Button>
             </div>
             {addError && (
               <p className="flex items-center gap-2 text-xs text-danger" role="alert">

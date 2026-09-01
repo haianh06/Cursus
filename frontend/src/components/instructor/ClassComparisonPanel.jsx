@@ -40,13 +40,13 @@ export default function ClassComparisonPanel() {
       </div>
       <p className="text-xs text-slate-600 dark:text-slate-400 font-medium -mt-2">{t('instructor.compareHint')}</p>
       {error && (
-        <div className="p-3 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/60 rounded-xl flex items-start gap-2" role="alert">
+        <div className="p-3 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/60 rounded-[var(--radius-md)] flex items-start gap-2" role="alert">
           <span className="text-[11px] font-bold text-red-900 dark:text-red-300">{error}</span>
         </div>
       )}
       {/* Nhieu lop thi cuon doc rieng trong bang, tieu de cot dinh lai (sticky)
           de van biet dang xem cot nao khi da cuon xuong duoi. */}
-      <div className="overflow-x-auto max-h-[24rem] overflow-y-auto rounded-xl border border-line">
+      <div className="overflow-x-auto max-h-[24rem] overflow-y-auto rounded-[var(--radius-md)] border border-line">
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="text-left text-xs font-black text-slate-600 dark:text-slate-400 border-b border-line">
@@ -66,11 +66,11 @@ export default function ClassComparisonPanel() {
                   {row.name && <span className="block text-xs text-slate-500 dark:text-slate-400 truncate max-w-[220px]">{row.name}</span>}
                 </td>
                 <td className="py-2.5 px-3 text-right text-fg font-medium">{row.classSize}</td>
-                <td className={`py-2.5 px-3 text-right font-black ${row.highRiskCount > 0 ? 'text-danger-ink dark:text-red-400' : 'text-slate-500 dark:text-slate-400'}`}>
+                <td className={`py-2.5 px-3 text-right font-black ${row.highRiskCount > 0 ? 'text-danger dark:text-red-400' : 'text-slate-500 dark:text-slate-400'}`}>
                   {row.highRiskCount}
                 </td>
                 <td className="py-2.5 px-3 text-right text-fg font-medium">{row.totalActiveWarnings}</td>
-                <td className={`py-2.5 px-3 text-right font-black ${row.overdueCount > 0 ? 'text-danger-ink dark:text-red-400' : 'text-slate-500 dark:text-slate-400'}`}>
+                <td className={`py-2.5 px-3 text-right font-black ${row.overdueCount > 0 ? 'text-danger dark:text-red-400' : 'text-slate-500 dark:text-slate-400'}`}>
                   {row.overdueCount}
                 </td>
                 <td className="py-2.5 pl-3 pr-3 text-right text-fg font-medium">

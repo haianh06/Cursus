@@ -1,8 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AlertCircle, Clock3, KeyRound, Lock, Mail, ShieldCheck, Unlock, UserPlus, User, X } from 'lucide-react';
+import { AlertCircle, Clock3, KeyRound, Lock, Mail, ShieldCheck, Unlock, UserPlus, User } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import ConfirmDialog from '../shared/ConfirmDialog';
+import Modal from '../shared/Modal';
+import Button from '../shared/Button';
 import { ROLE_LABEL } from '../../constants/roles';
 import {
   createInvite,
@@ -169,13 +171,9 @@ export default function AdminUsers() {
           <h2 id="invites-title" className="text-sm font-bold text-fg flex items-center gap-2">
             <Mail size={16} className="text-accent" /> {t('admin.invitesSectionTitle')}
           </h2>
-          <button
-            type="button"
-            className="btn btn-accent text-xs px-4 py-2 cursor-pointer"
-            onClick={() => setShowInviteModal(true)}
-          >
+          <Button variant="primary" size="sm" onClick={() => setShowInviteModal(true)}>
             <UserPlus size={14} /> {t('admin.inviteBtn')}
-          </button>
+          </Button>
         </div>
 
         {invites === null ? (
@@ -284,8 +282,7 @@ export default function AdminUsers() {
                       <div className="flex items-center gap-3 flex-wrap">
                         <button
                           type="button"
-                          className="inline-flex items-center gap-1.5 min-h-[28px] font-bold cursor-pointer hover:underline disabled:opacity-50 disabled:cursor-not-allowed outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
-                          style={{ color: user.is_active ? 'var(--danger)' : 'var(--success)' }}
+                          className={`inline-flex items-center gap-1.5 min-h-[28px] font-bold cursor-pointer hover:underline disabled:opacity-50 disabled:cursor-not-allowed outline-none focus-visible:ring-2 focus-visible:ring-accent rounded ${user.is_active ? 'text-danger' : 'text-success'}`}
                           disabled={busyId === user.id}
                           onClick={() => toggleUserStatus(user)}
                         >
@@ -385,40 +382,6 @@ function InviteModal({ onClose, onSent }) {
   const [sectionId, setSectionId] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  const panelRef = useRef(null);
-  const firstRef = useRef(null);
-  const restoreRef = useRef(null);
-
-  useEffect(() => {
-    restoreRef.current = document.activeElement;
-    firstRef.current?.focus();
-    const selector =
-      'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
-    const onKeyDown = (event) => {
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        onClose();
-        return;
-      }
-      if (event.key !== 'Tab' || !panelRef.current) return;
-      const items = Array.from(panelRef.current.querySelectorAll(selector));
-      if (items.length === 0) return;
-      const first = items[0];
-      const last = items[items.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    };
-    document.addEventListener('keydown', onKeyDown);
-    return () => {
-      document.removeEventListener('keydown', onKeyDown);
-      if (restoreRef.current instanceof HTMLElement) restoreRef.current.focus();
-    };
-  }, [onClose]);
 
   useEffect(() => {
     if (role !== 'INSTRUCTOR' || sections !== null) return;
@@ -456,121 +419,106 @@ function InviteModal({ onClose, onSent }) {
   }
 
   return (
-    <>
-      <div className="fixed inset-0 z-[90] bg-black/50 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
-      <div
-        ref={panelRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="invite-modal-title"
-        className="fixed z-[95] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] max-w-md rounded-2xl border shadow-panel animate-scale-in bg-surface-card border-line"
-      >
-        <div className="flex items-center justify-between px-5 py-4 border-b border-line">
-          <h2 id="invite-modal-title" className="font-display text-sm font-bold text-fg">
-            {t('admin.inviteModalTitle')}
-          </h2>
-          <button
-            type="button"
-            className="btn-ghost w-10 h-10 inline-flex items-center justify-center rounded-lg cursor-pointer text-fg-muted hover:text-fg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent"
-            onClick={onClose}
-            aria-label={t('admin.cancelBtn')}
+    <Modal
+      open
+      onClose={onClose}
+      title={t('admin.inviteModalTitle')}
+      lang={lang}
+      footer={
+        <>
+          <Button variant="outline" size="md" onClick={onClose}>
+            {t('admin.cancelBtn')}
+          </Button>
+          <Button
+            variant="primary"
+            size="md"
+            type="submit"
+            form="invite-form"
+            busy={busy}
+            disabled={busy || !email.trim() || !fullName.trim()}
           >
-            <X size={15} />
-          </button>
+            {busy ? t('admin.inviteSendingBtn') : t('admin.inviteSendBtn')}
+          </Button>
+        </>
+      }
+    >
+      <form id="invite-form" onSubmit={submit} className="space-y-4 text-left">
+        {error && (
+          <p className="flex items-center gap-2 text-xs text-danger" role="alert">
+            <AlertCircle size={14} className="shrink-0" />{error}
+          </p>
+        )}
+        <div>
+          <label htmlFor="invite-email" className="text-[11px] font-bold uppercase tracking-widest block mb-1.5 text-fg-muted">
+            {t('admin.inviteEmailLabel')}
+          </label>
+          <input
+            id="invite-email"
+            type="email"
+            required
+            className="input text-[13px] w-full"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+          />
         </div>
-
-        <form onSubmit={submit} className="p-5 space-y-4 text-left">
-          {error && (
-            <p className="flex items-center gap-2 text-xs text-danger" role="alert">
-              <AlertCircle size={14} className="shrink-0" />{error}
-            </p>
-          )}
+        <div>
+          <label htmlFor="invite-fullname" className="text-[11px] font-bold uppercase tracking-widest block mb-1.5 text-fg-muted">
+            {t('admin.inviteFullNameLabel')}
+          </label>
+          <input
+            id="invite-fullname"
+            type="text"
+            required
+            className="input text-[13px] w-full"
+            value={fullName}
+            onChange={(event) => setFullName(event.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="invite-role" className="text-[11px] font-bold uppercase tracking-widest block mb-1.5 text-fg-muted">
+            {t('admin.inviteRoleLabel')}
+          </label>
+          <select
+            id="invite-role"
+            className="input text-[13px] w-full"
+            value={role}
+            onChange={(event) => {
+              setRole(event.target.value);
+              if (event.target.value !== 'INSTRUCTOR') setSectionId('');
+            }}
+          >
+            {INVITABLE_ROLES.map((value) => (
+              <option key={value} value={value}>{roleLabel(value, lang)}</option>
+            ))}
+          </select>
+        </div>
+        {role === 'INSTRUCTOR' && (
           <div>
-            <label htmlFor="invite-email" className="text-[11px] font-bold uppercase tracking-widest block mb-1.5 text-fg-muted">
-              {t('admin.inviteEmailLabel')}
-            </label>
-            <input
-              ref={firstRef}
-              id="invite-email"
-              type="email"
-              required
-              className="input text-[13px] w-full"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="invite-fullname" className="text-[11px] font-bold uppercase tracking-widest block mb-1.5 text-fg-muted">
-              {t('admin.inviteFullNameLabel')}
-            </label>
-            <input
-              id="invite-fullname"
-              type="text"
-              required
-              className="input text-[13px] w-full"
-              value={fullName}
-              onChange={(event) => setFullName(event.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="invite-role" className="text-[11px] font-bold uppercase tracking-widest block mb-1.5 text-fg-muted">
-              {t('admin.inviteRoleLabel')}
+            <label htmlFor="invite-section" className="text-[11px] font-bold uppercase tracking-widest block mb-1.5 text-fg-muted">
+              {t('admin.inviteSectionLabel')}
             </label>
             <select
-              id="invite-role"
+              id="invite-section"
               className="input text-[13px] w-full"
-              value={role}
-              onChange={(event) => {
-                setRole(event.target.value);
-                if (event.target.value !== 'INSTRUCTOR') setSectionId('');
-              }}
+              value={sectionId}
+              onChange={(event) => setSectionId(event.target.value)}
+              disabled={sections === null}
             >
-              {INVITABLE_ROLES.map((value) => (
-                <option key={value} value={value}>{roleLabel(value, lang)}</option>
+              <option value="">{t('admin.inviteSectionNone')}</option>
+              {unassignedSections.map((row) => (
+                <option key={row.id} value={row.id}>
+                  {row.courseCode} · {row.sectionCode} · {row.term}
+                </option>
               ))}
             </select>
+            <p className="mt-1.5 text-[11px] text-fg-muted">
+              {sections !== null && unassignedSections.length === 0
+                ? t('admin.inviteSectionEmpty')
+                : t('admin.inviteSectionHint')}
+            </p>
           </div>
-          {role === 'INSTRUCTOR' && (
-            <div>
-              <label htmlFor="invite-section" className="text-[11px] font-bold uppercase tracking-widest block mb-1.5 text-fg-muted">
-                {t('admin.inviteSectionLabel')}
-              </label>
-              <select
-                id="invite-section"
-                className="input text-[13px] w-full"
-                value={sectionId}
-                onChange={(event) => setSectionId(event.target.value)}
-                disabled={sections === null}
-              >
-                <option value="">{t('admin.inviteSectionNone')}</option>
-                {unassignedSections.map((row) => (
-                  <option key={row.id} value={row.id}>
-                    {row.courseCode} · {row.sectionCode} · {row.term}
-                  </option>
-                ))}
-              </select>
-              <p className="mt-1.5 text-[11px] text-fg-muted">
-                {sections !== null && unassignedSections.length === 0
-                  ? t('admin.inviteSectionEmpty')
-                  : t('admin.inviteSectionHint')}
-              </p>
-            </div>
-          )}
-
-          <div className="flex justify-end gap-2 pt-2">
-            <button type="button" className="btn btn-outline text-[13px] px-4 min-h-10 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-accent" onClick={onClose}>
-              {t('admin.cancelBtn')}
-            </button>
-            <button
-              type="submit"
-              className="btn btn-accent text-[13px] px-4 min-h-10 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed outline-none focus-visible:ring-2 focus-visible:ring-accent"
-              disabled={busy || !email.trim() || !fullName.trim()}
-            >
-              {busy ? t('admin.inviteSendingBtn') : t('admin.inviteSendBtn')}
-            </button>
-          </div>
-        </form>
-      </div>
-    </>
+        )}
+      </form>
+    </Modal>
   );
 }

@@ -64,7 +64,7 @@ export default function AdminSettingsPanel() {
   }
 
   return (
-    <section className="card p-5 sm:p-6 space-y-5 text-left border-t-2 sm:border-t-[3px]" style={{ borderTopColor: 'var(--accent)' }} aria-labelledby="admin-settings-title">
+    <section className="card p-5 sm:p-6 space-y-5 text-left border-t-2 sm:border-t-[3px] border-t-accent" aria-labelledby="admin-settings-title">
       <div className="flex items-center gap-2 mb-1.5">
         <Settings size={18} className="text-accent" />
         <h2 id="admin-settings-title" className="text-sm font-bold text-fg">{t('admin.settingsTitle')}</h2>
@@ -82,7 +82,7 @@ export default function AdminSettingsPanel() {
       )}
 
       <div className="space-y-3">
-        <label className="admin-settings-row rounded-xl border border-line bg-surface-card p-4">
+        <label className="admin-settings-row rounded-[var(--radius-md)] border border-line bg-surface-card p-4">
           <div className="min-w-0">
             <p className="text-xs font-bold text-fg">{t('admin.demoModeLabel')}</p>
             <p className="mt-1 text-[11px] text-fg-secondary leading-relaxed">{t('admin.demoModeDesc')}</p>
@@ -99,7 +99,7 @@ export default function AdminSettingsPanel() {
           </button>
         </label>
 
-        <label className="admin-settings-row rounded-xl border border-line bg-surface-card p-4">
+        <label className="admin-settings-row rounded-[var(--radius-md)] border border-line bg-surface-card p-4">
           <div className="min-w-0">
             <p className="text-xs font-bold text-fg">{t('admin.autoRiskAlertsLabel')}</p>
             <p className="mt-1 text-[11px] text-fg-secondary leading-relaxed">{t('admin.autoRiskAlertsDesc')}</p>
@@ -116,7 +116,7 @@ export default function AdminSettingsPanel() {
           </button>
         </label>
 
-        <form onSubmit={saveSemester} className="rounded-xl border border-line bg-surface-card p-4 space-y-2.5">
+        <form onSubmit={saveSemester} className="rounded-[var(--radius-md)] border border-line bg-surface-card p-4 space-y-2.5">
           <label htmlFor="default-semester" className="text-xs font-bold text-fg block">{t('admin.defaultSemesterLabel')}</label>
           <p className="text-[11px] text-fg-secondary leading-relaxed">{t('admin.defaultSemesterDesc')}</p>
           <div className="admin-settings-semester-form pt-1">

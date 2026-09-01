@@ -4,6 +4,7 @@ import { useCursus } from '../../context/CursusContext';
 import { useLanguage } from '../../context/LanguageContext';
 import AdminCourseCurriculumModal from './AdminCourseCurriculumModal';
 import AdminCourseDocuments from './AdminCourseDocuments';
+import Button from '../shared/Button';
 
 const STATUS_CFG = {
   ingested:     { labelKey: 'admin.statusIngested',    cls: 'badge-gold',    spin: false },
@@ -142,20 +143,22 @@ export default function AdminCurriculum() {
     if (deleteTarget === course.subject_code) {
       return (
         <div className="flex flex-wrap justify-end gap-1.5">
-          <button
-            type="button"
-            className="btn-danger-outline min-h-10 rounded-lg px-3 text-[10px] font-bold cursor-pointer"
+          <Button
+            variant="danger"
+            size="sm"
+            className="text-[10px] font-bold"
             onClick={() => handleDelete(course.subject_code)}
           >
             {t('admin.deleteBtn')}
-          </button>
-          <button
-            type="button"
-            className="btn-ghost min-h-10 rounded-lg px-3 text-[10px] font-bold cursor-pointer"
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-[10px] font-bold"
             onClick={() => setDel(null)}
           >
             {t('admin.cancelBtn')}
-          </button>
+          </Button>
         </div>
       );
     }
@@ -196,14 +199,9 @@ export default function AdminCurriculum() {
   return (
     <div className="flex flex-col gap-5">
       <div className="flex justify-end">
-        <button
-          id="add-course-btn"
-          type="button"
-          className="btn btn-accent min-h-10 cursor-pointer px-4 py-2 text-xs"
-          onClick={() => setShowAdd((visible) => !visible)}
-        >
+        <Button id="add-course-btn" onClick={() => setShowAdd((visible) => !visible)}>
           <Plus size={14} aria-hidden="true" /> {t('admin.addCourseBtn')}
-        </button>
+        </Button>
       </div>
       <section className="mb-5 grid grid-cols-2 gap-3 text-left lg:grid-cols-4" aria-label={t('admin.curriculumStatsLabel')}>
         <CourseMetric
@@ -237,7 +235,7 @@ export default function AdminCurriculum() {
       </section>
 
       {formError && (
-        <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-danger-soft border border-danger/20 text-left">
+        <div className="flex items-start gap-2.5 p-3.5 rounded-[var(--radius-md)] bg-danger-soft border border-danger/20 text-left">
           <AlertCircle size={14} className="shrink-0 mt-0.5 text-danger" />
           <p className="text-xs text-danger leading-relaxed">{formError}</p>
         </div>
@@ -280,10 +278,10 @@ export default function AdminCurriculum() {
           <div className="flex gap-2 justify-end">
             {/* bg-white dark:bg-transparent dropped — .btn-outline already sets
                 bg-card / hover:bg-elevated via tokens. */}
-            <button className="btn btn-outline min-h-10 text-xs px-3.5 py-1.5 rounded-lg cursor-pointer" onClick={() => setShowAdd(false)}>{t('admin.cancelBtn')}</button>
-            <button className="btn btn-accent min-h-10 text-xs px-4 py-2 rounded-lg cursor-pointer" disabled={!form.subject_code.trim() || !form.subject_name.trim()} onClick={handleAdd}>
+            <Button variant="outline" onClick={() => setShowAdd(false)}>{t('admin.cancelBtn')}</Button>
+            <Button disabled={!form.subject_code.trim() || !form.subject_name.trim()} onClick={handleAdd}>
               <CheckCircle2 size={13}/> {t('admin.saveCourseBtn')}
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -459,25 +457,25 @@ export default function AdminCurriculum() {
 
         {filteredCourses.length > 0 && (
           <div className="mt-3 flex items-center justify-between gap-3 text-xs">
-            <button
-              type="button"
-              className="btn btn-outline min-h-10 px-3 text-xs"
+            <Button
+              variant="outline"
+              size="sm"
               disabled={currentCoursePage <= 1}
               onClick={() => setCoursePage((page) => Math.max(1, page - 1))}
             >
               {t('admin.prevPage')}
-            </button>
+            </Button>
             <span className="mono text-fg-muted">
               {t('admin.curriculumPageSummary', { page: currentCoursePage, pages: coursePageCount })}
             </span>
-            <button
-              type="button"
-              className="btn btn-outline min-h-10 px-3 text-xs"
+            <Button
+              variant="outline"
+              size="sm"
               disabled={currentCoursePage >= coursePageCount}
               onClick={() => setCoursePage((page) => Math.min(coursePageCount, page + 1))}
             >
               {t('admin.nextPage')}
-            </button>
+            </Button>
           </div>
         )}
         </div>
@@ -519,20 +517,19 @@ export default function AdminCurriculum() {
               </div>
 
               <div className="mt-4 space-y-2 border-t border-line pt-4">
-                <button
-                  type="button"
-                  className="btn btn-outline flex min-h-10 w-full items-center justify-center gap-2 text-xs"
+                <Button
+                  variant="outline"
+                  className="w-full"
                   onClick={() => setExpandedCourse(expandedCourse === selectedCourse.subject_code ? null : selectedCourse.subject_code)}
                 >
                   <FileText size={14} /> {t('admin.viewDocuments')}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-accent flex min-h-10 w-full items-center justify-center gap-2 text-xs"
+                </Button>
+                <Button
+                  className="w-full"
                   onClick={() => setCurriculumTarget({ code: selectedCourse.subject_code, name: selectedCourse.subject_name })}
                 >
                   <BookOpen size={14} /> {t('admin.viewCurriculumDetail')}
-                </button>
+                </Button>
               </div>
 
               {expandedCourse === selectedCourse.subject_code && (

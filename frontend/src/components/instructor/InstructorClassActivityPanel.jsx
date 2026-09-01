@@ -31,7 +31,7 @@ const DAY_END = 17;
 const HOUR_PX = 56;
 
 const KINDS = [
-  { value: 'ASSIGNMENT', labelKey: 'actKindAssignment', color: '#D97706', soft: '#FEF3C7' },
+  { value: 'ASSIGNMENT', labelKey: 'actKindAssignment', color: 'var(--gv-amber)', soft: 'var(--gv-amber-soft)' },
   { value: 'PROGRESS_TEST', labelKey: 'actKindProgressTest', color: '#7C3AED', soft: '#EDE9FE' },
   { value: 'LAB', labelKey: 'actKindLab', color: '#2563EB', soft: '#DBEAFE' },
   { value: 'OTHER', labelKey: 'actKindOther', color: '#EA580C', soft: '#FFEDD5' },

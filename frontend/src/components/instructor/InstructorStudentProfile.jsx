@@ -107,21 +107,21 @@ export default function InstructorStudentProfile() {
   if (isLoading) {
     return (
       <div className="space-y-6 animate-pulse p-6">
-        <div className="h-20 bg-[#15181C] dark:bg-[#1C1A16] rounded-2xl border border-slate-700 dark:border-[#3A352C]" />
-        <div className="h-40 bg-white dark:bg-[#1C1A16] rounded-2xl border border-slate-200 dark:border-[#3A352C]" />
+        <div className="h-20 bg-surface-elevated rounded-[var(--radius-md)] border border-slate-700 dark:border-line" />
+        <div className="h-40 bg-white dark:bg-surface-elevated rounded-[var(--radius-md)] border border-slate-200 dark:border-line" />
       </div>
     );
   }
 
   if (loadError || !profile) {
     return (
-      <div className="p-12 text-center space-y-4 max-w-lg mx-auto bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/60 rounded-2xl my-8 shadow-xl">
+      <div className="p-12 text-center space-y-4 max-w-lg mx-auto bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/60 rounded-[var(--radius-md)] my-8 shadow-xl">
         <AlertTriangle className="w-12 h-12 text-red-600 dark:text-red-400 mx-auto" />
         <h3 className="text-lg font-black text-red-900 dark:text-red-200 font-serif-heading">{t('states.errorTitle')}</h3>
         <p className="text-xs text-red-800 dark:text-red-300/90 font-medium">{loadError || t('states.errorDesc')}</p>
         <button
           onClick={load}
-          className="px-4 py-2 bg-danger-ink hover:bg-[#7F2F2A] text-white text-xs font-bold rounded-xl inline-flex items-center gap-2 cursor-pointer shadow-md"
+          className="px-4 py-2 bg-danger hover:opacity-90 text-white text-xs font-bold rounded-[var(--radius-sm)] inline-flex items-center gap-2 cursor-pointer shadow-md"
         >
           <RefreshCw className="w-4 h-4" /> {t('states.retryBtn')}
         </button>
@@ -140,7 +140,7 @@ export default function InstructorStudentProfile() {
       </button>
 
       {/* HEADER */}
-      <div className="bg-surface-elevated border border-line rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="bg-surface-elevated border border-line rounded-[var(--radius-md)] p-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="space-y-1 min-w-0">
           <h1 className="text-2xl font-black text-fg font-serif-heading truncate">{profile.displayName}</h1>
           <p className="text-xs text-fg-muted font-medium flex items-center gap-1.5">
@@ -175,7 +175,7 @@ export default function InstructorStudentProfile() {
               <div className="space-y-3">
                 {profile.weeklyCompletionHistory.map((item) => (
                   <div key={item.week} className="space-y-1">
-                    <div className="flex justify-between text-xs text-[#15181C] dark:text-slate-200 font-bold">
+                    <div className="flex justify-between text-xs text-fg dark:text-slate-200 font-bold">
                       <span>W{item.week}</span>
                       <span className="font-mono-code">{item.rate}%</span>
                     </div>
@@ -206,7 +206,7 @@ export default function InstructorStudentProfile() {
                 {profile.reflectionSummary.map((entry) => (
                   <div
                     key={entry.weekNumber}
-                    className="p-3 rounded-xl border border-line flex items-center justify-between gap-3 text-xs"
+                    className="p-3 rounded-[var(--radius-md)] border border-line flex items-center justify-between gap-3 text-xs"
                   >
                     <span className="font-black text-fg shrink-0">W{entry.weekNumber}</span>
                     <span className="text-slate-600 dark:text-slate-400 font-mono-code">
@@ -216,7 +216,7 @@ export default function InstructorStudentProfile() {
                       {entry.hoursActual ?? '—'}/{entry.hoursPlanned ?? '—'}h
                     </span>
                     {entry.requestedHelp && (
-                      <span className="px-2 py-0.5 rounded-md text-[10px] font-black uppercase bg-danger-soft dark:bg-red-950/60 text-danger-ink dark:text-red-300 shrink-0">
+                      <span className="px-2 py-0.5 rounded-md text-[10px] font-black uppercase bg-danger-soft text-danger shrink-0">
                         {t('instructor.reflectionRequestedHelp')}
                       </span>
                     )}
@@ -260,10 +260,10 @@ export default function InstructorStudentProfile() {
                 {profile.notes.map((note) => (
                   <div
                     key={note.id}
-                    className="p-3 rounded-xl bg-surface-elevated border border-line flex items-start justify-between gap-2"
+                    className="p-3 rounded-[var(--radius-md)] bg-surface-elevated border border-line flex items-start justify-between gap-2"
                   >
                     <div className="min-w-0">
-                      <p className="text-xs text-[#15181C] dark:text-slate-100 font-medium whitespace-pre-wrap break-words">
+                      <p className="text-xs text-fg dark:text-slate-100 font-medium whitespace-pre-wrap break-words">
                         {note.content}
                       </p>
                       <p className="text-[10px] text-slate-500 dark:text-slate-400 font-mono-code mt-1">
@@ -306,13 +306,13 @@ export default function InstructorStudentProfile() {
                       key={risk.id}
                       type="button"
                       onClick={() => setOpenRiskId(risk.id)}
-                      className="w-full text-left p-3 rounded-xl border border-line hover:border-accent/50 transition-colors cursor-pointer space-y-1"
+                      className="w-full text-left p-3 rounded-[var(--radius-md)] border border-line hover:border-accent/50 transition-colors cursor-pointer space-y-1"
                     >
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
                           {levelLabel && (
                             <span className={`px-2 py-0.5 rounded-md text-[10px] font-black font-mono-code uppercase ${
-                              high ? 'bg-danger-soft text-danger-ink' : 'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300'
+                              high ? 'bg-danger-soft text-danger' : 'bg-warning-soft text-warning'
                             }`}>
                               {levelLabel}
                             </span>
@@ -335,7 +335,7 @@ export default function InstructorStudentProfile() {
 
           <div className="card p-6 space-y-4">
             <h2 className="text-base font-black text-fg font-serif-heading flex items-center gap-2">
-              <ShieldAlert className="w-4 h-4 text-danger-ink" /> {t('instructor.profileGuardrailHistoryTitle')}
+              <ShieldAlert className="w-4 h-4 text-danger" /> {t('instructor.profileGuardrailHistoryTitle')}
             </h2>
             {profile.guardrailHistory.length === 0 ? (
               <p className="text-xs text-slate-500 dark:text-slate-400">{t('instructor.profileGuardrailHistoryEmpty')}</p>
@@ -346,10 +346,10 @@ export default function InstructorStudentProfile() {
                   return (
                     <div
                       key={item.id}
-                      className="p-3 bg-surface-elevated border border-line rounded-xl space-y-2"
+                      className="p-3 bg-surface-elevated border border-line rounded-[var(--radius-md)] space-y-2"
                     >
                       <div className="flex items-center justify-between gap-2 text-xs">
-                        <span className="inline-block px-2 py-0.5 rounded-md bg-danger-soft dark:bg-red-950/60 text-danger-ink dark:text-red-300 text-[10px] font-black font-mono-code uppercase">
+                        <span className="inline-block px-2 py-0.5 rounded-md bg-danger-soft text-danger text-[10px] font-black font-mono-code uppercase">
                           {blockReasonLabel(t, item.blockReason)}
                         </span>
                         <span className="text-slate-500 dark:text-slate-400 font-mono-code text-[10px]">
@@ -366,7 +366,7 @@ export default function InstructorStudentProfile() {
                         {isExpanded ? t('guardrail.hideContent') : t('guardrail.showContent')}
                       </button>
                       {isExpanded && (
-                        <div className="p-2.5 bg-white dark:bg-[#1C1A16] border border-line rounded-lg text-xs text-slate-800 dark:text-slate-200 italic">
+                        <div className="p-2.5 bg-white dark:bg-surface-elevated border border-line rounded-lg text-xs text-slate-800 dark:text-slate-200 italic">
                           "{item.question}"
                         </div>
                       )}

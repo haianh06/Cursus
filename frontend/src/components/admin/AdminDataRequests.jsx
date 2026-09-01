@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { AlertCircle, AlertTriangle, Check, CheckCircle2, ChevronRight, Clock3, FileText, FileX, Loader2, Play, Search, Trash2, X } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import Modal from '../shared/Modal';
+import Button from '../shared/Button';
 import {
   completeDataRequest,
   confirmDeleteDataRequest,
@@ -16,57 +18,47 @@ import {
  */
 function ActionWithReasonModal({ open, title, message, confirmLabel, busy, onConfirm, onCancel, requireReason = true, minLength = 10, lang = 'vi' }) {
   const [reason, setReason] = useState('');
-  
+
   useEffect(() => {
     if (open) setReason('');
   }, [open]);
 
-  if (!open) return null;
   const isValid = !requireReason || reason.trim().length >= minLength;
 
   return (
-    <>
-      <div className="fixed inset-0 z-[90] bg-black/50 backdrop-blur-sm" onClick={onCancel} />
-      <div className="fixed z-[95] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] max-w-md rounded-2xl border shadow-panel animate-scale-in bg-surface-card border-line">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-line">
-          <h2 className="font-display text-sm font-bold text-fg">{title}</h2>
-          <button type="button" className="btn-ghost w-8 h-8 inline-flex items-center justify-center rounded-lg cursor-pointer" onClick={onCancel}>
-            <X size={15} />
-          </button>
-        </div>
-        <div className="p-5 text-left">
-          <p className="text-[13px] text-fg-secondary mb-4">{message}</p>
-          {requireReason && (
-            <div className="space-y-1.5">
-              <label className="text-[11px] font-semibold uppercase tracking-wider text-fg-muted">
-                {lang === 'vi' ? `Ghi chú (bắt buộc, ≥${minLength} ký tự)` : `Reason (required, ≥${minLength} chars)`}
-              </label>
-              <textarea
-                autoFocus
-                className="input min-h-[80px] py-2 text-[13px]"
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                placeholder={lang === 'vi' ? 'Nhập lý do xử lý...' : 'Enter reasoning...'}
-                disabled={busy}
-              />
-            </div>
-          )}
-        </div>
-        <div className="flex justify-end gap-2 px-5 py-4 border-t border-line">
-          <button type="button" className="btn btn-outline text-[13px] px-4 cursor-pointer" onClick={onCancel}>
+    <Modal
+      open={open}
+      onClose={onCancel}
+      title={title}
+      lang={lang}
+      footer={
+        <>
+          <Button variant="outline" size="md" onClick={onCancel}>
             {lang === 'vi' ? 'Huỷ' : 'Cancel'}
-          </button>
-          <button
-            type="button"
-            className="btn btn-accent text-[13px] px-4 cursor-pointer disabled:opacity-50"
-            disabled={busy || !isValid}
-            onClick={() => onConfirm(reason.trim())}
-          >
+          </Button>
+          <Button variant="primary" size="md" busy={busy} disabled={!isValid} onClick={() => onConfirm(reason.trim())}>
             {busy ? <Loader2 size={14} className="animate-spin" /> : confirmLabel}
-          </button>
+          </Button>
+        </>
+      }
+    >
+      <p className="text-[13px] text-fg-secondary mb-4">{message}</p>
+      {requireReason && (
+        <div className="space-y-1.5">
+          <label className="text-[11px] font-semibold uppercase tracking-wider text-fg-muted">
+            {lang === 'vi' ? `Ghi chú (bắt buộc, ≥${minLength} ký tự)` : `Reason (required, ≥${minLength} chars)`}
+          </label>
+          <textarea
+            autoFocus
+            className="input min-h-[80px] py-2 text-[13px]"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder={lang === 'vi' ? 'Nhập lý do xử lý...' : 'Enter reasoning...'}
+            disabled={busy}
+          />
         </div>
-      </div>
-    </>
+      )}
+    </Modal>
   );
 }
 

@@ -1,6 +1,8 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { Upload, FileText, CheckCircle2, Archive, XCircle, AlertCircle, Eye, History, Loader2, RefreshCw, RotateCcw } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import Modal from '../shared/Modal';
+import Button from '../shared/Button';
 import {
   getAdminCourseDocuments,
   getAdminCourseDocumentContent,
@@ -194,12 +196,13 @@ export default function AdminCourseDocuments({ courseCode }) {
           <FileText size={14} className="text-accent" />
           {lang === 'vi' ? 'Tài liệu giáo trình (Syllabus)' : 'Curriculum Documents'}
         </h4>
-        <button
-          className="btn btn-accent text-[10px] px-2.5 py-1.5 rounded-md flex items-center gap-1 cursor-pointer"
+        <Button
+          size="sm"
+          className="text-[10px]"
           onClick={() => setUploadModal({ mode: 'upload', file: null, docType: 'SYLLABUS', submitting: false, error: null })}
         >
           <Upload size={12} /> {lang === 'vi' ? 'Tải lên tài liệu' : 'Upload document'}
-        </button>
+        </Button>
       </div>
 
       {actionError && (
@@ -315,8 +318,10 @@ export default function AdminCourseDocuments({ courseCode }) {
 
                       {deleteTarget === doc.id ? (
                         <>
-                          <button
-                            className="btn-danger-outline min-h-10 rounded-md px-2 text-[10px] font-semibold"
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            className="text-[10px] font-semibold"
                             onClick={() => {
                               setDeleteTarget(null);
                               handleAction(doc.id, 'delete', () => deleteAdminCourseDocument(courseCode, doc.id));
@@ -324,10 +329,10 @@ export default function AdminCourseDocuments({ courseCode }) {
                             disabled={actionLoading[doc.id]}
                           >
                             {lang === 'vi' ? 'Xác nhận xoá' : 'Confirm delete'}
-                          </button>
-                          <button className="btn-ghost min-h-10 rounded-md px-2 text-[10px]" onClick={() => setDeleteTarget(null)}>
+                          </Button>
+                          <Button variant="ghost" size="sm" className="text-[10px]" onClick={() => setDeleteTarget(null)}>
                             {lang === 'vi' ? 'Huỷ' : 'Cancel'}
-                          </button>
+                          </Button>
                         </>
                       ) : (
                         <button
@@ -355,9 +360,9 @@ export default function AdminCourseDocuments({ courseCode }) {
               <History size={14} className="text-accent" aria-hidden="true" />
               {lang === 'vi' ? 'Lịch sử phiên bản' : 'Version history'}
             </h5>
-            <button type="button" className="btn-ghost min-h-10 px-2 text-[10px]" onClick={() => setOpenHistoryId(null)}>
+            <Button variant="ghost" size="sm" className="text-[10px]" onClick={() => setOpenHistoryId(null)}>
               {lang === 'vi' ? 'Đóng' : 'Close'}
-            </button>
+            </Button>
           </div>
           {historyLoadingId === openHistoryId ? (
             <p role="status" className="flex items-center gap-2 text-xs text-fg-muted">
@@ -375,9 +380,11 @@ export default function AdminCourseDocuments({ courseCode }) {
                     </p>
                   </div>
                   {version.publication_status === 'ARCHIVED' && (
-                    <button
-                      type="button"
-                      className="btn btn-outline flex min-h-10 items-center gap-1.5 px-3 text-[10px]"
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="gap-1.5 text-[10px]"
+                      busy={actionLoading[version.id] === 'rollback'}
                       onClick={() => setReasonModal({ type: 'rollback', docId: version.id, reason: '' })}
                       disabled={actionLoading[version.id]}
                     >
@@ -385,7 +392,7 @@ export default function AdminCourseDocuments({ courseCode }) {
                         ? <Loader2 size={13} className="animate-spin" aria-hidden="true" />
                         : <RotateCcw size={13} aria-hidden="true" />}
                       {lang === 'vi' ? 'Khôi phục' : 'Rollback'}
-                    </button>
+                    </Button>
                   )}
                 </li>
               ))}
@@ -401,9 +408,9 @@ export default function AdminCourseDocuments({ courseCode }) {
               <Eye size={14} className="text-accent" aria-hidden="true" />
               {lang === 'vi' ? 'Xem trước nội dung' : 'Content preview'}
             </h5>
-            <button type="button" className="btn-ghost min-h-10 px-2 text-[10px]" onClick={() => setOpenPreviewId(null)}>
+            <Button variant="ghost" size="sm" className="text-[10px]" onClick={() => setOpenPreviewId(null)}>
               {lang === 'vi' ? 'Đóng' : 'Close'}
-            </button>
+            </Button>
           </div>
           <p className="mb-2 text-[10px] text-fg-muted">
             {previewByDocument[openPreviewId].filename || previewByDocument[openPreviewId].title} · v{previewByDocument[openPreviewId].version}
@@ -419,106 +426,104 @@ export default function AdminCourseDocuments({ courseCode }) {
         </section>
       )}
 
-      {uploadModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-surface-card w-full max-w-sm rounded-lg shadow-panel border border-line p-5">
-            <h3 className="text-sm font-bold text-fg mb-3">
-              {uploadModal.mode === 'replace'
-                ? (lang === 'vi' ? 'Thay thế tài liệu' : 'Replace document')
-                : (lang === 'vi' ? 'Tải lên tài liệu mới' : 'Upload new document')}
-            </h3>
-
-            {uploadModal.mode === 'upload' && (
-              <div className="mb-3">
-                <label className="block text-[11px] font-semibold text-fg-secondary mb-1">
-                  {lang === 'vi' ? 'Loại tài liệu' : 'Document type'}
-                </label>
-                <select
-                  className="input text-xs w-full"
-                  value={uploadModal.docType}
-                  onChange={(e) => setUploadModal((prev) => ({ ...prev, docType: e.target.value }))}
-                >
-                  {DOC_TYPES.map((value) => (
-                    <option key={value} value={value}>{docTypeLabel(lang, value)}</option>
-                  ))}
-                </select>
-              </div>
-            )}
-
-            <div className="mb-4">
-              <label className="block text-[11px] font-semibold text-fg-secondary mb-1">
-                {lang === 'vi' ? 'File (.md hoặc .txt, tối đa 2MB)' : 'File (.md or .txt, max 2MB)'}
-              </label>
-              <input
-                type="file"
-                accept=".md,.txt"
-                className="input text-xs w-full"
-                onChange={(e) => setUploadModal((prev) => ({ ...prev, file: e.target.files?.[0] || null }))}
-              />
-            </div>
-
-            {uploadModal.error && (
-              <p className="text-[11px] text-danger mb-3 flex items-start gap-1.5">
-                <AlertCircle size={12} className="mt-0.5 shrink-0" />
-                <span>{uploadModal.error}</span>
-              </p>
-            )}
-
-            <div className="flex justify-end gap-2">
-              <button
-                className="btn btn-ghost text-xs px-3 py-1.5 rounded-lg cursor-pointer"
-                onClick={() => setUploadModal(null)}
-                disabled={uploadModal.submitting}
-              >
-                {lang === 'vi' ? 'Hủy' : 'Cancel'}
-              </button>
-              <button
-                className="btn btn-accent text-xs px-3 py-1.5 rounded-lg cursor-pointer disabled:opacity-60 disabled:cursor-wait"
-                onClick={submitUpload}
-                disabled={!uploadModal.file || uploadModal.submitting}
-              >
-                {uploadModal.submitting
-                  ? (lang === 'vi' ? 'Đang tải lên...' : 'Uploading...')
-                  : (lang === 'vi' ? 'Tải lên' : 'Upload')}
-              </button>
-            </div>
+      <Modal
+        open={Boolean(uploadModal)}
+        onClose={() => setUploadModal(null)}
+        lang={lang}
+        title={
+          uploadModal?.mode === 'replace'
+            ? (lang === 'vi' ? 'Thay thế tài liệu' : 'Replace document')
+            : (lang === 'vi' ? 'Tải lên tài liệu mới' : 'Upload new document')
+        }
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setUploadModal(null)} disabled={uploadModal?.submitting}>
+              {lang === 'vi' ? 'Hủy' : 'Cancel'}
+            </Button>
+            <Button
+              busy={uploadModal?.submitting}
+              onClick={submitUpload}
+              disabled={!uploadModal?.file || uploadModal?.submitting}
+            >
+              {uploadModal?.submitting
+                ? (lang === 'vi' ? 'Đang tải lên...' : 'Uploading...')
+                : (lang === 'vi' ? 'Tải lên' : 'Upload')}
+            </Button>
+          </>
+        }
+      >
+        {uploadModal?.mode === 'upload' && (
+          <div className="mb-3">
+            <label className="block text-[11px] font-semibold text-fg-secondary mb-1">
+              {lang === 'vi' ? 'Loại tài liệu' : 'Document type'}
+            </label>
+            <select
+              className="input text-xs w-full"
+              value={uploadModal.docType}
+              onChange={(e) => setUploadModal((prev) => ({ ...prev, docType: e.target.value }))}
+            >
+              {DOC_TYPES.map((value) => (
+                <option key={value} value={value}>{docTypeLabel(lang, value)}</option>
+              ))}
+            </select>
           </div>
-        </div>
-      )}
+        )}
 
-      {reasonModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-surface-card w-full max-w-sm rounded-lg shadow-panel border border-line p-5">
-            <h3 className="text-sm font-bold text-fg mb-3">
-              {reasonModal.type === 'publish'
-                ? (lang === 'vi' ? 'Lý do xuất bản' : 'Publish reason')
-                : reasonModal.type === 'archive'
-                  ? (lang === 'vi' ? 'Lý do lưu trữ' : 'Archive reason')
-                  : (lang === 'vi' ? 'Lý do khôi phục phiên bản' : 'Rollback reason')}
-            </h3>
+        <div className="mb-1">
+          <label className="block text-[11px] font-semibold text-fg-secondary mb-1">
+            {lang === 'vi' ? 'File (.md hoặc .txt, tối đa 2MB)' : 'File (.md or .txt, max 2MB)'}
+          </label>
+          <input
+            type="file"
+            accept=".md,.txt"
+            className="input text-xs w-full"
+            onChange={(e) => setUploadModal((prev) => ({ ...prev, file: e.target.files?.[0] || null }))}
+          />
+        </div>
+
+        {uploadModal?.error && (
+          <p className="text-[11px] text-danger mt-3 flex items-start gap-1.5">
+            <AlertCircle size={12} className="mt-0.5 shrink-0" />
+            <span>{uploadModal.error}</span>
+          </p>
+        )}
+      </Modal>
+
+      <Modal
+        open={Boolean(reasonModal)}
+        onClose={() => setReasonModal(null)}
+        lang={lang}
+        title={
+          reasonModal?.type === 'publish'
+            ? (lang === 'vi' ? 'Lý do xuất bản' : 'Publish reason')
+            : reasonModal?.type === 'archive'
+              ? (lang === 'vi' ? 'Lý do lưu trữ' : 'Archive reason')
+              : (lang === 'vi' ? 'Lý do khôi phục phiên bản' : 'Rollback reason')
+        }
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setReasonModal(null)}>
+              {lang === 'vi' ? 'Hủy' : 'Cancel'}
+            </Button>
+            <Button onClick={submitReason} disabled={!reasonModal || reasonModal.reason.trim().length < 5}>
+              {lang === 'vi' ? 'Xác nhận' : 'Confirm'}
+            </Button>
+          </>
+        }
+      >
+        {reasonModal && (
+          <>
             <textarea
-              className="input text-xs w-full mb-4 resize-none h-24"
+              className="input text-xs w-full resize-none h-24"
               placeholder={lang === 'vi' ? 'Nhập lý do (min 5 ký tự)...' : 'Enter reason (min 5 chars)...'}
               value={reasonModal.reason}
               onChange={e => setReasonModal({ ...reasonModal, reason: e.target.value, error: null })}
               autoFocus
             />
-            {reasonModal.error && <p role="alert" className="mb-3 text-[11px] text-danger">{reasonModal.error}</p>}
-            <div className="flex justify-end gap-2">
-              <button className="btn btn-ghost text-xs px-3 py-1.5 rounded-lg cursor-pointer" onClick={() => setReasonModal(null)}>
-                {lang === 'vi' ? 'Hủy' : 'Cancel'}
-              </button>
-              <button
-                className="btn btn-accent min-h-10 rounded-lg px-3 py-1.5 text-xs cursor-pointer"
-                onClick={submitReason}
-                disabled={reasonModal.reason.trim().length < 5}
-              >
-                {lang === 'vi' ? 'Xác nhận' : 'Confirm'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+            {reasonModal.error && <p role="alert" className="mt-3 text-[11px] text-danger">{reasonModal.error}</p>}
+          </>
+        )}
+      </Modal>
     </div>
   );
 }

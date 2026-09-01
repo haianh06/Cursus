@@ -156,7 +156,7 @@ export default function AdminGuardrailRules() {
       ) : (
         <ul className="space-y-3 mt-4">
           {rules.map((rule) => (
-            <li key={rule.code} className="group flex flex-col gap-3 rounded-xl border border-line bg-surface-card p-4 transition-all duration-200 sm:flex-row sm:items-start sm:justify-between hover:bg-surface-elevated hover:border-accent/30">
+            <li key={rule.code} className="group flex flex-col gap-3 rounded-[var(--radius-md)] border border-line bg-surface-card p-4 transition-all duration-200 sm:flex-row sm:items-start sm:justify-between hover:bg-surface-elevated hover:border-accent/30">
               <div className="min-w-0">
                 <p className="flex items-center gap-1.5 text-xs font-bold text-fg">
                   {rule.name}
@@ -204,7 +204,7 @@ export default function AdminGuardrailRules() {
         <h3 className="flex items-center gap-2 text-xs font-bold text-fg"><History size={15} className="text-fg-muted" />{t('admin.guardrailHistory')}</h3>
         {history.length === 0 && <p className="text-xs text-fg-muted">{t('admin.guardrailHistoryEmpty')}</p>}
         {history.map((item) => (
-          <div key={item.version} className="flex flex-col gap-3 rounded-xl border border-line bg-surface-card p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div key={item.version} className="flex flex-col gap-3 rounded-[var(--radius-md)] border border-line bg-surface-card p-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="min-w-0">
               <p className="mono text-xs font-bold text-fg">
                 {item.version}

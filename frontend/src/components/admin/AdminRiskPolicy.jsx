@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { AlertCircle, GitCompareArrows, History, RotateCcw } from 'lucide-react';
 import ConfirmDialog from '../shared/ConfirmDialog';
+import Button from '../shared/Button';
 import { useLanguage } from '../../context/LanguageContext';
 import {
   getRiskPolicy,
@@ -233,24 +234,26 @@ export default function AdminRiskPolicy() {
       </label>
 
       <div className="flex flex-wrap gap-3 mt-4">
-        <button
-          type="button"
+        <Button
+          variant="outline"
+          busy={busy === 'preview'}
           disabled={!bandsValid || Boolean(busy)}
           onClick={runPreview}
-          className="btn btn-outline min-h-10 px-5 text-xs font-bold cursor-pointer transition-all hover:bg-surface-elevated hover:text-fg disabled:opacity-40"
+          className="font-bold shadow-sm hover:shadow-md"
         >
           {busy === 'preview' ? <RotateCcw size={14} className="inline mr-2 animate-spin" /> : null}
           {busy === 'preview' ? t('admin.loading') : t('admin.policyPreview')}
-        </button>
-        <button
-          type="button"
+        </Button>
+        <Button
+          variant="primary"
+          busy={busy === 'publish'}
           disabled={!bandsValid || !reasonValid || !preview || Boolean(busy)}
           onClick={publish}
-          className="btn btn-accent min-h-10 px-6 text-xs font-bold cursor-pointer transition-all shadow-sm hover:shadow-md disabled:opacity-40"
+          className="font-bold shadow-sm hover:shadow-md"
         >
           {busy === 'publish' ? <RotateCcw size={14} className="inline mr-2 animate-spin" /> : null}
           {busy === 'publish' ? t('admin.saving') : t('admin.policyPublish')}
-        </button>
+        </Button>
       </div>
       {!preview && bandsValid && (
         <p className="text-[11px] text-fg-muted">{t('admin.policyPreviewRequiredHint')}</p>
@@ -281,7 +284,7 @@ export default function AdminRiskPolicy() {
         {history.map((item) => (
           <div
             key={item.policyVersion}
-            className="group flex flex-col gap-3 rounded-xl border border-line bg-surface-card hover:bg-surface-elevated hover:border-fg/20 p-4 transition-all duration-200 sm:flex-row sm:items-center sm:justify-between shadow-sm hover:shadow-md"
+            className="group flex flex-col gap-3 rounded-[var(--radius-md)] border border-line bg-surface-card hover:bg-surface-elevated hover:border-fg/20 p-4 transition-all duration-200 sm:flex-row sm:items-center sm:justify-between shadow-sm hover:shadow-md"
           >
             <div className="min-w-0">
               <p className="mono text-xs font-bold text-fg">
@@ -298,15 +301,17 @@ export default function AdminRiskPolicy() {
               </p>
             </div>
             {item.policyVersion !== current.policyVersion && (
-              <button
-                type="button"
+              <Button
+                variant="outline"
+                size="sm"
+                busy={busy === `rollback-${item.policyVersion}`}
                 disabled={Boolean(busy)}
                 onClick={() => setConfirmRollback(item.policyVersion)}
-                className="btn btn-outline flex min-h-9 shrink-0 items-center justify-center gap-2 px-4 text-xs font-semibold cursor-pointer transition-all hover:border-danger hover:text-danger disabled:opacity-40"
+                className="shrink-0 gap-2 font-semibold hover:border-danger hover:text-danger"
               >
                 <RotateCcw size={13} className={busy === `rollback-${item.policyVersion}` ? 'animate-spin' : ''} />
                 {busy === `rollback-${item.policyVersion}` ? t('admin.saving') : t('admin.policyRollback')}
-              </button>
+              </Button>
             )}
           </div>
         ))}

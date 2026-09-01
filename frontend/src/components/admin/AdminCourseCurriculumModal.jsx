@@ -109,7 +109,7 @@ export default function AdminCourseCurriculumModal({ code, courseName, onClose }
         role="dialog"
         aria-modal="true"
         aria-labelledby="curriculum-modal-title"
-        className="fixed z-[95] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] max-w-3xl max-h-[85vh] flex flex-col rounded-2xl border shadow-panel animate-scale-in bg-surface-card border-line"
+        className="fixed z-[95] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] max-w-3xl max-h-[85vh] flex flex-col rounded-[var(--radius-lg)] border shadow-panel animate-scale-in bg-surface-card border-line"
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-line shrink-0">
           <div className="text-left min-w-0">
@@ -135,7 +135,7 @@ export default function AdminCourseCurriculumModal({ code, courseName, onClose }
           {loading && <p className="text-xs text-fg-muted">{lang === 'vi' ? 'Đang tải…' : 'Loading…'}</p>}
 
           {!loading && isNotFound && (
-            <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-surface-elevated border border-line">
+            <div className="flex items-start gap-2.5 p-3.5 rounded-[var(--radius-md)] bg-surface-elevated border border-line">
               <AlertCircle size={14} className="shrink-0 mt-0.5 text-fg-muted" />
               <p className="text-xs text-fg-secondary leading-relaxed">
                 {lang === 'vi'
@@ -146,7 +146,7 @@ export default function AdminCourseCurriculumModal({ code, courseName, onClose }
           )}
 
           {!loading && error && !isNotFound && (
-            <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-danger-soft border border-danger/20">
+            <div className="flex items-start gap-2.5 p-3.5 rounded-[var(--radius-md)] bg-danger-soft border border-danger/20">
               <AlertCircle size={14} className="shrink-0 mt-0.5 text-danger" />
               <p className="text-xs text-danger leading-relaxed">{error.message}</p>
             </div>
