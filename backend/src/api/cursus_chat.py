@@ -522,7 +522,14 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
             if suggestions:
                 yield f"event: suggestions\ndata: {json.dumps({'items': suggestions})}\n\n"
 
-            db.add(models.ChatMessage(id=str(uuid4()), conversation_id=conversation.id, role="assistant", content=answer, metadata_info={"citations": sources, "intent": intent, "suggestions": suggestions}))
+            # Store the same {id, chunkId, document, ...} shape the live SSE
+            # `citation` event just sent, not the raw `sources` list -- a
+            # reloaded conversation (GET .../messages) reads straight from
+            # this column, and `sources` lacks `document`/`chunkId` (and
+            # carries each chunk's full text, which this column doesn't need
+            # to duplicate), which previously showed "Mo nguon: undefined"
+            # tooltips once history was reopened.
+            db.add(models.ChatMessage(id=str(uuid4()), conversation_id=conversation.id, role="assistant", content=answer, metadata_info={"citations": citation_items, "intent": intent, "suggestions": suggestions}))
             conversation.updated_at = datetime.utcnow(); conversation.expires_at = datetime.utcnow() + _TTL; db.commit()
 
             if query_vector and intent not in ("plan_action", "reflection_navigation"):

@@ -290,7 +290,16 @@ export default function CursusChat({ user }) {
         (res.messages || []).map((m) => ({
           role: m.role,
           text: m.content,
-          citations: m.citations || [],
+          // Older stored rows saved citations in the raw retrieval shape
+          // ({id, title, ...}) rather than the live-stream shape ({id,
+          // chunkId, document, ...}) CitationChip expects -- normalize here
+          // so a reloaded conversation's source chips work the same as a
+          // fresh one instead of showing "Mở nguồn: undefined".
+          citations: (m.citations || []).map((c) => ({
+            ...c,
+            document: c.document ?? c.title,
+            chunkId: c.chunkId ?? c.id,
+          })),
           // History is already "typed" — show it immediately rather than
           // replaying the typewriter animation for old messages.
           displayedLength: m.content.length,
