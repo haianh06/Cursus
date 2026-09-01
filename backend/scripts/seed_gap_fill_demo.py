@@ -586,42 +586,68 @@ def seed_current_week_plan(db) -> None:
     other seed step had already succeeded). Creates a real Plan-Do-Reflect
     week for whichever week is actually current *right now*, so this
     doesn't keep recurring as the calendar moves on -- safe to re-run:
-    skips a student who already has a WeeklyPlan for that exact week
-    number *with at least one real task under it* (organic or previously
-    seeded). A WeeklyPlan row existing with zero DailyPlan/StudyTask
-    children still reads as "No plan yet" on screen, so an existence-only
-    check would have wrongly treated that as already handled -- populate
-    the existing empty row's day tree in that case instead of skipping or
-    inserting a colliding duplicate WeeklyPlan.id."""
+    skips a student who already has a REAL study plan (see
+    plan_builder.is_study_plan()) for that exact week with at least one
+    task under it.
+
+    IMPORTANT: `resolve_current_plan()` -- the one resolver GET /plans/weekly
+    (and therefore Overview/Planner/Reflection) actually calls -- filters
+    candidate WeeklyPlan rows through `is_study_plan()`, which excludes any
+    row with `goals["kind"] == "timetable"` (TimetableService's bare
+    self-study container, created automatically the first time a student's
+    dashboard loads). An earlier version of this function reused that
+    existing-but-empty container row and populated its DailyPlan/StudyTask
+    tree -- the tasks were real, but the *plan itself* stayed invisible to
+    resolve_current_plan()'s filter, so Overview still showed "No plan yet"
+    (02/09 incident: confirmed live in production after the previous fix
+    had already deployed). Multiple WeeklyPlan rows CAN coexist for the same
+    (student_id, week_number) -- resolve_current_plan() is specifically
+    built to pick a winner among several -- so the fix is to always insert a
+    separate, new, non-timetable-kind plan row instead of trying to reuse
+    whatever's already there."""
     from src.db import models
     from src.services.academic.academic_calendar import current_week_for_student
+    from src.services.ai.plan_builder import is_study_plan
 
     for student_id in (STUDENT_A, STUDENT_B, STUDENT_C):
         week_number = current_week_for_student(db, student_id)
-        existing_plan = (
-            db.query(models.WeeklyPlan).filter_by(student_id=student_id, week_number=week_number).first()
+        candidates = (
+            db.query(models.WeeklyPlan).filter_by(student_id=student_id, week_number=week_number).all()
         )
-        if existing_plan is not None:
+        already_has_real_plan = False
+        for candidate in candidates:
+            if not is_study_plan(candidate):
+                continue
             has_task = (
                 db.query(models.StudyTask)
                 .join(models.ScheduleBlock, models.ScheduleBlock.id == models.StudyTask.schedule_block_id)
                 .join(models.DailyPlan, models.DailyPlan.id == models.ScheduleBlock.daily_plan_id)
-                .filter(models.DailyPlan.weekly_plan_id == existing_plan.id)
+                .filter(models.DailyPlan.weekly_plan_id == candidate.id)
                 .first()
             )
             if has_task:
-                continue
-            plan = existing_plan
-            plan_id = plan.id
-        else:
-            plan_id = f"plan_g3_{student_id}_currentweek_{week_number}"
-            plan = models.WeeklyPlan(
-                id=plan_id, student_id=student_id, week_number=week_number,
-                goals={"statement": "Hoàn thành bài tập và ôn tập theo lịch tuần này."},
-                study_hours_allocated=12.0,
-            )
-            db.add(plan)
-            db.flush()
+                already_has_real_plan = True
+                break
+        if already_has_real_plan:
+            continue
+
+        plan_id = f"plan_g3_{student_id}_currentweek_{week_number}"
+        if db.query(models.WeeklyPlan).filter_by(id=plan_id).first() is not None:
+            # Already inserted this exact row on a prior run (e.g. an
+            # earlier attempt got this far but crashed later in main()) --
+            # nothing new to add, and re-adding its day tree would just
+            # duplicate DailyPlan rows for the same dates.
+            continue
+        plan = models.WeeklyPlan(
+            id=plan_id, student_id=student_id, week_number=week_number,
+            # No "kind"/"source" marker -- deliberately reads as
+            # PLAN_KIND_UNKNOWN via plan_kind(), which is fine: is_study_plan()
+            # only excludes goals["kind"] == "timetable", nothing else.
+            goals={"statement": "Hoàn thành bài tập và ôn tập theo lịch tuần này."},
+            study_hours_allocated=12.0,
+        )
+        db.add(plan)
+        db.flush()
 
         monday = _monday_on_or_before(date.today())
         today_index = date.today().weekday()  # 0=Mon .. 6=Sun
