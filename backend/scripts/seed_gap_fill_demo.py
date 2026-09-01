@@ -635,6 +635,30 @@ def seed_self_study_sessions(db) -> None:
     logger.info("self_study_sessions_ok")
 
 
+def _relax_stale_guardrail_message_id_column(db) -> None:
+    """`GuardrailEvent.message_id` was dropped from the ORM model when the
+    old chat feature was removed (migrations/versions/
+    20260910_remove_chatbot_feature.py), but that migration hasn't reached
+    this DB yet -- a separately known, documented alembic-drift gap (see
+    docker_entrypoint.py's `_alembic_upgrade()`). Until it does, the live
+    table still has `message_id NOT NULL`, so an ORM insert through the
+    current model (which never sets it) fails. This only loosens the
+    constraint (NOT NULL -> nullable) -- never drops the column or any
+    data -- so it's a safe, reversible no-op once the real migration
+    eventually runs."""
+    from sqlalchemy import text
+
+    row = db.execute(
+        text(
+            "SELECT is_nullable FROM information_schema.columns "
+            "WHERE table_name = 'guardrail_events' AND column_name = 'message_id'"
+        )
+    ).first()
+    if row is not None and row[0] == "NO":
+        db.execute(text("ALTER TABLE guardrail_events ALTER COLUMN message_id DROP NOT NULL"))
+        db.commit()
+
+
 def seed_conversations(db) -> None:
     """Chat feature removed -- GuardrailEvent no longer needs a
     Conversation/Message to attach to, it's written with student_id/
@@ -642,6 +666,7 @@ def seed_conversations(db) -> None:
     20260910_remove_chatbot_feature.py)."""
     from src.db import models
 
+    _relax_stale_guardrail_message_id_column(db)
     now = _now()
 
     if not db.query(models.GuardrailEvent).filter_by(id="grail_g3_studentA").first():
