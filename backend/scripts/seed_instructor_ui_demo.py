@@ -205,6 +205,31 @@ def _get(db, model, **kw):
     return db.query(model).filter_by(**kw).first()
 
 
+def _relax_stale_guardrail_message_id_column(db) -> None:
+    """`GuardrailEvent` dropped its `message_id` column in models.py once the
+    old chat feature was removed (migrations/versions/
+    20260910_remove_chatbot_feature.py), but that migration hasn't reached
+    this DB yet (a separately known, documented alembic-drift gap -- see
+    docker_entrypoint.py's `_alembic_upgrade()` docstring). Until it does,
+    the live table still has `message_id NOT NULL`, so any ORM insert
+    through the current model (which never sets it) fails. This only loosens
+    the constraint (NOT NULL -> nullable) -- never drops the column or any
+    data -- so it's a safe, reversible no-op once the real migration
+    eventually runs (dropping an already-nullable column is the same either
+    way)."""
+    from sqlalchemy import text
+
+    row = db.execute(
+        text(
+            "SELECT is_nullable FROM information_schema.columns "
+            "WHERE table_name = 'guardrail_events' AND column_name = 'message_id'"
+        )
+    ).first()
+    if row is not None and row[0] == "NO":
+        db.execute(text("ALTER TABLE guardrail_events ALTER COLUMN message_id DROP NOT NULL"))
+        db.commit()
+
+
 def main() -> None:
     db = SessionLocal()
     created = {}
@@ -448,6 +473,7 @@ def main() -> None:
             bump("announcement")
 
         # --- Case Guardrail ---
+        _relax_stale_guardrail_message_id_column(db)
         for index, (suffix, question, answer, days_ago, status) in enumerate(GUARDRAILS):
             gid = f"{P}grd_{index}"
             if _get(db, models.GuardrailEvent, id=gid) is not None:

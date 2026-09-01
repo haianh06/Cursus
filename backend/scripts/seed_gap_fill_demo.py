@@ -81,6 +81,22 @@ def _monday_on_or_before(d: date) -> date:
 
 def seed_enrollments(db) -> None:
     from src.db import models
+    from src.services.mock.student_mock_data_service import StudentMockDataService
+
+    # SEC_CEA201/CSI106/PRF192 below are STUDENT_A's own private per-student
+    # sections (deterministic sha256(STUDENT_A)[:8] suffix) -- they only
+    # exist once StudentMockDataService has actually provisioned STUDENT_A's
+    # mock semester at least once. That provisioning is normally lazy
+    # (triggered by STUDENT_A's own dashboard load), so on a DB where it
+    # never fired this insert below hits `enrollments_section_id_fkey`
+    # (25/08 incident: reused the exact IDs without first confirming the
+    # rows behind them exist). Calling ensure_for_student() here is
+    # idempotent -- a no-op if STUDENT_A's semester already exists -- and
+    # guarantees these section ids are real before STUDENT_B/C get enrolled
+    # into them (deliberately shared with STUDENT_A, not each student's own
+    # private copy, so the instructor/admin demo screens show 3 real
+    # students in the same class for comparison).
+    StudentMockDataService(db).ensure_for_student(STUDENT_A)
 
     now = _now()
     for student_id in (STUDENT_B, STUDENT_C):
