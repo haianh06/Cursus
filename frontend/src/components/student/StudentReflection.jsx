@@ -76,7 +76,7 @@ function EvidenceSummary({ facts, bandLabel, lang }) {
         {items.map((item) => (
           <div
             key={item.label}
-            className="rounded-xl p-3 bg-surface-elevated border border-line"
+            className="rounded-[var(--radius-sm)] p-3 bg-surface-elevated border border-line"
           >
             <dt className="text-[11px] font-semibold text-fg-muted">
               {item.label}
@@ -174,7 +174,7 @@ function BeforeAfterPanel({ nextPlan, previousPlan, changes, insight, lang }) {
       </p>
 
       {insight && (
-        <div className="flex items-start gap-2 rounded-xl p-3 mb-4 bg-accent-soft border border-line">
+        <div className="flex items-start gap-2 rounded-[var(--radius-sm)] p-3 mb-4 bg-accent-soft border border-line">
           <Sparkles size={14} className="shrink-0 mt-0.5 text-accent-text-safe" />
           <div>
             <p className="text-[11px] font-bold uppercase tracking-widest mb-1 text-accent-text-safe">
@@ -190,7 +190,7 @@ function BeforeAfterPanel({ nextPlan, previousPlan, changes, insight, lang }) {
           {changes.map((change, index) => (
             <li
               key={`${change.adjustment}-${change.taskKey ?? index}`}
-              className="rounded-xl p-3 bg-surface-elevated border border-line"
+              className="rounded-[var(--radius-sm)] p-3 bg-surface-elevated border border-line"
             >
               <div className="flex flex-wrap items-center gap-2 text-[13px]">
                 <span className="mono px-2 py-0.5 rounded bg-danger-soft text-danger">
@@ -374,8 +374,8 @@ export default function StudentReflection() {
   if (stateLoading || loading) {
     return (
       <div className="flex flex-col gap-6 p-4 md:p-6">
-        <Skeleton className="h-32 w-full rounded-2xl" />
-        <SkeletonRows count={3} rowClassName="h-24 rounded-xl" />
+        <Skeleton className="h-32 w-full rounded-[var(--radius-md)]" />
+        <SkeletonRows count={3} rowClassName="h-24 rounded-[var(--radius-md)]" />
       </div>
     );
   }
@@ -440,7 +440,7 @@ export default function StudentReflection() {
         {actionError && (
           <div
             role="alert"
-            className="rounded-xl p-3.5 text-[13px] flex items-start gap-2 bg-danger-soft text-danger"
+            className="rounded-[var(--radius-sm)] p-3.5 text-[13px] flex items-start gap-2 bg-danger-soft text-danger"
           >
             <AlertTriangle size={14} className="shrink-0 mt-0.5" />
             <span>{actionError.message}</span>

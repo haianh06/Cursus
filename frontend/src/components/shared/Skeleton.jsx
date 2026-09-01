@@ -18,7 +18,7 @@ export default function Skeleton({ className = '', style, 'aria-label': ariaLabe
 }
 
 /** A row of skeleton blocks shaped like a list of cards/rows. */
-export function SkeletonRows({ count = 3, rowClassName = 'h-14 rounded-xl' }) {
+export function SkeletonRows({ count = 3, rowClassName = 'h-14 rounded-[var(--radius-sm)]' }) {
   return (
     <div className="flex flex-col gap-2.5" role="status" aria-label="Đang tải danh sách">
       {Array.from({ length: count }).map((_, i) => (

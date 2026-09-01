@@ -376,8 +376,13 @@
     font-family: 'Inter', -apple-system, sans-serif;
   }
 
+  /* Manrope everywhere headings render, app and landing alike — this used to
+     be Sora app-wide while .landing-page-scope below overrode to Manrope,
+     a real, visible typeface mismatch between the marketing site and the
+     product itself. .landing-wordmark/.logo-text-custom stay Sora on
+     purpose (the "Cursus" logotype is a brand mark, not a heading). */
   h1, h2, h3, h4, h5, h6, .font-display {
-    font-family: 'Sora', sans-serif;
+    font-family: 'Manrope', 'Inter', sans-serif;
     font-weight: 700;
   }
 }
@@ -567,17 +572,13 @@ section[id] {
 }
 
 /* ================================================================
-   LANDING TYPOGRAPHY — Manrope for headings (loaded as a variable font,
-   wght@200..800, so arbitrary in-between weights like 650 render as true
-   weight, not synthetic bold). Sentence case throughout; no artificial
-   letter-spacing on body copy. Inter stays the body/UI font (inherited
-   from the global font-sans stack) — only headings change here.
+   LANDING TYPOGRAPHY — Manrope (loaded as a variable font, wght@200..800,
+   so arbitrary in-between weights like 650 render as true weight, not
+   synthetic bold) is now the base h1-h6 font everywhere (see the global
+   rule near the top of this file), so no scoped override is needed here
+   any more. Sentence case throughout; no artificial letter-spacing on
+   body copy. Inter stays the body/UI font.
    ================================================================ */
-.landing-page-scope h1,
-.landing-page-scope h2,
-.landing-page-scope h3 {
-  font-family: 'Manrope', 'Inter', sans-serif;
-}
 .landing-page-scope .landing-hero-heading {
   font-size: clamp(3.25rem, 4vw, 4.75rem);
   font-weight: 600;

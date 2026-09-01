@@ -285,7 +285,7 @@ export default function ChatPanel({
           messages.map((message) =>
             message.sender === 'USER' ? (
               <div key={message.id} className="flex justify-end">
-                <p className="text-[13px] px-3.5 py-2 rounded-2xl rounded-br-sm max-w-[85%] bg-accent-cta text-white shadow-elevation-1 whitespace-pre-wrap">
+                <p className="text-[13px] px-3.5 py-2 rounded-[var(--radius-md)] rounded-br-sm max-w-[85%] bg-accent-cta text-white shadow-elevation-1 whitespace-pre-wrap">
                   {message.content}
                 </p>
               </div>
@@ -293,7 +293,7 @@ export default function ChatPanel({
               <div key={message.id} className="flex flex-col gap-2 items-start">
                 <ModeBadge message={message} lang={lang} />
                 <DegradedBadge degradedReason={message.degradedReason} lang={lang} />
-                <div className="max-w-[90%] text-[13px] leading-relaxed px-3.5 py-3 rounded-2xl rounded-bl-sm whitespace-pre-wrap bg-surface-elevated border border-line text-fg">
+                <div className="max-w-[90%] text-[13px] leading-relaxed px-3.5 py-3 rounded-[var(--radius-md)] rounded-bl-sm whitespace-pre-wrap bg-surface-elevated border border-line text-fg">
                   {message.content}
                   <CitationRow
                     citations={message.citations}

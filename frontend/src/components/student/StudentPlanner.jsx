@@ -240,9 +240,9 @@ export default function StudentPlanner() {
   if (loading) {
     return (
       <div className="flex flex-col gap-6 p-4 md:p-6">
-        <Skeleton className="h-28 w-full rounded-2xl" />
-        <Skeleton className="h-40 w-full rounded-2xl" />
-        <SkeletonRows count={4} rowClassName="h-20 rounded-xl" />
+        <Skeleton className="h-28 w-full rounded-[var(--radius-md)]" />
+        <Skeleton className="h-40 w-full rounded-[var(--radius-md)]" />
+        <SkeletonRows count={4} rowClassName="h-20 rounded-[var(--radius-md)]" />
       </div>
     );
   }
@@ -276,7 +276,7 @@ export default function StudentPlanner() {
       {/* Goal — free-text goal + course, the a46db63 contract */}
       <section aria-label={lang === 'vi' ? 'Mục tiêu' : 'Goal'} className="card p-5">
         <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-accent-soft text-accent">
+          <div className="w-9 h-9 rounded-[var(--radius-sm)] flex items-center justify-center shrink-0 bg-accent-soft text-accent">
             <Target size={18} />
           </div>
           <div className="min-w-0 flex-1 space-y-3">
@@ -422,7 +422,7 @@ export default function StudentPlanner() {
         <div className="lg:col-span-2 flex flex-col gap-4 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] overflow-y-auto pr-0.5">
           {actionError && (
             <div
-              className="rounded-xl p-3.5 text-[13px] flex items-start gap-2 bg-danger-soft text-danger"
+              className="rounded-[var(--radius-md)] p-3.5 text-[13px] flex items-start gap-2 bg-danger-soft text-danger"
               role="alert"
             >
               <AlertTriangle size={14} className="shrink-0 mt-0.5" />

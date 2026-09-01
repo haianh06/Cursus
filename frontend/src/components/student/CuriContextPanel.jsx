@@ -217,7 +217,7 @@ export default function CuriContextPanel({
         {messages.map((message) =>
           message.role === 'user' ? (
             <div key={message.id} className="flex justify-end">
-              <p className="text-[13px] px-3.5 py-2 rounded-2xl rounded-br-sm max-w-[85%] bg-accent-cta text-white shadow-elevation-1">
+              <p className="text-[13px] px-3.5 py-2 rounded-[var(--radius-md)] rounded-br-sm max-w-[85%] bg-accent-cta text-white shadow-elevation-1">
                 {message.text}
               </p>
             </div>
@@ -242,7 +242,7 @@ export default function CuriContextPanel({
               )}
 
               <div
-                className={`text-[13px] leading-relaxed px-3.5 py-3 rounded-2xl rounded-bl-sm whitespace-pre-line bg-surface-elevated border border-line ${
+                className={`text-[13px] leading-relaxed px-3.5 py-3 rounded-[var(--radius-md)] rounded-bl-sm whitespace-pre-line bg-surface-elevated border border-line ${
                   message.failed ? 'text-danger' : 'text-fg'
                 }`}
               >

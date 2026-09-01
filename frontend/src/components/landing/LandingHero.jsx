@@ -237,7 +237,7 @@ export default function LandingHero() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Zimmerman 2002, Becoming a Self-Regulated Learner (mở tab mới)"
-              className="text-[#60A5FA] italic underline underline-offset-4 decoration-2 hover:text-[#93C5FD] transition-colors inline-flex items-baseline gap-1 ml-1"
+              className="text-landing-accent italic underline underline-offset-4 decoration-2 hover:text-[#93C5FD] transition-colors inline-flex items-baseline gap-1 ml-1"
             >
               <span className="whitespace-nowrap">Barry J. Zimmerman</span>
               <ExternalLink className="translate-y-0.5" size={14} aria-hidden="true" />

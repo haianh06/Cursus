@@ -584,12 +584,12 @@ export default function CuriChatLauncher() {
 
           {!isOpen && (
             <span 
-              className="absolute bottom-[2px] right-[2px] w-[11.5px] h-[11.5px] bg-[#22C55E] rounded-full ring-2 ring-white dark:ring-[#141828] z-20 pointer-events-none status-pulse-once shadow-[0_0_8px_#22C55E]" 
+              className="absolute bottom-[2px] right-[2px] w-[11.5px] h-[11.5px] bg-success rounded-full ring-2 ring-surface-card z-20 pointer-events-none status-pulse-once shadow-[0_0_8px_var(--color-success)]"
             />
           )}
 
           {unreadCount > 0 && !isOpen && (
-            <span className="absolute -top-1 -right-1 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-danger px-1 text-[10px] font-bold text-white shadow-sm ring-2 ring-white dark:ring-[#141828] z-20 pointer-events-none">
+            <span className="absolute -top-1 -right-1 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-danger px-1 text-[10px] font-bold text-white shadow-sm ring-2 ring-surface-card z-20 pointer-events-none">
               {unreadCount > 9 ? '9+' : unreadCount}
             </span>
           )}
@@ -752,7 +752,7 @@ export default function CuriChatLauncher() {
                     <div key={m.id} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}>
                       <div
                         className={`
-                          max-w-[85%] p-3.5 text-xs leading-relaxed font-medium rounded-2xl whitespace-pre-wrap
+                          max-w-[85%] p-3.5 text-xs leading-relaxed font-medium rounded-[var(--radius-md)] whitespace-pre-wrap
                           ${m.role === 'user'
                             ? 'bg-accent-cta text-white rounded-br-none'
                             : 'bg-surface-card border border-line rounded-bl-none text-fg-secondary'}
@@ -780,7 +780,7 @@ export default function CuriChatLauncher() {
                   ))}
 
                   {isThinking && (
-                    <div className="flex items-center gap-1.5 p-3 bg-surface-card border border-line rounded-2xl rounded-bl-none w-fit">
+                    <div className="flex items-center gap-1.5 p-3 bg-surface-card border border-line rounded-[var(--radius-md)] rounded-bl-none w-fit">
                       <span className="w-1.5 h-1.5 rounded-full bg-fg-muted animate-pulse" />
                       <span className="w-1.5 h-1.5 rounded-full bg-fg-muted animate-pulse delay-75" />
                       <span className="w-1.5 h-1.5 rounded-full bg-fg-muted animate-pulse delay-150" />

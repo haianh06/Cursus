@@ -189,8 +189,8 @@ export default function SemesterSetupWizard() {
   if (loading) {
     return (
       <div className="flex flex-col gap-4 p-6">
-        <Skeleton className="h-14 w-full rounded-xl" />
-        <Skeleton className="h-64 w-full rounded-2xl" />
+        <Skeleton className="h-14 w-full rounded-[var(--radius-md)]" />
+        <Skeleton className="h-64 w-full rounded-[var(--radius-lg)]" />
       </div>
     );
   }
@@ -212,7 +212,7 @@ export default function SemesterSetupWizard() {
       </div>
 
       {loadError && (
-        <div className="p-3.5 rounded-xl bg-danger-soft border border-danger/20 text-xs text-danger">
+        <div className="p-3.5 rounded-[var(--radius-md)] bg-danger-soft border border-danger/20 text-xs text-danger">
           {loadError.message}
         </div>
       )}
@@ -430,12 +430,12 @@ export default function SemesterSetupWizard() {
       )}
 
       {submitError && (
-        <div className="p-3.5 rounded-xl bg-danger-soft border border-danger/20 text-xs text-danger">
+        <div className="p-3.5 rounded-[var(--radius-md)] bg-danger-soft border border-danger/20 text-xs text-danger">
           {submitError.message}
         </div>
       )}
       {submitOk && (
-        <div className="p-3.5 rounded-xl bg-success-soft border border-success/20 text-xs text-success flex items-center justify-between gap-3 flex-wrap">
+        <div className="p-3.5 rounded-[var(--radius-md)] bg-success-soft border border-success/20 text-xs text-success flex items-center justify-between gap-3 flex-wrap">
           <span>{lang === 'vi' ? 'Đã lưu học kỳ.' : 'Semester saved.'}</span>
           <Link
             to="/student/lecture-plan"

@@ -132,7 +132,7 @@ export default function CompanionChatBubble() {
           ref={panelRef}
           role="dialog"
           aria-label={lang === 'vi' ? 'Trợ lý học tập theo môn' : 'Course companion chat'}
-          className="fixed bottom-24 right-5 z-50 max-w-[calc(100vw-2.5rem)] max-h-[calc(100vh-7rem)] rounded-2xl border border-line bg-surface-card shadow-elevation-3 flex flex-col overflow-hidden animate-fade-up"
+          className="fixed bottom-24 right-5 z-50 max-w-[calc(100vw-2.5rem)] max-h-[calc(100vh-7rem)] rounded-[var(--radius-lg)] border border-line bg-surface-card shadow-elevation-3 flex flex-col overflow-hidden animate-fade-up"
           style={panelStyle}
         >
           {!maximized && (

@@ -13,10 +13,12 @@ import { getStudentReflections } from '../../lib/api';
  * lưu kèm metrics.completionRate) — không cần endpoint mới.
  */
 function stageFor(rate) {
-  if (rate >= 90) return { Icon: Flower2, className: 'text-[#7c3aed] dark:text-[#a78bfa]' };
-  if (rate >= 75) return { Icon: TreeDeciduous, className: 'text-success-ink dark:text-emerald-400' };
-  if (rate >= 50) return { Icon: Leaf, className: 'text-brand' };
-  return { Icon: Sprout, className: 'text-slate-400 dark:text-slate-500' };
+  // text-reflect maps to the --reflect token (violet), used here as an
+  // intentional icon accent for the "flower" (90%+) stage.
+  if (rate >= 90) return { Icon: Flower2, className: 'text-reflect' };
+  if (rate >= 75) return { Icon: TreeDeciduous, className: 'text-success' };
+  if (rate >= 50) return { Icon: Leaf, className: 'text-accent' };
+  return { Icon: Sprout, className: 'text-fg-muted' };
 }
 
 export default function ProgressGarden() {
@@ -46,14 +48,14 @@ export default function ProgressGarden() {
   if (weeks.length === 0) return null;
 
   return (
-    <div className="cursus-card rounded-3xl p-5 shadow-sm space-y-3">
+    <div className="card p-5 shadow-sm space-y-3">
       <div className="flex items-center gap-2">
-        <Flower2 className="w-4 h-4 text-brand" />
-        <h2 className="text-sm font-black text-[#15181C] dark:text-white font-serif-heading">
+        <Flower2 className="w-4 h-4 text-accent" />
+        <h2 className="text-sm font-black text-fg">
           {t('studentHome.gardenTitle')}
         </h2>
       </div>
-      <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+      <p className="text-[11px] text-fg-muted font-medium">
         {t('studentHome.gardenSubtitle')}
       </p>
       <div className="flex flex-wrap items-end gap-3 pt-1">
@@ -62,7 +64,7 @@ export default function ProgressGarden() {
           return (
             <div key={week} className="flex flex-col items-center gap-1" title={`W${week} — ${rate}%`}>
               <Icon className={`w-7 h-7 ${className}`} />
-              <span className="text-[10px] font-bold text-slate-500 dark:text-slate-500 font-mono-code">
+              <span className="text-[10px] font-bold text-fg-muted">
                 W{week}
               </span>
             </div>

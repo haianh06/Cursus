@@ -277,7 +277,7 @@ function PdrStepper({ phase, plan, completedCount, totalCount, lang, navigate })
           <div key={step.key}>
             <div className="flex items-start gap-3">
               <div
-                className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5 bg-surface-elevated"
+                className="w-9 h-9 rounded-[var(--radius-sm)] flex items-center justify-center shrink-0 mt-0.5 bg-surface-elevated"
                 style={{ color: step.color }}
               >
                 {step.icon}
@@ -388,13 +388,13 @@ export default function StudentHome({ user }) {
   if (loading) {
     return (
       <div className="flex flex-col gap-6 p-4 md:p-6">
-        <Skeleton className="h-40 w-full rounded-2xl" />
+        <Skeleton className="h-40 w-full rounded-[var(--radius-md)]" />
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {Array.from({ length: 3 }).map((_, index) => (
-            <Skeleton key={index} className="h-24 rounded-2xl" />
+            <Skeleton key={index} className="h-24 rounded-[var(--radius-md)]" />
           ))}
         </div>
-        <SkeletonRows count={4} rowClassName="h-20 rounded-xl" />
+        <SkeletonRows count={4} rowClassName="h-20 rounded-[var(--radius-md)]" />
       </div>
     );
   }
@@ -432,7 +432,7 @@ export default function StudentHome({ user }) {
       {actionError && (
         <div
           role="alert"
-          className="rounded-xl p-3.5 text-[13px] flex items-start gap-2 bg-danger-soft text-danger"
+          className="rounded-[var(--radius-md)] p-3.5 text-[13px] flex items-start gap-2 bg-danger-soft text-danger"
         >
           <AlertTriangle size={14} className="shrink-0 mt-0.5" />
           <span>{actionError.message}</span>
@@ -442,7 +442,7 @@ export default function StudentHome({ user }) {
       {currentPlan?.warnings?.length > 0 && (
         <div
           role="status"
-          className="rounded-xl p-3.5 text-[13px] flex items-start gap-2 bg-warning-soft text-warning"
+          className="rounded-[var(--radius-md)] p-3.5 text-[13px] flex items-start gap-2 bg-warning-soft text-warning"
         >
           <AlertTriangle size={14} className="shrink-0 mt-0.5" />
           <span>{currentPlan.warnings.join(' ')}</span>

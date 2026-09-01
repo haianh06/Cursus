@@ -77,7 +77,7 @@ export default function LecturePlanPanel() {
         </Link>
       </div>
 
-      <div className="flex flex-wrap items-end gap-3 p-4 rounded-xl border border-line bg-surface-elevated">
+      <div className="flex flex-wrap items-end gap-3 p-4 rounded-[var(--radius-md)] border border-line bg-surface-elevated">
         <div>
           <label htmlFor="lecture-plan-available-hours" className="block text-xs font-semibold text-fg-secondary mb-1.5">
             {lang === 'vi' ? 'Số giờ rảnh trong tuần' : 'Available hours this week'}
@@ -107,13 +107,13 @@ export default function LecturePlanPanel() {
       </div>
 
       {error && (
-        <div className="p-3.5 rounded-xl bg-danger-soft border border-danger/20 text-xs text-danger">
+        <div className="p-3.5 rounded-[var(--radius-md)] bg-danger-soft border border-danger/20 text-xs text-danger">
           {error.message}
         </div>
       )}
 
       {loading ? (
-        <Skeleton className="h-48 w-full rounded-2xl" />
+        <Skeleton className="h-48 w-full rounded-[var(--radius-md)]" />
       ) : plan ? (
         <div className="space-y-3">
           <div className="flex items-center justify-between">

@@ -103,7 +103,7 @@ function QuizTaker({ quizId, onBack, t, lang }) {
       </button>
 
       {loading ? (
-        <Skeleton className="h-64 w-full rounded-2xl" />
+        <Skeleton className="h-64 w-full rounded-[var(--radius-md)]" />
       ) : error ? (
         <p className="text-xs text-danger">{error}</p>
       ) : quiz ? (
@@ -229,7 +229,7 @@ export default function StudentQuizzes() {
       </div>
 
       {loading ? (
-        <Skeleton className="h-40 w-full rounded-2xl" />
+        <Skeleton className="h-40 w-full rounded-[var(--radius-md)]" />
       ) : error ? (
         <p className="text-xs text-danger">{error}</p>
       ) : (

@@ -28,7 +28,7 @@ function TodayTaskRow({ task, onStart, onComplete, onDefer, busy, lang }) {
   const deferred = task.status === 'DEFERRED';
   return (
     <li
-      className={`p-3 rounded-xl border border-line flex items-start justify-between gap-3 ${
+      className={`p-3 rounded-[var(--radius-md)] border border-line flex items-start justify-between gap-3 ${
         done ? 'opacity-60' : 'bg-surface-card'
       }`}
     >
@@ -144,7 +144,7 @@ export default function TodayPlanScreen() {
       {actionError && (
         <div
           role="alert"
-          className="rounded-xl p-3.5 text-[13px] flex items-start gap-2 bg-danger-soft text-danger"
+          className="rounded-[var(--radius-md)] p-3.5 text-[13px] flex items-start gap-2 bg-danger-soft text-danger"
         >
           <span>{actionError.message}</span>
         </div>
@@ -163,7 +163,7 @@ export default function TodayPlanScreen() {
             {lang === 'vi' ? 'Việc cần làm hôm nay' : "Today's checklist"}
           </h2>
           {loading ? (
-            <SkeletonRows count={3} rowClassName="h-20 rounded-xl" />
+            <SkeletonRows count={3} rowClassName="h-20 rounded-[var(--radius-md)]" />
           ) : todayTasks.length === 0 ? (
             <div className="card p-6 text-center">
               <Sparkles size={22} className="mx-auto mb-2 text-fg-muted" />

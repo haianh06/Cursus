@@ -269,15 +269,15 @@ export default function StudentPractice() {
       </div>
 
       {error && (
-        <div className="p-3.5 rounded-xl bg-danger-soft border border-danger/20 text-xs text-danger">
+        <div className="p-3.5 rounded-[var(--radius-md)] bg-danger-soft border border-danger/20 text-xs text-danger">
           {error.message}
         </div>
       )}
 
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Skeleton className="h-40 w-full rounded-2xl" />
-          <Skeleton className="h-40 w-full rounded-2xl" />
+          <Skeleton className="h-40 w-full rounded-[var(--radius-md)]" />
+          <Skeleton className="h-40 w-full rounded-[var(--radius-md)]" />
         </div>
       ) : !practiceSet ? (
         <div className="card">

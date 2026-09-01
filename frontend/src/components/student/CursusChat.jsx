@@ -80,7 +80,7 @@ function QuickReplies({ items = QUICK_REPLIES, onPick, disabled }) {
  * plus quick-reply chips to get a first message out with one tap. */
 function WelcomeCard({ briefing, onDismissBriefing, onPickReply, disabled }) {
   return (
-    <div className="rounded-2xl border border-line bg-surface-card p-4 text-sm text-fg shadow-sm">
+    <div className="rounded-[var(--radius-md)] border border-line bg-surface-card p-4 text-sm text-fg shadow-sm">
       <p>
         {briefing
           ? briefing.message
@@ -472,7 +472,7 @@ export default function CursusChat({ user }) {
       {open && (
         <aside
           aria-label="Cursus chat"
-          className="fixed bottom-5 right-5 z-[100] flex h-[min(640px,80vh)] w-[calc(100vw-2.5rem)] max-w-[400px] flex-col overflow-hidden rounded-2xl border border-line bg-surface-card shadow-2xl"
+          className="fixed bottom-5 right-5 z-[100] flex h-[min(640px,80vh)] w-[calc(100vw-2.5rem)] max-w-[400px] flex-col overflow-hidden rounded-[var(--radius-lg)] border border-line bg-surface-card shadow-2xl"
         >
           <header style={{ background: HEADER_GRADIENT }} className="flex items-center justify-between px-5 py-4 text-white">
             <div className="flex items-center gap-3">
@@ -530,8 +530,8 @@ export default function CursusChat({ user }) {
                   aria-atomic="true"
                   className={
                     item.role === 'user'
-                      ? 'ml-8 rounded-2xl rounded-br-sm bg-accent-soft p-3 text-sm text-fg'
-                      : 'mr-4 rounded-2xl rounded-bl-sm border border-line bg-surface-card p-3 text-sm text-fg shadow-sm'
+                      ? 'ml-8 rounded-[var(--radius-md)] rounded-br-sm bg-accent-soft p-3 text-sm text-fg'
+                      : 'mr-4 rounded-[var(--radius-md)] rounded-bl-sm border border-line bg-surface-card p-3 text-sm text-fg shadow-sm'
                   }
                 >
                   <div className="cursus-chat-markdown">

@@ -197,7 +197,7 @@ function blockTone(block) {
   if (isActivity || isClass) {
     return { bar: 'var(--accent)', className: 'bg-[var(--accent-soft)] border-[color:var(--accent)] text-fg cursor-default' };
   }
-  return { bar: 'var(--success, #2F6B3A)', className: 'bg-[var(--success-soft,#E6EFE2)] border-[color:var(--success,#2F6B3A)] text-[color:var(--success,#2F6B3A)] cursor-grab active:cursor-grabbing' };
+  return { bar: 'var(--success)', className: 'bg-success-soft border-[color:var(--success)] text-[color:var(--success)] cursor-grab active:cursor-grabbing' };
 }
 
 export default function Timetable({ initialView = 'week', initialAnchor = null, previewPlanId = null } = {}) {
@@ -616,7 +616,7 @@ export default function Timetable({ initialView = 'week', initialAnchor = null, 
                   </span>
                   <div className="mt-1 space-y-0.5">
                     {blocks.slice(0, 3).map((b) => (
-                      <div key={b.id} className="truncate text-[9px] font-semibold px-1 py-0.5 rounded" style={{ background: blockTone(b).bar, color: '#fff', opacity: 0.85 }}>
+                      <div key={b.id} className="truncate text-[9px] font-semibold px-1 py-0.5 rounded text-white" style={{ background: blockTone(b).bar, opacity: 0.85 }}>
                         {b.title}
                       </div>
                     ))}
@@ -632,7 +632,7 @@ export default function Timetable({ initialView = 'week', initialAnchor = null, 
       ) : (
         <>
           {data?.isEmpty && (
-            <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-dashed border-line px-3 py-2.5">
+            <div className="flex flex-wrap items-center justify-between gap-2 rounded-[var(--radius-md)] border border-dashed border-line px-3 py-2.5">
               <p className="text-[11px] font-semibold text-fg-muted">
                 {lang === 'vi' ? 'Chưa có lịch nào trong tuần này.' : 'Nothing scheduled this week yet.'}
               </p>
