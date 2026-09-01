@@ -573,6 +573,70 @@ def seed_reflections_and_tasks(db) -> None:
     db.commit()
 
 
+def seed_current_week_plan(db) -> None:
+    """The Overview screen reads the *current* academic week's Plan/Do/
+    Reflect status live (current_week_for_student(), based on today's real
+    date against the term's start_date) -- but every plan/task/reflection
+    row seeded elsewhere in this file targets a fixed historical
+    week_number (6, 20, ...). Whichever week counts as "current" keeps
+    advancing as real time passes, so a hardcoded week number eventually
+    stops matching it and the demo account's OWN Overview page shows "No
+    plan yet" / 0% even though other weeks have plenty of real data (01/09
+    incident -- reported directly from a fresh Demo login, after every
+    other seed step had already succeeded). Creates a real Plan-Do-Reflect
+    week for whichever week is actually current *right now*, so this
+    doesn't keep recurring as the calendar moves on -- safe to re-run:
+    skips a student who already has a WeeklyPlan for that exact week
+    number (organic or previously seeded)."""
+    from src.db import models
+    from src.services.academic.academic_calendar import current_week_for_student
+
+    for student_id in (STUDENT_A, STUDENT_B, STUDENT_C):
+        week_number = current_week_for_student(db, student_id)
+        if db.query(models.WeeklyPlan).filter_by(student_id=student_id, week_number=week_number).first():
+            continue
+
+        plan_id = f"plan_g3_{student_id}_currentweek_{week_number}"
+        plan = models.WeeklyPlan(
+            id=plan_id, student_id=student_id, week_number=week_number,
+            goals={"statement": "Hoàn thành bài tập và ôn tập theo lịch tuần này."},
+            study_hours_allocated=12.0,
+        )
+        db.add(plan)
+        db.flush()
+
+        monday = _monday_on_or_before(date.today())
+        today_index = date.today().weekday()  # 0=Mon .. 6=Sun
+        for day_index in range(7):
+            day_date = datetime.combine(monday + timedelta(days=day_index), datetime.min.time())
+            is_past = day_index < today_index
+            is_today = day_index == today_index
+            daily = models.DailyPlan(
+                id=f"dp_{plan_id}_{day_index}", weekly_plan_id=plan.id, date=day_date,
+                status="COMPLETED" if is_past else ("IN_PROGRESS" if is_today else "TODO"),
+            )
+            db.add(daily)
+            db.flush()
+            block = models.ScheduleBlock(
+                id=f"sb_{plan_id}_{day_index}", daily_plan_id=daily.id,
+                start_time=day_date.replace(hour=19), end_time=day_date.replace(hour=20, minute=30),
+                activity_description="Ôn tập buổi tối",
+            )
+            db.add(block)
+            db.flush()
+            db.add(models.StudyTask(
+                id=f"task_{plan_id}_{day_index}", schedule_block_id=block.id,
+                title=f"Ôn tập tuần {week_number} — {day_date.strftime('%a')}",
+                planned_minutes=90,
+                actual_minutes=80 if is_past else (30 if is_today else None),
+                priority="MEDIUM",
+                status="COMPLETED" if is_past else ("IN_PROGRESS" if is_today else "TODO"),
+                difficulty="MEDIUM",
+            ))
+        db.commit()
+        logger.info("current_week_plan_created student=%s week=%s", student_id, week_number)
+
+
 def seed_self_study_sessions(db) -> None:
     from src.db import models
 
@@ -887,6 +951,7 @@ def main() -> int:
         seed_quiz_submissions(db)
         seed_assignment_submissions(db)
         seed_reflections_and_tasks(db)
+        seed_current_week_plan(db)
         seed_self_study_sessions(db)
         seed_conversations(db)
         seed_risk_and_notes(db)
