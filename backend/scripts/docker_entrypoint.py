@@ -203,6 +203,37 @@ def _seed_extra_users() -> None:
         db.close()
 
 
+def _seed_gap_fill_demo() -> None:
+    """Fills remaining Student/Admin gaps in the 'Cursus Demo University'
+    sandbox (see scripts/seed_gap_fill_demo.py's own docstring) so the 3
+    one-click demo accounts have real, varied data on every screen instead
+    of empty states. Purely additive and idempotent (checks its own
+    sentinel ids before inserting) -- safe to run on every boot, a no-op
+    once already applied. Never raises: a failure here must not block the
+    app from starting."""
+    from scripts.seed_gap_fill_demo import main as seed_gap_fill_demo_main
+
+    try:
+        seed_gap_fill_demo_main()
+    except Exception:  # noqa: BLE001
+        logger.exception("seed_gap_fill_demo_failed")
+
+
+def _seed_instructor_ui_demo() -> None:
+    """Seeds the Instructor demo account's class roster/risk cases/
+    announcements/guardrail queue (see scripts/seed_instructor_ui_demo.py's
+    own docstring) so all 7 Instructor screens have data to show. Purely
+    additive and idempotent (uidemo_*-prefixed sentinel ids) -- safe to run
+    on every boot. Never raises: a failure here must not block the app
+    from starting."""
+    from scripts.seed_instructor_ui_demo import main as seed_instructor_ui_demo_main
+
+    try:
+        seed_instructor_ui_demo_main()
+    except Exception:  # noqa: BLE001
+        logger.exception("seed_instructor_ui_demo_failed")
+
+
 def _seed_curriculum() -> None:
     """Only fills in a placeholder `chunks_<CODE>.json` for catalog subjects
     that don't have one yet (mostly combo/elective slots with no real
@@ -298,6 +329,8 @@ def main() -> None:
     _seed_curriculum()
     _ingest_real_curriculum()
     _seed_extra_users()
+    _seed_gap_fill_demo()
+    _seed_instructor_ui_demo()
     _provision("student.demo@example.test")
 
     cmd = [
