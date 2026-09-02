@@ -464,12 +464,23 @@ def seed_full_dataset(db) -> None:
         logger.info("quiz_ok")
 
     # --- Class activities (last 2 weeks, varied kind) ---
+    # (course_id, activity_date) carries a real UNIQUE constraint in
+    # production that predates the current models.py (no longer declared
+    # in any current migration/model -- another instance of today's
+    # recurring "live schema knows something the ORM doesn't" class of
+    # drift) -- check by the actual constraint, not just this script's own
+    # id, or a real pre-existing row for that course+day crashes the insert.
     course = db.query(models.Course).filter_by(id="course_mock_prf192").first()
     if course is not None:
         for i in range(6):
             day = date.today() - timedelta(days=i * 2)
             aid = f"{P}activity_{i}"
-            if db.query(models.ClassActivity).filter_by(id=aid).first() is not None:
+            already = (
+                db.query(models.ClassActivity)
+                .filter_by(course_id=course.id, activity_date=day)
+                .first()
+            )
+            if already is not None:
                 continue
             r = _rng("activity", str(i))
             kind = r.choice(["LECTURE_HELD", "LECTURE_HELD", "LECTURE_HELD", "NOTE", "MAKEUP"])
