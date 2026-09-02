@@ -192,46 +192,23 @@ def _provision(email: str) -> None:
         logger.exception("Failed provisioning mock data for %s", email)
 
 
-def _seed_extra_users() -> None:
-    from scripts.seed_extra_users import ensure_extra_users
-    from src.db.connection import SessionLocal
-
-    db = SessionLocal()
-    try:
-        ensure_extra_users(db)
-    finally:
-        db.close()
-
-
-def _seed_gap_fill_demo() -> None:
-    """Fills remaining Student/Admin gaps in the 'Cursus Demo University'
-    sandbox (see scripts/seed_gap_fill_demo.py's own docstring) so the 3
-    one-click demo accounts have real, varied data on every screen instead
-    of empty states. Purely additive and idempotent (checks its own
-    sentinel ids before inserting) -- safe to run on every boot, a no-op
-    once already applied. Never raises: a failure here must not block the
-    app from starting."""
-    from scripts.seed_gap_fill_demo import main as seed_gap_fill_demo_main
+def _seed_demo_dataset() -> None:
+    """Full reset + reseed of the demo sandbox's operational data for all 3
+    roles (see scripts/seed_demo_dataset.py's own docstring) -- replaces
+    the previous seed_extra_users/seed_gap_fill_demo/seed_instructor_ui_demo
+    trio, which drifted out of sync with production repeatedly (stale
+    hardcoded ids, a "current week" that kept moving, a WeeklyPlan "kind"
+    filter silently hiding a reused row). Deletes and rebuilds every
+    operational row it owns on every boot -- deterministic (fixed random
+    seed) so the numbers are reproducible across redeploys, never touches
+    courses/documents/curriculum. Never raises: a failure here must not
+    block the app from starting."""
+    from scripts.seed_demo_dataset import main as seed_demo_dataset_main
 
     try:
-        seed_gap_fill_demo_main()
+        seed_demo_dataset_main()
     except Exception:  # noqa: BLE001
-        logger.exception("seed_gap_fill_demo_failed")
-
-
-def _seed_instructor_ui_demo() -> None:
-    """Seeds the Instructor demo account's class roster/risk cases/
-    announcements/guardrail queue (see scripts/seed_instructor_ui_demo.py's
-    own docstring) so all 7 Instructor screens have data to show. Purely
-    additive and idempotent (uidemo_*-prefixed sentinel ids) -- safe to run
-    on every boot. Never raises: a failure here must not block the app
-    from starting."""
-    from scripts.seed_instructor_ui_demo import main as seed_instructor_ui_demo_main
-
-    try:
-        seed_instructor_ui_demo_main()
-    except Exception:  # noqa: BLE001
-        logger.exception("seed_instructor_ui_demo_failed")
+        logger.exception("seed_demo_dataset_failed")
 
 
 def _seed_curriculum() -> None:
@@ -328,9 +305,7 @@ def main() -> None:
     _seed_if_needed()
     _seed_curriculum()
     _ingest_real_curriculum()
-    _seed_extra_users()
-    _seed_gap_fill_demo()
-    _seed_instructor_ui_demo()
+    _seed_demo_dataset()
     _provision("student.demo@example.test")
 
     cmd = [
