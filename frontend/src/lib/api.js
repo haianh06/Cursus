@@ -9,8 +9,8 @@
  * that domain and is invisible to `document.cookie` running on the
  * frontend's origin, no matter what SameSite says. The backend also echoes
  * the same value in the JSON body of every session-establishing/-restoring
- * response (login, demo-session, google-login, refresh, /auth/me); we hold
- * that in memory here and attach it ourselves instead of reading the cookie.
+ * response (login, demo-session, refresh, /auth/me); we hold that in memory
+ * here and attach it ourselves instead of reading the cookie.
  */
 
 const API_BASE_URL =
@@ -194,14 +194,6 @@ export async function login({ email, password, rememberMe = false }) {
   });
   // Never persist access JWT in JS storage.
   return data;
-}
-
-export async function googleLogin({ email, fullName, googleId }) {
-  return request('/auth/google-login', {
-    method: 'POST',
-    auth: false,
-    body: { email, full_name: fullName, google_id: googleId },
-  });
 }
 
 export async function forgotPassword({ email }) {

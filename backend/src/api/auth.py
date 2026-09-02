@@ -27,7 +27,6 @@ from src.schemas.auth_schemas import (
     ChangePasswordRequest,
     DemoSessionRequest,
     ForgotPasswordRequest,
-    GoogleLoginRequest,
     InviteDetailsResponse,
     LoginRequest,
     LoginResponse,
@@ -468,82 +467,6 @@ async def login(
             token=mfa_result.trusted_device_token,
             settings=settings,
         )
-    return LoginResponse(
-        token=result.access_token,
-        user=_serialize_user(result.user, db),
-        session=_serialize_session(result.session),
-        csrf_token=csrf_token,
-    )
-
-
-@router.post("/google-login", response_model=LoginResponse)
-async def google_login(
-    payload: GoogleLoginRequest,
-    request: Request,
-    response: Response,
-    db: Session = Depends(get_db),
-    auth_service: AuthService = Depends(get_auth_service),
-    audit_service: AuditService = Depends(get_audit_service),
-    settings: Settings = Depends(get_settings),
-) -> LoginResponse:
-    user_repo = UserRepository(db)
-    email = payload.email.strip().lower()
-    user = user_repo.get_by_email(email)
-
-    # Google sign-in authenticates an existing, already-invited account —
-    # it never creates one. Silently provisioning a new account here would
-    # be an open self-registration bypass (any Google account could reach
-    # this endpoint), which is exactly what invite-only registration is
-    # meant to close.
-    if not user:
-        await audit_service.log_event(
-            event_type="LOGIN_FAILED",
-            decision="DENY",
-            ip_address=_request_ip(request),
-            user_agent=request.headers.get("user-agent"),
-            metadata={"method": "google", "reason": "no_invited_account"},
-        )
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="No account found for this email. Ask your organization admin for an invite.",
-        )
-
-    if not user.is_active:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Account is deactivated",
-        )
-
-    if not user.is_email_verified:
-        user.is_email_verified = True
-        db.commit()
-
-    result = await auth_service.create_session_for_user(
-        user=user,
-        remember_me=True,
-        user_agent=request.headers.get("user-agent"),
-        ip_address=request.client.host if request.client else None,
-    )
-
-    await audit_service.log_event(
-        event_type="LOGIN_SUCCESS",
-        decision="ALLOW",
-        actor_user_id=result.user.id,
-        resource_type="session",
-        resource_id=result.session.id,
-        ip_address=_request_ip(request),
-        user_agent=request.headers.get("user-agent"),
-        metadata={"method": "google"},
-    )
-
-    csrf_token = _set_auth_cookies(
-        response,
-        access_token=result.access_token,
-        refresh_token=result.refresh_token,
-        settings=settings,
-        remember_me=True,
-    )
-
     return LoginResponse(
         token=result.access_token,
         user=_serialize_user(result.user, db),

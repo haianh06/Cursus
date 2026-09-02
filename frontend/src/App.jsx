@@ -31,7 +31,6 @@ const DemoSelectRoleScreen = lazy(() => import('./components/auth/DemoSelectRole
 const ForgotPasswordScreen = lazy(() => import('./components/auth/ForgotPasswordScreen'));
 const ResetPasswordScreen = lazy(() => import('./components/auth/ResetPasswordScreen'));
 const EmailVerificationScreen = lazy(() => import('./components/auth/EmailVerificationScreen'));
-const OnboardingScreen = lazy(() => import('./components/auth/OnboardingScreen'));
 const SettingsScreen = lazy(() => import('./components/shared/SettingsScreen'));
 const NotFoundPage = lazy(() => import('./components/shared/NotFoundPage'));
 const PrivacyPolicyScreen = lazy(() => import('./components/legal/PrivacyPolicyScreen'));
@@ -690,7 +689,6 @@ function ScrollManager() {
    letting them see that screen again. */
 function AuthedElsewhereRedirect({ user }) {
   if (!user.email_confirmed) return <Navigate to="/email-verification" replace />;
-  if (!user.onboarded) return <Navigate to="/onboarding" replace />;
   return <Navigate to={DEFAULT_ROUTE[user.role]} replace />;
 }
 
@@ -920,25 +918,10 @@ export default function App() {
               authStatus === 'error' ? (
                 <ApiErrorScreen onRetry={runSessionProbe} context="dashboard" />
               ) : user ? (
-                user.email_confirmed ? <Navigate to="/onboarding" replace /> :
+                user.email_confirmed ? <Navigate to={DEFAULT_ROUTE[user.role]} replace /> :
                 <EmailVerificationScreen user={user} onLogout={logout} />
               ) : <Navigate to="/login" replace />
             } />
-
-            {/* Onboarding step — reachable with NO backend session yet: this is the
-                page that creates the first backend session for a brand-new Google
-                sign-in (via OnboardingScreen's own googleLogin() call using the
-                Supabase client-side session). Gating this route on `user` (backend
-                session) would make it unreachable on that exact first visit. */}
-            <Route path="/onboarding" element={
-              authStatus === 'error' ? (
-                <ApiErrorScreen onRetry={runSessionProbe} context="dashboard" />
-              ) : (
-                user && user.onboarded ? <Navigate to={DEFAULT_ROUTE[user.role]} replace /> :
-                user && !user.email_confirmed ? <Navigate to="/email-verification" replace /> :
-                <OnboardingScreen onLogout={logout} />
-              )
-            }/>
 
             {/* Protected dashboards */}
             <Route path="/student/*" element={
