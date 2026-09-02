@@ -8,6 +8,7 @@ import {
   rollbackMockLmsSync,
 } from '../../lib/api';
 import Button from '../shared/Button';
+import EmptyState from '../shared/EmptyState';
 
 export default function AdminMockLms() {
   const { t, lang } = useLanguage();
@@ -162,7 +163,7 @@ export default function AdminMockLms() {
         <h3 className="flex items-center gap-2 text-xs font-bold text-fg">
           <History size={15} className="text-fg-muted" />{t('admin.mockLmsHistory')}
         </h3>
-        {history.length === 0 && <p className="text-xs text-fg-muted">{t('admin.mockLmsNoHistory')}</p>}
+        {history.length === 0 && <EmptyState title={t('admin.mockLmsNoHistory')} />}
         {history.map((item) => (
           <div
             key={item.syncVersion}

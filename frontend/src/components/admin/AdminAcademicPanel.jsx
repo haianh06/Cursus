@@ -10,6 +10,7 @@ import {
 import { useLanguage } from '../../context/LanguageContext';
 import ConfirmDialog from '../shared/ConfirmDialog';
 import Button from '../shared/Button';
+import EmptyState from '../shared/EmptyState';
 
 const EXAM_KINDS = ['MIDTERM', 'PROGRESS_TEST', 'FINAL'];
 
@@ -222,7 +223,7 @@ export default function AdminAcademicPanel() {
           <h2 className="flex items-center gap-2 text-sm font-bold text-fg"><Clock3 size={15} className="text-accent" />{lang === 'vi' ? 'Lịch đánh giá sắp tới' : 'Upcoming assessments'}</h2>
           <div className="mt-3 space-y-2">
             {scheduledSessions.length === 0 ? (
-              <div className="flex min-h-44 flex-col items-center justify-center rounded-md border border-dashed border-line px-4 text-center text-xs text-fg-muted"><GraduationCap size={20} className="mb-2 text-accent" />{lang === 'vi' ? 'Chưa có lịch thi trong học kỳ.' : 'No exams scheduled for this term.'}</div>
+              <EmptyState title={lang === 'vi' ? 'Chưa có lịch thi trong học kỳ.' : 'No exams scheduled for this term.'} />
             ) : scheduledSessions.slice(0, 4).map((session, index) => (
               <div key={`${session.courseCode}-${session.exam_date}-${index}`} className="rounded-md border border-line p-3">
                 <div className="flex items-start justify-between gap-2"><strong className="mono text-xs text-fg">{session.courseCode}</strong><span className="mono text-xs font-bold text-accent">{new Date(`${session.exam_date}T00:00:00`).getDate()}</span></div>
@@ -362,7 +363,9 @@ export default function AdminAcademicPanel() {
                   ))}
                   {exams.length === 0 && (
                     <tr>
-                      <td colSpan={4} className="py-4 text-center text-fg-muted">{lang === 'vi' ? 'Chưa có lịch thi.' : 'No exams scheduled.'}</td>
+                      <td colSpan={4}>
+                        <EmptyState title={lang === 'vi' ? 'Chưa có lịch thi.' : 'No exams scheduled.'} />
+                      </td>
                     </tr>
                   )}
                 </tbody>

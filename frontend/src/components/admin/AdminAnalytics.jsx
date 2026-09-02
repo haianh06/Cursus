@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { AlertCircle, BarChart3 } from 'lucide-react';
+import { BarChart3 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { getAdminAnalyticsSummary, userFacingApiError } from '../../lib/api';
+import ErrorState from '../shared/ErrorState';
 
 export default function AdminAnalytics() {
   const { t, lang } = useLanguage();
@@ -25,16 +26,12 @@ export default function AdminAnalytics() {
 
   if (error) {
     return (
-      <div className="flex flex-wrap items-center gap-3 text-xs text-danger" role="alert">
-        <span className="flex items-center gap-2"><AlertCircle size={14} />{error.message}</span>
-        <button
-          type="button"
-          onClick={() => setRequestVersion((version) => version + 1)}
-          className="min-h-11 rounded-lg border border-line px-3 font-semibold text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-        >
-          {t('common.retry')}
-        </button>
-      </div>
+      <ErrorState
+        title={t('admin.regionError')}
+        description={error.message}
+        onRetry={() => setRequestVersion((version) => version + 1)}
+        retryLabel={t('common.retry')}
+      />
     );
   }
 

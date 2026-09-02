@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  AlertTriangle, RefreshCw, Plus, ChevronLeft, ChevronRight, X, Trash2,
+  Plus, ChevronLeft, ChevronRight, X, Trash2,
   CalendarRange, Info,
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
@@ -9,6 +9,8 @@ import {
   createClassActivity, deleteClassActivity, getInstructorDashboard,
   listClassActivities, userFacingApiError,
 } from '../../lib/api';
+import ErrorState from '../shared/ErrorState';
+import EmptyState from '../shared/EmptyState';
 
 /**
  * Hoat dong lop — giao dien lay LICH lam trung tam.
@@ -215,14 +217,12 @@ export default function InstructorClassActivityPanel() {
   if (loadError) {
     return (
       <div className="gv-ui p-7">
-        <div className="gv-panel p-8 text-center max-w-lg mx-auto space-y-4">
-          <AlertTriangle size={40} style={{ color: 'var(--gv-danger)' }} className="mx-auto" />
-          <h2 className="gv-section-title">{t('states.errorTitle')}</h2>
-          <p className="gv-body-sm gv-muted">{loadError}</p>
-          <button type="button" className="gv-btn gv-btn--teal mx-auto" onClick={load}>
-            <RefreshCw size={16} /> {t('states.retryBtn')}
-          </button>
-        </div>
+        <ErrorState
+          title={t('states.errorTitle')}
+          description={loadError}
+          onRetry={load}
+          retryLabel={t('states.retryBtn')}
+        />
       </div>
     );
   }
@@ -379,7 +379,7 @@ export default function InstructorClassActivityPanel() {
           <section className="gv-panel p-5 min-w-0">
             <h2 className="gv-section-title mb-4">{t('instructor.actEventList')}</h2>
             {upcoming.length === 0 ? (
-              <p className="gv-body-sm gv-muted py-8 text-center">{t('instructor.actNoEvent')}</p>
+              <EmptyState title={t('instructor.actNoEvent')} />
             ) : (
               <ul className="flex flex-col" style={{ gap: 12 }}>
                 {upcomingPage.slice.map((activity) => {
@@ -454,7 +454,7 @@ export default function InstructorClassActivityPanel() {
                   </div>
                 </div>
               ) : (
-                <p className="gv-body-sm gv-muted">{t('instructor.actWindowNone')}</p>
+                <EmptyState title={t('instructor.actWindowNone')} />
               )}
               <p className="gv-meta mt-3 flex items-start gap-1.5">
                 <Info size={13} className="mt-0.5 shrink-0" /> {t('instructor.actOnePerDay')}

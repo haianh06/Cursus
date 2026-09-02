@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  AlertTriangle, Check, ShieldOff, Eye, UserCircle2, RefreshCw, Download, Users,
+  Check, ShieldOff, Eye, UserCircle2, Download, Users,
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import {
@@ -10,6 +10,8 @@ import {
 import { riskLevelLabel, riskTypeLabel, formatDetectedAt } from '../../lib/riskLabels';
 import RiskCaseDrawer from './RiskCaseDrawer';
 import { GvStickyHeader, GvPager, usePaged } from './GvChrome';
+import ErrorState from '../shared/ErrorState';
+import EmptyState from '../shared/EmptyState';
 
 /**
  * Rui ro & Canh bao — man quan ly CASE, khong phai danh sach sinh vien.
@@ -271,14 +273,12 @@ export default function InstructorRiskPage() {
   if (loadError) {
     return (
       <div className="gv-ui p-7">
-        <div className="gv-panel p-8 text-center max-w-lg mx-auto space-y-4">
-          <AlertTriangle size={40} style={{ color: 'var(--gv-danger)' }} className="mx-auto" />
-          <h2 className="gv-section-title">{t('states.errorTitle')}</h2>
-          <p className="gv-body-sm gv-muted">{loadError}</p>
-          <button type="button" className="gv-btn gv-btn--teal mx-auto" onClick={load}>
-            <RefreshCw size={16} /> {t('states.retryBtn')}
-          </button>
-        </div>
+        <ErrorState
+          title={t('states.errorTitle')}
+          description={loadError}
+          onRetry={load}
+          retryLabel={t('states.retryBtn')}
+        />
       </div>
     );
   }
@@ -366,7 +366,7 @@ export default function InstructorRiskPage() {
               <span className="gv-badge gv-badge--danger">{unresolved.length}</span>
             </div>
             {unresolved.length === 0 ? (
-              <p className="gv-body-sm gv-muted py-8 text-center">{t('instructor.riskNoUnresolved')}</p>
+              <EmptyState title={t('instructor.riskNoUnresolved')} />
             ) : (
               <div className="flex flex-col" style={{ gap: 12 }}>
                 {unresolvedPage.slice.map((risk) => (
@@ -390,7 +390,7 @@ export default function InstructorRiskPage() {
               <span className="gv-badge gv-badge--neutral">{resolved.length}</span>
             </div>
             {resolved.length === 0 ? (
-              <p className="gv-body-sm gv-muted py-8 text-center">{t('instructor.riskNoResolved')}</p>
+              <EmptyState title={t('instructor.riskNoResolved')} />
             ) : (
               <div className="flex flex-col" style={{ gap: 12 }}>
                 {resolvedPage.slice.map((risk) => (

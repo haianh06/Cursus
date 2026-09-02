@@ -9,6 +9,8 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { getAdminInstructorSummary } from '../../lib/api';
+import EmptyState from '../shared/EmptyState';
+import ErrorState from '../shared/ErrorState';
 
 /** Instructor 360 — aggregate-only view of one instructor's profile.
  * Spec: docs/SPEC_ADMIN_REBUILD_TU_CHUNG_23AUG.md mục 3.4.
@@ -40,11 +42,11 @@ export default function AdminInstructor360() {
         <button type="button" className="btn-ghost text-[13px] mb-4 inline-flex items-center gap-1.5 cursor-pointer" onClick={() => navigate('/admin/people')}>
           <ArrowLeft size={14} /> {lang === 'vi' ? 'Quay lại' : 'Back'}
         </button>
-        <p className="text-[14px] text-danger">
-          {notFound
-            ? (lang === 'vi' ? 'Không tìm thấy giảng viên.' : 'Instructor not found.')
-            : (lang === 'vi' ? 'Không tải được hồ sơ.' : 'Could not load profile.')}
-        </p>
+        {notFound ? (
+          <EmptyState title={lang === 'vi' ? 'Không tìm thấy giảng viên.' : 'Instructor not found.'} />
+        ) : (
+          <ErrorState title={lang === 'vi' ? 'Không tải được hồ sơ.' : 'Could not load profile.'} />
+        )}
       </div>
     );
   }

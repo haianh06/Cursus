@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { AlertCircle, Coins } from 'lucide-react';
+import { Coins } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { getAdminAiUsage, userFacingApiError } from '../../lib/api';
-import Button from '../shared/Button';
+import EmptyState from '../shared/EmptyState';
+import ErrorState from '../shared/ErrorState';
 
 const WINDOWS = [7, 30, 90];
 
@@ -117,17 +118,12 @@ export default function AdminAiUsage() {
 
   if (error) {
     return (
-      <div className="flex flex-wrap items-center gap-3 text-xs text-danger" role="alert">
-        <span className="flex items-center gap-2"><AlertCircle size={14} />{error.message}</span>
-        <Button
-          variant="outline"
-          size="lg"
-          onClick={() => setRequestVersion((version) => version + 1)}
-          className="font-semibold"
-        >
-          {t('common.retry')}
-        </Button>
-      </div>
+      <ErrorState
+        title={t('admin.regionError')}
+        description={error.message}
+        onRetry={() => setRequestVersion((version) => version + 1)}
+        retryLabel={t('common.retry')}
+      />
     );
   }
 
@@ -190,9 +186,7 @@ export default function AdminAiUsage() {
       />
 
       {report.by_feature.length === 0 ? (
-        <p className="rounded-lg border border-line p-4 text-xs leading-relaxed text-fg-secondary" role="status">
-          {t('admin.aiUsageEmpty')}
-        </p>
+        <EmptyState title={t('admin.aiUsageEmpty')} />
       ) : (
         <div className="overflow-x-auto rounded-lg border border-line">
           <table className="w-full text-xs">

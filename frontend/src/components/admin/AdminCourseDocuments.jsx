@@ -3,6 +3,8 @@ import { Upload, FileText, CheckCircle2, Archive, XCircle, AlertCircle, Eye, His
 import { useLanguage } from '../../context/LanguageContext';
 import Modal from '../shared/Modal';
 import Button from '../shared/Button';
+import EmptyState from '../shared/EmptyState';
+import ErrorState from '../shared/ErrorState';
 import {
   getAdminCourseDocuments,
   getAdminCourseDocumentContent,
@@ -182,9 +184,13 @@ export default function AdminCourseDocuments({ courseCode }) {
 
   if (error) {
     return (
-      <div className="p-4 bg-danger-soft border-t border-danger/20 text-xs text-danger flex items-start gap-2">
-        <AlertCircle size={14} className="mt-0.5" />
-        <span>{error}</span>
+      <div className="p-4 bg-surface-elevated border-t border-line">
+        <ErrorState
+          title={lang === 'vi' ? 'Không tải được tài liệu' : 'Could not load documents'}
+          description={error}
+          onRetry={loadDocs}
+          retryLabel={lang === 'vi' ? 'Thử lại' : 'Retry'}
+        />
       </div>
     );
   }
@@ -213,7 +219,7 @@ export default function AdminCourseDocuments({ courseCode }) {
       )}
 
       {documents.length === 0 ? (
-        <p className="text-xs text-fg-muted">{lang === 'vi' ? 'Chưa có tài liệu nào.' : 'No documents found.'}</p>
+        <EmptyState title={lang === 'vi' ? 'Chưa có tài liệu nào.' : 'No documents found.'} />
       ) : (
         <div className="overflow-x-auto rounded-lg border border-line">
           <table className="w-full text-left border-collapse whitespace-nowrap">

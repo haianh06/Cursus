@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   AlertTriangle, Clock, ShieldCheck, CircleCheckBig, ArrowUp, ArrowDown,
   ChevronRight, Megaphone, FileText, Shield, Download, Mail, CalendarClock,
-  BookOpen, FileCheck2, RefreshCw, Users, UserCircle2,
+  BookOpen, FileCheck2, Users, UserCircle2,
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { GvStickyHeader } from './GvChrome';
@@ -13,6 +13,8 @@ import {
   sendInstructorDigestEmail, userFacingApiError,
 } from '../../lib/api';
 import { riskLevelLabel } from '../../lib/riskLabels';
+import ErrorState from '../shared/ErrorState';
+import EmptyState from '../shared/EmptyState';
 
 /**
  * Dashboard GV — tra loi dung mot cau hoi: "Hom nay toi can chu y dieu gi?".
@@ -323,14 +325,12 @@ export default function InstructorHome({ user }) {
   if (loadError) {
     return (
       <div className="gv-ui p-7">
-        <div className="gv-panel p-8 text-center max-w-lg mx-auto space-y-4">
-          <AlertTriangle size={40} style={{ color: 'var(--gv-danger)' }} className="mx-auto" />
-          <h2 className="gv-section-title">{t('states.errorTitle')}</h2>
-          <p className="gv-body-sm gv-muted">{loadError}</p>
-          <button type="button" className="gv-btn gv-btn--teal mx-auto" onClick={loadDashboard}>
-            <RefreshCw size={16} /> {t('states.retryBtn')}
-          </button>
-        </div>
+        <ErrorState
+          title={t('states.errorTitle')}
+          description={loadError}
+          onRetry={loadDashboard}
+          retryLabel={t('states.retryBtn')}
+        />
       </div>
     );
   }
@@ -430,7 +430,7 @@ export default function InstructorHome({ user }) {
             </div>
 
             {attention.length === 0 ? (
-              <p className="gv-body-sm gv-muted py-8 text-center">{t('instructor.dashNoAttention')}</p>
+              <EmptyState title={t('instructor.dashNoAttention')} />
             ) : (
               <table className="w-full" style={{ borderCollapse: 'collapse' }}>
                 <thead>
@@ -493,7 +493,7 @@ export default function InstructorHome({ user }) {
               </div>
 
               {announcements.length === 0 ? (
-                <p className="gv-body-sm gv-muted py-6 text-center">{t('instructor.dashNoNotices')}</p>
+                <EmptyState title={t('instructor.dashNoNotices')} />
               ) : (
                 <ul className="flex flex-col" style={{ gap: 12 }}>
                   {announcements.map((notice, index) => {
@@ -605,7 +605,7 @@ export default function InstructorHome({ user }) {
                 </tbody>
               </table>
               {comparison.length === 0 && (
-                <p className="gv-body-sm gv-muted py-8 text-center">{t('instructor.dashHealthEmpty')}</p>
+                <EmptyState title={t('instructor.dashHealthEmpty')} />
               )}
             </div>
           </section>

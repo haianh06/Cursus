@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  AlertTriangle, RefreshCw, Plus, Check, Sparkles, Trash2, Send, Undo2,
+  Plus, Check, Sparkles, Trash2, Send, Undo2,
   ChevronLeft, ChevronRight, Info, BookOpen, Clock, X,
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
@@ -11,6 +11,8 @@ import {
   userFacingApiError,
 } from '../../lib/api';
 import { formatDetectedAt } from '../../lib/riskLabels';
+import ErrorState from '../shared/ErrorState';
+import EmptyState from '../shared/EmptyState';
 
 /**
  * Quan ly Quiz — bo cuc master-detail: danh sach ben trai, xem truoc MOT cau
@@ -198,14 +200,12 @@ export default function InstructorQuizManager() {
   if (loadError) {
     return (
       <div className="gv-ui p-7">
-        <div className="gv-panel p-8 text-center max-w-lg mx-auto space-y-4">
-          <AlertTriangle size={40} style={{ color: 'var(--gv-danger)' }} className="mx-auto" />
-          <h2 className="gv-section-title">{t('states.errorTitle')}</h2>
-          <p className="gv-body-sm gv-muted">{loadError}</p>
-          <button type="button" className="gv-btn gv-btn--teal mx-auto" onClick={() => loadQuizzes()}>
-            <RefreshCw size={16} /> {t('states.retryBtn')}
-          </button>
-        </div>
+        <ErrorState
+          title={t('states.errorTitle')}
+          description={loadError}
+          onRetry={() => loadQuizzes()}
+          retryLabel={t('states.retryBtn')}
+        />
       </div>
     );
   }
@@ -287,7 +287,7 @@ export default function InstructorQuizManager() {
           {/* --- Danh sach quiz --- */}
           <section className="gv-panel p-5 min-w-0">
             {visible.length === 0 ? (
-              <p className="gv-body-sm gv-muted py-10 text-center">{t('instructor.qzEmpty')}</p>
+              <EmptyState title={t('instructor.qzEmpty')} />
             ) : (
               <div style={{ overflowX: 'auto' }}>
                 <table className="w-full" style={{ borderCollapse: 'collapse', minWidth: 420 }}>
@@ -387,7 +387,7 @@ export default function InstructorQuizManager() {
 
                 {detailTab === 'PREVIEW' ? (
                   questions.length === 0 ? (
-                    <p className="gv-body-sm gv-muted py-8 text-center">{t('instructor.qzNoQuestion')}</p>
+                    <EmptyState title={t('instructor.qzNoQuestion')} />
                   ) : (
                     <div className="gv-card p-5">
                       <div className="flex items-center justify-between gap-3 mb-3">

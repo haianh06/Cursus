@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  AlertTriangle, RefreshCw, Download, Users, Search, X, FileText,
+  Download, Users, Search, X, FileText,
   FileWarning, FileCheck2, CircleCheckBig, ChevronRight, Info,
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { GvStickyHeader, GvPager, usePaged } from './GvChrome';
+import ErrorState from '../shared/ErrorState';
+import EmptyState from '../shared/EmptyState';
 import {
   exportInstructorReport, getAssignmentSubmissions, getInstructorAlerts,
   getInstructorDashboard, listInstructorAssignments, userFacingApiError,
@@ -208,15 +210,12 @@ export default function AssignmentSubmissionsPanel() {
   if (loadError) {
     return (
       <div className="gv-ui p-7">
-        <div className="gv-panel p-8 text-center max-w-lg mx-auto space-y-4">
-          <AlertTriangle size={40} style={{ color: 'var(--gv-danger)' }} className="mx-auto" />
-          <h2 className="gv-section-title">{t('states.errorTitle')}</h2>
-          <p className="gv-body-sm gv-muted">{loadError}</p>
-          <button type="button" className="gv-btn gv-btn--teal mx-auto"
-            onClick={() => setSelectedCourseId((v) => v)}>
-            <RefreshCw size={16} /> {t('states.retryBtn')}
-          </button>
-        </div>
+        <ErrorState
+          title={t('states.errorTitle')}
+          description={loadError}
+          onRetry={() => setSelectedCourseId((v) => v)}
+          retryLabel={t('states.retryBtn')}
+        />
       </div>
     );
   }
@@ -297,7 +296,7 @@ export default function AssignmentSubmissionsPanel() {
           </h2>
 
           {visible.length === 0 ? (
-            <p className="gv-body-sm gv-muted py-10 text-center">{t('instructor.subEmpty')}</p>
+            <EmptyState title={t('instructor.subEmpty')} />
           ) : (
             <div style={{ overflowX: 'auto' }}>
               <table className="w-full" style={{ borderCollapse: 'collapse', minWidth: 900 }}>

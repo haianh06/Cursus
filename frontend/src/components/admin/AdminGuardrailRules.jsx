@@ -10,6 +10,7 @@ import {
   setGuardrailRule,
 } from '../../lib/api';
 import ConfirmDialog from '../shared/ConfirmDialog';
+import EmptyState from '../shared/EmptyState';
 
 const MIN_REASON_LENGTH = 5;
 
@@ -202,7 +203,7 @@ export default function AdminGuardrailRules() {
 
       <div className="space-y-3 border-t border-line/60 pt-6">
         <h3 className="flex items-center gap-2 text-xs font-bold text-fg"><History size={15} className="text-fg-muted" />{t('admin.guardrailHistory')}</h3>
-        {history.length === 0 && <p className="text-xs text-fg-muted">{t('admin.guardrailHistoryEmpty')}</p>}
+        {history.length === 0 && <EmptyState title={t('admin.guardrailHistoryEmpty')} />}
         {history.map((item) => (
           <div key={item.version} className="flex flex-col gap-3 rounded-[var(--radius-md)] border border-line bg-surface-card p-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="min-w-0">

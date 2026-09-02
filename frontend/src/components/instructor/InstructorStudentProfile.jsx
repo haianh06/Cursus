@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft, Mail, AlertTriangle, ShieldAlert, StickyNote, Trash2,
-  Eye, EyeOff, RefreshCw, Loader2,
+  Eye, EyeOff, Loader2,
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import {
@@ -13,6 +13,8 @@ import {
   riskLevelLabel, riskTypeLabel, isHighRisk, formatDetectedAt, blockReasonLabel,
 } from '../../lib/riskLabels';
 import RiskCaseDrawer from './RiskCaseDrawer';
+import ErrorState from '../shared/ErrorState';
+import EmptyState from '../shared/EmptyState';
 
 /** A1 — ho so 360 cua 1 SV, mo tu link "Xem ho so" tren dashboard/guardrail.
  *  Chi gom lop/case thuoc ve GV dang xem (backend da loc), nen khong can loc
@@ -115,16 +117,13 @@ export default function InstructorStudentProfile() {
 
   if (loadError || !profile) {
     return (
-      <div className="p-12 text-center space-y-4 max-w-lg mx-auto bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/60 rounded-[var(--radius-md)] my-8 shadow-xl">
-        <AlertTriangle className="w-12 h-12 text-red-600 dark:text-red-400 mx-auto" />
-        <h3 className="text-lg font-black text-red-900 dark:text-red-200 font-serif-heading">{t('states.errorTitle')}</h3>
-        <p className="text-xs text-red-800 dark:text-red-300/90 font-medium">{loadError || t('states.errorDesc')}</p>
-        <button
-          onClick={load}
-          className="px-4 py-2 bg-danger hover:opacity-90 text-white text-xs font-bold rounded-[var(--radius-sm)] inline-flex items-center gap-2 cursor-pointer shadow-md"
-        >
-          <RefreshCw className="w-4 h-4" /> {t('states.retryBtn')}
-        </button>
+      <div className="max-w-lg mx-auto my-8">
+        <ErrorState
+          title={t('states.errorTitle')}
+          description={loadError || t('states.errorDesc')}
+          onRetry={load}
+          retryLabel={t('states.retryBtn')}
+        />
       </div>
     );
   }
@@ -170,7 +169,7 @@ export default function InstructorStudentProfile() {
               {t('instructor.profileWeeklyTitle')}
             </h2>
             {profile.weeklyCompletionHistory.length === 0 ? (
-              <p className="text-xs text-slate-500 dark:text-slate-400">{t('instructor.profileWeeklyEmpty')}</p>
+              <EmptyState title={t('instructor.profileWeeklyEmpty')} />
             ) : (
               <div className="space-y-3">
                 {profile.weeklyCompletionHistory.map((item) => (
@@ -254,7 +253,7 @@ export default function InstructorStudentProfile() {
             </div>
 
             {profile.notes.length === 0 ? (
-              <p className="text-xs text-slate-500 dark:text-slate-400">{t('instructor.notesEmpty')}</p>
+              <EmptyState title={t('instructor.notesEmpty')} />
             ) : (
               <div className="space-y-2 max-h-[18rem] overflow-y-auto pr-1">
                 {profile.notes.map((note) => (
@@ -293,7 +292,7 @@ export default function InstructorStudentProfile() {
               <AlertTriangle className="w-4 h-4 text-accent" /> {t('instructor.profileRiskHistoryTitle')}
             </h2>
             {profile.riskHistory.length === 0 ? (
-              <p className="text-xs text-slate-500 dark:text-slate-400">{t('instructor.profileRiskHistoryEmpty')}</p>
+              <EmptyState title={t('instructor.profileRiskHistoryEmpty')} />
             ) : (
               <div className="space-y-2 max-h-[22rem] overflow-y-auto pr-1">
                 {profile.riskHistory.map((risk) => {
@@ -338,7 +337,7 @@ export default function InstructorStudentProfile() {
               <ShieldAlert className="w-4 h-4 text-danger" /> {t('instructor.profileGuardrailHistoryTitle')}
             </h2>
             {profile.guardrailHistory.length === 0 ? (
-              <p className="text-xs text-slate-500 dark:text-slate-400">{t('instructor.profileGuardrailHistoryEmpty')}</p>
+              <EmptyState title={t('instructor.profileGuardrailHistoryEmpty')} />
             ) : (
               <div className="space-y-2 max-h-[22rem] overflow-y-auto pr-1">
                 {profile.guardrailHistory.map((item) => {

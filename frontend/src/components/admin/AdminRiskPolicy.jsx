@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { AlertCircle, GitCompareArrows, History, RotateCcw } from 'lucide-react';
 import ConfirmDialog from '../shared/ConfirmDialog';
 import Button from '../shared/Button';
+import EmptyState from '../shared/EmptyState';
+import ErrorState from '../shared/ErrorState';
 import { useLanguage } from '../../context/LanguageContext';
 import {
   getRiskPolicy,
@@ -133,11 +135,14 @@ export default function AdminRiskPolicy() {
   }
 
   if (!form || !current) {
-    return (
-      <section className="card p-5 text-xs text-fg-muted">
-        {error ? <span className="text-danger">{error}</span> : t('admin.loading')}
-      </section>
-    );
+    if (error) {
+      return (
+        <section className="card p-5">
+          <ErrorState title={t('admin.regionError')} description={error} onRetry={load} retryLabel={t('admin.retry')} />
+        </section>
+      );
+    }
+    return <section className="card p-5 text-xs text-fg-muted">{t('admin.loading')}</section>;
   }
 
   return (
@@ -280,7 +285,7 @@ export default function AdminRiskPolicy() {
         <h3 className="flex items-center gap-2 text-xs font-bold text-fg">
           <History size={15} className="text-fg-muted" />{t('admin.policyHistory')}
         </h3>
-        {history.length === 0 && <p className="text-xs text-fg-muted">{t('admin.policyNoHistory')}</p>}
+        {history.length === 0 && <EmptyState title={t('admin.policyNoHistory')} />}
         {history.map((item) => (
           <div
             key={item.policyVersion}

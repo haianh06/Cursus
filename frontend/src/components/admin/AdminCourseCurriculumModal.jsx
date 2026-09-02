@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { AlertCircle, BookOpen, ListChecks, X } from 'lucide-react';
+import { BookOpen, ListChecks, X } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { getAdminCourseCurriculum } from '../../lib/api';
+import EmptyState from '../shared/EmptyState';
+import ErrorState from '../shared/ErrorState';
 
 // A curated subset of the raw syllabus `meta` keys, with Vietnamese labels —
 // deliberately NOT a 1:1 dump of every key (some, like "Syllabus ID"/
@@ -135,21 +137,21 @@ export default function AdminCourseCurriculumModal({ code, courseName, onClose }
           {loading && <p className="text-xs text-fg-muted">{lang === 'vi' ? 'Đang tải…' : 'Loading…'}</p>}
 
           {!loading && isNotFound && (
-            <div className="flex items-start gap-2.5 p-3.5 rounded-[var(--radius-md)] bg-surface-elevated border border-line">
-              <AlertCircle size={14} className="shrink-0 mt-0.5 text-fg-muted" />
-              <p className="text-xs text-fg-secondary leading-relaxed">
-                {lang === 'vi'
+            <EmptyState
+              title={lang === 'vi' ? 'Chưa có dữ liệu chương trình' : 'No curriculum data'}
+              description={
+                lang === 'vi'
                   ? 'Môn này chưa có dữ liệu chương trình chi tiết (CLO/Session) — có thể được thêm thủ công qua form "Thêm môn học", không có file syllabus thật đi kèm.'
-                  : 'No detailed curriculum data (CLO/Session) for this course — it may have been added manually via the "Add course" form, with no real syllabus file behind it.'}
-              </p>
-            </div>
+                  : 'No detailed curriculum data (CLO/Session) for this course — it may have been added manually via the "Add course" form, with no real syllabus file behind it.'
+              }
+            />
           )}
 
           {!loading && error && !isNotFound && (
-            <div className="flex items-start gap-2.5 p-3.5 rounded-[var(--radius-md)] bg-danger-soft border border-danger/20">
-              <AlertCircle size={14} className="shrink-0 mt-0.5 text-danger" />
-              <p className="text-xs text-danger leading-relaxed">{error.message}</p>
-            </div>
+            <ErrorState
+              title={lang === 'vi' ? 'Không tải được dữ liệu chương trình' : 'Could not load curriculum data'}
+              description={error.message}
+            />
           )}
 
           {!loading && data && (
@@ -172,7 +174,7 @@ export default function AdminCourseCurriculumModal({ code, courseName, onClose }
                   <span className="mono text-[10px] text-fg-muted">{data.clo_count}</span>
                 </div>
                 {data.clos.length === 0 ? (
-                  <p className="text-xs text-fg-muted">{lang === 'vi' ? 'Không có dữ liệu CLO.' : 'No CLO data.'}</p>
+                  <EmptyState title={lang === 'vi' ? 'Không có dữ liệu CLO.' : 'No CLO data.'} />
                 ) : (
                   <div className="card overflow-hidden">
                     <table className="data-table">
@@ -200,7 +202,7 @@ export default function AdminCourseCurriculumModal({ code, courseName, onClose }
                   <span className="mono text-[10px] text-fg-muted">{data.session_count}</span>
                 </div>
                 {data.sessions.length === 0 ? (
-                  <p className="text-xs text-fg-muted">{lang === 'vi' ? 'Không có dữ liệu buổi học.' : 'No session data.'}</p>
+                  <EmptyState title={lang === 'vi' ? 'Không có dữ liệu buổi học.' : 'No session data.'} />
                 ) : (
                   <div className="card overflow-hidden">
                     <div className="overflow-x-auto max-h-[320px] overflow-y-auto">

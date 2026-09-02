@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { AlertCircle, CheckCircle2, Settings } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { getAdminSettings, updateAdminSettings } from '../../lib/api';
+import ErrorState from '../shared/ErrorState';
 
 /** mục 6.5 "Cấu hình" — bật/tắt chế độ demo, bật/tắt tự động cảnh báo nguy
  * cơ, học kỳ mặc định. Backend (`/admin/settings`) đã xong từ trước; tab
@@ -61,6 +62,14 @@ export default function AdminSettingsPanel() {
 
   if (loading) {
     return <p className="text-xs text-fg-muted">{t('admin.loading')}</p>;
+  }
+
+  if (!settings) {
+    return (
+      <section className="card p-5 sm:p-6 border-t-2 sm:border-t-[3px] border-t-accent">
+        <ErrorState title={t('admin.regionError')} description={error} onRetry={load} retryLabel={t('admin.retry')} />
+      </section>
+    );
   }
 
   return (

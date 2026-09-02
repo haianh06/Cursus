@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { AlertCircle, CheckCircle2, ChevronRight, FileClock, History, KeyRound, Search, Settings2, ShieldAlert, ShieldCheck, XCircle } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { getAuditEvents } from '../../lib/api';
+import EmptyState from '../shared/EmptyState';
 
 // A demo/test org that gets clicked through repeatedly generates a LOGIN_
 // SUCCESS/LOGOUT/DEMO_SESSION_STARTED for every single visit -- on a young
@@ -194,10 +195,8 @@ export default function AdminAudit() {
 
       {events === null ? (
         <p className="text-xs text-fg-muted">{t('admin.loading')}</p>
-      ) : events.length === 0 ? (
-        <p className="text-xs text-fg-muted">{t('admin.auditEmpty')}</p>
-      ) : visibleEvents.length === 0 ? (
-        <p className="text-xs text-fg-muted">{t('admin.auditEmpty')}</p>
+      ) : events.length === 0 || visibleEvents.length === 0 ? (
+        <EmptyState title={t('admin.auditEmpty')} />
       ) : (
         <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
           <div className="overflow-x-auto rounded-lg border border-line bg-surface-card">

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  AlertTriangle, RefreshCw, Send, Users, ChevronRight, Trophy, Lightbulb,
+  AlertTriangle, Send, Users, ChevronRight, Trophy, Lightbulb,
   Check, ShieldAlert, ShieldOff, UserCircle2,
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
@@ -11,6 +11,8 @@ import {
   getGuardrailReviewQueue, sendInstructorDigestEmail, userFacingApiError,
 } from '../../lib/api';
 import { riskLevelLabel, formatDetectedAt } from '../../lib/riskLabels';
+import ErrorState from '../shared/ErrorState';
+import EmptyState from '../shared/EmptyState';
 
 /**
  * Digest tuan — ban tom tat dieu hanh, KHONG phai dashboard thu hai.
@@ -212,14 +214,12 @@ export default function InstructorDigestPage() {
   if (loadError) {
     return (
       <div className="gv-ui p-7">
-        <div className="gv-panel p-8 text-center max-w-lg mx-auto space-y-4">
-          <AlertTriangle size={40} style={{ color: 'var(--gv-danger)' }} className="mx-auto" />
-          <h2 className="gv-section-title">{t('states.errorTitle')}</h2>
-          <p className="gv-body-sm gv-muted">{loadError}</p>
-          <button type="button" className="gv-btn gv-btn--teal mx-auto" onClick={load}>
-            <RefreshCw size={16} /> {t('states.retryBtn')}
-          </button>
-        </div>
+        <ErrorState
+          title={t('states.errorTitle')}
+          description={loadError}
+          onRetry={load}
+          retryLabel={t('states.retryBtn')}
+        />
       </div>
     );
   }
@@ -303,7 +303,7 @@ export default function InstructorDigestPage() {
             </div>
 
             {(digest?.newRiskCases || []).length === 0 ? (
-              <p className="gv-body-sm gv-muted py-8 text-center">{t('instructor.digNoRisk')}</p>
+              <EmptyState title={t('instructor.digNoRisk')} />
             ) : (
               <ul className="flex flex-col" style={{ gap: 12 }}>
                 {digest.newRiskCases.slice(0, 3).map((row) => (
@@ -352,7 +352,7 @@ export default function InstructorDigestPage() {
             </div>
 
             {(digest?.newGuardrailCases || []).length === 0 ? (
-              <p className="gv-body-sm gv-muted py-8 text-center">{t('instructor.digNoGuardrail')}</p>
+              <EmptyState title={t('instructor.digNoGuardrail')} />
             ) : (
               <ul className="flex flex-col" style={{ gap: 12 }}>
                 {digest.newGuardrailCases.slice(0, 3).map((row) => (
@@ -396,7 +396,7 @@ export default function InstructorDigestPage() {
               <h2 className="gv-section-title">{t('instructor.digHighlights')}</h2>
             </div>
             {highlights.length === 0 ? (
-              <p className="gv-body-sm gv-muted">{t('instructor.digNoHighlight')}</p>
+              <EmptyState title={t('instructor.digNoHighlight')} />
             ) : (
               <ul className="flex flex-col" style={{ gap: 12 }}>
                 {highlights.map((text) => (

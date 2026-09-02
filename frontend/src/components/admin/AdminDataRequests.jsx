@@ -3,6 +3,7 @@ import { AlertCircle, AlertTriangle, Check, CheckCircle2, ChevronRight, Clock3, 
 import { useLanguage } from '../../context/LanguageContext';
 import Modal from '../shared/Modal';
 import Button from '../shared/Button';
+import EmptyState from '../shared/EmptyState';
 import {
   completeDataRequest,
   confirmDeleteDataRequest,
@@ -229,13 +230,10 @@ export default function AdminDataRequests() {
         {!requests ? (
           <div className="flex justify-center p-8"><Loader2 className="animate-spin text-fg-muted" /></div>
         ) : requests.length === 0 ? (
-          <div className="admin-empty-panel">
-            <FileText size={22} className="text-accent" aria-hidden="true" />
-            <p className="text-sm font-semibold text-fg">{lang === 'vi' ? 'Chưa có yêu cầu dữ liệu' : 'No data requests'}</p>
-            <p className="max-w-sm text-center text-xs text-fg-muted">
-              {lang === 'vi' ? 'Các yêu cầu truy cập, xuất hoặc xoá dữ liệu sẽ xuất hiện tại đây để quản trị viên xử lý.' : 'Access, export, and deletion requests will appear here for admin review.'}
-            </p>
-          </div>
+          <EmptyState
+            title={lang === 'vi' ? 'Chưa có yêu cầu dữ liệu' : 'No data requests'}
+            description={lang === 'vi' ? 'Các yêu cầu truy cập, xuất hoặc xoá dữ liệu sẽ xuất hiện tại đây để quản trị viên xử lý.' : 'Access, export, and deletion requests will appear here for admin review.'}
+          />
         ) : (
           <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1fr)_21rem]">
           <div className="overflow-x-auto rounded-lg border border-line bg-surface-card">

@@ -5,6 +5,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import ConfirmDialog from '../shared/ConfirmDialog';
 import Modal from '../shared/Modal';
 import Button from '../shared/Button';
+import EmptyState from '../shared/EmptyState';
 import { ROLE_LABEL } from '../../constants/roles';
 import {
   createInvite,
@@ -179,7 +180,7 @@ export default function AdminUsers() {
         {invites === null ? (
           <p className="text-xs text-fg-muted">{t('admin.loading')}</p>
         ) : invites.length === 0 ? (
-          <p className="text-xs text-fg-muted">{t('admin.invitesEmpty')}</p>
+          <EmptyState title={t('admin.invitesEmpty')} />
         ) : (
           <div className="overflow-x-auto">
             <table className="data-table">
@@ -250,7 +251,7 @@ export default function AdminUsers() {
         {users === null ? (
           <p className="text-xs text-fg-muted">{t('admin.loading')}</p>
         ) : users.length === 0 ? (
-          <p className="text-xs text-fg-muted">{t('admin.usersEmpty')}</p>
+          <EmptyState title={t('admin.usersEmpty')} />
         ) : (
           <div className="overflow-x-auto">
             <table className="data-table">
