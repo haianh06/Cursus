@@ -18,7 +18,7 @@ import logging
 import re
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 from sqlalchemy.orm import Session
 
 from src.repositories.chunk_repository import ChunkRecord, ChunkRepository
@@ -51,6 +51,21 @@ class _McqSpec(BaseModel):
     correct_key: str = "A"
     explanation: str = ""
     source_label: str = ""
+
+    @model_validator(mode="before")
+    @classmethod
+    def _accept_question_as_prompt(cls, data: Any) -> Any:
+        # Despite json_schema being sent with the exact field name "prompt"
+        # (generate_structured() -> json_schema=schema_model.model_json_schema()),
+        # the gateway model doesn't always comply strictly and returns the
+        # far more common "question" instead -- seen live in production
+        # (10/10 mcq items on one real PRF192 call), silently discarding
+        # every AI-generated practice item for that call in favor of the
+        # deterministic fallback. Accept either key rather than relying on
+        # the gateway's schema adherence.
+        if isinstance(data, dict) and not data.get("prompt") and data.get("question"):
+            data = {**data, "prompt": data["question"]}
+        return data
 
 
 class _FlashcardSpec(BaseModel):
