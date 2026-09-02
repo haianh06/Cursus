@@ -157,11 +157,17 @@ def _ensure_demo_sandbox() -> None:
 
     The generic API demo fixture uses different emails, so seeding it alone
     leaves the public role picker returning HTTP 503. The provisioning script
-    is idempotent and keeps these accounts inside an isolated sandbox org.
+    is idempotent and keeps these accounts inside an isolated sandbox org
+    ("cursus-demo", never touching a real tenant) -- unlike `_seed_if_needed`/
+    `_provision` below, this always runs regardless of APP_ENV. This whole
+    deployment's public demo flow depends on these 3 rows existing; gating
+    them to dev/test only left production with no way to self-heal if they
+    were ever lost (confirmed live 2026-09-02: reset_operational_data() in
+    scripts/seed_demo_dataset.py deleted the real demo.student account via
+    an id collision with a legacy row, and production then had to run
+    without a working "student" demo-session button until this fix redeployed --
+    _ensure_demo_sandbox() being dev/test-only meant nothing recreated it).
     """
-    app_env = os.getenv("APP_ENV", "development").strip().lower()
-    if app_env not in _SEEDABLE_ENVS:
-        return
     _run(
         [
             sys.executable,
