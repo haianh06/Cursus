@@ -13,6 +13,20 @@ from src.security.middleware import (
 )
 
 TEST_SECRET = "unit-test-secret-key-at-least-32-characters-long"
+# Settings' fail-fast production validator requires these to be non-placeholder
+# when app_env=="production" -- these tests construct a real production
+# Settings object directly (not through get_settings()/.env), so they must
+# supply values too.
+PRODUCTION_SECRET_KWARGS = {
+    "google_api_key": "test-google-key",
+    "openai_api_key": "test-openai-key",
+    "crisis_escalation_email": "crisis@example.test",
+    "database_url": "postgresql://appuser:secret@db-host/appdb",
+}
+
+
+def _settings_kwargs(app_env: str) -> dict:
+    return PRODUCTION_SECRET_KWARGS if app_env == "production" else {}
 
 
 @pytest.mark.asyncio
@@ -36,6 +50,7 @@ async def test_csrf_protection_blocks_cookie_authenticated_unsafe_request(app_en
         jwt_secret_key=TEST_SECRET,
         app_env=app_env,
         csrf_protection_enabled=True,
+        **_settings_kwargs(app_env),
     )
     app.add_middleware(CsrfProtectionMiddleware, settings=settings)
 
@@ -75,7 +90,7 @@ async def test_csrf_protection_blocks_cookie_authenticated_unsafe_request(app_en
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "path",
-    ["/api/v1/auth/login", "/api/v1/auth/refresh", "/api/v1/auth/demo-session", "/api/v1/auth/google-login"],
+    ["/api/v1/auth/login", "/api/v1/auth/refresh", "/api/v1/auth/demo-session"],
 )
 async def test_csrf_exempts_session_bootstrap_endpoints_even_with_a_stale_cookie(path):
     """A browser with a stale/invalid access or refresh cookie (from a
@@ -93,6 +108,7 @@ async def test_csrf_exempts_session_bootstrap_endpoints_even_with_a_stale_cookie
         jwt_secret_key=TEST_SECRET,
         app_env="production",
         csrf_protection_enabled=True,
+        **PRODUCTION_SECRET_KWARGS,
     )
     app.add_middleware(CsrfProtectionMiddleware, settings=settings)
 

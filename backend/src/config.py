@@ -2,7 +2,7 @@ from functools import lru_cache
 from typing import Literal
 
 from dotenv import load_dotenv
-from pydantic import Field
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 load_dotenv()
@@ -221,6 +221,40 @@ class Settings(BaseSettings):
     # sends the visitor to actually log in — the Cursus *frontend* dev
     # server, not this backend's own base_url.
     cursus_frontend_url: str = "http://localhost:5173"
+
+    # Fail-fast guard: these fields have a *silent* degraded fallback rather
+    # than raising when unset (openai_api_key -> deterministic non-LLM path,
+    # crisis_escalation_email/ops_alert_email -> NotificationService just
+    # logs instead of emailing, google_api_key -> the "test-key" placeholder
+    # authenticates to nothing, database_url -> the local dev/compose
+    # password). That's the right behavior for development/test (a dev
+    # shouldn't need real API keys to run the app locally), but in
+    # production it means a forgotten env var doesn't show up as an error
+    # anywhere -- crisis-safety escalations for a student in distress would
+    # simply never reach anyone. Only enforced when app_env=="production";
+    # never touches development/test.
+    @model_validator(mode="after")
+    def _require_production_secrets(self) -> "Settings":
+        if self.app_env != "production":
+            return self
+        missing: list[str] = []
+        if not (self.google_api_key or "").strip() or self.google_api_key == "test-key":
+            missing.append("GOOGLE_API_KEY")
+        if not (self.openai_api_key or "").strip():
+            missing.append("OPENAI_API_KEY")
+        if not (self.crisis_escalation_email or "").strip() and not (
+            self.ops_alert_email or ""
+        ).strip():
+            missing.append("CRISIS_ESCALATION_EMAIL or OPS_ALERT_EMAIL")
+        if "changeme-local-only" in self.database_url:
+            missing.append("DATABASE_URL")
+        if missing:
+            raise ValueError(
+                "Refusing to start in production with missing/placeholder "
+                "secrets (would silently degrade instead of erroring): "
+                + ", ".join(missing)
+            )
+        return self
 
 
 @lru_cache

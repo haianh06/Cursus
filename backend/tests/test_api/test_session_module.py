@@ -198,6 +198,10 @@ async def test_clear_auth_cookies_matches_secure_and_samesite_of_the_originals()
         access_token_cookie_samesite="none",
         refresh_token_cookie_secure=True,
         refresh_token_cookie_samesite="none",
+        google_api_key="test-google-key",
+        openai_api_key="test-openai-key",
+        crisis_escalation_email="crisis@example.test",
+        database_url="postgresql://appuser:secret@db-host/appdb",
     )
 
     app = FastAPI()

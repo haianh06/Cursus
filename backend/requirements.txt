@@ -1,45 +1,46 @@
+# Runtime dependencies only — what `docker_entrypoint.py`/uvicorn actually
+# needs to serve the app in production. Dev-only tooling (lint, tests, load
+# testing) lives in requirements-dev.txt so the production image doesn't pull
+# in pytest/ruff/locust and their transitive deps (Flask, gevent, ...).
+#
+# Pinned to exact versions (not >=) so `pip install` is reproducible across
+# machines/deploys instead of silently picking up whatever is newest on the
+# day of the build. Bump deliberately, re-test, and re-pin — don't relax
+# these back to >= to make an install "just work".
+
 # Core
-fastapi>=0.115.0
-apscheduler>=3.10.0
-uvicorn[standard]>=0.34.0
-pydantic>=2.10.0
-pydantic-settings>=2.7.0
-python-dotenv>=1.0.0
-python-multipart>=0.0.9
-argon2-cffi>=25.1.0
-pyjwt>=2.9.0
-cryptography>=49.0.0
-redis>=8.0.1
+fastapi==0.141.1
+apscheduler==3.11.3
+uvicorn[standard]==0.52.4
+pydantic==2.13.4
+pydantic-settings==2.15.0
+python-dotenv==1.2.3
+python-multipart==0.0.32
+argon2-cffi==25.1.0
+pyjwt==2.13.0
+cryptography==50.0.0
+redis==8.1.0
 
 # AI / LangChain
-langchain>=0.3.0
-langchain-google-genai>=2.0.0
-langgraph>=0.2.0
-openai>=1.0.0
-httpx>=0.28.0
+langchain==1.3.16
+langchain-google-genai==4.3.5
+langgraph==1.2.11
+openai==3.5.0
+httpx==0.28.1
 
 # Database
-sqlalchemy>=2.0.0
-alembic>=1.14.0
-psycopg2-binary>=2.9.0
+sqlalchemy==2.0.52
+alembic==1.19.1
+psycopg2-binary==2.9.12
 
 # zoneinfo (src/academic/slots.py campus_now(): Asia/Ho_Chi_Minh) has no IANA
 # tz database to draw on unless the OS provides one -- Linux/macOS usually do,
 # Windows never does, so every campus_now() call raises ZoneInfoNotFoundError
 # on a fresh Windows checkout until this is installed.
-tzdata>=2024.1
+tzdata==2026.3
 
 # Document ingestion (docs/planning/v2/scripts/flm_parser.py: docx syllabus -> RAG chunks)
-python-docx>=1.1.0
-python-pptx>=1.0.2
-pypdf>=5.0.0
-openpyxl>=3.1.0
-
-# Dev tools
-ruff>=0.8.0
-pytest>=8.0.0
-pytest-asyncio>=0.24.0
-httpx>=0.28.0
-
-# Load testing (not needed for the app itself — see loadtest/README.md)
-locust>=2.46.0
+python-docx==1.2.0
+python-pptx==1.0.2
+pypdf==6.16.2
+openpyxl==3.1.5
