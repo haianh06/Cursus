@@ -3151,41 +3151,40 @@ input:-webkit-autofill:active {
    geometric gan Poppins nhat ma co bo dau ve rieng, nen giu lam font
    tieu de o day.
    ================================================================ */
+/* 2026-09-02: gv-ui used to define its own hardcoded hex palette here,
+   independent of the app's shared design tokens above -- a second brand
+   accent (teal) sitting next to the real one (--accent, brand blue), which
+   is why Instructor screens visibly didn't match Student/Admin (confirmed
+   live: a teal "Xem SV rủi ro" button next to an amber "Xem Guardrail chờ
+   duyệt" button, neither matching the rest of the app's blue). Every
+   gv-* token below now aliases the shared token instead of its own literal
+   value -- three of the four colors (success/warning/danger) already
+   happened to be byte-identical hex values, confirming they were meant to
+   be the same palette all along. Aliasing means the single `.dark .gv-ui`
+   override block that used to exist here is no longer needed: dark mode
+   flows through automatically via the shared tokens' own `.dark` rules. */
 .gv-ui {
-  --gv-bg: #FAF9F5;
-  --gv-card: #FFFFFF;
-  --gv-border: #E6E2D8;
-  --gv-text: #15181C;
-  --gv-text-2: #5B5647;
-  --gv-teal: #0FA8A0;
-  --gv-teal-hover: #0C8880;
-  --gv-teal-soft: #E1F5F3;
-  --gv-amber: #D97706;
-  --gv-amber-soft: #FEF3C7;
-  --gv-success: #059669;
-  --gv-danger: #DC2626;
-  --gv-danger-soft: #FEF2F2;
+  --gv-bg: var(--bg-app);
+  --gv-card: var(--bg-card);
+  --gv-border: var(--border-ui);
+  --gv-text: var(--text-primary);
+  --gv-text-2: var(--text-secondary);
+  --gv-teal: var(--accent);
+  --gv-teal-hover: var(--accent-hover);
+  --gv-teal-soft: var(--accent-soft);
+  --gv-amber: var(--warning);
+  --gv-amber-soft: var(--warning-soft);
+  --gv-success: var(--success);
+  --gv-danger: var(--danger);
+  --gv-danger-soft: var(--danger-soft);
 
-  --gv-r-card: 14px;
-  --gv-r-panel: 18px;
-  --gv-r-btn: 10px;
+  --gv-r-card: var(--radius-md);
+  --gv-r-panel: var(--radius-lg);
+  --gv-r-btn: var(--radius-sm);
 
   color: var(--gv-text);
   font-size: 15px;
   line-height: 1.45;
-}
-
-/* Che do toi: spec chi dinh nghia bang sang. Anh xa lai sang token toi
-   san co cua app de nut chuyen che do khong lam vo man hinh. */
-.dark .gv-ui {
-  --gv-bg: var(--bg-app);
-  --gv-card: var(--bg-card);
-  --gv-border: var(--border-strong);
-  --gv-text: var(--text-primary);
-  --gv-text-2: var(--text-secondary);
-  --gv-teal-soft: rgba(15, 168, 160, 0.16);
-  --gv-amber-soft: rgba(217, 119, 6, 0.18);
-  --gv-danger-soft: rgba(220, 38, 38, 0.16);
 }
 
 /* --- Chu --- */
