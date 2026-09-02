@@ -35,7 +35,6 @@ from src.api.practice import instructor_router as practice_instructor_router
 from src.api.practice import student_router as practice_student_router
 from src.api.public import router as public_router
 from src.api.qa import router as qa_router
-from src.api.routes import router
 from src.api.self_study import router as self_study_router
 from src.api.semester import router as semester_router
 from src.api.student import router as student_router
@@ -106,7 +105,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(router, prefix="/api/v1")
 app.include_router(audit_router, prefix="/api/v1")
 app.include_router(auth_router, prefix="/api/v1")
 app.include_router(student_router, prefix="/api/v1")
