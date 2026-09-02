@@ -142,14 +142,22 @@ def reset_operational_data(db) -> None:
     from sqlalchemy import or_
     from src.db import models
 
+    def _own_or_legacy(column):
+        """Matches this script's own ids (always a clean startswith --
+        `demo_...`) OR any legacy predecessor's marker *anywhere* in the id
+        -- their real ids embed a type prefix before the marker (confirmed
+        live: `act_g3_course_mock_csi106_1`, `quiz_g3_csi106`, not a bare
+        `g3_...`/`uidemo_...` as first assumed), so a startswith-only check
+        silently missed every one of them."""
+        return or_(column.like(f"{P}%"), *[column.like(f"%{marker}%") for marker in LEGACY_ID_PREFIXES])
+
     accounts = _resolve_accounts(db)
     known_ids = [accounts["student_a"], accounts["instructor"], accounts["admin"], STUDENT_B, STUDENT_C]
 
-    # Synthetic roster + legacy-script rows are identified by id prefix.
-    prefix_filters_users = [models.User.id.like(f"{p}%") for p in (P,) + LEGACY_ID_PREFIXES]
+    # Synthetic roster + legacy-script rows are identified by id marker.
     synthetic_students = (
         db.query(models.User.id)
-        .filter(or_(*prefix_filters_users), models.User.role == models.UserRole.STUDENT.value)
+        .filter(_own_or_legacy(models.User.id), models.User.role == models.UserRole.STUDENT.value)
         .all()
     )
     synthetic_student_ids = [row[0] for row in synthetic_students]
@@ -191,26 +199,26 @@ def reset_operational_data(db) -> None:
     _del(models.ProgressEvent, models.ProgressEvent.student_id.in_(all_student_ids))
     _del(models.Enrollment, models.Enrollment.student_id.in_(synthetic_student_ids))
 
-    # Org-scoped governance rows this script owns (id-prefixed, never org-wide).
-    prefix_filters_ann = [models.AdminAnnouncement.id.like(f"{p}%") for p in (P, "g3_ann_", "uidemo_ann_")]
-    _del(models.AdminAnnouncement, or_(*prefix_filters_ann))
-    prefix_filters_dr = [models.DataRequest.id.like(f"{p}%") for p in (P, "g3_dr_")]
-    _del(models.DataRequest, or_(*prefix_filters_dr))
+    # Org-scoped governance rows this script owns (id-marked, never org-wide).
+    _del(models.AdminAnnouncement, _own_or_legacy(models.AdminAnnouncement.id))
+    _del(models.DataRequest, _own_or_legacy(models.DataRequest.id))
 
     # Assignments/quizzes/practice sets/class activities this script created
-    # (id-prefixed, so a real instructor-authored assignment is never touched).
-    prefix_filters_asg = [models.Assignment.id.like(f"{p}%") for p in (P, "g3_", "uidemo_")]
-    quiz_ids = db.query(models.Quiz.id).filter(or_(*[models.Quiz.id.like(f"{p}%") for p in (P, "g3_", "uidemo_")]))
+    # (id-marked, so a real instructor-authored assignment is never touched).
+    # `quiz_w`/`asg_w` additionally catches an even older layer (the
+    # historical scripts/seed_cursus_uni_demo.sql, e.g. `quiz_w3_sec_
+    # CEA201_SE2001`, `asg_w2_sec_CEA201_SE2001`) found still lingering live.
+    quiz_ids = db.query(models.Quiz.id).filter(or_(_own_or_legacy(models.Quiz.id), models.Quiz.id.like("quiz_w%")))
     _del(models.QuizQuestion, models.QuizQuestion.quiz_id.in_(quiz_ids))
     _del(models.Submission, models.Submission.quiz_id.in_(quiz_ids))
     _del(models.Quiz, models.Quiz.id.in_(quiz_ids))
-    asg_ids = db.query(models.Assignment.id).filter(or_(*prefix_filters_asg))
+    asg_ids = db.query(models.Assignment.id).filter(
+        or_(_own_or_legacy(models.Assignment.id), models.Assignment.id.like("asg_w%"))
+    )
     _del(models.Submission, models.Submission.assignment_id.in_(asg_ids))
     _del(models.Assignment, models.Assignment.id.in_(asg_ids))
-    _del(models.ClassActivity, or_(*[models.ClassActivity.id.like(f"{p}%") for p in (P, "g3_", "uidemo_")]))
-    practice_set_ids = db.query(models.PracticeSet.id).filter(
-        or_(*[models.PracticeSet.id.like(f"{p}%") for p in (P, "g3_")])
-    )
+    _del(models.ClassActivity, _own_or_legacy(models.ClassActivity.id))
+    practice_set_ids = db.query(models.PracticeSet.id).filter(_own_or_legacy(models.PracticeSet.id))
     _del(models.PracticeItem, models.PracticeItem.set_id.in_(practice_set_ids))
     _del(models.PracticeSet, models.PracticeSet.id.in_(practice_set_ids))
 
