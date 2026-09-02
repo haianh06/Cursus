@@ -249,7 +249,7 @@ export default function InstructorHome({ user }) {
       setAnnouncements((notices || []).slice(0, MAX_NOTICES));
       setComparison(classes || []);
     } catch (err) {
-      setLoadError(userFacingApiError(err));
+      setLoadError(userFacingApiError(err).message);
     } finally {
       setIsLoading(false);
     }
@@ -275,7 +275,7 @@ export default function InstructorHome({ user }) {
     try {
       await fn();
     } catch (err) {
-      setActionMessage({ tone: 'error', text: userFacingApiError(err) });
+      setActionMessage({ tone: 'error', text: userFacingApiError(err).message });
     } finally {
       setBusyAction(null);
     }

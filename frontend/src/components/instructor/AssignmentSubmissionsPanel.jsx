@@ -112,7 +112,7 @@ export default function AssignmentSubmissionsPanel() {
         setAlerts(alertRows || []);
         setSelectedAssignmentId((due || sorted[0])?.id ?? null);
       })
-      .catch((err) => { if (!cancelled) setLoadError(userFacingApiError(err)); })
+      .catch((err) => { if (!cancelled) setLoadError(userFacingApiError(err).message); })
       .finally(() => { if (!cancelled) setIsLoading(false); });
     return () => { cancelled = true; };
   }, [selectedCourseId]);
@@ -122,7 +122,7 @@ export default function AssignmentSubmissionsPanel() {
     let cancelled = false;
     getAssignmentSubmissions(selectedAssignmentId)
       .then((data) => { if (!cancelled) setDetail(data); })
-      .catch((err) => { if (!cancelled) setLoadError(userFacingApiError(err)); });
+      .catch((err) => { if (!cancelled) setLoadError(userFacingApiError(err).message); });
     return () => { cancelled = true; };
   }, [selectedAssignmentId]);
 
@@ -181,7 +181,7 @@ export default function AssignmentSubmissionsPanel() {
       link.remove();
       URL.revokeObjectURL(url);
     } catch (err) {
-      setLoadError(userFacingApiError(err));
+      setLoadError(userFacingApiError(err).message);
     } finally {
       setIsExporting(false);
     }

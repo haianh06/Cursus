@@ -40,6 +40,7 @@ export const en = {
     loading: "Loading...",
     empty: "Empty",
     success: "Success",
+    close: "Close",
     error: "Error",
     retry: "Retry",
     save: "Save",

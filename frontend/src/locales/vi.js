@@ -40,6 +40,7 @@ export const vi = {
     loading: "Đang tải...",
     empty: "Trống",
     success: "Thành công",
+    close: "Đóng",
     error: "Lỗi",
     retry: "Thử lại",
     save: "Lưu",

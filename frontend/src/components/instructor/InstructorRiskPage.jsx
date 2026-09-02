@@ -170,7 +170,7 @@ export default function InstructorRiskPage() {
       setAlerts(rows || []);
       setCourses(dashboard.courses || []);
     } catch (err) {
-      setLoadError(userFacingApiError(err));
+      setLoadError(userFacingApiError(err).message);
     } finally {
       setIsLoading(false);
     }
@@ -232,7 +232,7 @@ export default function InstructorRiskPage() {
       setOpenRiskId(null);
       await load();
     } catch (err) {
-      setDecisionError(userFacingApiError(err));
+      setDecisionError(userFacingApiError(err).message);
     } finally {
       setBusyId(null);
     }
@@ -251,7 +251,7 @@ export default function InstructorRiskPage() {
       link.remove();
       URL.revokeObjectURL(url);
     } catch (err) {
-      setDecisionError(userFacingApiError(err));
+      setDecisionError(userFacingApiError(err).message);
     } finally {
       setIsExporting(false);
     }

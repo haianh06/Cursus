@@ -25,7 +25,16 @@ test.describe('Cursus chat widget', () => {
     await page.getByRole('button', { name: 'Mở Cursus' }).click();
     const panel = page.getByRole('complementary', { name: 'Cursus chat' });
     const textarea = panel.getByPlaceholder('Hỏi Cursus…');
-    await textarea.fill('Tóm tắt nội dung môn học giúp mình');
+    // A narrow factual question, not an open-ended "summarize the whole
+    // course" prompt: the client-side typewriter reveals text at a flat
+    // 100 chars/sec (CursusChat.jsx TYPEWRITER_MS=20 / CHARS_PER_TICK=2)
+    // regardless of reply length, and citations/FAQ chips only render once
+    // that finishes -- a maximal-length reply (up to llm_max_output_tokens,
+    // 2000) can take 80s+ to finish revealing. That's a real UX gap (see
+    // final report), but not one this test should work around by waiting
+    // minutes; asking something naturally answered briefly keeps this
+    // reliable without masking a genuine hang.
+    await textarea.fill('SSA101 có bao nhiêu tín chỉ?');
     await textarea.press('Enter');
 
     // Typewriter check: right after sending, the assistant bubble should
@@ -34,8 +43,13 @@ test.describe('Cursus chat widget', () => {
     await expect(assistantBubble).toBeVisible();
 
     // Wait for the reply to finish streaming + typing out, then for the
-    // follow-up FAQ chips (mục 2) to reappear under the finished answer.
-    await expect(panel.getByRole('button', { name: /Hôm nay mình nên học gì trước/i })).toBeVisible({ timeout: 30000 });
+    // follow-up chips (mục 2) to reappear under the finished answer. These
+    // are dynamic, answer-specific suggestions when the backend returns
+    // some (as it does here) rather than always the static welcome-screen
+    // FAQ chips, so match on the chips row generically instead of one
+    // specific static label.
+    const followUps = assistantBubble.locator('.mt-3.border-t.border-line.pt-2 button');
+    await expect(followUps.first()).toBeVisible({ timeout: 30000 });
 
     // Citation dedup (mục 1): CitationChip always sets a `title` attribute
     // ("Mở nguồn: <label>" / "Dữ liệu mô phỏng — mở nguồn: <label>") that

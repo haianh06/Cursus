@@ -85,7 +85,7 @@ export default function RiskCaseDrawer({ risk, onClose, onDecide, isSubmitting, 
         setHistory(hist?.interventions || hist || []);
         setProfile(prof);
       })
-      .catch((err) => { if (!cancelled) setLoadError(userFacingApiError(err)); })
+      .catch((err) => { if (!cancelled) setLoadError(userFacingApiError(err).message); })
       .finally(() => { if (!cancelled) setIsLoading(false); });
     return () => { cancelled = true; };
   }, [risk.id, risk.studentId]);
@@ -141,7 +141,7 @@ export default function RiskCaseDrawer({ risk, onClose, onDecide, isSubmitting, 
               </p>
             </div>
             <button type="button" className="gv-btn gv-btn--ghost" style={{ padding: 8 }}
-              onClick={onClose} aria-label={t('common.close') || 'Đóng'}>
+              onClick={onClose} aria-label={t('common.close')}>
               <X size={16} />
             </button>
           </div>

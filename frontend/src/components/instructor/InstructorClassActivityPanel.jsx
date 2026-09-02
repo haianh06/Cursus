@@ -121,7 +121,7 @@ export default function InstructorClassActivityPanel() {
         courseId: prev.courseId || (dashboard.courses?.[0]?.id ?? ''),
       }));
     } catch (err) {
-      setLoadError(userFacingApiError(err));
+      setLoadError(userFacingApiError(err).message);
     } finally {
       setIsLoading(false);
     }
@@ -178,7 +178,7 @@ export default function InstructorClassActivityPanel() {
       setForm((prev) => ({ ...prev, title: '' }));
       await load();
     } catch (err) {
-      setFormError(userFacingApiError(err));
+      setFormError(userFacingApiError(err).message);
     } finally {
       setIsSaving(false);
     }
@@ -191,7 +191,7 @@ export default function InstructorClassActivityPanel() {
       setNotice({ tone: 'ok', text: t('instructor.actDeleted') });
       await load();
     } catch (err) {
-      setNotice({ tone: 'error', text: userFacingApiError(err) });
+      setNotice({ tone: 'error', text: userFacingApiError(err).message });
     }
   };
 

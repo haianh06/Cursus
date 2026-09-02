@@ -123,7 +123,7 @@ export default function InstructorDigestPage() {
       setAllAlerts(alerts || []);
       setGuardrailQueue(queue || []);
     } catch (err) {
-      setLoadError(userFacingApiError(err));
+      setLoadError(userFacingApiError(err).message);
     } finally {
       setIsLoading(false);
     }
@@ -190,7 +190,7 @@ export default function InstructorDigestPage() {
       await sendInstructorDigestEmail(days);
       setSendResult({ tone: 'ok', text: t('instructor.digSent') });
     } catch (err) {
-      setSendResult({ tone: 'error', text: userFacingApiError(err) });
+      setSendResult({ tone: 'error', text: userFacingApiError(err).message });
     } finally {
       setIsSending(false);
     }

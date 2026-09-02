@@ -72,7 +72,7 @@ export default function InstructorQuizManager() {
         setClasses(list);
         setSectionId((prev) => prev || list[0]?.sectionId || null);
       })
-      .catch((err) => { if (!cancelled) setLoadError(userFacingApiError(err)); });
+      .catch((err) => { if (!cancelled) setLoadError(userFacingApiError(err).message); });
     return () => { cancelled = true; };
   }, []);
 
@@ -86,7 +86,7 @@ export default function InstructorQuizManager() {
       setQuizzes(list);
       if (!keepSelection) setSelectedId(null);
     } catch (err) {
-      setLoadError(userFacingApiError(err));
+      setLoadError(userFacingApiError(err).message);
     } finally {
       setIsLoading(false);
     }
@@ -103,7 +103,7 @@ export default function InstructorQuizManager() {
     setQuestionIndex(0);
     getInstructorQuiz(selectedId)
       .then((data) => { if (!cancelled) setDetail(data); })
-      .catch((err) => { if (!cancelled) setNotice({ tone: 'error', text: userFacingApiError(err) }); });
+      .catch((err) => { if (!cancelled) setNotice({ tone: 'error', text: userFacingApiError(err).message }); });
     return () => { cancelled = true; };
   }, [selectedId]);
 
@@ -131,7 +131,7 @@ export default function InstructorQuizManager() {
       if (successText) setNotice({ tone: 'ok', text: successText(result) });
       return result;
     } catch (err) {
-      setNotice({ tone: 'error', text: userFacingApiError(err) });
+      setNotice({ tone: 'error', text: userFacingApiError(err).message });
       return null;
     } finally {
       setBusy(null);
@@ -276,7 +276,8 @@ export default function InstructorQuizManager() {
             <button type="submit" className="gv-btn gv-btn--teal" disabled={busy === 'create'}>
               <Plus size={16} /> {t('instructor.qzCreate')}
             </button>
-            <button type="button" className="gv-btn gv-btn--ghost" onClick={() => setIsCreateOpen(false)}>
+            <button type="button" className="gv-btn gv-btn--ghost" onClick={() => setIsCreateOpen(false)}
+              aria-label={t('common.close')}>
               <X size={16} />
             </button>
           </form>

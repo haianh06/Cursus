@@ -15,8 +15,13 @@ test.describe('Student course materials viewer', () => {
   });
 
   test('a ?doc= query param preselects that document (the source-label deep-link path)', async ({ page }) => {
-    await page.goto('/student/courses/course_mock_ssa101?doc=doc_catalog_ssa101_chunks');
-    await expect(page.getByRole('heading', { name: /SSA101 curriculum chunks/i })).toBeVisible({ timeout: 10000 });
+    // doc_clean_0c7e3e1ca09f76173c03 is a real, currently-seeded SSA101
+    // document ("3. Exploring College (tiết 3)"); the old
+    // doc_catalog_ssa101_chunks fixture this test used to target was an
+    // intentionally-purged superseded mock doc (see
+    // real_curriculum_service.purge_superseded_mock_catalog_docs).
+    await page.goto('/student/courses/course_mock_ssa101?doc=doc_clean_0c7e3e1ca09f76173c03');
+    await expect(page.getByRole('heading', { name: /Exploring College/i })).toBeVisible({ timeout: 10000 });
   });
 
   test('a course a student is not enrolled in is not browsable', async ({ page }) => {

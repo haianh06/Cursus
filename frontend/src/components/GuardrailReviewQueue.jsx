@@ -48,7 +48,7 @@ export default function GuardrailReviewQueue() {
     try {
       setReviews(await getGuardrailReviewQueue() || []);
     } catch (err) {
-      setLoadError(userFacingApiError(err));
+      setLoadError(userFacingApiError(err).message);
     } finally {
       setIsLoading(false);
     }
@@ -91,7 +91,7 @@ export default function GuardrailReviewQueue() {
       closeDrawer();
       await load();
     } catch (err) {
-      setSaveError(userFacingApiError(err));
+      setSaveError(userFacingApiError(err).message);
     } finally {
       setIsSaving(false);
     }

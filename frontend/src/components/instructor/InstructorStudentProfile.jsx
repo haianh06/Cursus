@@ -86,7 +86,6 @@ export default function InstructorStudentProfile() {
     }
   };
 
-  const anyDecisionPending = Boolean(pendingAction);
   const submitDecision = async (riskId, decision, note) => {
     if (!riskId || pendingAction) return;
     setDecisionErrors((prev) => {
@@ -127,6 +126,8 @@ export default function InstructorStudentProfile() {
       </div>
     );
   }
+
+  const openRisk = openRiskId ? profile.riskHistory.find((risk) => risk.id === openRiskId) || null : null;
 
   return (
     <div className="space-y-6 pb-12">
@@ -378,16 +379,15 @@ export default function InstructorStudentProfile() {
         </div>
       </div>
 
-      <RiskCaseDrawer
-        riskId={openRiskId}
-        open={Boolean(openRiskId)}
-        onClose={() => setOpenRiskId(null)}
-        decision={openRiskId ? sessionDecisions[openRiskId] : undefined}
-        onDecision={submitDecision}
-        anyDecisionPending={anyDecisionPending}
-        busyDecision={pendingAction?.riskId === openRiskId ? pendingAction.decision : null}
-        decisionError={openRiskId ? decisionErrors[openRiskId] : null}
-      />
+      {openRisk && (
+        <RiskCaseDrawer
+          risk={openRisk}
+          onClose={() => setOpenRiskId(null)}
+          onDecide={(decision, note) => submitDecision(openRisk.id, decision, note)}
+          isSubmitting={pendingAction?.riskId === openRiskId}
+          decisionError={openRiskId ? decisionErrors[openRiskId] : null}
+        />
+      )}
     </div>
   );
 }

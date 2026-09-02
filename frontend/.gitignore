@@ -27,3 +27,7 @@ dist-ssr
 *.sln
 *.sw?
 .env*
+
+# Playwright E2E artifacts (screenshots/traces/videos on failure)
+test-results/
+playwright-report/

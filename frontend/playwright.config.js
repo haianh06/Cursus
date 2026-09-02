@@ -16,6 +16,11 @@ export default defineConfig({
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
+    // Infinite CSS animations (e.g. the chat launcher's breathing pulse) never
+    // settle for Playwright's actionability "stable" check, causing spurious
+    // click timeouts. The app already honors prefers-reduced-motion to turn
+    // these off, so opt into that here rather than special-casing selectors.
+    reducedMotion: 'reduce',
   },
   projects: [
     {
