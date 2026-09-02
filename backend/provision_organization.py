@@ -54,10 +54,24 @@ def _ensure_org(db, slug: str, name: str, kind: str) -> Organization:
     return org
 
 
+# Placeholder names from earlier eras of this account (this script's own
+# original "Demo Student"/"Demo Admin", and scripts/seed_cursus_uni_demo.sql's
+# "Cursus Uni Admin") -- self-heal these to a real persona name on the next
+# boot instead of leaving an English "Demo Student" label sitting next to
+# realistic Vietnamese names in the Instructor roster (confirmed live
+# 2026-09-02: stood out visibly in the risk list next to "Phạm Minh Anh" etc).
+_PLACEHOLDER_NAMES = {"Demo Student", "Demo Instructor", "Demo Admin", "Cursus Uni Admin"}
+
+
 def _ensure_user(db, org: Organization, email: str, full_name: str, role: str) -> User:
     user = db.query(User).filter_by(email=email).first()
     if user:
-        print(f"[provision] User {email} already exists, skipping.")
+        if user.full_name in _PLACEHOLDER_NAMES and user.full_name != full_name:
+            user.full_name = full_name
+            db.commit()
+            print(f"[provision] Renamed placeholder name for {email} -> {full_name}.")
+        else:
+            print(f"[provision] User {email} already exists, skipping.")
         return user
     user = User(
         id=f"user_{uuid.uuid4().hex}",
@@ -88,9 +102,9 @@ def _ensure_user(db, org: Organization, email: str, full_name: str, role: str) -
 
 
 DEMO_ROLE_ACCOUNTS = [
-    ("demo.student@cursusdemo.local", "Demo Student", UserRole.STUDENT.value),
-    ("demo.instructor@cursusdemo.local", "Demo Instructor", UserRole.INSTRUCTOR.value),
-    ("demo.admin@cursusdemo.local", "Demo Admin", UserRole.ADMIN.value),
+    ("demo.student@cursusdemo.local", "Nguyễn Bảo Ngọc", UserRole.STUDENT.value),
+    ("demo.instructor@cursusdemo.local", "Nguyễn Đức Chung", UserRole.INSTRUCTOR.value),
+    ("demo.admin@cursusdemo.local", "Hoàng Thị Lan Anh", UserRole.ADMIN.value),
 ]
 
 

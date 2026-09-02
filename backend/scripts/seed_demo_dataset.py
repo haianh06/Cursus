@@ -431,6 +431,48 @@ def _seed_weekly_history(db, *, student_id: str, weeks_back: int, base_week: int
     logger.info("weekly_history_ok student=%s profile=%s weeks=%s", student_id, profile, weeks_back + 1)
 
 
+def _ensure_semester_setup(db, student_id: str, *, weeks_back: int) -> None:
+    """Without an active SemesterSetup, academic_week_number() (src/services/
+    academic/academic_calendar.py) falls back to the student's raw ISO
+    calendar week (e.g. week 33-36 in September) instead of a week-of-
+    semester number -- confirmed live 2026-09-02: every demo screen showing
+    "Tuần 33..36" instead of a sane "Tuần 1..4", since none of this script's
+    students ever go through the real Student-facing "declare my semester"
+    flow that normally creates this row. Pin start_date so `today` always
+    lands on week `weeks_back + 1` (matching _seed_weekly_history's own
+    weeks_back), recomputed every boot so it never drifts as real time
+    passes -- same "never hardcoded" rule as the rest of this script."""
+    from src.db import models
+
+    monday = _monday_on_or_before(date.today())
+    start_date = monday - timedelta(days=weeks_back * 7)
+    end_date = start_date + timedelta(weeks=15)
+
+    existing = (
+        db.query(models.SemesterSetup)
+        .filter_by(student_id=student_id, is_active=True)
+        .order_by(models.SemesterSetup.created_at.desc())
+        .first()
+    )
+    if existing is not None:
+        if existing.start_date != start_date:
+            existing.start_date = start_date
+            existing.end_date = end_date
+            db.commit()
+        return
+
+    db.add(models.SemesterSetup(
+        id=f"{P}sem_{student_id}",
+        student_id=student_id,
+        name="Học kỳ hiện tại",
+        start_date=start_date,
+        end_date=end_date,
+        is_active=True,
+        created_at=_now(),
+    ))
+    db.commit()
+
+
 def seed_full_dataset(db) -> None:
     from src.db import models
     from src.services.academic.academic_calendar import current_week_for_student
@@ -445,11 +487,14 @@ def seed_full_dataset(db) -> None:
 
     # --- Weekly Plan/Do/Reflect history: current + 3 past weeks, varied profile per student ---
     for student_id, profile in ((student_a, "average"), (STUDENT_B, "strong"), (STUDENT_C, "struggling")):
+        _ensure_semester_setup(db, student_id, weeks_back=3)
         week_number = current_week_for_student(db, student_id)
         _seed_weekly_history(db, student_id=student_id, weeks_back=3, base_week=week_number, profile=profile)
 
     # --- Synthetic 10-student roster for Instructor/Admin screens ---
     roster_ids = _ensure_roster(db, accounts)
+    for uid in roster_ids:
+        _ensure_semester_setup(db, uid, weeks_back=3)
     roster_week = current_week_for_student(db, student_a)
     roster_profiles = ["strong", "strong", "average", "average", "average", "struggling", "average", "strong", "struggling", "average"]
     for (uid, profile) in zip(roster_ids, roster_profiles, strict=True):
