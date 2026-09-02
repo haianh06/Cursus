@@ -1,3 +1,5 @@
+from datetime import date, timedelta
+
 import pytest
 
 
@@ -20,10 +22,20 @@ async def test_planner_lifecycle_endpoints(client):
     asg_id = dash_data["upcomingAssignments"][0]["id"]
 
     # 3. Generate draft plan
+    # /plans/accept schedules the plan into declared free gaps and 409s
+    # without at least one declared day (TimetableService.
+    # schedule_plan_into_gaps) -- same per-day availability the real
+    # StudentPlanner UI collects before calling /plans/generate.
+    monday = date.today() - timedelta(days=date.today().weekday())
+    availability = [
+        {"date": (monday + timedelta(days=offset)).isoformat(), "availableMinutes": 180}
+        for offset in range(7)
+    ]
     gen_payload = {
         "assignment_id": asg_id,
         "available_hours": 10.0,
-        "preferred_sessions": ["MORNING", "EVENING"]
+        "preferred_sessions": ["MORNING", "EVENING"],
+        "availability": availability,
     }
     resp = await client.post("/api/v1/plans/generate", json=gen_payload, headers=headers)
     assert resp.status_code == 200
@@ -96,6 +108,15 @@ async def test_goal_text_planner_lifecycle(client, monkeypatch):
     assert login.status_code == 200
     headers = {"Authorization": f"Bearer {login.json()['token']}"}
 
+    # /plans/accept schedules the plan into declared free gaps and 409s
+    # without at least one declared day (TimetableService.
+    # schedule_plan_into_gaps) -- same per-day availability the real
+    # StudentPlanner UI collects before calling /plans/generate.
+    monday = date.today() - timedelta(days=date.today().weekday())
+    availability = [
+        {"date": (monday + timedelta(days=offset)).isoformat(), "availableMinutes": 180}
+        for offset in range(7)
+    ]
     resp = await client.post(
         "/api/v1/plans/generate",
         headers=headers,
@@ -104,6 +125,7 @@ async def test_goal_text_planner_lifecycle(client, monkeypatch):
             "subject_code": "SSA101",
             "available_hours": 10.0,
             "preferred_sessions": ["EVENING"],
+            "availability": availability,
         },
     )
     assert resp.status_code == 200, resp.text

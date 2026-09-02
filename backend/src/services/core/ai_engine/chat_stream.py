@@ -161,5 +161,16 @@ async def generate_followup_suggestions(
         cleaned = [str(item).strip() for item in items if str(item).strip()]
         return [item for item in cleaned if not _CJK_RE.search(item)][:3]
     except Exception:
+        # Same "a failed call still took time and still counts as one call"
+        # principle as the main streaming function above -- otherwise a
+        # string of timeouts/errors here is invisible to the AI usage report.
+        record_llm_call(
+            feature="chat_followup_suggestions",
+            model=model,
+            input_tokens=0,
+            output_tokens=0,
+            latency_ms=int((time.perf_counter() - started) * 1000),
+            success=False,
+        )
         logger.exception("chat_followup_suggestions_failed intent=%s", intent)
         return []

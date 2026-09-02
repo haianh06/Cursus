@@ -206,7 +206,10 @@ def test_ai_engine_chat_stream_asks_the_gateway_for_usage():
     source = Path("src/services/core/ai_engine/chat_stream.py").read_text(encoding="utf-8")
 
     assert 'stream_options={"include_usage": True}' in source
-    assert source.count("record_llm_call(") == 2
+    # 2 in the main streaming function (success + failure) + 2 in
+    # generate_followup_suggestions (success + failure) -- see that
+    # function's docstring for why the follow-up-chip call is recorded too.
+    assert source.count("record_llm_call(") == 4
 
 
 def test_record_llm_call_writes_a_row_and_commits_it():

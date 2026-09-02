@@ -146,13 +146,24 @@ def ensure_api_demo_dataset(db: Session) -> None:
         assignment_id: str,
         task_id: str,
     ) -> None:
-        from datetime import date
+        from datetime import date, timedelta
+
+        # POST /plans/accept schedules the plan into declared free gaps
+        # (TimetableService.schedule_plan_into_gaps) and 409s without at
+        # least one declared day -- give the whole current week generous
+        # room so any test that accepts this fixture plan can.
+        today = date.today()
+        monday = today - timedelta(days=today.weekday())
+        availability = [
+            {"date": (monday + timedelta(days=offset)).isoformat(), "availableMinutes": 180}
+            for offset in range(7)
+        ]
         db.add(
             models.WeeklyPlan(
                 id=plan_id,
                 student_id=student_id,
-                week_number=date.today().isocalendar().week,
-                goals={"statement": "Demo weekly plan"},
+                week_number=today.isocalendar().week,
+                goals={"statement": "Demo weekly plan", "availability": availability},
                 study_hours_allocated=10.0,
             )
         )
@@ -250,13 +261,20 @@ def _ensure_plan_fixtures(db: Session) -> None:
         if db.query(models.WeeklyPlan).filter_by(id=plan_id).first() is not None:
             continue
         changed = True
-        from datetime import date
+        from datetime import date, timedelta
+
+        today = date.today()
+        monday = today - timedelta(days=today.weekday())
+        availability = [
+            {"date": (monday + timedelta(days=offset)).isoformat(), "availableMinutes": 180}
+            for offset in range(7)
+        ]
         db.add(
             models.WeeklyPlan(
                 id=plan_id,
                 student_id=student_id,
-                week_number=date.today().isocalendar().week,
-                goals={"statement": "Demo weekly plan"},
+                week_number=today.isocalendar().week,
+                goals={"statement": "Demo weekly plan", "availability": availability},
                 study_hours_allocated=10.0,
             )
         )

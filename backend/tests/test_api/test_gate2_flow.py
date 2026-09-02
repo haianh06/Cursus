@@ -12,6 +12,8 @@ copy changes do not break the suite but a broken guarantee does.
 
 from __future__ import annotations
 
+from datetime import date, timedelta
+
 import pytest
 
 STUDENT = {"email": "student.demo@example.test", "password": "password123"}
@@ -102,6 +104,24 @@ async def test_plan_do_reflect_next_plan(client, monkeypatch):
     assignment_id = reset["assignmentId"]
 
     # ── PLAN ─────────────────────────────────────────────────────────
+    # /plans/accept schedules the plan into declared free gaps
+    # (TimetableService.schedule_plan_into_gaps) and 409s without at least
+    # one declared day -- same per-day availability the real StudentPlanner
+    # UI collects before calling /plans/generate. Declare the whole current
+    # week so the scheduling step below always has room, regardless of what
+    # day this suite happens to run on.
+    # _capacity_minutes() sums declared availability once any is given
+    # (src/services/ai/plan_builder.py), and schedule_plan_into_gaps() below
+    # needs *each* day's declared minutes to individually cover whatever
+    # single task lands there (it doesn't split one task across days) plus
+    # fit inside the ~5h evening window -- so declare generous room across
+    # the whole week rather than tightly rationing to some fixed total.
+    monday = date.today() - timedelta(days=date.today().weekday())
+    availability = [
+        {"date": (monday + timedelta(days=offset)).isoformat(), "availableMinutes": 180}
+        for offset in range(7)
+    ]
+    total_available_minutes = sum(slot["availableMinutes"] for slot in availability)
     resp = await client.post(
         "/api/v1/plans/generate",
         headers=headers,
@@ -109,13 +129,14 @@ async def test_plan_do_reflect_next_plan(client, monkeypatch):
             "assignment_id": assignment_id,
             "available_hours": 8.0,
             "preferred_sessions": ["EVENING"],
+            "availability": availability,
         },
     )
     assert resp.status_code == 200, resp.text
     plan = resp.json()
     assert plan["status"] == "DRAFT"
     assert 4 <= len(plan["tasks"]) <= 6
-    assert plan["capacityMinutes"] == 480
+    assert plan["capacityMinutes"] == total_available_minutes
     assert plan["plannedMinutes"] == sum(t["estimatedMinutes"] for t in plan["tasks"])
 
     # Every task carries an estimate and an explicit AI-estimate provenance.

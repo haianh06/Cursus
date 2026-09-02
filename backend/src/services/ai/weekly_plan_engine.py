@@ -358,14 +358,15 @@ def generate(
 
     discard_drafts_for_week(db, student_id, monday)
 
+    # Same contract as PlanBuilder.generate() (plan_builder.py) and this
+    # module's own regenerate-from-reflection path just above: no API key,
+    # empty retrieval, or an LLM failure all fall back to the honestly-
+    # labelled generic template rather than a hard error -- previously this
+    # was the one plan-generation path in the app that didn't, so a student
+    # simply could not plan their week at all whenever the LLM was
+    # unavailable (test coverage: test_goal_text_planner_lifecycle).
     llm_tasks, trace = _llm_generated_tasks(db, subject_code=subject_code, goal_text=goal_text)
-    if llm_tasks is None:
-        if not has_configured_llm():
-            raise PlanGenerationError("AI lập kế hoạch chưa được cấu hình. Không thể tạo kế hoạch thay thế bằng dữ liệu mẫu.")
-        if trace["retrieval_empty"]:
-            raise PlanGenerationError("Chưa có tài liệu môn học để AI lập kế hoạch có căn cứ.")
-        raise PlanGenerationError("AI chưa tạo được kế hoạch đáng tin cậy. Vui lòng thử lại.")
-    tasks = llm_tasks
+    tasks = llm_tasks or _generic_templates(goal_text)
 
     capacity_minutes = _capacity_minutes(availability, available_hours)
     plan_id = f"plan_{uuid.uuid4().hex[:8]}"
