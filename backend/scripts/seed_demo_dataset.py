@@ -163,21 +163,30 @@ def reset_operational_data(db) -> None:
 
     accounts = _resolve_accounts(db)
     known_ids = [accounts["student_a"], accounts["instructor"], accounts["admin"], STUDENT_B, STUDENT_C]
+    known_id_set = set(known_ids)
 
     # Synthetic roster + legacy-script rows are identified by id marker.
+    # `known_ids` is excluded from both: seed_cursus_uni_demo.sql (the
+    # oldest layer) happened to give its `student_01` row the exact same
+    # email as STUDENT_A_EMAIL, so on a DB where that row was never
+    # recreated under a fresh id, `accounts["student_a"]` resolves to
+    # `student_01` itself -- without this exclusion the "delete every
+    # legacy id" pass below deletes the live canonical account it just
+    # resolved, and every downstream step in seed_full_dataset() that
+    # re-resolves it by email 404s (confirmed live in production 2026-09-02).
     synthetic_students = (
         db.query(models.User.id)
         .filter(_own_or_legacy(models.User.id), models.User.role == models.UserRole.STUDENT.value)
         .all()
     )
-    synthetic_student_ids = [row[0] for row in synthetic_students]
+    synthetic_student_ids = [row[0] for row in synthetic_students if row[0] not in known_id_set]
 
     legacy_sql_students = (
         db.query(models.User.id)
         .filter(models.User.id.in_(LEGACY_SQL_STUDENT_IDS))
         .all()
     )
-    legacy_sql_student_ids = [row[0] for row in legacy_sql_students]
+    legacy_sql_student_ids = [row[0] for row in legacy_sql_students if row[0] not in known_id_set]
 
     all_student_ids = known_ids + synthetic_student_ids + legacy_sql_student_ids
 
