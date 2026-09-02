@@ -70,6 +70,7 @@ from src.services.auth_exceptions import (
     RegistrationError,
     UnauthorizedError,
 )
+from src.services.core import rate_limiter
 from src.services.core.audit_service import AuditService
 from src.services.core.email_provider import build_email_service
 from src.services.core.notification_service import NotificationService
@@ -83,6 +84,37 @@ DEMO_ROLE_EMAILS = {
 }
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+
+# The app-wide RateLimitMiddleware (1000 req/60s per IP+path) is loose enough
+# to let an attacker grind through a password list against one specific
+# account, or spray one password across many accounts from one IP. These are
+# tighter, purpose-built caps layered on top -- keyed by IP (stop a single
+# source hammering the endpoint) and by the targeted email (stop distributed
+# credential stuffing against one account from many IPs).
+LOGIN_IP_LIMIT = (20, 300)  # 20 attempts / 5 min per source IP
+LOGIN_EMAIL_LIMIT = (8, 300)  # 8 attempts / 5 min per targeted account
+PASSWORD_RESET_IP_LIMIT = (10, 3600)  # 10 requests / hour per source IP
+PASSWORD_RESET_EMAIL_LIMIT = (3, 3600)  # 3 requests / hour per targeted account
+
+
+async def _enforce_rate_limit(key: str, limit: int, window_seconds: int) -> None:
+    # The test suite logs into the same seeded demo accounts dozens of times
+    # per run (each test file its own login), which would blow through these
+    # deliberately tight per-account windows in seconds -- these caps exist
+    # to slow down a real attacker across real wall-clock time, not to be
+    # exercised by CI. Same opt-out class as the "test" APP_ENV already used
+    # elsewhere to skip prod-only behavior (see tests/conftest.py).
+    if get_settings().app_env == "test":
+        return
+    allowed, retry_after = await rate_limiter.allow(
+        key, limit=limit, window_seconds=window_seconds
+    )
+    if not allowed:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=f"Too many attempts -- try again in {retry_after}s",
+            headers={"Retry-After": str(retry_after)},
+        )
 
 
 def get_session_service(
@@ -348,6 +380,11 @@ async def login(
     audit_service: AuditService = Depends(get_audit_service),
     settings: Settings = Depends(get_settings),
 ) -> LoginResponse:
+    email_key = payload.email.strip().lower()
+    client_ip = _request_ip(request) or "unknown"
+    await _enforce_rate_limit(f"login_ip:{client_ip}", *LOGIN_IP_LIMIT)
+    await _enforce_rate_limit(f"login_email:{email_key}", *LOGIN_EMAIL_LIMIT)
+
     login_input = LoginInput(
         email=payload.email,
         password=payload.password,
@@ -713,6 +750,11 @@ async def forgot_password(
     password_reset_service: PasswordResetService = Depends(get_password_reset_service),
     audit_service: AuditService = Depends(get_audit_service),
 ) -> MessageResponse:
+    email_key = payload.email.strip().lower()
+    client_ip = _request_ip(request) or "unknown"
+    await _enforce_rate_limit(f"pwreset_ip:{client_ip}", *PASSWORD_RESET_IP_LIMIT)
+    await _enforce_rate_limit(f"pwreset_email:{email_key}", *PASSWORD_RESET_EMAIL_LIMIT)
+
     result = await password_reset_service.request_password_reset(payload.email)
     await audit_service.log_event(
         event_type="PASSWORD_RESET_REQUESTED",
