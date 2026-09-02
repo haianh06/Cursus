@@ -96,6 +96,16 @@ LEGACY_FPT_ID_PREFIX = "student_se20_"  # seed_fixed_class_demo.py's 60-student 
 # fresh boot of this script cleans up anything they left behind too.
 LEGACY_ID_PREFIXES = ("g3_", "uidemo_")
 
+# scripts/seed_cursus_uni_demo.sql (the oldest layer, predates all 4 Python
+# scripts above) seeded a 60-student roster as bare `student_01`..`student_60`
+# -- confirmed still live in production (2026-09-02: dragged stale week
+# 2-4 completion data into the class-wide weekly chart, sitting alongside
+# this script's own fresh week 33-36 rows, since these ids never matched
+# `_own_or_legacy()` below and stayed enrolled). A prefix match would be
+# unsafe here (`student_haianh`/`student_haidang` are real, current accounts
+# that also start with `student_`) -- enumerate the exact legacy ids instead.
+LEGACY_SQL_STUDENT_IDS = tuple(f"student_{i:02d}" for i in range(1, 61))
+
 
 def _now() -> datetime:
     return datetime.now(UTC).replace(tzinfo=None)
@@ -161,7 +171,15 @@ def reset_operational_data(db) -> None:
         .all()
     )
     synthetic_student_ids = [row[0] for row in synthetic_students]
-    all_student_ids = known_ids + synthetic_student_ids
+
+    legacy_sql_students = (
+        db.query(models.User.id)
+        .filter(models.User.id.in_(LEGACY_SQL_STUDENT_IDS))
+        .all()
+    )
+    legacy_sql_student_ids = [row[0] for row in legacy_sql_students]
+
+    all_student_ids = known_ids + synthetic_student_ids + legacy_sql_student_ids
 
     def _del(model, *filters):
         q = db.query(model)
@@ -197,10 +215,13 @@ def reset_operational_data(db) -> None:
     _del(models.ChatBriefingImpression, models.ChatBriefingImpression.student_id.in_(all_student_ids))
     _del(models.ChatActionProposal, models.ChatActionProposal.student_id.in_(all_student_ids))
     _del(models.ProgressEvent, models.ProgressEvent.student_id.in_(all_student_ids))
-    _del(models.Enrollment, models.Enrollment.student_id.in_(synthetic_student_ids))
+    _del(models.Enrollment, models.Enrollment.student_id.in_(synthetic_student_ids + legacy_sql_student_ids))
 
     # Org-scoped governance rows this script owns (id-marked, never org-wide).
-    _del(models.AdminAnnouncement, _own_or_legacy(models.AdminAnnouncement.id))
+    # `admin_notice_w3` is the one announcement seed_cursus_uni_demo.sql
+    # created directly (not student-scoped, so the legacy-student cleanup
+    # above doesn't reach it).
+    _del(models.AdminAnnouncement, or_(_own_or_legacy(models.AdminAnnouncement.id), models.AdminAnnouncement.id == "admin_notice_w3"))
     _del(models.DataRequest, _own_or_legacy(models.DataRequest.id))
 
     # Assignments/quizzes/practice sets/class activities this script created
@@ -223,7 +244,7 @@ def reset_operational_data(db) -> None:
     _del(models.PracticeSet, models.PracticeSet.id.in_(practice_set_ids))
 
     # The synthetic roster's own User rows (children already gone above).
-    _del(models.User, models.User.id.in_(synthetic_student_ids))
+    _del(models.User, models.User.id.in_(synthetic_student_ids + legacy_sql_student_ids))
 
     # Legacy fpt-university fixture accounts (org/course rows left untouched).
     legacy_fpt_users = (
