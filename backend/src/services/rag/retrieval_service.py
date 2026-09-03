@@ -10,10 +10,9 @@ from src.repositories.chunk_repository import ChunkRecord, ChunkRepository
 from src.services.rag import embedding_service
 from src.services.rag.query_normalization import expand_bilingual
 
-# Cosine-similarity floor for a chunk to be included on embedding signal alone
-# (i.e. it scored below the lexical min_score but semantically matches).
-_EMBED_ONLY_MIN_SIMILARITY = 0.55
-# How much an embedding match boosts a chunk that lexical scoring already found.
+# How much an embedding match boosts a chunk that lexical scoring already
+# found. Embedding similarity can only ever boost an existing lexical hit,
+# never qualify a chunk on its own -- see `_combine_scores()`'s docstring.
 _EMBED_BOOST_WEIGHT = 2.0
 
 _TOKEN_RE = re.compile(r"[a-z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ_]+", re.I)
@@ -199,12 +198,25 @@ class RetrievalService:
 
 
 def _combine_scores(lexical_score: float, similarity: float) -> float:
-    """Blend lexical + embedding signal. Never regresses lexical-only behavior
-    when embedding is unavailable (similarity == 0.0 for every chunk in that case)."""
+    """Blend lexical + embedding signal. A chunk is only ever considered
+    "found" when it has at least one real, exact token match
+    (`lexical_score > 0.0`, guaranteed by `score_chunk()`'s own
+    `exact_matches == 0` guard) -- embedding similarity ONLY boosts a chunk
+    that already cleared that bar, it can never qualify one on its own.
+
+    Before this, a chunk with ZERO lexical overlap could still be cited
+    purely because its embedding happened to land above
+    `_EMBED_ONLY_MIN_SIMILARITY` -- for a short, unusual, or off-topic
+    Vietnamese sentence, cosine similarity against a syllabus chunk is not a
+    reliable relevance signal on its own (confirmed in production: a
+    completely unrelated message like a food-recipe request or an offensive
+    non-sequitur cleared 0.55 against multiple courses' chunks with no
+    shared vocabulary at all, producing citations for course content that
+    had nothing to do with the question). Requiring a real keyword match
+    first closes that off; embedding still helps rank/boost among chunks
+    that are already topically plausible."""
     if lexical_score > 0.0:
         return lexical_score + similarity * _EMBED_BOOST_WEIGHT
-    if similarity >= _EMBED_ONLY_MIN_SIMILARITY:
-        return similarity * _EMBED_BOOST_WEIGHT
     return 0.0
 
 

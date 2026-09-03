@@ -40,6 +40,7 @@ from src.services.core.notification_service import NotificationService
 from src.services.core.rate_limiter import allow as rate_limit_allow
 from src.services.rag import embedding_service
 from src.services.rag.document_content_validator import scan_for_suspicious_patterns
+from src.services.rag.query_normalization import fold_accents
 from src.services.rag.retrieval_service import RetrievalService
 
 logger = logging.getLogger(__name__)
@@ -212,22 +213,28 @@ def _context(
     return sources
 
 
-_INFORMATION_REQUEST_RE = re.compile(
-    r"[?？]|\b(gì|sao|nào|ai|khi\s*nào|ở\s*đâu|đâu|bao\s*nhiêu|bao\s*lâu|"
-    r"th[eế]\s*n[aà]o|l[aà]m\s*sao|vì\s*sao|what|why|how|when|where|which)\b",
+_GREETING_ONLY_RE = re.compile(
+    r"^(xin\s+)?(chao|hi+|hello|hey|yo)(\s+(cursus|ban|oi|nhe|day))?[\s!.,~?]*$",
     re.IGNORECASE,
 )
 
 
-def _looks_like_information_request(question: str) -> bool:
-    """Cheap heuristic to tell an actual question (that a "no course data
-    found" refusal makes sense for) apart from small talk/a greeting Tier 1's
-    exact-match dict and Tier 1.5's semantic bypass both missed -- e.g. "Xin
-    chào Cursus" isn't in `_CANNED_ANSWERS` verbatim, and Tier 1.5 needs a
-    real embedding backend (GOOGLE_API_KEY) to catch a paraphrase at all.
-    Used only to gate the general no-context refusal below; it never blocks
-    anything by itself."""
-    return bool(_INFORMATION_REQUEST_RE.search(question or ""))
+def _looks_like_greeting(question: str) -> bool:
+    """Broader than Tier 1's exact-match `_CANNED_ANSWERS` dict and Tier
+    1.5's semantic bypass (which needs a real embedding backend/
+    GOOGLE_API_KEY to catch a paraphrase at all) -- catches a plain greeting
+    (accent-folded, so "Xin chào Cursus" and "chao ban oi" both match)
+    without requiring an exact dict hit. Used only to exempt an opening
+    greeting from the general no-context refusal below.
+
+    Anchored at BOTH ends on purpose (`_GREETING_ONLY_RE`'s `^...$`): the
+    message must be nothing more than a greeting plus a short, fixed set of
+    trailing words. A prefix-only check (matches a greeting root at the
+    start, ignores whatever follows) would let "Hi, <anything>" re-open the
+    exact hole this gate exists to close -- prefixing a greeting onto an
+    off-topic request would exempt the whole thing again."""
+    folded = fold_accents((question or "").strip()).lower()
+    return bool(_GREETING_ONLY_RE.match(folded))
 
 
 def _personalized_intent(question: str) -> str | None:
@@ -631,32 +638,46 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
 
     # General off-topic gate: the OUT_OF_SCOPE guardrail above only catches
     # the specific enumerated categories (weather, tuition, another
-    # student's grades...) via regex -- it says nothing about a question
-    # like "kể chuyện cười đi" or "1+1 bằng mấy" that no rule was ever
-    # written for. Retrieval finding zero chunks for anything BUT a
-    # personalized/product/hint question is itself the general signal that
-    # the question isn't grounded in course material, so refuse the same
-    # honest way rather than let the LLM free-associate an answer (and,
-    # since sources is empty, it would have no citation to back it with
-    # anyway). `decision.reason == "ask_hint"` exempts generic Socratic
-    # "where do I start" requests, which legitimately have no chunk to
-    # retrieve yet still deserve a real answer.
+    # student's grades...) via regex -- it says nothing about an off-topic
+    # REQUEST like "gợi ý món ăn nhanh từ trứng và rau" or an offensive
+    # non-sequitur, let alone one phrased as a statement/imperative instead
+    # of a question with "?"/a WH-word (both of those got through in
+    # production before this gate covered non-question phrasing too).
+    # Retrieval finding zero chunks for anything BUT a personalized/
+    # product-help/greeting message is itself the general signal that the
+    # question isn't grounded in course material, so refuse the same honest
+    # way rather than let the LLM free-associate an answer (and, since
+    # sources is empty, it would have no real citation to back it with
+    # anyway).
     #
-    # Two extra guards keep this from swallowing ordinary small talk:
+    # NOT exempted here on purpose: `decision.reason == "ask_hint"` used to
+    # exempt this gate for generic Socratic "where do I start" requests --
+    # dropped because guardrail_rules.py's OUT_OF_SCOPE-adjacent ask_hint
+    # pattern (`\bg[oợ]i\s+[yý]\b`, i.e. any appearance of "gợi ý") is far
+    # too broad: "gợi ý món ăn nhanh..." matched it too, so ask_hint alone
+    # was a free pass around this gate for anything containing that one
+    # word regardless of topic. A genuine, on-topic hint request almost
+    # always retrieves at least one real course chunk (the current week's
+    # material, an assignment's own terms) and reaches the LLM normally
+    # through `sources` being non-empty -- it doesn't need a separate
+    # exemption here.
+    #
+    # Two guards keep this from swallowing ordinary small talk:
     # - `course_codes` non-empty -- for a student enrolled in nothing,
     #   retrieval is *always* empty regardless of what's asked, so emptiness
     #   carries no signal at all there.
-    # - `_looks_like_information_request` -- a greeting phrasing Tier 1's
-    #   exact-match dict and Tier 1.5's semantic bypass both miss (e.g. "Xin
-    #   chào Cursus") must still reach the LLM for a normal warm reply
-    #   instead of a cold "no data" refusal.
+    # - `_looks_like_greeting` -- an opening greeting Tier 1's exact-match
+    #   dict and Tier 1.5's semantic bypass both miss (e.g. "Xin chào
+    #   Cursus") must still reach the LLM for a normal warm reply instead of
+    #   a cold "no data" refusal. Deliberately narrow (a greeting root at
+    #   the very start of the message only) so it can't be (ab)used to
+    #   exempt an unrelated request just by prefixing "hi" onto it.
     if (
         not sources
         and course_codes
         and not wants_personalized
         and intent != "product_help"
-        and decision.reason != "ask_hint"
-        and _looks_like_information_request(payload.message)
+        and not _looks_like_greeting(payload.message)
     ):
         await _audit_chat_decision(
             db, event_type="CHAT_NO_CONTEXT_REFUSAL", decision="ALLOW", student_id=current_user.id,
