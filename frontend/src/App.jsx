@@ -58,6 +58,7 @@ const InstructorClassSchedulePanel = lazy(() => import('./components/instructor/
 const InstructorDigestPage = lazy(() => import('./components/instructor/InstructorDigestPage'));
 const AssignmentSubmissionsPanel = lazy(() => import('./components/instructor/AssignmentSubmissionsPanel'));
 const GuardrailReviewQueue = lazy(() => import('./components/GuardrailReviewQueue'));
+const InstructorPracticeQueuePanel = lazy(() => import('./components/instructor/InstructorPracticeQueuePanel'));
 
 import AdminNavigation from './components/admin/AdminNavigation';
 import AdminTopbarSearch from './components/admin/AdminTopbarSearch';
@@ -295,6 +296,13 @@ function Sidebar({ user, onLogout, open, setOpen, activeSection }) {
                 <ShieldQuestion size={15} />
                 <span>{t('nav.instructorGuardrail')}</span>
               </button>
+              <button
+                className={`nav-item w-full text-left ${location.pathname === '/instructor/practice-reviews' ? 'active' : ''}`}
+                onClick={() => handleItemClick('/instructor/practice-reviews')}
+              >
+                <FlaskConical size={15} />
+                <span>{t('nav.instructorPractice')}</span>
+              </button>
             </>
           )}
 
@@ -334,7 +342,16 @@ function NotificationsBell({ lang }) {
   const { notifications, markNotificationRead, markAllNotificationsRead } = useCursus();
   const [open, setOpen] = useState(false);
   const ref = React.useRef(null);
+  const navigate = useNavigate();
   const unread = notifications.filter((n) => !n.read).length;
+
+  const openNotification = (n) => {
+    markNotificationRead(n.id);
+    if (n.link) {
+      setOpen(false);
+      navigate(n.link);
+    }
+  };
 
   useEffect(() => {
     if (!open) return undefined;
@@ -385,7 +402,7 @@ function NotificationsBell({ lang }) {
                 <button
                   type="button"
                   key={n.id}
-                  onClick={() => markNotificationRead(n.id)}
+                  onClick={() => openNotification(n)}
                   className={`w-full text-left px-4 py-3 text-xs hover:bg-surface-elevated cursor-pointer transition-colors flex items-start gap-2 ${n.read ? 'text-fg-muted' : 'text-fg font-semibold'}`}
                 >
                   {!n.read && <span className="w-1.5 h-1.5 rounded-full bg-accent mt-1 shrink-0" aria-hidden="true" />}
@@ -526,6 +543,7 @@ function InstructorRoutes({ user }) {
       <Route path="quizzes" element={<InstructorQuizManager />} />
       <Route path="submissions" element={<AssignmentSubmissionsPanel />} />
       <Route path="guardrail-reviews" element={<GuardrailReviewQueue />} />
+      <Route path="practice-reviews" element={<InstructorPracticeQueuePanel />} />
       <Route path="*" element={<NotFoundPage/>}/>
     </Routes>
   );

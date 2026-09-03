@@ -279,6 +279,7 @@ def _digest_text(brand: str, instructor_name: str, digest: dict) -> str:
         f"Tóm tắt từ {digest.get('sinceDate', '')} đến nay trên {brand}:",
         f"- {summary.get('newRiskCount', 0)} case rủi ro mới",
         f"- {summary.get('newGuardrailCount', 0)} case Guardrail mới cần xem xét",
+        f"- {summary.get('newPracticeCount', 0)} yêu cầu bộ luyện tập mới cần duyệt",
         f"- {summary.get('kudosCount', 0)} sinh viên đang được ghi nhận tích cực (Kudos)",
         "",
         "Mở dashboard để xem chi tiết và xử lý.",
@@ -297,6 +298,7 @@ def _digest_html(brand: str, instructor_name: str, digest: dict, summary: dict) 
         for label, value in [
             ("Case rủi ro mới", summary.get("newRiskCount", 0)),
             ("Case Guardrail mới", summary.get("newGuardrailCount", 0)),
+            ("Yêu cầu bộ luyện tập mới", summary.get("newPracticeCount", 0)),
             ("SV được ghi nhận Kudos", summary.get("kudosCount", 0)),
         ]
     )

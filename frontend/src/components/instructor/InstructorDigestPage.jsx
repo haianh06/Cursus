@@ -180,6 +180,7 @@ export default function InstructorDigestPage() {
   const suggestions = [
     highRiskPending > 0 ? fill('digSgHighRisk', highRiskPending) : null,
     guardrailPending > 0 ? fill('digSgGuardrail', guardrailPending) : null,
+    summary.newPracticeCount > 0 ? fill('digSgPractice', summary.newPracticeCount) : null,
     overduePending > 0 ? fill('digSgOverdue', overduePending) : null,
   ].filter(Boolean).slice(0, 3);
 

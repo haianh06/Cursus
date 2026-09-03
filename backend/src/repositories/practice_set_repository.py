@@ -124,6 +124,15 @@ class PracticeSetRepository:
         )
         return [row[0] for row in rows]
 
+    def instructor_ids_for_course(self, course_id: str) -> list[str]:
+        rows = (
+            self._db.query(models.CourseSection.instructor_id)
+            .filter_by(course_id=course_id)
+            .distinct()
+            .all()
+        )
+        return [row[0] for row in rows if row[0]]
+
     def org_course_ids(self, organization_id: str | None) -> list[str]:
         # Course catalog is shared, not per-org — see
         # semester_repository.py's module docstring (Course.code has a

@@ -151,6 +151,43 @@ async def test_instructor_from_other_org_cannot_review(client):
 
 
 @pytest.mark.asyncio
+async def test_requesting_a_practice_set_notifies_the_course_instructor(client):
+    ctx = await _setup_course_with_student(client, org_slug="prac-org-e", prefix="PRE")
+
+    student_token = await login(client, ctx["student_email"])
+    request_resp = await client.post(
+        "/api/v1/student/practice/request",
+        headers=auth_headers(student_token),
+        json={"courseCode": ctx["course_code"], "weekNumber": 1, "language": "vi"},
+    )
+    assert request_resp.status_code == 202, request_resp.text
+
+    instructor_token = await login(client, ctx["instructor_email"])
+    notif_resp = await client.get(
+        "/api/v1/instructor/notifications", headers=auth_headers(instructor_token)
+    )
+    assert notif_resp.status_code == 200
+    items = notif_resp.json()["items"]
+    assert len(items) == 1
+    assert items[0]["type"] == "practice_request"
+    assert ctx["course_code"] in items[0]["title"]
+    assert items[0]["read"] is False
+
+    # Re-requesting the same course+week while still PENDING_REVIEW must not
+    # fan out a second notification for the same request.
+    again = await client.post(
+        "/api/v1/student/practice/request",
+        headers=auth_headers(student_token),
+        json={"courseCode": ctx["course_code"], "weekNumber": 1, "language": "vi"},
+    )
+    assert again.status_code == 202
+    notif_resp2 = await client.get(
+        "/api/v1/instructor/notifications", headers=auth_headers(instructor_token)
+    )
+    assert len(notif_resp2.json()["items"]) == 1
+
+
+@pytest.mark.asyncio
 async def test_student_not_enrolled_cannot_request_practice(client):
     ctx = await _setup_course_with_student(client, org_slug="prac-org-d", prefix="PRD")
     outsider_email = f"prac.outsider.{uuid.uuid4().hex}@example.test"

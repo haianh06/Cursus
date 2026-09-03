@@ -809,6 +809,23 @@ class CrisisEscalation(Base):
     acknowledged_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     resolution_note: Mapped[str | None] = mapped_column(Text, nullable=True)
 
+class Notification(Base):
+    """In-app notification for a user — currently only written by the
+    practice-set request flow (instructor gets notified when a student
+    requests a set for a course they teach), read by the bell icon in the
+    topbar (see NotificationsBell in App.jsx). Deliberately generic (`type`/
+    `link`) so a future event source can reuse the same table instead of
+    growing a new one per feature."""
+
+    __tablename__ = "notifications"
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    user_id: Mapped[str] = mapped_column(String, ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    type: Mapped[str] = mapped_column(String)
+    title: Mapped[str] = mapped_column(String)
+    link: Mapped[str | None] = mapped_column(String, nullable=True)
+    read: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+
 class ResourceAccessEvent(Base):
     __tablename__ = "resource_access_events"
     id: Mapped[str] = mapped_column(String, primary_key=True)

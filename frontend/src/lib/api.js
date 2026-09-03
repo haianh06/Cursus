@@ -1326,6 +1326,20 @@ export function regeneratePracticeSet(setId) {
   });
 }
 
+/* ── Instructor: in-app notifications ─────────────────────────────────── */
+
+export function getInstructorNotifications() {
+  return request('/instructor/notifications');
+}
+
+export function markInstructorNotificationRead(notificationId) {
+  return request(`/instructor/notifications/${encodeURIComponent(notificationId)}/read`, { method: 'POST' });
+}
+
+export function markAllInstructorNotificationsRead() {
+  return request('/instructor/notifications/read-all', { method: 'POST' });
+}
+
 /* ── Shared: user-facing error normalization ──────────────────────────── */
 
 /** Turns an ApiError/network error into `{ message }` safe to show in UI,

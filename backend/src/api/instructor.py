@@ -607,6 +607,20 @@ def _build_instructor_digest(
     kudos_payload = get_instructor_kudos(course_id=course_id, current_user=current_user, db=db)
     kudos = kudos_payload.get("kudos", [])
 
+    course_ids = {s.course_id for s in all_sections}
+    new_practice = []
+    if course_ids:
+        new_practice = (
+            db.query(models.PracticeSet)
+            .filter(
+                models.PracticeSet.course_id.in_(course_ids),
+                models.PracticeSet.status == "PENDING_REVIEW",
+                models.PracticeSet.created_at >= cutoff_naive,
+            )
+            .order_by(models.PracticeSet.created_at.desc())
+            .all()
+        )
+
     return {
         "sinceDate": cutoff.date().isoformat(),
         "days": days,
@@ -617,6 +631,7 @@ def _build_instructor_digest(
             "newRiskCount": len(new_risks),
             "newGuardrailCount": len(new_guardrail),
             "kudosCount": len(kudos),
+            "newPracticeCount": len(new_practice),
         },
     }
 
@@ -648,6 +663,66 @@ async def email_instructor_digest(
     digest = _build_instructor_digest(db, current_user, days)
     await notifications.send_instructor_digest(current_user.email, current_user.full_name, digest)
     return {"sent": True, "to": current_user.email}
+
+
+# ============================================================
+# In-app notification bell (currently only written by the practice-set
+# request flow -- see PracticeSetService._notify_instructors)
+# ============================================================
+
+
+def _serialize_notification(row: models.Notification) -> dict:
+    return {
+        "id": row.id,
+        "type": row.type,
+        "title": row.title,
+        "link": row.link,
+        "read": row.read,
+        "timestamp": row.created_at.isoformat() if row.created_at else None,
+    }
+
+
+@router.get("/notifications")
+def list_notifications(
+    current_user: models.User = Depends(get_current_user_from_token),
+    db: Session = Depends(get_db),
+):
+    rows = (
+        db.query(models.Notification)
+        .filter_by(user_id=current_user.id)
+        .order_by(models.Notification.created_at.desc())
+        .limit(50)
+        .all()
+    )
+    return {"items": [_serialize_notification(r) for r in rows]}
+
+
+@router.post("/notifications/{notification_id}/read")
+def mark_notification_read(
+    notification_id: str,
+    current_user: models.User = Depends(get_current_user_from_token),
+    db: Session = Depends(get_db),
+):
+    row = db.query(models.Notification).filter_by(id=notification_id, user_id=current_user.id).first()
+    if row is None:
+        raise HTTPException(status_code=404, detail="Notification not found")
+    row.read = True
+    db.commit()
+    return _serialize_notification(row)
+
+
+@router.post("/notifications/read-all")
+def mark_all_notifications_read(
+    current_user: models.User = Depends(get_current_user_from_token),
+    db: Session = Depends(get_db),
+):
+    updated = (
+        db.query(models.Notification)
+        .filter_by(user_id=current_user.id, read=False)
+        .update({"read": True}, synchronize_session=False)
+    )
+    db.commit()
+    return {"updated": updated}
 
 
 class GuardrailReviewDecision(BaseModel):

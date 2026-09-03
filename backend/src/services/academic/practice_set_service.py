@@ -10,6 +10,7 @@ org/teaching relationship, never a client-supplied filter.
 from __future__ import annotations
 
 import logging
+import uuid
 from datetime import UTC, datetime
 from typing import Any
 
@@ -92,9 +93,30 @@ class PracticeSetService:
         row.requested_by = row.requested_by or student_id
         row.reviewed_by = None
         row.reviewed_at = None
+        self._notify_instructors(row)
         self._repo.commit()
         logger.info("practice_set_queued id=%s course=%s slide=%s", row.id, course.code, slide_key)
         return self._serialize(row, reveal_answers=False)
+
+    def _notify_instructors(self, row: models.PracticeSet) -> None:
+        """Best-effort: a student requesting a practice set is not on the
+        critical path, so a notification write failure here must never break
+        the request itself (same principle as crisis_safety_service's
+        best-effort ops email)."""
+        try:
+            instructor_ids = self._repo.instructor_ids_for_course(row.course_id)
+            for instructor_id in instructor_ids:
+                self._db.add(
+                    models.Notification(
+                        id=f"notif_{uuid.uuid4().hex[:12]}",
+                        user_id=instructor_id,
+                        type="practice_request",
+                        title=f"Yêu cầu bộ luyện tập mới: {row.course_code} — Tuần {row.week_number}",
+                        link="/instructor/practice-reviews",
+                    )
+                )
+        except Exception:
+            logger.exception("practice_request_notification_failed set_id=%s", row.id)
 
     def list_for_instructor(
         self, *, user_id: str, role: str, organization_id: str | None, status: str | None = None

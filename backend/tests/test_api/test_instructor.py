@@ -900,6 +900,92 @@ async def test_instructor_digest_lists_recent_cases_and_can_email(client):
 
 
 @pytest.mark.asyncio
+async def test_instructor_digest_counts_recent_practice_requests(client):
+    db = SessionLocal()
+    try:
+        db.add(
+            models.PracticeSet(
+                id="pset_digest_test",
+                course_id="SSA101",
+                course_code="SSA101",
+                slide_key="w1",
+                week_number=1,
+                status="PENDING_REVIEW",
+                language="vi",
+                requested_by="student_ethan",
+                created_at=datetime.now(UTC).replace(tzinfo=None),
+                updated_at=datetime.now(UTC).replace(tzinfo=None),
+            )
+        )
+        db.commit()
+    finally:
+        db.close()
+
+    headers = await _login_instructor(client)
+    resp = await client.get("/api/v1/instructor/digest?days=30", headers=headers)
+    assert resp.status_code == 200
+    assert resp.json()["summary"]["newPracticeCount"] >= 1
+
+
+@pytest.mark.asyncio
+async def test_instructor_notifications_list_read_and_read_all(client):
+    db = SessionLocal()
+    try:
+        db.add_all(
+            [
+                models.Notification(
+                    id="notif_test_a",
+                    user_id="inst_demo",
+                    type="practice_request",
+                    title="Yêu cầu bộ luyện tập mới: SSA101 — Tuần 1",
+                    link="/instructor/practice-reviews",
+                ),
+                models.Notification(
+                    id="notif_test_b",
+                    user_id="inst_demo",
+                    type="practice_request",
+                    title="Yêu cầu bộ luyện tập mới: SSA101 — Tuần 2",
+                    link="/instructor/practice-reviews",
+                ),
+                # Belongs to another instructor -- must never show up below.
+                models.Notification(
+                    id="notif_test_other",
+                    user_id="inst_other",
+                    type="practice_request",
+                    title="Yêu cầu bộ luyện tập mới: OTH999 — Tuần 1",
+                ),
+            ]
+        )
+        db.commit()
+    finally:
+        db.close()
+
+    headers = await _login_instructor(client)
+    resp = await client.get("/api/v1/instructor/notifications", headers=headers)
+    assert resp.status_code == 200
+    items = resp.json()["items"]
+    ids = {item["id"] for item in items}
+    assert {"notif_test_a", "notif_test_b"} <= ids
+    assert "notif_test_other" not in ids
+
+    read_resp = await client.post("/api/v1/instructor/notifications/notif_test_a/read", headers=headers)
+    assert read_resp.status_code == 200
+    assert read_resp.json()["read"] is True
+
+    # Cannot mark another instructor's notification as read.
+    forbidden = await client.post("/api/v1/instructor/notifications/notif_test_other/read", headers=headers)
+    assert forbidden.status_code == 404
+
+    read_all_resp = await client.post("/api/v1/instructor/notifications/read-all", headers=headers)
+    assert read_all_resp.status_code == 200
+    assert read_all_resp.json()["updated"] >= 1
+
+    final = await client.get("/api/v1/instructor/notifications", headers=headers)
+    own_items = [item for item in final.json()["items"] if item["id"] in {"notif_test_a", "notif_test_b"}]
+    assert all(item["read"] for item in own_items)
+
+
+@pytest.mark.asyncio
 async def test_reflection_summary_hidden_until_student_consents(client):
     """C2: mac dinh KHONG duoc tra ban tom tat phan tu; chi sau khi SV tu bat
     consent thi moi hien — va CHI hien chi so, khong bao gio lo van ban goc
