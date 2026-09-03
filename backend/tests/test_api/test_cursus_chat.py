@@ -1283,3 +1283,151 @@ async def test_redteam_greeting_and_product_help_still_reach_ai_service(client, 
             events = await _parse_sse(response)
         delta_text = next(data["text"] for kind, data in events if kind == "delta")
         assert delta_text == "Phan hoi hop le.", f"expected a real reply for legitimate message: {message!r}"
+
+
+# ── Tool calling (live student data: timetable/plan/quiz/risk/self-study) ──
+
+def _patch_tool_decision(monkeypatch, *, calls: list[dict]):
+    """Makes `decide_tool_calls` return a fixed list of `{"name", "arguments"}`
+    instead of actually calling an LLM -- `execute_chat_tool` still runs for
+    real against the test DB, so this only fakes the "which tool(s) does
+    this message need" decision, not the data-fetch itself."""
+    import src.api.cursus_chat as cursus_chat_module
+
+    async def _fake_decide(**kwargs):
+        return calls
+
+    monkeypatch.setattr(cursus_chat_module, "decide_tool_calls", _fake_decide)
+
+
+@pytest.mark.asyncio
+async def test_tool_result_is_threaded_into_generate_chat_stream(client, monkeypatch):
+    """A tool call decided for this turn must actually run (against the
+    real DB, scoped to the asking student) and its result must reach
+    `generate_chat_stream`'s `tool_results` kwarg -- this is the whole
+    point of wiring tool calling in: the LLM's final answer needs the real
+    fetched data, not just a decision that a tool exists."""
+    captured: list[str | None] = []
+
+    import src.api.cursus_chat as cursus_chat_module
+
+    async def _fake_generate_chat_stream(**kwargs):
+        captured.append(kwargs.get("tool_results"))
+        yield {"type": "delta", "text": "Day la lich cua ban."}
+        yield {"type": "done"}
+
+    monkeypatch.setattr(cursus_chat_module, "generate_chat_stream", _fake_generate_chat_stream)
+    _patch_tool_decision(monkeypatch, calls=[{"name": "get_weekly_timetable", "arguments": {}}])
+
+    org_id = ensure_org(f"cc-tool-{uuid.uuid4().hex[:6]}", "cc-tool")
+    instructor_id = ensure_user(email=f"cc.tooli.{uuid.uuid4().hex}@example.test", org_id=org_id, role=models.UserRole.INSTRUCTOR)
+    student_email = f"cc.tools.{uuid.uuid4().hex}@example.test"
+    student_id = ensure_user(email=student_email, org_id=org_id, role=models.UserRole.STUDENT)
+    code = _code("CCTL")
+    course_id = ensure_course(code=code, org_id=org_id)
+    section_id = enroll_student(student_id=student_id, course_id=course_id, instructor_id=instructor_id)
+
+    now = datetime.now(UTC).replace(tzinfo=None)
+    monday = now - timedelta(days=now.weekday())
+    lecture_start = monday.replace(hour=9, minute=0, second=0, microsecond=0)
+    db = SessionLocal()
+    try:
+        db.add(
+            models.CalendarEvent(
+                id=f"cal_{uuid.uuid4().hex[:10]}",
+                section_id=section_id,
+                title="Buoi hoc thuc hanh",
+                description=None,
+                start_time=lecture_start,
+                end_time=lecture_start + timedelta(hours=2),
+                event_type="LECTURE",
+            )
+        )
+        db.commit()
+    finally:
+        db.close()
+
+    token = await login(client, student_email)
+    async with client.stream(
+        "POST", "/api/v1/student/cursus/stream", headers=auth_headers(token),
+        json={"message": "Lịch học tuần này của em thế nào?"},
+    ) as response:
+        assert response.status_code == 200
+        await _parse_sse(response)
+
+    assert captured, "generate_chat_stream must have been called"
+    tool_results_text = captured[0]
+    assert tool_results_text is not None
+    assert "get_weekly_timetable" in tool_results_text
+    assert "Buoi hoc thuc hanh" in tool_results_text
+
+
+@pytest.mark.asyncio
+async def test_tool_result_exempts_no_context_refusal_even_with_zero_rag_sources(client, monkeypatch):
+    """A question retrieval finds nothing for (no course-document chunk
+    matches) must still get a real answer, not the generic "no data"
+    refusal, when a tool actually found real live data for it."""
+    _patch_ai_service(monkeypatch, reply_text="Ban chua co ke hoach tuan nay.")
+    _patch_tool_decision(monkeypatch, calls=[{"name": "get_current_plan_tasks", "arguments": {}}])
+
+    org_id = ensure_org(f"cc-toolg-{uuid.uuid4().hex[:6]}", "cc-toolg")
+    instructor_id = ensure_user(email=f"cc.toolgi.{uuid.uuid4().hex}@example.test", org_id=org_id, role=models.UserRole.INSTRUCTOR)
+    student_email = f"cc.toolgs.{uuid.uuid4().hex}@example.test"
+    student_id = ensure_user(email=student_email, org_id=org_id, role=models.UserRole.STUDENT)
+    code = _code("CCTG")
+    course_id = ensure_course(code=code, org_id=org_id)
+    enroll_student(student_id=student_id, course_id=course_id, instructor_id=instructor_id)
+    # Deliberately NO seeded chunk for this course -- RAG retrieval will
+    # find zero sources, which alone (per the general no-context gate)
+    # would normally trigger a refusal.
+
+    token = await login(client, student_email)
+    async with client.stream(
+        "POST", "/api/v1/student/cursus/stream", headers=auth_headers(token),
+        json={"message": "Kế hoạch tuần này của em có gì chưa xong?"},
+    ) as response:
+        assert response.status_code == 200
+        events = await _parse_sse(response)
+
+    delta_text = next(data["text"] for kind, data in events if kind == "delta")
+    assert delta_text == "Ban chua co ke hoach tuan nay."
+    assert "citation" not in [kind for kind, _ in events]
+
+
+@pytest.mark.asyncio
+async def test_tool_decision_failure_fails_open_to_normal_chat(client, monkeypatch):
+    """If the tool-decision call errors for any reason (e.g. the configured
+    gateway doesn't support `tools=` at all) -- even bypassing
+    `decide_tool_calls`'s own internal fail-open and raising outright -- the
+    chat turn must still complete normally via cursus_chat.py's own
+    defense-in-depth try/except, never surface an error to the student just
+    because the new tool-calling step broke."""
+    _patch_ai_service(monkeypatch, reply_text="Chao ban, minh giup duoc gi?")
+    import src.api.cursus_chat as cursus_chat_module
+
+    async def _boom(**kwargs):
+        raise RuntimeError("gateway rejected tools= param")
+
+    monkeypatch.setattr(cursus_chat_module, "decide_tool_calls", _boom)
+
+    org_id = ensure_org(f"cc-toolf-{uuid.uuid4().hex[:6]}", "cc-toolf")
+    instructor_id = ensure_user(email=f"cc.toolfi.{uuid.uuid4().hex}@example.test", org_id=org_id, role=models.UserRole.INSTRUCTOR)
+    student_email = f"cc.toolfs.{uuid.uuid4().hex}@example.test"
+    student_id = ensure_user(email=student_email, org_id=org_id, role=models.UserRole.STUDENT)
+    code = _code("CCTF")
+    course_id = ensure_course(code=code, org_id=org_id)
+    enroll_student(student_id=student_id, course_id=course_id, instructor_id=instructor_id)
+    _seed_chunk(course_id, code, text=f"{code} noi dung bai giang co ban ve kien truc he thong.")
+
+    token = await login(client, student_email)
+    async with client.stream(
+        "POST", "/api/v1/student/cursus/stream", headers=auth_headers(token),
+        json={"message": f"{code} hoc noi dung gi?"},
+    ) as response:
+        assert response.status_code == 200
+        events = await _parse_sse(response)
+
+    kinds = [kind for kind, _ in events]
+    assert "error" not in kinds
+    delta_text = next(data["text"] for kind, data in events if kind == "delta")
+    assert delta_text == "Chao ban, minh giup duoc gi?"

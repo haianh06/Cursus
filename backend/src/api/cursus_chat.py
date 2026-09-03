@@ -28,9 +28,11 @@ from src.security.authorization import require_roles
 from src.services.academic.academic_calendar import current_week_for_student
 from src.services.ai.plan_builder import resolve_current_plan, serialize_plan
 from src.services.core.ai_engine.chat_stream import generate_chat_stream, generate_followup_suggestions
+from src.services.core.ai_engine.chat_tools import decide_tool_calls
 from src.services.core.ai_service_client import generate_structured
 from src.services.core import chat_cache_service, smalltalk_service
 from src.services.core.audit_service import AuditService
+from src.services.core.chat_tool_service import execute_chat_tool
 from src.services.core.crisis_safety_service import evaluate as evaluate_crisis
 from src.services.core.email_provider import build_email_service
 from src.services.core.guardrail_service import _OUT_OF_SCOPE_ANSWER, GuardrailService
@@ -155,6 +157,15 @@ def _memory_transcript(db: Session, conversation_id: str) -> str | None:
     if not history:
         return None
     return "\n".join(f"{'Student' if row.role == 'user' else 'Cursus'}: {row.content}" for row in history)
+
+
+def _format_tool_results(tool_results: list[dict]) -> str | None:
+    """Compact `[name] json` lines fed into `generate_chat_stream`'s "Live
+    data" prompt block -- one line per tool call this turn, `result` already
+    shaped student-safe by `execute_chat_tool` (see chat_tool_service.py)."""
+    if not tool_results:
+        return None
+    return "\n".join(f"[{item['name']}] {json.dumps(item['result'], ensure_ascii=False)}" for item in tool_results)
 
 
 def _context(
@@ -636,6 +647,41 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
         return _error_stream(code="DB_ERROR", message="Không thể truy xuất tài liệu môn học, vui lòng thử lại sau.")
     intent = _intent(payload.message, sources)
 
+    # Daily LLM-budget check moved here (used to live inside `relay()`,
+    # right before the main answer call) so ONE increment covers every real
+    # LLM call this turn makes: the tool-decision call below, the main
+    # streamed answer, and the followup-suggestions call in `relay()` --
+    # same "N calls, 1 budget unit" precedent `generate_followup_suggestions`
+    # already established.
+    if not await check_and_increment_async():
+        return _error_stream(
+            code="LLM_BUDGET_EXCEEDED",
+            message="Hệ thống trợ lý đang tạm ngừng do vượt hạn mức sử dụng AI trong ngày. Vui lòng thử lại vào ngày mai.",
+        )
+
+    # Tool-calling: gives the LLM real, live access to the student's own
+    # timetable/plan/quiz-results/risk-signals/self-study data (see
+    # ai_engine/chat_tools.py + chat_tool_service.py) instead of Cursus Chat
+    # only ever knowing course-document RAG content. A separate, non-streamed
+    # decision call so the existing streaming answer path below stays
+    # untouched. `decide_tool_calls` already fails open to `[]` internally
+    # (a gateway that doesn't support `tools=`, a timeout, anything) -- this
+    # try/except is defense-in-depth for the unexpected case where it still
+    # raises, matching how `_context()`/`_memory_transcript` above are also
+    # wrapped: one broken step here must never 500 the whole chat turn.
+    tool_results: list[dict] = []
+    try:
+        tool_calls = await decide_tool_calls(settings=settings, message=payload.message)
+        for call in tool_calls:
+            result = await asyncio.to_thread(
+                execute_chat_tool, db, student_id=current_user.id, name=call["name"], arguments=call["arguments"],
+            )
+            tool_results.append({"name": call["name"], "result": result})
+    except Exception:
+        logger.exception("cursus_chat_tool_calling_failed student_id=%s", current_user.id)
+        tool_results = []
+    tool_results_text = _format_tool_results(tool_results)
+
     # General off-topic gate: the OUT_OF_SCOPE guardrail above only catches
     # the specific enumerated categories (weather, tuition, another
     # student's grades...) via regex -- it says nothing about an off-topic
@@ -662,7 +708,12 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
     # through `sources` being non-empty -- it doesn't need a separate
     # exemption here.
     #
-    # Two guards keep this from swallowing ordinary small talk:
+    # Guards keep this from swallowing ordinary small talk or a genuinely
+    # tool-answerable question:
+    # - `not tool_results` -- a successful (or even a failed-but-attempted)
+    #   tool call means there IS real, live data to answer from even when
+    #   RAG found no course-document chunk; refusing anyway would contradict
+    #   the "Live data" the LLM is about to be given.
     # - `course_codes` non-empty -- for a student enrolled in nothing,
     #   retrieval is *always* empty regardless of what's asked, so emptiness
     #   carries no signal at all there.
@@ -674,6 +725,7 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
     #   exempt an unrelated request just by prefixing "hi" onto it.
     if (
         not sources
+        and not tool_results
         and course_codes
         and not wants_personalized
         and intent != "product_help"
@@ -696,10 +748,6 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
         answer = ""
         yield f"event: meta\ndata: {json.dumps({'conversationId': conversation.id, 'intent': intent})}\n\n"
 
-        if not await check_and_increment_async():
-            yield f"event: error\ndata: {json.dumps({'code': 'LLM_BUDGET_EXCEEDED', 'message': 'Hệ thống trợ lý đang tạm ngừng do vượt hạn mức sử dụng AI trong ngày. Vui lòng thử lại vào ngày mai.'})}\n\n"
-            return
-
         try:
             # ai_engine already classifies its own failure
             # (RATE_LIMITED/QUOTA_EXHAUSTED/AI_UNAVAILABLE/AI_MISCONFIGURED) --
@@ -707,7 +755,7 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
             # generic message here. "done" from the generator is not
             # forwarded -- this relay emits its own "done" below, after
             # citations and any action proposal have also been sent.
-            async for event in generate_chat_stream(settings=settings, message=payload.message, intent=intent, context=sources, memory=memory):
+            async for event in generate_chat_stream(settings=settings, message=payload.message, intent=intent, context=sources, memory=memory, tool_results=tool_results_text):
                 if event["type"] == "delta":
                     answer += event["text"]
                     yield f"event: delta\ndata: {json.dumps({'text': event['text']})}\n\n"
