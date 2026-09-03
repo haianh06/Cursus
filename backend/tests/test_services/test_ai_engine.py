@@ -189,6 +189,23 @@ async def test_generate_chat_stream_emits_delta_and_done(monkeypatch):
     assert events[-1] == {"type": "done"}
 
 
+async def test_generate_chat_stream_strips_cjk_characters_from_deltas(monkeypatch):
+    # Language-drift regression: a light model occasionally code-switches
+    # mid-sentence into Chinese/Japanese/Korean despite the system prompt --
+    # the belt-and-suspenders filter must strip those characters rather than
+    # let them reach the student.
+    monkeypatch.setattr(
+        chat_stream, "async_openai_client",
+        lambda settings: _FakeAsyncOpenAIClient(stream_deltas=["tự", "安抚", " mình", "です", " nhé"]),
+    )
+
+    events = [event async for event in chat_stream.generate_chat_stream(
+        settings=_settings(), message="an ủi bản thân thế nào", intent="course_fact", context=[],
+    )]
+    deltas = "".join(event["text"] for event in events if event["type"] == "delta")
+    assert deltas == "tự mình nhé"
+
+
 async def test_generate_chat_stream_emits_error_event_on_provider_failure(monkeypatch):
     monkeypatch.setattr(chat_stream, "async_openai_client", lambda settings: _FakeAsyncOpenAIClient(error=RuntimeError("provider unavailable")))
 
