@@ -6,6 +6,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import re
 import uuid
 from datetime import datetime, timedelta
 from uuid import uuid4
@@ -32,7 +33,7 @@ from src.services.core import chat_cache_service, smalltalk_service
 from src.services.core.audit_service import AuditService
 from src.services.core.crisis_safety_service import evaluate as evaluate_crisis
 from src.services.core.email_provider import build_email_service
-from src.services.core.guardrail_service import GuardrailService
+from src.services.core.guardrail_service import _OUT_OF_SCOPE_ANSWER, GuardrailService
 from src.services.core.llm import has_configured_llm
 from src.services.core.llm_budget_service import check_and_increment_async
 from src.services.core.notification_service import NotificationService
@@ -112,6 +113,31 @@ def _enrolled_course_codes(db: Session, student_id: str) -> list[str]:
     return [r[0] for r in db.query(models.Course.code).join(models.CourseSection).join(models.Enrollment).filter(models.Enrollment.student_id == student_id, models.Enrollment.status == models.EnrollmentStatus.ENROLLED.value).all()]
 
 
+_MEMORY_TURNS = 5
+
+
+def _memory_transcript(db: Session, conversation_id: str) -> str | None:
+    """Last `_MEMORY_TURNS` user/assistant pairs from this conversation,
+    formatted as a plain transcript for `generate_chat_stream`'s `memory`
+    slot -- without this, every turn was answered with zero awareness of
+    what the student already asked earlier in the same conversation, even
+    though the full history was already being persisted (just never read
+    back). Excludes the just-inserted current user message (the caller adds
+    and commits it to `chat_messages` before this runs) since that message
+    is passed separately as `message`."""
+    rows = (
+        db.query(models.ChatMessage)
+        .filter_by(conversation_id=conversation_id)
+        .order_by(models.ChatMessage.created_at.desc())
+        .limit(_MEMORY_TURNS * 2 + 1)
+        .all()
+    )
+    history = list(reversed(rows[1:]))
+    if not history:
+        return None
+    return "\n".join(f"{'Student' if row.role == 'user' else 'Cursus'}: {row.content}" for row in history)
+
+
 def _context(
     db: Session,
     student_id: str,
@@ -166,6 +192,24 @@ def _context(
         if len(sources) >= 5:
             break
     return sources
+
+
+_INFORMATION_REQUEST_RE = re.compile(
+    r"[?？]|\b(gì|sao|nào|ai|khi\s*nào|ở\s*đâu|đâu|bao\s*nhiêu|bao\s*lâu|"
+    r"th[eế]\s*n[aà]o|l[aà]m\s*sao|vì\s*sao|what|why|how|when|where|which)\b",
+    re.IGNORECASE,
+)
+
+
+def _looks_like_information_request(question: str) -> bool:
+    """Cheap heuristic to tell an actual question (that a "no course data
+    found" refusal makes sense for) apart from small talk/a greeting Tier 1's
+    exact-match dict and Tier 1.5's semantic bypass both missed -- e.g. "Xin
+    chào Cursus" isn't in `_CANNED_ANSWERS` verbatim, and Tier 1.5 needs a
+    real embedding backend (GOOGLE_API_KEY) to catch a paraphrase at all.
+    Used only to gate the general no-context refusal below; it never blocks
+    anything by itself."""
+    return bool(_INFORMATION_REQUEST_RE.search(question or ""))
 
 
 def _personalized_intent(question: str) -> str | None:
@@ -393,10 +437,22 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
         )
         return _single_event_stream(conversation_id=conversation.id, text=decision.answer)
     if decision.reason == "out_of_scope":
+        # `blocked=False` here is intentional (see guardrail_service.py's own
+        # docstring: "out_of_scope -> say the data is not available, never
+        # guess") -- it is a real answer, not a HITL block, so no
+        # GuardrailEvent/_record_guardrail_block review-queue entry is
+        # raised for it. But that answer still has to be the one actually
+        # sent: previously this branch only audited the decision and fell
+        # through into retrieval + the LLM, so an out-of-scope question
+        # (weather, tuition, another student's grades...) got a real LLM
+        # answer stitched from whatever unrelated course chunks happened to
+        # clear retrieval's lexical-match floor -- wrong answer AND
+        # citations that had nothing to do with the question.
         await _audit_chat_decision(
             db, event_type="GUARDRAIL_DECISION", decision="ALLOW", student_id=current_user.id,
             conversation_id=conversation.id, extra={"reason": decision.reason, "intent": decision.intent},
         )
+        return _single_event_stream(conversation_id=conversation.id, text=decision.answer)
 
     # Tier 1: canned answers -- exact-match small talk (greetings, thanks),
     # zero embedding/DB/LLM cost. Covers the reported "even 'Hi' takes
@@ -478,6 +534,47 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
         return _error_stream(code="DB_ERROR", message="Không thể truy xuất tài liệu môn học, vui lòng thử lại sau.")
     intent = _intent(payload.message, sources)
 
+    # General off-topic gate: the OUT_OF_SCOPE guardrail above only catches
+    # the specific enumerated categories (weather, tuition, another
+    # student's grades...) via regex -- it says nothing about a question
+    # like "kể chuyện cười đi" or "1+1 bằng mấy" that no rule was ever
+    # written for. Retrieval finding zero chunks for anything BUT a
+    # personalized/product/hint question is itself the general signal that
+    # the question isn't grounded in course material, so refuse the same
+    # honest way rather than let the LLM free-associate an answer (and,
+    # since sources is empty, it would have no citation to back it with
+    # anyway). `decision.reason == "ask_hint"` exempts generic Socratic
+    # "where do I start" requests, which legitimately have no chunk to
+    # retrieve yet still deserve a real answer.
+    #
+    # Two extra guards keep this from swallowing ordinary small talk:
+    # - `course_codes` non-empty -- for a student enrolled in nothing,
+    #   retrieval is *always* empty regardless of what's asked, so emptiness
+    #   carries no signal at all there.
+    # - `_looks_like_information_request` -- a greeting phrasing Tier 1's
+    #   exact-match dict and Tier 1.5's semantic bypass both miss (e.g. "Xin
+    #   chào Cursus") must still reach the LLM for a normal warm reply
+    #   instead of a cold "no data" refusal.
+    if (
+        not sources
+        and course_codes
+        and not wants_personalized
+        and intent != "product_help"
+        and decision.reason != "ask_hint"
+        and _looks_like_information_request(payload.message)
+    ):
+        await _audit_chat_decision(
+            db, event_type="CHAT_NO_CONTEXT_REFUSAL", decision="ALLOW", student_id=current_user.id,
+            conversation_id=conversation.id, extra={"intent": intent},
+        )
+        return _single_event_stream(conversation_id=conversation.id, text=_OUT_OF_SCOPE_ANSWER)
+
+    try:
+        memory = await asyncio.to_thread(_memory_transcript, db, conversation.id)
+    except Exception:
+        logger.exception("cursus_chat_memory_lookup_failed student_id=%s", current_user.id)
+        memory = None
+
     async def relay():
         answer = ""
         yield f"event: meta\ndata: {json.dumps({'conversationId': conversation.id, 'intent': intent})}\n\n"
@@ -493,7 +590,7 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
             # generic message here. "done" from the generator is not
             # forwarded -- this relay emits its own "done" below, after
             # citations and any action proposal have also been sent.
-            async for event in generate_chat_stream(settings=settings, message=payload.message, intent=intent, context=sources):
+            async for event in generate_chat_stream(settings=settings, message=payload.message, intent=intent, context=sources, memory=memory):
                 if event["type"] == "delta":
                     answer += event["text"]
                     yield f"event: delta\ndata: {json.dumps({'text': event['text']})}\n\n"

@@ -829,3 +829,167 @@ async def test_stream_emits_dynamic_followup_suggestions(client, monkeypatch):
 
     suggestions_event = next(data for kind, data in events if kind == "suggestions")
     assert suggestions_event["items"] == ["Follow-up 1?", "Follow-up 2?"]
+
+
+@pytest.mark.asyncio
+async def test_out_of_scope_question_gets_canned_refusal_without_calling_ai_service(client, monkeypatch):
+    """weather/tuition/other-student's-grades etc. match GuardrailService's
+    OUT_OF_SCOPE rule group (blocked=False, reason="out_of_scope") -- this
+    must short-circuit to the canned refusal, never fall through to
+    retrieval + a real LLM answer stitched from unrelated course chunks."""
+    called = {"hit": False}
+
+    import src.api.cursus_chat as cursus_chat_module
+
+    def _fail_if_called(*args, **kwargs):
+        called["hit"] = True
+        raise AssertionError("ai-service must not be called for an out-of-scope question")
+
+    monkeypatch.setattr(cursus_chat_module, "generate_chat_stream", _fail_if_called)
+
+    org_id = ensure_org(f"cc-oos-{uuid.uuid4().hex[:6]}", "cc-oos")
+    instructor_id = ensure_user(email=f"cc.oosi.{uuid.uuid4().hex}@example.test", org_id=org_id, role=models.UserRole.INSTRUCTOR)
+    student_email = f"cc.ooss.{uuid.uuid4().hex}@example.test"
+    student_id = ensure_user(email=student_email, org_id=org_id, role=models.UserRole.STUDENT)
+    code = _code("CCO")
+    course_id = ensure_course(code=code, org_id=org_id)
+    enroll_student(student_id=student_id, course_id=course_id, instructor_id=instructor_id)
+    _seed_chunk(course_id, code, text=f"{code} noi dung bai giang co ban ve kien truc he thong.")
+
+    token = await login(client, student_email)
+    async with client.stream(
+        "POST", "/api/v1/student/cursus/stream", headers=auth_headers(token),
+        json={"message": "Hôm nay thời tiết thế nào?"},
+    ) as response:
+        assert response.status_code == 200
+        events = await _parse_sse(response)
+
+    assert not called["hit"]
+    kinds = [kind for kind, _ in events]
+    assert "citation" not in kinds
+    delta_text = next(data["text"] for kind, data in events if kind == "delta")
+    assert "không có dữ liệu" in delta_text.lower()
+
+
+@pytest.mark.asyncio
+async def test_general_off_topic_question_with_zero_sources_gets_refused(client, monkeypatch):
+    """A question with no OUT_OF_SCOPE regex rule written for it (unlike the
+    weather test above) must still be refused when retrieval finds nothing
+    for it -- the general no-context gate, not the enumerated guardrail
+    list, is what should catch this one."""
+    called = {"hit": False}
+
+    import src.api.cursus_chat as cursus_chat_module
+
+    def _fail_if_called(*args, **kwargs):
+        called["hit"] = True
+        raise AssertionError("ai-service must not be called for an off-topic question with no course match")
+
+    monkeypatch.setattr(cursus_chat_module, "generate_chat_stream", _fail_if_called)
+
+    org_id = ensure_org(f"cc-gen-{uuid.uuid4().hex[:6]}", "cc-gen")
+    instructor_id = ensure_user(email=f"cc.geni.{uuid.uuid4().hex}@example.test", org_id=org_id, role=models.UserRole.INSTRUCTOR)
+    student_email = f"cc.gens.{uuid.uuid4().hex}@example.test"
+    student_id = ensure_user(email=student_email, org_id=org_id, role=models.UserRole.STUDENT)
+    code = _code("CCG")
+    course_id = ensure_course(code=code, org_id=org_id)
+    enroll_student(student_id=student_id, course_id=course_id, instructor_id=instructor_id)
+    _seed_chunk(course_id, code, text=f"{code} noi dung bai giang co ban ve kien truc he thong.")
+
+    token = await login(client, student_email)
+    async with client.stream(
+        "POST", "/api/v1/student/cursus/stream", headers=auth_headers(token),
+        json={"message": "1 cộng 1 bằng mấy vậy?"},
+    ) as response:
+        assert response.status_code == 200
+        events = await _parse_sse(response)
+
+    assert not called["hit"]
+    kinds = [kind for kind, _ in events]
+    assert "citation" not in kinds
+
+
+@pytest.mark.asyncio
+async def test_greeting_phrasing_not_in_canned_dict_still_reaches_ai_service(client, monkeypatch):
+    """A greeting Tier 1's exact-match dict misses (e.g. "Xin chào Cursus",
+    unlike the bare "xin chao" key) must not be swallowed by the general
+    no-context refusal -- it still has zero retrieved sources, but it isn't
+    an information request, so it should reach the LLM for a normal reply."""
+    _patch_ai_service(monkeypatch, reply_text="Chào bạn!")
+
+    org_id = ensure_org(f"cc-grt-{uuid.uuid4().hex[:6]}", "cc-grt")
+    instructor_id = ensure_user(email=f"cc.grti.{uuid.uuid4().hex}@example.test", org_id=org_id, role=models.UserRole.INSTRUCTOR)
+    student_email = f"cc.grts.{uuid.uuid4().hex}@example.test"
+    student_id = ensure_user(email=student_email, org_id=org_id, role=models.UserRole.STUDENT)
+    code = _code("CCT")
+    course_id = ensure_course(code=code, org_id=org_id)
+    enroll_student(student_id=student_id, course_id=course_id, instructor_id=instructor_id)
+    _seed_chunk(course_id, code, text=f"{code} noi dung bai giang co ban ve kien truc he thong.")
+
+    token = await login(client, student_email)
+    async with client.stream(
+        "POST", "/api/v1/student/cursus/stream", headers=auth_headers(token),
+        json={"message": "Xin chào Cursus"},
+    ) as response:
+        assert response.status_code == 200
+        events = await _parse_sse(response)
+
+    delta_text = next(data["text"] for kind, data in events if kind == "delta")
+    assert delta_text == "Chào bạn!"
+
+
+@pytest.mark.asyncio
+async def test_second_turn_passes_prior_exchange_as_memory(client, monkeypatch):
+    """A second message in the same conversation must carry the first
+    question + answer into generate_chat_stream's `memory` kwarg -- before
+    this, every turn was answered with zero awareness of what was already
+    asked earlier in the same conversation, even though the exchange was
+    already sitting in chat_messages."""
+    import src.api.cursus_chat as cursus_chat_module
+
+    captured_memory: list[str | None] = []
+    reply_text = "Đây là câu trả lời từ ai-service."
+
+    async def _fake_generate_chat_stream(**kwargs):
+        captured_memory.append(kwargs.get("memory"))
+        yield {"type": "delta", "text": reply_text}
+        yield {"type": "done"}
+
+    monkeypatch.setattr(cursus_chat_module, "generate_chat_stream", _fake_generate_chat_stream)
+
+    org_id = ensure_org(f"cc-mem-{uuid.uuid4().hex[:6]}", "cc-mem")
+    instructor_id = ensure_user(email=f"cc.memi.{uuid.uuid4().hex}@example.test", org_id=org_id, role=models.UserRole.INSTRUCTOR)
+    student_email = f"cc.mems.{uuid.uuid4().hex}@example.test"
+    student_id = ensure_user(email=student_email, org_id=org_id, role=models.UserRole.STUDENT)
+    code = _code("CCM")
+    course_id = ensure_course(code=code, org_id=org_id)
+    enroll_student(student_id=student_id, course_id=course_id, instructor_id=instructor_id)
+    _seed_chunk(course_id, code, text=f"{code} noi dung bai giang co ban ve kien truc he thong.")
+
+    token = await login(client, student_email)
+    first_message = f"Cho em hoi noi dung mon {code} co gi?"
+    async with client.stream(
+        "POST", "/api/v1/student/cursus/stream", headers=auth_headers(token),
+        json={"message": first_message},
+    ) as response:
+        assert response.status_code == 200
+        events = await _parse_sse(response)
+    conversation_id = next(data for kind, data in events if kind == "meta")["conversationId"]
+
+    # First turn in a brand-new conversation has no prior exchange to recall.
+    assert captured_memory[0] is None
+
+    second_message = "Con noi dung nao khac khong?"
+    async with client.stream(
+        "POST", "/api/v1/student/cursus/stream", headers=auth_headers(token),
+        json={"message": second_message, "conversation_id": conversation_id},
+    ) as response:
+        assert response.status_code == 200
+        await _parse_sse(response)
+
+    assert len(captured_memory) == 2
+    memory = captured_memory[1]
+    assert memory is not None
+    assert first_message in memory
+    assert reply_text in memory
+    assert second_message not in memory

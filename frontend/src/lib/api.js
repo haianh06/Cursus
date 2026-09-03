@@ -285,12 +285,22 @@ export function requestOrgAccess({ institutionName, contactName, email, roleInte
 }
 
 /** Public landing-page chat bubble (bottom-right, no auth) -- pre-login
- * product demo, same pattern as Intercom/Drift's marketing-site chat. */
-export function askLandingChat(question) {
+ * product demo, same pattern as Intercom/Drift's marketing-site chat.
+ * Fixed FAQ only (no free text / no LLM call): `getLandingChatFaq` lists the
+ * pickable questions, `askLandingChat` returns that question's pre-written
+ * answer by id. */
+export function getLandingChatFaq(lang = 'vi') {
+  return request(`/public/landing-chat/faq?lang=${encodeURIComponent(lang)}`, {
+    method: 'GET',
+    auth: false,
+  });
+}
+
+export function askLandingChat(questionId, lang = 'vi') {
   return request('/public/landing-chat', {
     method: 'POST',
     auth: false,
-    body: { question },
+    body: { question_id: questionId, lang },
   });
 }
 

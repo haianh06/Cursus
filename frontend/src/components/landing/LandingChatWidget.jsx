@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Send, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useLanguage } from '../../context/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import CursusMascot from '../shared/CursusMascot';
-import { askLandingChat, userFacingApiError } from '../../lib/api';
+import { askLandingChat, getLandingChatFaq, userFacingApiError } from '../../lib/api';
 
 // Same gradient as CursusChat.jsx's HEADER_GRADIENT -- both widgets share
 // one brand treatment for the header/send-button/avatar-ring chrome, kept
@@ -14,23 +14,24 @@ import { askLandingChat, userFacingApiError } from '../../lib/api';
 // only module.
 const HEADER_GRADIENT = 'linear-gradient(135deg, var(--accent-cta-bg) 0%, var(--accent-cta-bg-hover) 100%)';
 
-function QuickReplies({ onPick, disabled, t }) {
-  const prompts = [
-    t('landing.chatWidget.quickReply1'),
-    t('landing.chatWidget.quickReply2'),
-    t('landing.chatWidget.quickReply3'),
-  ];
+// Preset-only, no free text: every button here is a real question id from
+// the backend FAQ table (src/services/core/landing_chat_service.py) with a
+// pre-written answer, so there is no path left in this widget that can ever
+// trigger an LLM call -- see that service's own docstring for why.
+function FaqButtons({ items, onPick, disabled, askedIds }) {
+  const pending = items.filter((item) => !askedIds.has(item.id));
+  if (pending.length === 0) return null;
   return (
     <div className="flex flex-wrap gap-2">
-      {prompts.map((text) => (
+      {pending.map((item) => (
         <button
-          key={text}
+          key={item.id}
           type="button"
           disabled={disabled}
-          onClick={() => onPick(text)}
+          onClick={() => onPick(item)}
           className="rounded-full border border-landing-accent/30 bg-landing-accent-soft px-3 py-1.5 text-left text-xs font-medium text-landing-accent hover:bg-landing-accent/10 disabled:opacity-50 cursor-pointer"
         >
-          {text}
+          {item.question}
         </button>
       ))}
     </div>
@@ -54,14 +55,31 @@ export default function LandingChatWidget() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
+  const [faqItems, setFaqItems] = useState([]);
+  const [askedIds, setAskedIds] = useState(() => new Set());
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
   const [showGreeting, setShowGreeting] = useState(false);
   const [popCount, setPopCount] = useState(0);
   const panelRef = useRef(null);
-  const inputRef = useRef(null);
   const listRef = useRef(null);
+
+  // FAQ list is the only thing this widget can ever show -- refetched
+  // whenever the visitor switches language so button labels/answers stay in
+  // the language they're currently reading the page in.
+  useEffect(() => {
+    let cancelled = false;
+    getLandingChatFaq(lang)
+      .then((result) => {
+        if (!cancelled) setFaqItems(result.items || []);
+      })
+      .catch(() => {
+        if (!cancelled) setError(t('landing.chatWidget.errorFallback'));
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [lang, t]);
 
   // A brief invitation label next to the launcher on first load (Intercom/
   // Crisp/Drift convention) -- an unlabeled floating icon reads as "what is
@@ -86,10 +104,6 @@ export default function LandingChatWidget() {
   }, []);
 
   useEffect(() => {
-    if (open) inputRef.current?.focus();
-  }, [open]);
-
-  useEffect(() => {
     if (!open) return undefined;
     const onKeydown = (e) => {
       if (e.key === 'Escape') setOpen(false);
@@ -109,25 +123,20 @@ export default function LandingChatWidget() {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages, sending]);
 
-  const sendText = async (question) => {
-    if (!question || sending) return;
-    setInput('');
+  const pickFaqItem = async (item) => {
+    if (sending) return;
     setError('');
-    setMessages((prev) => [...prev, { role: 'user', text: question }]);
+    setMessages((prev) => [...prev, { role: 'user', text: item.question }]);
+    setAskedIds((prev) => new Set(prev).add(item.id));
     setSending(true);
     try {
-      const result = await askLandingChat(question);
+      const result = await askLandingChat(item.id, lang);
       setMessages((prev) => [...prev, { role: 'assistant', text: result.answer }]);
     } catch (err) {
       setError(userFacingApiError(err, lang).message || t('landing.chatWidget.errorFallback'));
     } finally {
       setSending(false);
     }
-  };
-
-  const send = (e) => {
-    e.preventDefault();
-    sendText(input.trim());
   };
 
   return (
@@ -169,9 +178,6 @@ export default function LandingChatWidget() {
             {messages.length === 0 && (
               <div className="rounded-2xl border border-landing-border bg-landing-surface-muted p-4 text-sm text-landing-text shadow-landing-sm">
                 <p>{t('landing.chatWidget.greeting')}</p>
-                <div className="mt-3 border-t border-landing-border pt-3">
-                  <QuickReplies onPick={sendText} disabled={sending} t={t} />
-                </div>
               </div>
             )}
             {messages.map((m, i) => (
@@ -204,13 +210,13 @@ export default function LandingChatWidget() {
             {error && (
               <p role="alert" className="text-[12px] text-landing-danger">{error}</p>
             )}
+            <FaqButtons items={faqItems} onPick={pickFaqItem} disabled={sending} askedIds={askedIds} />
           </div>
 
           {/* Landing-only CTA -- CursusChat doesn't need this, the visitor
-              there is already signed in. Kept as its own strip above the
-              input (not merged into it) so the input/send-button pair below
-              stays pixel-for-pixel the same markup as CursusChat's. */}
-          <div className="border-t border-landing-border px-3 pt-2">
+              there is already signed in. No free-text input below it: this
+              widget only ever answers the fixed FAQ list rendered above. */}
+          <div className="border-t border-landing-border bg-landing-surface p-3">
             <button
               type="button"
               onClick={() => navigate('/demo/select-role')}
@@ -219,33 +225,10 @@ export default function LandingChatWidget() {
             >
               {t('landing.startFreeBtn')}
             </button>
-          </div>
-          <form onSubmit={send} className="bg-landing-surface p-3">
-            <div className="flex items-end gap-2 rounded-full border border-landing-border bg-landing-bg px-4 py-2 focus-within:ring-2 focus-within:ring-landing-accent">
-              <input
-                ref={inputRef}
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder={t('landing.chatWidget.inputPlaceholder')}
-                maxLength={500}
-                disabled={sending}
-                className="min-h-[24px] flex-1 border-0 bg-transparent py-1 text-sm text-landing-text placeholder:text-landing-text-muted outline-none focus:ring-0 disabled:opacity-60"
-              />
-              <button
-                type="submit"
-                disabled={sending || !input.trim()}
-                aria-label={t('landing.chatWidget.sendLabel')}
-                style={{ background: HEADER_GRADIENT }}
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white disabled:opacity-40 cursor-pointer"
-              >
-                <Send size={14} />
-              </button>
-            </div>
-            <p className="mt-1.5 text-center text-[11px] text-landing-text-muted">
+            <p className="text-center text-[11px] text-landing-text-muted">
               {t('landing.chatWidget.disclaimer')}
             </p>
-          </form>
+          </div>
         </div>
       )}
 

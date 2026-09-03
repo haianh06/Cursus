@@ -14,9 +14,18 @@ class AccessRequestAck(BaseModel):
 
 
 class LandingChatRequest(BaseModel):
-    question: str = Field(..., min_length=1, max_length=500)
+    question_id: str = Field(..., min_length=1, max_length=100)
+    lang: str = Field(default="vi", pattern="^(vi|en)$")
 
 
 class LandingChatReply(BaseModel):
     answer: str
-    generated_by_llm: bool
+
+
+class LandingChatFaqItem(BaseModel):
+    id: str
+    question: str
+
+
+class LandingChatFaqList(BaseModel):
+    items: list[LandingChatFaqItem]

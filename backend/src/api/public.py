@@ -10,6 +10,7 @@ from src.repositories.access_request_repository import AccessRequestRepository
 from src.schemas.public_schemas import (
     AccessRequestAck,
     CreateAccessRequestRequest,
+    LandingChatFaqList,
     LandingChatReply,
     LandingChatRequest,
 )
@@ -17,11 +18,21 @@ from src.services.core import landing_chat_service, rate_limiter
 
 router = APIRouter(prefix="/public", tags=["public"])
 
-# Landing chat calls a real LLM per request (cost-bearing) and needs zero
-# auth to reach -- a tighter, IP-keyed cap on top of the app-wide
-# RateLimitMiddleware, same reasoning as the 8/day cap on Instructor document
-# uploads (src/services/core/instructor_document_request_service.py).
-LANDING_CHAT_LIMIT_PER_HOUR = 15
+# Landing chat is a fixed FAQ lookup, no LLM call -- this cap just keeps an
+# anonymous, zero-auth endpoint from being hammered, same reasoning as the
+# 8/day cap on Instructor document uploads
+# (src/services/core/instructor_document_request_service.py), not a cost
+# control (there's no per-call AI spend to protect anymore).
+LANDING_CHAT_LIMIT_PER_HOUR = 60
+
+
+@router.get("/landing-chat/faq", response_model=LandingChatFaqList)
+async def landing_chat_faq(lang: str = "vi") -> LandingChatFaqList:
+    """No auth required -- the landing page chat bubble's fixed question
+    list, e.g. `?lang=en`. Feeds the buttons the widget shows; there is no
+    free-text input anymore, so this list is the only thing a visitor can
+    ask about."""
+    return LandingChatFaqList(items=landing_chat_service.list_faq(lang))
 
 
 @router.post(
@@ -54,9 +65,10 @@ async def create_access_request(
 @router.post("/landing-chat", response_model=LandingChatReply)
 async def landing_chat(payload: LandingChatRequest, request: Request) -> LandingChatReply:
     """No auth required -- the landing page's chat bubble (bottom-right,
-    anonymous visitors). Scoped strictly to marketing/product Q&A in
-    landing_chat_service.py's system prompt, zero access to any student
-    data or course retrieval, since this is reachable with zero auth."""
+    anonymous visitors). Visitors can only pick from the fixed question list
+    `GET /landing-chat/faq` returns; this just looks up that question's
+    pre-written answer in landing_chat_service.py, no LLM call and no access
+    to any student data or course retrieval."""
     client_ip = request.client.host if request.client else "unknown"
     allowed, retry_after = await rate_limiter.allow(
         f"landing_chat:{client_ip}", limit=LANDING_CHAT_LIMIT_PER_HOUR, window_seconds=3600,
@@ -67,7 +79,7 @@ async def landing_chat(payload: LandingChatRequest, request: Request) -> Landing
             detail=f"Too many questions -- try again in {retry_after}s",
         )
     try:
-        result = landing_chat_service.answer(payload.question)
+        result = landing_chat_service.answer(payload.question_id, payload.lang)
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
-    return LandingChatReply(answer=result["answer"], generated_by_llm=result["generatedByLlm"])
+    return LandingChatReply(answer=result["answer"])
