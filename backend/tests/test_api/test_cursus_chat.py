@@ -186,6 +186,55 @@ async def test_enrollment_isolation_hides_other_courses_chunks(client, monkeypat
 
 
 @pytest.mark.asyncio
+async def test_naming_one_enrolled_course_does_not_cite_other_enrolled_courses(client, monkeypatch):
+    """A question that names ONE of the student's enrolled courses must only
+    ever retrieve/cite THAT course -- previously `_context()` fanned out to
+    every enrolled course on every message regardless of which one was
+    asked about, and shared boilerplate syllabus wording (Midterm/Final/
+    quizzes headers, common in the real demo data) could clear retrieval's
+    lexical threshold on an unrelated course's chunk too, so a student
+    enrolled in 4 courses asking about just one still saw citations from
+    all 4."""
+    _patch_ai_service(monkeypatch)
+    org_id = ensure_org(f"cc-nc-{uuid.uuid4().hex[:6]}", "cc-nc")
+    instructor_id = ensure_user(email=f"cc.nci.{uuid.uuid4().hex}@example.test", org_id=org_id, role=models.UserRole.INSTRUCTOR)
+    student_email = f"cc.ncs.{uuid.uuid4().hex}@example.test"
+    student_id = ensure_user(email=student_email, org_id=org_id, role=models.UserRole.STUDENT)
+
+    asked_code = _code("CCP")
+    asked_course_id = ensure_course(code=asked_code, org_id=org_id)
+    enroll_student(student_id=student_id, course_id=asked_course_id, instructor_id=instructor_id)
+    _seed_chunk(asked_course_id, asked_code, text=f"{asked_code} Midterm va Final kiem tra giua ky va cuoi ky, quizzes hang tuan.")
+
+    other_codes = [_code("CCX") for _ in range(3)]
+    for other_code in other_codes:
+        other_course_id = ensure_course(code=other_code, org_id=org_id)
+        enroll_student(student_id=student_id, course_id=other_course_id, instructor_id=instructor_id)
+        # Same generic boilerplate wording as the asked-about course, on
+        # purpose -- this is what used to lexically clear retrieval's
+        # min_score for an unrelated course and get cited alongside the
+        # right one.
+        _seed_chunk(other_course_id, other_code, text=f"{other_code} Midterm va Final kiem tra giua ky va cuoi ky, quizzes hang tuan.")
+
+    token = await login(client, student_email)
+    async with client.stream(
+        "POST", "/api/v1/student/cursus/stream", headers=auth_headers(token),
+        # "Midterm" is deliberately shared boilerplate across every seeded
+        # chunk above (asked-about course AND the 3 unrelated ones) -- this
+        # is what would lexically clear retrieval's min_score on the wrong
+        # courses too if `_context()` still fanned out to every enrolled
+        # course instead of narrowing to the one actually named here.
+        json={"message": f"{asked_code} Midterm hoc noi dung gi?"},
+    ) as response:
+        events = await _parse_sse(response)
+
+    citation_items = next((data for kind, data in events if kind == "citation"), {"items": []})["items"]
+    assert citation_items, "expected at least one citation for the named course"
+    assert all(other_code not in item["title"] for item in citation_items for other_code in other_codes)
+    assert all(asked_code in item["title"] for item in citation_items)
+
+
+@pytest.mark.asyncio
 async def test_guardrail_blocks_graded_deliverable_without_calling_ai_service(client, monkeypatch):
     called = {"hit": False}
 

@@ -113,6 +113,24 @@ def _enrolled_course_codes(db: Session, student_id: str) -> list[str]:
     return [r[0] for r in db.query(models.Course.code).join(models.CourseSection).join(models.Enrollment).filter(models.Enrollment.student_id == student_id, models.Enrollment.status == models.EnrollmentStatus.ENROLLED.value).all()]
 
 
+def _mentioned_course_codes(question: str, course_codes: list[str]) -> list[str]:
+    """Which of the student's own enrolled `course_codes` are literally named
+    in `question` (whole-word, case-insensitive) -- e.g. "PRF192 hôm nay học
+    gì?" narrows to just PRF192. Without this, `_context()` fanned out to
+    EVERY enrolled course on every message regardless of which one was
+    actually asked about, and since the demo syllabi share a lot of generic
+    boilerplate (Midterm/Final/quizzes headers), an unrelated course's chunk
+    could still clear retrieval's lexical `min_score` and get cited alongside
+    the right one -- a question named for one course showing citations from
+    all of them. When the question names no course at all (ambiguous), the
+    caller falls back to querying every enrolled course same as before."""
+    upper_question = (question or "").upper()
+    return [
+        code for code in course_codes
+        if re.search(rf"\b{re.escape(code.upper())}\b", upper_question)
+    ]
+
+
 _MEMORY_TURNS = 5
 
 
@@ -604,7 +622,8 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
         # off the event loop so the rest of the app keeps responding while
         # it waits; embedding_request_timeout_seconds (config.py) now also
         # bounds the retry itself instead of relying on the SDK default.
-        sources = await asyncio.to_thread(_context, db, current_user.id, payload.message, course_codes, query_vector)
+        retrieval_course_codes = _mentioned_course_codes(payload.message, course_codes) or course_codes
+        sources = await asyncio.to_thread(_context, db, current_user.id, payload.message, retrieval_course_codes, query_vector)
     except Exception:
         logger.exception("cursus_chat_retrieval_error student_id=%s", current_user.id)
         return _error_stream(code="DB_ERROR", message="Không thể truy xuất tài liệu môn học, vui lòng thử lại sau.")
