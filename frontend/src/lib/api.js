@@ -447,6 +447,9 @@ export function getCursusConversations() { return request('/student/cursus/conve
 export function getCursusConversationMessages(conversationId) {
   return request(`/student/cursus/conversations/${encodeURIComponent(conversationId)}/messages`);
 }
+export function deleteCursusConversation(conversationId) {
+  return request(`/student/cursus/conversations/${encodeURIComponent(conversationId)}`, { method: 'DELETE' });
+}
 
 export function confirmCursusAction(proposalId) {
   return request(`/student/cursus/actions/${encodeURIComponent(proposalId)}/confirm`, { method: 'POST' });

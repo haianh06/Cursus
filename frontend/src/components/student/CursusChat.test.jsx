@@ -1,5 +1,5 @@
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, within, act } from '@testing-library/react';
+import { render, screen, within, act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import CursusChat from './CursusChat';
@@ -24,6 +24,7 @@ const apiMocks = vi.hoisted(() => ({
   getCursusConversationMessages: vi.fn(),
   exportCursusHistory: vi.fn(),
   deleteCursusHistory: vi.fn(),
+  deleteCursusConversation: vi.fn(),
   confirmCursusAction: vi.fn(),
   cancelCursusAction: vi.fn(),
   getSourceChunk: vi.fn(),
@@ -138,5 +139,49 @@ describe('CursusChat', () => {
     expect(drawerZIndexMatch).not.toBeNull();
     expect(panelZIndexMatch).not.toBeNull();
     expect(Number(drawerZIndexMatch[1])).toBeGreaterThan(Number(panelZIndexMatch[1]));
+  });
+
+  test('"Cuộc trò chuyện mới" clears the current reply and brings back the FAQ chips', async () => {
+    apiMocks.streamCursusChat.mockImplementation(async ({ onEvent }) => {
+      onEvent('meta', { conversationId: 'conv-1' });
+      onEvent('delta', { text: 'Trả lời ngắn.' });
+    });
+
+    const user = userEvent.setup();
+    renderChat();
+    const panel = await openPanel(user);
+    const textarea = within(panel).getByPlaceholderText('Hỏi Cursus…');
+    await user.type(textarea, 'Hỏi gì đó');
+    await user.keyboard('{Enter}');
+
+    expect(await screen.findByText('Trả lời ngắn.')).toBeInTheDocument();
+
+    await user.click(within(panel).getByRole('button', { name: 'Cuộc trò chuyện mới' }));
+
+    expect(screen.queryByText('Trả lời ngắn.')).not.toBeInTheDocument();
+    expect(within(panel).getByRole('button', { name: /Hôm nay mình nên học gì trước/i })).toBeInTheDocument();
+  });
+
+  test('deleting one conversation from history asks for confirmation, then removes it and resets the active chat', async () => {
+    apiMocks.getCursusConversations.mockResolvedValue({
+      items: [{ id: 'conv-1', updatedAt: '2026-09-03T09:02:01.000Z' }],
+    });
+    apiMocks.getCursusConversationMessages.mockResolvedValue({ id: 'conv-1', messages: [] });
+    apiMocks.deleteCursusConversation.mockResolvedValue({ deleted: true });
+
+    const user = userEvent.setup();
+    renderChat();
+    const panel = await openPanel(user);
+    await user.click(within(panel).getByRole('button', { name: 'Lịch sử trò chuyện' }));
+
+    const sidebar = await screen.findByRole('button', { name: 'Xoá cuộc trò chuyện này' });
+    await user.click(sidebar);
+
+    const dialog = await screen.findByRole('dialog', { name: 'Xoá cuộc trò chuyện này?' });
+    await user.click(within(dialog).getByRole('button', { name: 'Xoá' }));
+
+    await waitFor(() => expect(apiMocks.deleteCursusConversation).toHaveBeenCalledWith('conv-1'));
+    expect(screen.queryByRole('dialog', { name: 'Xoá cuộc trò chuyện này?' })).not.toBeInTheDocument();
+    expect(screen.queryByText(new Date('2026-09-03T09:02:01.000Z').toLocaleString('vi'))).not.toBeInTheDocument();
   });
 });

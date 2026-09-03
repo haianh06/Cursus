@@ -1175,6 +1175,84 @@ async def test_second_turn_passes_prior_exchange_as_memory(client, monkeypatch):
     assert second_message not in memory
 
 
+# ── Per-conversation delete ─────────────────────────────────────────────────
+
+async def _start_conversation(client, monkeypatch, token, message: str) -> str:
+    _patch_ai_service(monkeypatch)
+    async with client.stream(
+        "POST", "/api/v1/student/cursus/stream", headers=auth_headers(token),
+        json={"message": message},
+    ) as response:
+        assert response.status_code == 200
+        events = await _parse_sse(response)
+    return next(data for kind, data in events if kind == "meta")["conversationId"]
+
+
+@pytest.mark.asyncio
+async def test_delete_conversation_removes_it_from_history(client, monkeypatch):
+    org_id = ensure_org(f"cc-del-{uuid.uuid4().hex[:6]}", "cc-del")
+    instructor_id = ensure_user(email=f"cc.deli.{uuid.uuid4().hex}@example.test", org_id=org_id, role=models.UserRole.INSTRUCTOR)
+    student_email = f"cc.dels.{uuid.uuid4().hex}@example.test"
+    student_id = ensure_user(email=student_email, org_id=org_id, role=models.UserRole.STUDENT)
+    code = _code("CCD")
+    course_id = ensure_course(code=code, org_id=org_id)
+    enroll_student(student_id=student_id, course_id=course_id, instructor_id=instructor_id)
+    _seed_chunk(course_id, code, text=f"{code} noi dung bai giang co ban.")
+
+    token = await login(client, student_email)
+    conversation_id = await _start_conversation(client, monkeypatch, token, f"Cho em hoi mon {code} co gi?")
+
+    listing = await client.get("/api/v1/student/cursus/conversations", headers=auth_headers(token))
+    assert conversation_id in {item["id"] for item in listing.json()["items"]}
+
+    response = await client.delete(f"/api/v1/student/cursus/conversations/{conversation_id}", headers=auth_headers(token))
+    assert response.status_code == 200
+    assert response.json() == {"deleted": True}
+
+    listing = await client.get("/api/v1/student/cursus/conversations", headers=auth_headers(token))
+    assert conversation_id not in {item["id"] for item in listing.json()["items"]}
+
+    messages = await client.get(f"/api/v1/student/cursus/conversations/{conversation_id}/messages", headers=auth_headers(token))
+    assert messages.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_delete_conversation_is_scoped_to_the_owning_student(client, monkeypatch):
+    org_id = ensure_org(f"cc-delo-{uuid.uuid4().hex[:6]}", "cc-delo")
+    instructor_id = ensure_user(email=f"cc.deloi.{uuid.uuid4().hex}@example.test", org_id=org_id, role=models.UserRole.INSTRUCTOR)
+    owner_email = f"cc.delo1.{uuid.uuid4().hex}@example.test"
+    owner_id = ensure_user(email=owner_email, org_id=org_id, role=models.UserRole.STUDENT)
+    other_email = f"cc.delo2.{uuid.uuid4().hex}@example.test"
+    other_id = ensure_user(email=other_email, org_id=org_id, role=models.UserRole.STUDENT)
+    code = _code("CCO")
+    course_id = ensure_course(code=code, org_id=org_id)
+    enroll_student(student_id=owner_id, course_id=course_id, instructor_id=instructor_id)
+    enroll_student(student_id=other_id, course_id=course_id, instructor_id=instructor_id)
+    _seed_chunk(course_id, code, text=f"{code} noi dung bai giang co ban.")
+
+    owner_token = await login(client, owner_email)
+    conversation_id = await _start_conversation(client, monkeypatch, owner_token, f"Cho em hoi mon {code} co gi?")
+
+    other_token = await login(client, other_email)
+    response = await client.delete(f"/api/v1/student/cursus/conversations/{conversation_id}", headers=auth_headers(other_token))
+    assert response.status_code == 404
+
+    # Untouched by the other student's failed attempt.
+    listing = await client.get("/api/v1/student/cursus/conversations", headers=auth_headers(owner_token))
+    assert conversation_id in {item["id"] for item in listing.json()["items"]}
+
+
+@pytest.mark.asyncio
+async def test_delete_conversation_404_for_unknown_id(client):
+    org_id = ensure_org(f"cc-delu-{uuid.uuid4().hex[:6]}", "cc-delu")
+    student_email = f"cc.delu.{uuid.uuid4().hex}@example.test"
+    ensure_user(email=student_email, org_id=org_id, role=models.UserRole.STUDENT)
+    token = await login(client, student_email)
+
+    response = await client.delete(f"/api/v1/student/cursus/conversations/{uuid.uuid4()}", headers=auth_headers(token))
+    assert response.status_code == 404
+
+
 # ── Red-team regression suite ──────────────────────────────────────────────
 # Every prompt below was chosen to close a REAL bypass seen in production:
 # a chat turn about eating feces got a "here's a safe alternative" answer

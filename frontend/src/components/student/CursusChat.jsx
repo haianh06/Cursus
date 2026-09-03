@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Send, X, History, Download, Trash2, Check, XCircle, Sparkles } from 'lucide-react';
+import { Send, X, History, Download, Trash2, Check, XCircle, Sparkles, SquarePen } from 'lucide-react';
 import {
   streamCursusChat,
   pingBackendHealth,
@@ -12,6 +12,7 @@ import {
   getCursusConversationMessages,
   exportCursusHistory,
   deleteCursusHistory,
+  deleteCursusConversation,
   confirmCursusAction,
   cancelCursusAction,
 } from '../../lib/api';
@@ -103,7 +104,7 @@ function WelcomeCard({ briefing, onDismissBriefing, onPickReply, disabled }) {
   );
 }
 
-function ChatHistorySidebar({ conversations, activeId, onSelect, onExport, onDeleteAll, onClose }) {
+function ChatHistorySidebar({ conversations, activeId, onSelect, onExport, onDeleteAll, onDeleteOne, onClose }) {
   return (
     <div className="absolute inset-0 z-10 flex flex-col bg-surface-card">
       <header className="flex items-center justify-between border-b border-line bg-surface px-5 py-4">
@@ -118,13 +119,24 @@ function ChatHistorySidebar({ conversations, activeId, onSelect, onExport, onDel
         ) : (
           <ul className="space-y-1">
             {conversations.map((item) => (
-              <li key={item.id}>
+              <li key={item.id} className="group flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => onSelect(item.id)}
-                  className={`w-full rounded-md px-3 py-2 text-left text-sm hover:bg-surface ${item.id === activeId ? 'bg-accent-soft text-accent' : 'text-fg'}`}
+                  className={`min-w-0 flex-1 rounded-md px-3 py-2 text-left text-sm hover:bg-surface ${item.id === activeId ? 'bg-accent-soft text-accent' : 'text-fg'}`}
                 >
                   {new Date(item.updatedAt).toLocaleString('vi')}
+                </button>
+                <button
+                  type="button"
+                  aria-label="Xoá cuộc trò chuyện này"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDeleteOne(item.id);
+                  }}
+                  className="shrink-0 rounded-md p-2 text-fg-secondary opacity-0 hover:bg-danger/10 hover:text-danger focus-visible:opacity-100 group-hover:opacity-100"
+                >
+                  <Trash2 size={14} />
                 </button>
               </li>
             ))}
@@ -189,6 +201,7 @@ export default function CursusChat({ user }) {
   const [conversations, setConversations] = useState([]);
   const [openCitation, setOpenCitation] = useState(null);
   const [confirmDeleteAll, setConfirmDeleteAll] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [actioningId, setActioningId] = useState(null);
   const briefingCheckedRef = useRef(false);
   /** Client-side typewriter pacing for assistant replies. SSE deltas from
@@ -337,6 +350,32 @@ export default function CursusChat({ user }) {
       setConversationId(null);
       setHistoryOpen(false);
     }
+  };
+
+  const handleDeleteOne = async () => {
+    const id = confirmDeleteId;
+    setConfirmDeleteId(null);
+    try {
+      await deleteCursusConversation(id);
+    } finally {
+      setConversations((items) => items.filter((item) => item.id !== id));
+      // The conversation just deleted was the one on screen -- reset to a
+      // fresh chat rather than keep showing messages for an id that no
+      // longer exists server-side.
+      if (id === conversationId) {
+        setMessages([]);
+        setConversationId(null);
+      }
+    }
+  };
+
+  /** "New chat" just clears local state -- conversation creation is lazy on
+   * the backend (stream_chat() creates a ChatConversation row on the first
+   * message whenever conversation_id is null), so there's nothing to call. */
+  const handleNewConversation = () => {
+    setMessages([]);
+    setConversationId(null);
+    setHistoryOpen(false);
   };
 
   const resolveProposal = (index, patch) => {
@@ -495,6 +534,9 @@ export default function CursusChat({ user }) {
               </div>
             </div>
             <div className="flex items-center gap-3">
+              <button aria-label="Cuộc trò chuyện mới" onClick={handleNewConversation} className="text-white/85 hover:text-white">
+                <SquarePen size={18} />
+              </button>
               <button aria-label="Lịch sử trò chuyện" onClick={openHistory} className="text-white/85 hover:text-white">
                 <History size={18} />
               </button>
@@ -609,6 +651,7 @@ export default function CursusChat({ user }) {
               onSelect={selectConversation}
               onExport={handleExport}
               onDeleteAll={() => setConfirmDeleteAll(true)}
+              onDeleteOne={(id) => setConfirmDeleteId(id)}
               onClose={() => setHistoryOpen(false)}
             />
           )}
@@ -624,6 +667,16 @@ export default function CursusChat({ user }) {
         danger
         onConfirm={handleDeleteAll}
         onCancel={() => setConfirmDeleteAll(false)}
+      />
+      <ConfirmDialog
+        open={confirmDeleteId}
+        title="Xoá cuộc trò chuyện này?"
+        message="Hành động này không thể hoàn tác."
+        confirmLabel="Xoá"
+        cancelLabel="Huỷ"
+        danger
+        onConfirm={handleDeleteOne}
+        onCancel={() => setConfirmDeleteId(null)}
       />
     </>
   );

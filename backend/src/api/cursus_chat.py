@@ -945,6 +945,16 @@ def delete_history(current_user: models.User = Depends(get_current_user_from_tok
     deleted = db.query(models.ChatConversation).filter_by(student_id=current_user.id).delete(synchronize_session=False); db.commit()
     return {"deleted": deleted}
 
+
+@router.delete("/conversations/{conversation_id}")
+def delete_conversation(conversation_id: str, current_user: models.User = Depends(get_current_user_from_token), db: Session = Depends(get_db)):
+    conversation = db.query(models.ChatConversation).filter_by(id=conversation_id, student_id=current_user.id).first()
+    if conversation is None:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+    db.delete(conversation)
+    db.commit()
+    return {"deleted": True}
+
 @router.post("/actions")
 def propose_action(payload: ActionProposalRequest, current_user: models.User = Depends(get_current_user_from_token), db: Session = Depends(get_db)):
     proposal = models.ChatActionProposal(id=str(uuid4()), student_id=current_user.id, action_type=payload.action_type, payload=payload.payload, status="PENDING", expires_at=datetime.utcnow() + timedelta(minutes=15))
