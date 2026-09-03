@@ -28,7 +28,10 @@ _INSTRUCTIONS = (
     "Format clearly with Markdown; do not emit raw HTML. "
     "'Live data' below, when present, is real, freshly-fetched data about THIS student (schedule, plan/tasks, "
     "quiz results, risk signals, self-study stats) -- prefer it to answer directly instead of saying you don't "
-    "have the information. Present any risk-signal data supportively and calmly, never in an alarming tone."
+    "have the information. Present any risk-signal data supportively and calmly, never in an alarming tone. "
+    "'Today' is the ONLY ground truth for the current date/day-of-week -- never guess it from a data range "
+    "(e.g. a returned week's end date is NOT necessarily today, and a week is not over just because it later "
+    "than today happens to include days after today's date within it)."
 )
 
 
@@ -40,14 +43,15 @@ async def generate_chat_stream(
     context: list[dict],
     memory: str | None = None,
     tool_results: str | None = None,
+    today: str | None = None,
 ) -> AsyncIterator[dict]:
     sources = "\n\n".join(
         f"[SOURCE {item['id']}] {item['title']} — {item.get('section', '')}\n{item['text']}"
         for item in context
     )
     input_text = (
-        f"Intent: {intent}\nMemory: {memory or '(none)'}\nLive data:\n{tool_results or '(none)'}\n"
-        f"Sources:\n{sources}\n\nStudent: {message}"
+        f"Today: {today or '(unknown)'}\nIntent: {intent}\nMemory: {memory or '(none)'}\n"
+        f"Live data:\n{tool_results or '(none)'}\nSources:\n{sources}\n\nStudent: {message}"
     )
     route = select_model(intent=intent, source_count=len(context), message=message)
     model = model_for_route(route, settings)

@@ -1431,3 +1431,110 @@ async def test_tool_decision_failure_fails_open_to_normal_chat(client, monkeypat
     assert "error" not in kinds
     delta_text = next(data["text"] for kind, data in events if kind == "delta")
     assert delta_text == "Chao ban, minh giup duoc gi?"
+
+
+@pytest.mark.asyncio
+async def test_ordinary_course_question_never_calls_tool_decision(client, monkeypatch):
+    """Latency regression guard: `decide_tool_calls` is a real, non-streamed
+    LLM round trip -- calling it unconditionally for every message added a
+    full extra sequential network hop even to an ordinary course-content
+    question that obviously needs none of the 5 tools. The keyword
+    pre-filter (`_looks_like_personal_data_question`) must skip it
+    entirely for a message with none of those keywords."""
+    _patch_ai_service(monkeypatch)
+    import src.api.cursus_chat as cursus_chat_module
+
+    called = {"hit": False}
+
+    async def _fail_if_called(**kwargs):
+        called["hit"] = True
+        return []
+
+    monkeypatch.setattr(cursus_chat_module, "decide_tool_calls", _fail_if_called)
+
+    org_id = ensure_org(f"cc-nopd-{uuid.uuid4().hex[:6]}", "cc-nopd")
+    instructor_id = ensure_user(email=f"cc.nopdi.{uuid.uuid4().hex}@example.test", org_id=org_id, role=models.UserRole.INSTRUCTOR)
+    student_email = f"cc.nopds.{uuid.uuid4().hex}@example.test"
+    student_id = ensure_user(email=student_email, org_id=org_id, role=models.UserRole.STUDENT)
+    code = _code("CCND")
+    course_id = ensure_course(code=code, org_id=org_id)
+    enroll_student(student_id=student_id, course_id=course_id, instructor_id=instructor_id)
+    _seed_chunk(course_id, code, text=f"{code} noi dung bai giang co ban ve kien truc he thong.")
+
+    token = await login(client, student_email)
+    async with client.stream(
+        "POST", "/api/v1/student/cursus/stream", headers=auth_headers(token),
+        json={"message": f"{code} hoc noi dung gi?"},
+    ) as response:
+        assert response.status_code == 200
+        await _parse_sse(response)
+
+    assert not called["hit"], "decide_tool_calls must not run for an ordinary course-content question"
+
+
+@pytest.mark.asyncio
+async def test_personal_data_keyword_question_still_calls_tool_decision(client, monkeypatch):
+    """The keyword pre-filter must not accidentally suppress the very
+    questions tool calling exists for."""
+    _patch_ai_service(monkeypatch)
+
+    import src.api.cursus_chat as cursus_chat_module
+
+    called = {"hit": False}
+
+    async def _tracking(**kwargs):
+        called["hit"] = True
+        return []
+
+    monkeypatch.setattr(cursus_chat_module, "decide_tool_calls", _tracking)
+
+    org_id = ensure_org(f"cc-pdq-{uuid.uuid4().hex[:6]}", "cc-pdq")
+    student_email = f"cc.pdqs.{uuid.uuid4().hex}@example.test"
+    ensure_user(email=student_email, org_id=org_id, role=models.UserRole.STUDENT)
+
+    token = await login(client, student_email)
+    async with client.stream(
+        "POST", "/api/v1/student/cursus/stream", headers=auth_headers(token),
+        json={"message": "Lịch học hôm nay của em thế nào?"},
+    ) as response:
+        assert response.status_code == 200
+        await _parse_sse(response)
+
+    assert called["hit"], "decide_tool_calls must still run for a personal-data question"
+
+
+@pytest.mark.asyncio
+async def test_today_label_is_threaded_into_generate_chat_stream(client, monkeypatch):
+    """Regression: the LLM previously had no ground truth for the actual
+    current date/day-of-week anywhere in its prompt, and guessed wrong from
+    a returned week's date range alone (declared a week over 3 days early).
+    `generate_chat_stream`'s `today` kwarg must carry the real one."""
+    import src.api.cursus_chat as cursus_chat_module
+
+    captured: list[str | None] = []
+
+    async def _fake_generate_chat_stream(**kwargs):
+        captured.append(kwargs.get("today"))
+        yield {"type": "delta", "text": "OK"}
+        yield {"type": "done"}
+
+    monkeypatch.setattr(cursus_chat_module, "generate_chat_stream", _fake_generate_chat_stream)
+
+    org_id = ensure_org(f"cc-tdylbl-{uuid.uuid4().hex[:6]}", "cc-tdylbl")
+    instructor_id = ensure_user(email=f"cc.tdylbli.{uuid.uuid4().hex}@example.test", org_id=org_id, role=models.UserRole.INSTRUCTOR)
+    student_email = f"cc.tdylbls.{uuid.uuid4().hex}@example.test"
+    student_id = ensure_user(email=student_email, org_id=org_id, role=models.UserRole.STUDENT)
+    code = _code("CCTD")
+    course_id = ensure_course(code=code, org_id=org_id)
+    enroll_student(student_id=student_id, course_id=course_id, instructor_id=instructor_id)
+    _seed_chunk(course_id, code, text=f"{code} noi dung bai giang co ban ve kien truc he thong.")
+
+    token = await login(client, student_email)
+    async with client.stream(
+        "POST", "/api/v1/student/cursus/stream", headers=auth_headers(token),
+        json={"message": f"{code} hoc noi dung gi?"},
+    ) as response:
+        assert response.status_code == 200
+        await _parse_sse(response)
+
+    assert captured and captured[0] == cursus_chat_module._today_label()

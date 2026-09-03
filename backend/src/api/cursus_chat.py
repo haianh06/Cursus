@@ -8,7 +8,7 @@ import json
 import logging
 import re
 import uuid
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -246,6 +246,50 @@ def _looks_like_greeting(question: str) -> bool:
     off-topic request would exempt the whole thing again."""
     folded = fold_accents((question or "").strip()).lower()
     return bool(_GREETING_ONLY_RE.match(folded))
+
+
+# Same fixed Vietnam offset self_study_service.py's own `_now()` and
+# chat_tool_service.py's `_app_today()` use (no per-user timezone anywhere
+# in this app, one shared local convention) -- kept separate per module
+# rather than a new cross-import, matching the existing house pattern.
+_APP_TZ_OFFSET = timedelta(hours=7)
+_VN_WEEKDAYS = ("Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật")
+
+
+def _today_label() -> str:
+    """"Thứ Năm, 03/09/2026" -- the ONE ground-truth date/day-of-week fed
+    into every chat turn's prompt (`generate_chat_stream`'s `today` kwarg).
+
+    Before this, nothing in the prompt or in any tool result ever told the
+    model what day it actually is -- it had to guess "today" purely from a
+    returned week's date range, and it guessed wrong (picked the range's END
+    date, wrongly declaring the week already over three days early)."""
+    today = (datetime.utcnow() + _APP_TZ_OFFSET).date()
+    return f"{_VN_WEEKDAYS[today.weekday()]}, {today.strftime('%d/%m/%Y')}"
+
+
+_PERSONAL_DATA_KEYWORDS_RE = re.compile(
+    r"\b(l[iị]ch\s*h[oọ]c|th[oờ]i\s*kh[oó]a\s*bi[eể]u|k[eế]\s*ho[aạ]ch|task|"
+    r"to\s*do|quiz|b[aà]i\s*ki[eể]m\s*tra|đi[eể]m|r[uủ]i\s*ro|c[aả]nh\s*b[aá]o|"
+    r"t[uự]\s*h[oọ]c|h[oô]m\s*nay|tu[aầ]n\s*n[aà]y|tu[aầ]n\s*sau|tu[aầ]n\s*t[oớ]i|"
+    r"tu[aầ]n\s*tr[uướ][oớ]c|ch[uư]a\s*xong|c[oò]n\s*vi[eệ]c|schedule|timetable|"
+    r"assignment|deadline|grade)\b",
+    re.IGNORECASE,
+)
+
+
+def _looks_like_personal_data_question(question: str) -> bool:
+    """Cheap keyword pre-filter deciding whether it's even worth attempting
+    `decide_tool_calls()` (a real, non-streamed LLM round trip) at all --
+    NOT the tool-selection mechanism itself. Once past this filter the LLM
+    still freely picks among all 5 tools (or none) via real tool calling;
+    this only guards against paying that extra latency for the common case
+    of an ordinary course-content question that obviously needs none of
+    them. Skipping a genuinely personal-data question phrased with none of
+    these words is the accepted trade-off (falls back to today's
+    RAG-only/"no data" behavior for that turn, same as before tool calling
+    existed at all)."""
+    return bool(_PERSONAL_DATA_KEYWORDS_RE.search(fold_accents(question or "").lower()))
 
 
 def _personalized_intent(question: str) -> str | None:
@@ -669,17 +713,28 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
     # try/except is defense-in-depth for the unexpected case where it still
     # raises, matching how `_context()`/`_memory_transcript` above are also
     # wrapped: one broken step here must never 500 the whole chat turn.
+    #
+    # Gated behind `_looks_like_personal_data_question`: `decide_tool_calls`
+    # is a real, non-streamed LLM round trip, and calling it unconditionally
+    # for every message added a full extra sequential network hop to EVERY
+    # turn -- including the common case of an ordinary course-content
+    # question that obviously needs none of the 5 tools -- which is what
+    # made the whole chat noticeably slower after tool calling shipped. This
+    # is a cost/latency guard only, not the tool-selection logic itself: once
+    # past it, the LLM still freely picks among all 5 tools (or none) on its
+    # own.
     tool_results: list[dict] = []
-    try:
-        tool_calls = await decide_tool_calls(settings=settings, message=payload.message)
-        for call in tool_calls:
-            result = await asyncio.to_thread(
-                execute_chat_tool, db, student_id=current_user.id, name=call["name"], arguments=call["arguments"],
-            )
-            tool_results.append({"name": call["name"], "result": result})
-    except Exception:
-        logger.exception("cursus_chat_tool_calling_failed student_id=%s", current_user.id)
-        tool_results = []
+    if _looks_like_personal_data_question(payload.message):
+        try:
+            tool_calls = await decide_tool_calls(settings=settings, message=payload.message)
+            for call in tool_calls:
+                result = await asyncio.to_thread(
+                    execute_chat_tool, db, student_id=current_user.id, name=call["name"], arguments=call["arguments"],
+                )
+                tool_results.append({"name": call["name"], "result": result})
+        except Exception:
+            logger.exception("cursus_chat_tool_calling_failed student_id=%s", current_user.id)
+            tool_results = []
     tool_results_text = _format_tool_results(tool_results)
 
     # General off-topic gate: the OUT_OF_SCOPE guardrail above only catches
@@ -755,7 +810,7 @@ async def stream_chat(payload: ChatRequest, current_user: models.User = Depends(
             # generic message here. "done" from the generator is not
             # forwarded -- this relay emits its own "done" below, after
             # citations and any action proposal have also been sent.
-            async for event in generate_chat_stream(settings=settings, message=payload.message, intent=intent, context=sources, memory=memory, tool_results=tool_results_text):
+            async for event in generate_chat_stream(settings=settings, message=payload.message, intent=intent, context=sources, memory=memory, tool_results=tool_results_text, today=_today_label()):
                 if event["type"] == "delta":
                     answer += event["text"]
                     yield f"event: delta\ndata: {json.dumps({'text': event['text']})}\n\n"

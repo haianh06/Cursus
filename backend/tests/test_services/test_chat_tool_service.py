@@ -87,6 +87,50 @@ def test_weekly_timetable_scopes_to_the_asking_student_only():
         db.close()
 
 
+def test_weekly_timetable_includes_today_and_marks_todays_session():
+    """Regression: the LLM previously had no "today" ground truth anywhere
+    in a timetable tool result (only a weekStart/weekEnd range), and guessed
+    the range's END date was "today" -- wrongly declaring the week already
+    over days early. The tool result must now say what today's date is,
+    and mark which session (if any) falls on it."""
+    from src.services.core.chat_tool_service import _app_today
+
+    org_id = ensure_org(f"ct-tdy-{uuid.uuid4().hex[:6]}", "ct-tdy")
+    instructor_id = ensure_user(email=f"ct.tdyi.{uuid.uuid4().hex}@example.test", org_id=org_id, role=models.UserRole.INSTRUCTOR)
+    student_id = ensure_user(email=f"ct.tdys.{uuid.uuid4().hex}@example.test", org_id=org_id, role=models.UserRole.STUDENT)
+    code = _code("CTD")
+    course_id = ensure_course(code=code, org_id=org_id)
+    section_id = enroll_student(student_id=student_id, course_id=course_id, instructor_id=instructor_id)
+
+    today = _app_today()
+    lecture_start = datetime.combine(today, datetime.min.time()).replace(hour=9)
+    db = SessionLocal()
+    try:
+        db.add(
+            models.CalendarEvent(
+                id=f"cal_{uuid.uuid4().hex[:10]}",
+                section_id=section_id,
+                title="Buoi hoc hom nay",
+                description=None,
+                start_time=lecture_start,
+                end_time=lecture_start + timedelta(hours=2),
+                event_type="LECTURE",
+            )
+        )
+        db.commit()
+    finally:
+        db.close()
+
+    db = SessionLocal()
+    try:
+        result = execute_chat_tool(db, student_id=student_id, name="get_weekly_timetable", arguments={})
+        assert result["today"] == today.isoformat()
+        session = next(s for s in result["sessions"] if s["title"] == "Buoi hoc hom nay")
+        assert session["isToday"] is True
+    finally:
+        db.close()
+
+
 def test_weekly_timetable_clamps_out_of_range_week_offset():
     org_id = ensure_org(f"ct-ttc-{uuid.uuid4().hex[:6]}", "ct-ttc")
     student_id = ensure_user(email=f"ct.ttcs.{uuid.uuid4().hex}@example.test", org_id=org_id, role=models.UserRole.STUDENT)

@@ -16,7 +16,7 @@ raising, so one broken tool never breaks the rest of the chat turn.
 from __future__ import annotations
 
 import logging
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from sqlalchemy.orm import Session
 
@@ -30,17 +30,30 @@ from src.services.quiz_service import QuizService
 
 logger = logging.getLogger(__name__)
 
+# Same fixed Vietnam offset self_study_service.py's own `_now()` uses (this
+# app has no per-user timezone, just one shared local convention) -- used
+# here so "today" for the timetable tool matches the rest of the app rather
+# than the server container's own (likely UTC) clock.
+_APP_TZ_OFFSET = timedelta(hours=7)
+
+
+def _app_today():
+    return (datetime.utcnow() + _APP_TZ_OFFSET).date()
+
 
 def _week_start_for(offset: int):
-    from datetime import date
-
-    return monday_of(date.today()) + timedelta(weeks=offset)
+    return monday_of(_app_today()) + timedelta(weeks=offset)
 
 
 def _get_weekly_timetable(db: Session, *, student_id: str, arguments: dict) -> dict:
     offset = int(arguments.get("weeks_from_now") or 0)
+    today = _app_today()
     week = TimetableService(db).get_week(student_id=student_id, week_start=_week_start_for(offset))
     return {
+        # Explicit so the LLM never has to (mis)infer "today" from the week
+        # range alone -- it previously guessed the range's END date was
+        # "today" and wrongly declared the week already over.
+        "today": today.isoformat(),
         "weekStart": week["weekStart"],
         "weekEnd": week["weekEnd"],
         "isEmpty": week["isEmpty"],
@@ -52,6 +65,7 @@ def _get_weekly_timetable(db: Session, *, student_id: str, arguments: dict) -> d
                 "kind": block["kind"],
                 "courseCode": block["courseCode"],
                 "description": block["description"],
+                "isToday": block["start"][:10] == today.isoformat(),
             }
             for block in week["blocks"]
         ],
