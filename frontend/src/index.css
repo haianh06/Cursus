@@ -1170,6 +1170,37 @@ section[id] {
   white-space: pre;
 }
 
+/* GFM tables (remark-gfm) render bare <table>/<th>/<td> with no class --
+   without an explicit font-family here they fall back to the browser's
+   default table font (serif on most browsers) instead of inheriting Inter
+   like every other element in this block. */
+.cursus-chat-markdown table {
+  display: block;
+  overflow-x: auto;
+  width: max-content;
+  max-width: 100%;
+  border-collapse: collapse;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 0.875rem;
+}
+
+.cursus-chat-markdown th,
+.cursus-chat-markdown td {
+  border: 1px solid var(--border-ui);
+  padding: 0.375rem 0.625rem;
+  text-align: left;
+}
+
+.cursus-chat-markdown th {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.cursus-chat-markdown td {
+  color: var(--text-primary);
+}
+
 .citation-label-custom {
   font-family: 'Inter', -apple-system, sans-serif;
   font-size: 12px !important;
